@@ -10,6 +10,8 @@ import javax.media.opengl.awt.GLJPanel;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import com.jogamp.opengl.util.FPSAnimator;
+
 
 public class Graphics{
 	
@@ -27,6 +29,9 @@ public class Graphics{
 		final GLProfile profile = GLProfile.get(GLProfile.GL2);
 	    GLCapabilities capabilities = new GLCapabilities(profile);
 		GLJPanel canvas = new GLJPanel(capabilities);
+		
+		FPSAnimator animator = new FPSAnimator(canvas,30);
+		animator.start();
 		
 		GameScreen gs = new GameScreen();
 		
