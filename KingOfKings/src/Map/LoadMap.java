@@ -29,8 +29,6 @@ public class LoadMap {
 		parseHeader(info);
 		parseMap(info);
 		
-		map.printMap();
-		
 	}
 	
 	private void parseHeader(ArrayList<String> header){
@@ -50,7 +48,7 @@ public class LoadMap {
 			
 			for(int j = 0; j < mapInt.size(); j++){
 				
-				map.setTile(j, i, mapInt.get(j));
+				map.setTile(j, i-1, mapInt.get(j));
 				
 			}
 		}
@@ -99,15 +97,4 @@ public class LoadMap {
 		return map;
 	}
 	
-	public static void main(String[] args) {
-		
-		LoadMap lm = new LoadMap();
-		
-		Map map = lm.getMap();
-		
-		Feature feature = map.getFeature(1, 2);
-		System.out.println(feature.getSizeX() + " " + feature.getSizeY() + " " + feature.getType());
-		
-	}
-
 }

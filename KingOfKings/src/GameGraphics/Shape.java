@@ -41,7 +41,7 @@ public class Shape {
 			
 			int[] mat = new int[2];
 			
-			mat[0] = new Integer(line.substring(line.length()-3,line.length())).intValue();
+			mat[0] = new Integer(line.substring(line.length()-3,line.length())).intValue()-1;
 			mat[1] = faces.size();
 			
 			materials.add(mat);
@@ -139,7 +139,7 @@ public class Shape {
 				return material[0];
 				
 			}else{
-				
+
 				return this.getMaterial(currentColour)[0];
 			}
 			

@@ -6,60 +6,100 @@ import java.util.ArrayList;
 public class Model {
 	
 	private ArrayList<Frame> frames;
-	private int currentFrame;
+	private ArrayList<Frame> fireFrames;
 	private int shapeNo;
 	private int currentIndex;
+	private boolean moving;
 	
 	public Model(String filename, String folder, int noOfFrames) throws IOException{
 		
 		frames = new ArrayList<Frame>();
-		currentFrame = 0;
+		fireFrames = new ArrayList<Frame>();
 		shapeNo = 0;
 		currentIndex = -1;
+		moving = false;
 		
 		//load all of the model's frames 
 		for(int i = 1; i <= noOfFrames; i++){
 			
 			frames.add(new Frame(filename+new Integer(i).toString(),folder));
 		}
+		
+		for(int f = 1; f <= noOfFrames; f++){
+			
+			fireFrames.add(new Frame(filename+new Integer(f).toString()+"f",folder));
+		}
 	}
 	
 	
-	public Face popFace(){
+	public Face popFace(int currentFrame, boolean firing){
 		
-		//if the last face was the last face in the shape 
-		if(frames.get(currentFrame).getShapeFaceSize(shapeNo) == currentIndex+1){
-			
-			shapeNo++;
-			currentIndex = 0;
-			
+		if(!firing){
+			//if the last face was the last face in the shape 
+			if(frames.get(currentFrame).getShapeFaceSize(shapeNo) == currentIndex+1){
+				
+				shapeNo++;
+				currentIndex = 0;
+				
+			}else{
+				
+				currentIndex ++;
+			}
+			//if this is the last shape then return null 
+			if(frames.get(currentFrame).getNoOfShapes() == shapeNo){
+				
+				shapeNo = 0;
+				currentIndex = 0;
+				
+				return null;
+			}
+	
+			return frames.get(currentFrame).getFace(shapeNo, currentIndex);
 		}else{
 			
-			currentIndex ++;
+			//if the last face was the last face in the shape 
+			if(fireFrames.get(currentFrame).getShapeFaceSize(shapeNo) == currentIndex+1){
+				
+				shapeNo++;
+				currentIndex = 0;
+				
+			}else{
+				
+				currentIndex ++;
+			}
+			//if this is the last shape then return null 
+			if(fireFrames.get(currentFrame).getNoOfShapes() == shapeNo){
+				
+				shapeNo = 0;
+				currentIndex = 0;
+				
+				return null;
+			}
+	
+			return fireFrames.get(currentFrame).getFace(shapeNo, currentIndex);
 		}
-		//if this is the last shape then return null 
-		if(frames.get(currentFrame).getNoOfShapes() == shapeNo){
-			
-			shapeNo = 0;
-			currentIndex = 0;
-			
-			return null;
+	}
+	
+	public Vertex getVertex(int index,int currentFrame,boolean firing){
+		
+		if(!firing){
+			return frames.get(currentFrame).getVertex(shapeNo, index);
+		}else{
+			return fireFrames.get(currentFrame).getVertex(shapeNo, index);
 		}
-
-		return frames.get(currentFrame).getFace(shapeNo, currentIndex);
 	}
 	
-	public Vertex getVertex(int index){
-		
-		return frames.get(currentFrame).getVertex(shapeNo, index);
+	public Colour getColour(int currentFrame, boolean firing){
+		if(!firing){
+			return frames.get(currentFrame).getColour(shapeNo,currentIndex);
+		}else{
+			return fireFrames.get(currentFrame).getColour(shapeNo,currentIndex);
+		}
 	}
 	
-	public Colour getColour(){
-		
-		return frames.get(currentFrame).getColour(shapeNo,currentIndex);
-	}
 	
-	public static void main(String[] args) {
+	
+	/*public static void main(String[] args) {
 		
 		long time = System.currentTimeMillis();
 		try {
@@ -75,6 +115,6 @@ public class Model {
 			e.printStackTrace();
 		}
 		System.out.println(System.currentTimeMillis() - time);
-	}
+	}*/
 
 }

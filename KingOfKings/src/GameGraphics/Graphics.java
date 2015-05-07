@@ -30,7 +30,7 @@ public class Graphics{
 	    GLCapabilities capabilities = new GLCapabilities(profile);
 		GLJPanel canvas = new GLJPanel(capabilities);
 		
-		FPSAnimator animator = new FPSAnimator(canvas,30);
+		FPSAnimator animator = new FPSAnimator(canvas,10);
 		animator.start();
 		
 		GameScreen gs = new GameScreen();

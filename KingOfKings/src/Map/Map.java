@@ -20,6 +20,16 @@ public class Map {
 		return map[y][x];
 	}
 	
+	public int getWidth(){
+		
+		return map.length;
+	}
+	
+	public int getHeight(){
+		
+		return map[0].length;
+	}
+	
 	public void printMap(){
 		
 		for(int y = 0; y < map.length; y++){

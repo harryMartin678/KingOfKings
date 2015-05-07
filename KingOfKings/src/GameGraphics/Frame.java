@@ -20,7 +20,6 @@ public class Frame {
 		lastShape = 0;
 		
 		LoadMesh mesh = new LoadMesh(folder + "/"+ filename+".obj",folder + "/" + filename+".mtl");
-		mesh.createShapes();
 		shapes = mesh.getShapes();
 		materials = mesh.getMaterials();
 

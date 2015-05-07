@@ -1,5 +1,7 @@
 package GameGraphics;
 
+import java.nio.FloatBuffer;
+
 public class Colour {
 	
 	private float[] ambient;
@@ -80,6 +82,7 @@ public class Colour {
 			
 			index ++;
 		}
+		
 	}
 	
 	public float[] getAmbient(){

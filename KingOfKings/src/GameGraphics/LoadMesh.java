@@ -26,6 +26,7 @@ public class LoadMesh {
 		materials = new ArrayList<Colour>();
 		
 		getStoreColours();
+		createShapes();
 		
 	}
 	
@@ -52,6 +53,7 @@ public class LoadMesh {
 				materials.get(materials.size()-1).postLine(currentLine);
 			}
 		}
+
 
 	}
 	
@@ -81,8 +83,7 @@ public class LoadMesh {
 				shapes.get(shapes.size()-1).postLine(currentLine);
 			}
 		}
-		
-		//shapes.get(0).printFace();
+
 		
 	}
 	
@@ -99,7 +100,7 @@ public class LoadMesh {
 	public static void main(String[] args) {
 		
 		try {
-			new LoadMesh("Models/bodyLowPoly1.obj","Models/bodyLowPoly1.mtl").createShapes();
+			new LoadMesh("Models/slave1.obj","Models/slave1.mtl");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
