@@ -48,7 +48,8 @@ public class LoadMesh {
 				materials.add(new Colour());
 			//if it's a colour array 
 			}else if(currentLine.charAt(0) == 'K'
-						|| currentLine.charAt(0) == 'd'){
+						|| currentLine.charAt(0) == 'd'
+							|| currentLine.charAt(0) =='m'){
 				
 				materials.get(materials.size()-1).postLine(currentLine);
 			}

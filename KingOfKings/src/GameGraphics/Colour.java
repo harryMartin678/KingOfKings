@@ -8,6 +8,7 @@ public class Colour {
 	private float[] diffuse;
 	private float[] specular;
 	private float alpha; 
+	private String texturePath;
 	
 	public Colour(){
 		
@@ -37,6 +38,10 @@ public class Colour {
 		}else if(line.charAt(0) == 'd'){
 			
 			alpha = new Float(getNumber(line.substring(2,line.length()))).floatValue();
+		
+		}else if(line.charAt(0) == 'm'){
+			
+			texturePath = line.substring(7);
 		}
 	}
 	
@@ -98,6 +103,11 @@ public class Colour {
 	public float[] getSpecular(){
 		
 		return specular;
+	}
+	
+	public String getTexturePath(){
+		
+		return texturePath;
 	}
 
 	

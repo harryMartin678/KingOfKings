@@ -56,6 +56,12 @@ public class Frame {
 		return materials.get(shapes.get(shapeNo).getColour(index));
 	}
 	
+	public ArrayList<Colour> getMaterials(){
+		
+		return materials;
+	}
+	
+	
 	
 
 }

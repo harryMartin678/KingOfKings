@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class Model {
 	
-	private ArrayList<Frame> frames;
+	protected ArrayList<Frame> frames;
 	private ArrayList<Frame> fireFrames;
 	private int shapeNo;
 	private int currentIndex;
@@ -31,16 +31,24 @@ public class Model {
 		}
 	}
 	
+	//for debugging 
+	public void restPopFace(){
+		
+		shapeNo = 0;
+		currentIndex = 0;
+	}
+	
 	
 	public Face popFace(int currentFrame, boolean firing){
 		
 		if(!firing){
+			
 			//if the last face was the last face in the shape 
 			if(frames.get(currentFrame).getShapeFaceSize(shapeNo) == currentIndex+1){
 				
 				shapeNo++;
 				currentIndex = 0;
-				
+
 			}else{
 				
 				currentIndex ++;
@@ -49,7 +57,7 @@ public class Model {
 			if(frames.get(currentFrame).getNoOfShapes() == shapeNo){
 				
 				shapeNo = 0;
-				currentIndex = 0;
+				currentIndex = -1; //allows first shape to be drawn 
 				
 				return null;
 			}
@@ -71,7 +79,7 @@ public class Model {
 			if(fireFrames.get(currentFrame).getNoOfShapes() == shapeNo){
 				
 				shapeNo = 0;
-				currentIndex = 0;
+				currentIndex = -1;
 				
 				return null;
 			}
