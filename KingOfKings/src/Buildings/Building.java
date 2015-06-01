@@ -5,6 +5,9 @@ public class Building {
 	private int x;
 	private int y;
 	private int hitpoints;
+	private int player;
+	private int map;
+	
 	
 	public Building(){
 		
@@ -31,6 +34,26 @@ public class Building {
 		return hitpoints;
 	}
 	
+	public int getMap(){
+		
+		return map;
+	}
+	
+	public void setMap(int map){
+		
+		this.map = map;
+	}
+	
+	public int getPlayer(){
+		
+		return player;
+	}
+	
+	public void setPlayer(int player){
+		
+		this.player = player;
+	}
+	
 	public void removeHitpoints(int amount){
 		
 		hitpoints -= amount;
@@ -41,5 +64,7 @@ public class Building {
 		this.x = x;
 		this.y = y;
 	}
+	
+	
 
 }

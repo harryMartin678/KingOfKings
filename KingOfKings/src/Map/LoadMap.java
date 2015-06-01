@@ -11,9 +11,9 @@ public class LoadMap {
 	
 	private Map map;
 	
-	public LoadMap(){
+	public LoadMap(String map){
 		
-		File file = new File("Maps/map1.txt");
+		File file = new File("Maps/"+map+".map");
 
 		ArrayList<String> info = null;
 		try {

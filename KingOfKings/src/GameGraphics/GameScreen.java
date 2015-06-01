@@ -41,6 +41,13 @@ public class GameScreen implements GLEventListener {
 	private BuildingModel ballisticTower;
 	private BuildingModel barrack;
 	private BuildingModel castle;
+	private BuildingModel dock;
+	private BuildingModel farm;
+	private BuildingModel fort;
+	private BuildingModel royalPalace;
+	private BuildingModel stable;
+	private BuildingModel stockpile;
+	private BuildingModel wall;
 	private GLU glu;
 	private ArrayList<Unit> units;
 	private ArrayList<Building> buildings;
@@ -63,11 +70,18 @@ public class GameScreen implements GLEventListener {
 		archeryTower = null;
 		ballisticTower = null;
 		barrack = null;
+		dock = null;
+		farm = null;
+		fort = null;
+		royalPalace = null;
+		stable = null;
+		stockpile = null;
+		wall = null;
 		
 		units = new ArrayList<Unit>();
 		buildings = new ArrayList<Building>();
 		
-		map = new LoadMap().getMap();
+		map = new LoadMap("map1").getMap();
 		
 		try {
 			servant = new Model("servant","Models",3);
@@ -82,10 +96,29 @@ public class GameScreen implements GLEventListener {
 			heavyChariot = new Model("heavychariot","Models",3);
 			archer = new Model("archer","Models",3);
 			heavyarcher = new Model("heavyarcher","Models",3);
+			
 			archeryTower = new BuildingModel("archerytower","Models",1);
+			archeryTower.setProp(45.0f, 0.25f);
 			ballisticTower = new BuildingModel("ballisticTower","Models",1);
+			ballisticTower.setProp(45.0f, 0.1f);
 			barrack = new BuildingModel("barrack","Models",1);
+			barrack.setProp(45.0f, 0.1f);
 			castle = new BuildingModel("castle","Models",1);
+			castle.setProp(45.0f, 0.1f);
+			dock = new BuildingModel("dock","Models",1);
+			dock.setProp(45.0f, 0.1f);
+			farm = new BuildingModel("farm","Models",1);
+			farm.setProp(45.0f, 0.1f);
+			fort = new BuildingModel("fort","Models",1);
+			fort.setProp(45.0f, 0.1f);
+			royalPalace = new BuildingModel("royalPalace","Models",1);
+			royalPalace.setProp(45.0f, 0.1f);
+			stable = new BuildingModel("stable","Models",1);
+			stable.setProp(45.0f, 0.1f);
+			stockpile = new BuildingModel("stockpile","Models",1);
+			stockpile.setProp(45.0f, 0.1f);
+			wall = new BuildingModel("wall","Models",1);
+			wall.setProp(45.0f, 0.1f);
 			
 			
 		} catch (IOException e) {
@@ -223,7 +256,7 @@ public class GameScreen implements GLEventListener {
 	    		0.0f, 10.0f, 0.0f, 
 	    		0.0f, 0.0f, 0.0f);
 	    
-	  //  draw.glDisable(draw.GL_LIGHTING);
+	    //draw.glDisable(draw.GL_LIGHTING);
 	    for(int i = 0; i < units.size(); i++){
 	    	
 	    	if(units.get(i).getUnitType().equals("slave")){
@@ -277,8 +310,8 @@ public class GameScreen implements GLEventListener {
 			
 	    }	
 	    
-	    draw.glEnable(draw.GL_LIGHTING);
-	    drawBuildingModel(castle,draw,0,10,new Building(0,100,"barrack"));
+	    //draw.glEnable(draw.GL_LIGHTING);
+	    drawBuildingModel(archeryTower,draw,0,10,new Building(0,100,"barrack"));
 
 
 	    drawable.swapBuffers();
@@ -329,8 +362,8 @@ public class GameScreen implements GLEventListener {
 		draw.glLoadIdentity();
 
 		draw.glTranslatef(x, y, -35); //-35
-		draw.glScalef(0.1f, 0.1f, 0.1f);
-		draw.glRotatef(45, 1, 0, 0);
+		draw.glScalef(model.getSize(), model.getSize(), model.getSize());
+		draw.glRotatef(model.getAngle(), 1, 0, 0);
 
 		while((next = model.popFace(0,false)) != null){
 			

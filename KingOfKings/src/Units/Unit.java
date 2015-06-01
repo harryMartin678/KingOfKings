@@ -4,7 +4,9 @@ public class Unit {
 	
 	private int x;
 	private int y;
+	private int map;
 	private int health;
+	private int player;
 	
 	public Unit(){
 		
@@ -39,6 +41,16 @@ public class Unit {
 	public int getY(){
 		
 		return y;
+	}
+	
+	public int getMap(){
+		
+		return map;
+	}
+	
+	public void setMap(int map){
+		
+		this.map = map;
 	}
 	
 	public void setPos(int x, int y){
@@ -80,6 +92,16 @@ public class Unit {
 	public int getHealth(){
 		
 		return health;
+	}
+	
+	public int getPlayer(){
+		
+		return player;
+	}
+	
+	public void setPlayer(int player){
+		
+		this.player = player;
 	}
 	
 	public void removeHealth(int hit){

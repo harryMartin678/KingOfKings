@@ -3,10 +3,21 @@ package Map;
 public class Map {
 	
 	private int[][] map;
+	private int player;
 	
 	public Map(int x, int y){
 		
 		map = new int[y][x];
+	}
+	
+	public void setPlayer(int player){
+		
+		this.player = player;
+	}
+	
+	public int getPlayer(){
+		
+		return player;
 	}
 	
 	
@@ -42,7 +53,7 @@ public class Map {
 		}
 	}
 	
-	public Feature getFeature(int x, int y){
+	/*public Feature getFeature(int x, int y){
 		
 		int currentRow = y;
 		int currentColumn = x;
@@ -60,7 +71,7 @@ public class Map {
 	
 		return new Feature((currentColumn-x),(currentRow-y),type);
 	
-	}
+	}*/
 	
 
 }
