@@ -33,8 +33,8 @@ public class GameScreen implements GLEventListener {
 	private Model fishingBoat;
 	private Model warship;
 	private Model flagship;
-	private Model lightChariot;
-	private Model heavyChariot;
+	private ChariotModel lightChariot;
+	private ChariotModel heavyChariot;
 	private Model archer;
 	private Model heavyarcher;
 	private BuildingModel archeryTower;
@@ -84,18 +84,18 @@ public class GameScreen implements GLEventListener {
 		map = new LoadMap("map1").getMap();
 		
 		try {
-			servant = new Model("servant","Models",3);
-			slave = new Model("slave","Models",3);
-			axeman = new Model("axeman","Models",3);
-			swordsman = new Model("swordsman","Models",3);
-			spearman = new Model("spearman","Models",3);
-			fishingBoat = new Model("fishingboat","Models",1);
-			warship = new Model("warship","Models",1);
-			flagship = new Model("flagship","Models",1);
-			lightChariot = new Model("lightchariot","Models",3);
-			heavyChariot = new Model("heavychariot","Models",3);
-			archer = new Model("archer","Models",3);
-			heavyarcher = new Model("heavyarcher","Models",3);
+			servant = new Model("servant","Models",3,false);
+			slave = new Model("slave","Models",3,false);
+			axeman = new Model("axeman","Models",3,false);
+			swordsman = new Model("swordsman","Models",3,false);
+			spearman = new Model("spearman","Models",3,false);
+			fishingBoat = new Model("fishingboat","Models",1,true);
+			warship = new Model("warship","Models",1,true);
+			flagship = new Model("flagship","Models",1,true);
+			lightChariot = new ChariotModel("lightchariot","Models",3);
+			heavyChariot = new ChariotModel("heavychariot","Models",3);
+			archer = new Model("archer","Models",3,false);
+			heavyarcher = new Model("heavyarcher","Models",3,false);
 			
 			archeryTower = new BuildingModel("archerytower","Models",1);
 			archeryTower.setProp(45.0f, 0.25f);
@@ -159,13 +159,13 @@ public class GameScreen implements GLEventListener {
 					//units.get(units.size()-1).setFiring();
 				}else if(map.getTile(x,y) == 6){
 					
-					units.add(new Unit(x-(map.getWidth()/2),y-(map.getHeight()/2),"lightchariot"));
-					units.get(units.size()-1).moving();
-					//units.get(units.size()-1).setFiring();
+					units.add(new ChariotUnit(x-(map.getWidth()/2),y-(map.getHeight()/2),"lightchariot"));
+					//units.get(units.size()-1).moving();
+					units.get(units.size()-1).setFiring();
 				}else if(map.getTile(x,y) == 7){
 					
-					units.add(new Unit(x-(map.getWidth()/2),y-(map.getHeight()/2),"heavychariot"));
-					units.get(units.size()-1).moving();
+					units.add(new ChariotUnit(x-(map.getWidth()/2),y-(map.getHeight()/2),"heavychariot"));
+					((ChariotUnit) units.get(units.size()-1)).fireRight();
 					//units.get(units.size()-1).setFiring();
 				}else if(map.getTile(x,y) == 8){
 					
@@ -176,7 +176,7 @@ public class GameScreen implements GLEventListener {
 					
 					units.add(new Unit(x-(map.getWidth()/2),y-(map.getHeight()/2),"heavyarcher"));
 					//units.get(units.size()-1).moving();
-					units.get(units.size()-1).setFiring();
+					units.get(units.size()-1).die();
 				}else if(map.getTile(x,y) == 10){
 					
 					units.add(new Unit(x-(map.getWidth()/2),y-(map.getHeight()/2),"fishingboat"));
@@ -329,21 +329,21 @@ public class GameScreen implements GLEventListener {
 		draw.glRotatef(45, 1, 0, 0);
 		
 		int currentFrame = unit.getCurrentFrame();
-		boolean firing = unit.getFiring();
+		int state = unit.getState();
 
-		while((next = model.popFace(currentFrame,firing)) != null){
+		while((next = model.popFace(currentFrame,state)) != null){
 			
-			Colour colour = model.getColour(currentFrame,firing);
+			Colour colour = model.getColour(currentFrame,state);
 			draw.glColor3fv(FloatBuffer.wrap(colour.getDiffuse()));
 
 			draw.glBegin(draw.GL_POLYGON);
 
-				float[] normal = getNormal(next,model, currentFrame,firing);
+				float[] normal = getNormal(next,model, currentFrame,state);
 				draw.glNormal3f(normal[0],normal[1],normal[2]);
 				
 				for(int i = 0; i < next.getSize(); i++){
 					
-					Vertex vertex = model.getVertex(next.getFace(i)-1,currentFrame,firing);
+					Vertex vertex = model.getVertex(next.getFace(i)-1,currentFrame,state);
 					draw.glVertex3f(vertex.getX(),vertex.getY(),vertex.getZ());
 				}
 				
@@ -365,19 +365,19 @@ public class GameScreen implements GLEventListener {
 		draw.glScalef(model.getSize(), model.getSize(), model.getSize());
 		draw.glRotatef(model.getAngle(), 1, 0, 0);
 
-		while((next = model.popFace(0,false)) != null){
+		while((next = model.popFace(0,0)) != null){
 			
-			Colour colour = model.getColour(0,false);
+			Colour colour = model.getColour(0,0);
 			draw.glColor3fv(FloatBuffer.wrap(colour.getDiffuse()));
 
 			draw.glBegin(draw.GL_POLYGON);
 
-			float[] normal = getNormal(next,model, 0,false);
+			float[] normal = getNormal(next,model, 0,0);
 			draw.glNormal3f(normal[0],normal[1],normal[2]);
 			
 				for(int i = 0; i < next.getSize(); i++){
 					
-					Vertex vertex = model.getVertex(next.getFace(i)-1,0,false);
+					Vertex vertex = model.getVertex(next.getFace(i)-1,0,0);
 					draw.glVertex3f(vertex.getX(),vertex.getY(),vertex.getZ());
 				}
 				
@@ -391,15 +391,15 @@ public class GameScreen implements GLEventListener {
 
 	
 
-	private float[] getNormal(Face next, Model model, int currentFrame,boolean firing){
+	private float[] getNormal(Face next, Model model, int currentFrame,int state){
 		
 		float[] normal = new float[]{0.0f,0.0f,0.0f};
 		
-		Vertex lastVertex = model.getVertex(next.getFace(0)-1, currentFrame,firing);
+		Vertex lastVertex = model.getVertex(next.getFace(0)-1, currentFrame,state);
 		
 		for(int i = 0; i < next.getSize()-1; i++){
 			
-			Vertex vertex = model.getVertex(next.getFace(i+1)-1, currentFrame,firing);
+			Vertex vertex = model.getVertex(next.getFace(i+1)-1, currentFrame,state);
 			normal[0] += (lastVertex.getY() - vertex.getY()) * (lastVertex.getZ() + vertex.getZ());
 			normal[1] += (lastVertex.getZ() - vertex.getZ()) * (lastVertex.getX() + vertex.getX());
 			normal[2] += (lastVertex.getX() - vertex.getX()) * (lastVertex.getY() + vertex.getY());
@@ -407,7 +407,7 @@ public class GameScreen implements GLEventListener {
 			
 		}
 		
-		Vertex vertex = model.getVertex(next.getFace(0)-1, currentFrame,firing);
+		Vertex vertex = model.getVertex(next.getFace(0)-1, currentFrame,state);
 		normal[0] += (lastVertex.getY() - vertex.getY()) * (lastVertex.getZ() + vertex.getZ());
 		normal[1] += (lastVertex.getZ() - vertex.getZ()) * (lastVertex.getX() + vertex.getX());
 		normal[2] += (lastVertex.getX() - vertex.getX()) * (lastVertex.getY() + vertex.getY());

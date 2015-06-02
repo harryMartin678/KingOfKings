@@ -8,7 +8,7 @@ public class Unit {
 	private boolean moving;
 	private int currentFrame;
 	private boolean forward;
-	private boolean firing;
+	protected int state;
 	
 	public Unit(float x, float y,String unitType){
 		
@@ -16,23 +16,28 @@ public class Unit {
 		this.y = y;
 		currentFrame = 0;
 		forward = true;
-		firing = false;
+		state = 0;
 		this.unitType = unitType;
 	}
 	
 	public void setFiring(){
 		
-		firing = true;
+		state = 1;
 	}
 	
 	public void stopFiring(){
 		
-		firing = false;
+		state = 0;
 	}
 	
-	public boolean getFiring(){
+	public void die(){
 		
-		return firing;
+		state = 2;
+	}
+	
+	public int getState(){
+		
+		return state;
 	}
 	
 	public void moving(){
@@ -47,7 +52,7 @@ public class Unit {
 	
 	public void changeCurrentFrame(){
 		
-		if(moving || firing){
+		if(moving || state > 0){
 			
 			if(currentFrame == 2){
 				

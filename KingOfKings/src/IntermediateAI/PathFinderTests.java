@@ -20,15 +20,28 @@ public class PathFinderTests {
 		test7();
 	}
 	
+	private int[][] convert(int[][] map){
+		
+		for(int x = 0; x < map.length; x++){
+			for(int y = 0; y < map[x].length; y++){
+				
+				map[x][y] -= '.';
+			}
+		}
+		
+		return map;
+	}
+	
 	@Test
 	public void test1(){
 		
-		char[][] map = new char[][]{{'.','.','.','.','.','.'},
+		int[][] map = new int[][]{{'.','.','.','.','.','.'},
 				{'.','.','.','.','.','.'},
 				{'.','.','.','.','.','.'},
 				{'.','.','.','.','.','.'},
 				{'.','.','.','.','.','.'},
 				{'.','.','.','.','.','.'}};
+		map = convert(map);
 		Pathfinder pf = new Pathfinder(map);
 		ArrayList<int[]> path = pf.getPath(1,5, 1, 0);
 		
@@ -39,15 +52,19 @@ public class PathFinderTests {
 	@Test
 	public void test2(){
 		
-		char[][] map = new char[][]{{'.','.','.','.','.','.'},
+		int[][] map = new int[][]{{'.','.','.','.','.','.'},
 				{'.','.','.','.','.','.'},
 				{'.','.','.','.','.','.'},
 				{'.','.','.','.','.','.'},
 				{'.','.','.','.','.','.'},
 				{'.','.','.','.','.','.'}};
+		map = convert(map);
 		Pathfinder pf = new Pathfinder(map);
 		ArrayList<int[]> path = pf.getPath(0,0, 5, 5);
-		
+		//for(int i = 0; i < path.size(); i++){
+			
+			//System.out.println((path.get(i)[0]) + (path.get(i)[1]));
+		//}
 		assert(pf.foundRoute());
 		assert(path.size() == 6);
 	}
@@ -55,12 +72,13 @@ public class PathFinderTests {
 	@Test
 	public void test3(){
 		
-		char[][] map = new char[][]{{'.','.','.','.','.','.'},
+		int[][] map = new int[][]{{'.','.','.','.','.','.'},
 				{'.','.','.','.','.','.'},
 				{'.','.','.','.','.','.'},
 				{'.','.','.','.','.','.'},
 				{'.','.','.','.','.','.'},
 				{'.','.','.','.','.','.'}};
+		map = convert(map);
 		Pathfinder pf = new Pathfinder(map);
 		ArrayList<int[]> path = pf.getPath(5,5, 0, 0);
 		
@@ -71,12 +89,13 @@ public class PathFinderTests {
 	@Test
 	public void test4(){
 		
-			char[][] map = new char[][]{{'.','.','.','.','.','.'},
+		int[][] map = new int[][]{{'.','.','.','.','.','.'},
 					{'.','.','.','.','#','#'},
 					{'.','.','.','.','#','.'},
 					{'.','.','#','.','.','.'},
 					{'.','.','#','.','#','#'},
 					{'.','.','#','.','.','.'}};
+		map = convert(map);
 		
 		Pathfinder pf = new Pathfinder(map);
 		ArrayList<int[]> path = pf.getPath(5,5, 5, 0);
@@ -88,12 +107,13 @@ public class PathFinderTests {
 	@Test
 	public void test5(){
 		
-		char[][] map = new char[][]{{'.','.','.','.','.','.'},
+		int[][] map = new int[][]{{'.','.','.','.','.','.'},
 				{'.','.','.','.','#','#'},
 				{'.','.','.','.','#','.'},
 				{'.','.','.','.','#','.'},
 				{'.','.','.','.','#','.'},
 				{'.','.','.','.','.','.'}};
+		map = convert(map);
 		Pathfinder pf = new Pathfinder(map);
 		ArrayList<int[]> path = pf.getPath(5,5, 5, 0);
 		
@@ -104,12 +124,14 @@ public class PathFinderTests {
 	@Test
 	public void test6(){
 		
-		char[][] map = new char[][]{{'.','.','.','.','#','#'},
+		int[][] map = new int[][]{{'.','.','.','.','#','#'},
 				{'.','.','.','#','#','.'},
 				{'.','.','#','#','.','.'},
 				{'.','#','#','.','.','.'},
 				{'.','#','.','#','#','.'},
 				{'.','.','.','#','.','.'}};
+		map = convert(map);
+		
 		Pathfinder pf = new Pathfinder(map);
 		ArrayList<int[]> path = pf.getPath(0,0, 5, 5);
 		
@@ -120,7 +142,7 @@ public class PathFinderTests {
 	@Test
 	public void test7(){
 		
-		char[][] map = new char[200][200];
+		int[][] map = new int[200][200];
 		
 		for(int i = 0; i < map.length; i++){
 			for(int j = 0; j < map[0].length; j++){
@@ -129,6 +151,7 @@ public class PathFinderTests {
 			}
 			
 		}
+		map = convert(map);
 		Pathfinder pf = new Pathfinder(map);
 		ArrayList<int[]> path = pf.getPath(0,0, 199, 199);
 		

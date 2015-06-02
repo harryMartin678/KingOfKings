@@ -31,6 +31,11 @@ public class Map {
 		return map[y][x];
 	}
 	
+	public int[][] toArray(){
+		
+		return map;
+	}
+	
 	public int getWidth(){
 		
 		return map.length;

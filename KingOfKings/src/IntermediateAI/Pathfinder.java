@@ -7,13 +7,13 @@ public class Pathfinder {
 	private ArrayList<Node> closedList;
 	private ArrayList<Node> openList;
 	private ArrayList<Node> path;
-	private char[][] map;
+	private int[][] map;
 	private int targetX;
 	private int targetY;
 	private boolean foundRoute;
 	
 	
-	public Pathfinder(char[][] map){
+	public Pathfinder(int[][] map){
 		
 		closedList = new ArrayList<Node>();
 		openList = new ArrayList<Node>();
@@ -106,7 +106,7 @@ public class Pathfinder {
 				
 				Node node = new Node(i,j);
 				
-				if(map[j][i] != '.'){
+				if(map[j][i] != 0){
 					
 					System.out.print(map[j][i]);
 					
@@ -171,7 +171,7 @@ public class Pathfinder {
 	/*
 	 * gets a path from (startX,startY) to (targetX,targetY)
 	 */
-	ArrayList<int[]> getPath(int startX, int startY, int targetX, int targetY){
+	public ArrayList<int[]> getPath(int startX, int startY, int targetX, int targetY){
 		
 		Node start = new Node(startX, startY);
 		start.calculateH(targetX, targetY);
@@ -181,9 +181,6 @@ public class Pathfinder {
 		
 		this.targetX = targetX;
 		this.targetY = targetY;
-		
-		System.out.println(startX + " " + startY + " start");
-		System.out.println(targetX + " " + targetY + " target");
 		
 		//add the start node
 		openList.add(start);

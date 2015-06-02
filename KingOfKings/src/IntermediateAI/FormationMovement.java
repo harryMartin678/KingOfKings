@@ -6,9 +6,9 @@ public class FormationMovement {
 	
 	
 	private Pathfinder pf;
-	private char[][] map;
+	private int[][] map;
 	
-	public FormationMovement(char[][] map){
+	public FormationMovement(int[][] map){
 		
 		pf = new Pathfinder(map);
 		this.map = map;
@@ -137,7 +137,7 @@ public class FormationMovement {
 	
 	public static void main(String[] args) {
 		
-		char[][] map = new char[][]{{'.','.','.','.','.','.'},
+		int[][] map = new int[][]{{'.','.','.','.','.','.'},
 									{'.','.','.','.','.','.'},
 									{'.','.','.','#','#','.'},
 									{'.','.','.','.','.','.'},

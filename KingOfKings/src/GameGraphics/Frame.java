@@ -8,17 +8,16 @@ public class Frame {
 	
 	private ArrayList<Shape> shapes;
 	private ArrayList<Colour> materials;
-	private int currentColour;
-	private int lastShape;
 	
 	
 	public Frame(String filename,String folder) throws IOException{
 		
+		//holds shapes in the model
 		shapes = new ArrayList<Shape>();
+		//holds the materials in the model
 		materials = new ArrayList<Colour>();
-		currentColour = 0;
-		lastShape = 0;
 		
+		//loads frame
 		LoadMesh mesh = new LoadMesh(folder + "/"+ filename+".obj",folder + "/" + filename+".mtl");
 		shapes = mesh.getShapes();
 		materials = mesh.getMaterials();

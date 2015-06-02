@@ -3,31 +3,42 @@ package GameGraphics;
 import java.io.IOException;
 import java.util.ArrayList;
 
+//holds a model and all of it's animation frames 
 public class Model {
 	
 	protected ArrayList<Frame> frames;
-	private ArrayList<Frame> fireFrames;
-	private int shapeNo;
-	private int currentIndex;
+	protected ArrayList<Frame> fireFrames;
+	protected ArrayList<Frame> deathFrames;
+	protected int shapeNo;
+	protected int currentIndex;
 	private boolean moving;
 	
-	public Model(String filename, String folder, int noOfFrames) throws IOException{
+	public Model(String filename, String folder, int noOfFrames, boolean building) throws IOException{
 		
 		frames = new ArrayList<Frame>();
 		fireFrames = new ArrayList<Frame>();
+		deathFrames = new ArrayList<Frame>();
 		shapeNo = 0;
 		currentIndex = -1;
 		moving = false;
 		
-		//load all of the model's frames 
+		//load all of the model's moving frames 
 		for(int i = 1; i <= noOfFrames; i++){
 			
 			frames.add(new Frame(filename+new Integer(i).toString(),folder));
 		}
 		
-		for(int f = 1; f <= noOfFrames; f++){
-			
-			fireFrames.add(new Frame(filename+new Integer(f).toString()+"f",folder));
+		if(!building){
+			//load all of the model's firing frames 
+			for(int f = 1; f <= noOfFrames; f++){
+				
+				fireFrames.add(new Frame(filename+new Integer(f).toString()+"f",folder));
+			}
+			//load all of the death frames 
+			for(int f = 1; f <= noOfFrames; f++){
+				
+				deathFrames.add(new Frame(filename+new Integer(f).toString()+"d",folder));
+			}
 		}
 	}
 	
@@ -38,70 +49,66 @@ public class Model {
 		currentIndex = 0;
 	}
 	
-	
-	public Face popFace(int currentFrame, boolean firing){
+	public Face popFaceBody(int currentFrame,ArrayList<Frame> frameList){
 		
-		if(!firing){
+		//if the last face was the last face in the shape 
+		if(frameList.get(currentFrame).getShapeFaceSize(shapeNo) == currentIndex+1){
 			
-			//if the last face was the last face in the shape 
-			if(frames.get(currentFrame).getShapeFaceSize(shapeNo) == currentIndex+1){
-				
-				shapeNo++;
-				currentIndex = 0;
+			shapeNo++;
+			currentIndex = 0;
 
-			}else{
-				
-				currentIndex ++;
-			}
-			//if this is the last shape then return null 
-			if(frames.get(currentFrame).getNoOfShapes() == shapeNo){
-				
-				shapeNo = 0;
-				currentIndex = -1; //allows first shape to be drawn 
-				
-				return null;
-			}
-	
-			return frames.get(currentFrame).getFace(shapeNo, currentIndex);
 		}else{
 			
-			//if the last face was the last face in the shape 
-			if(fireFrames.get(currentFrame).getShapeFaceSize(shapeNo) == currentIndex+1){
-				
-				shapeNo++;
-				currentIndex = 0;
-				
-			}else{
-				
-				currentIndex ++;
-			}
-			//if this is the last shape then return null 
-			if(fireFrames.get(currentFrame).getNoOfShapes() == shapeNo){
-				
-				shapeNo = 0;
-				currentIndex = -1;
-				
-				return null;
-			}
-	
-			return fireFrames.get(currentFrame).getFace(shapeNo, currentIndex);
+			currentIndex ++;
 		}
-	}
-	
-	public Vertex getVertex(int index,int currentFrame,boolean firing){
+		//if this is the last shape then return null 
+		if(frameList.get(currentFrame).getNoOfShapes() == shapeNo){
+			
+			shapeNo = 0;
+			currentIndex = -1; //allows first shape to be drawn 
+			
+			return null;
+		}
+
+		return frameList.get(currentFrame).getFace(shapeNo, currentIndex);
 		
-		if(!firing){
-			return frames.get(currentFrame).getVertex(shapeNo, index);
+	}
+	
+	//pop's a face in a frame 
+	public Face popFace(int currentFrame, int state){
+		
+		if(state == 0){
+			
+			return popFaceBody(currentFrame,frames);
+		
+		}else if(state == 1){
+			
+			return popFaceBody(currentFrame,fireFrames);
+		
 		}else{
-			return fireFrames.get(currentFrame).getVertex(shapeNo, index);
+			
+			return popFaceBody(currentFrame,deathFrames);
 		}
 	}
 	
-	public Colour getColour(int currentFrame, boolean firing){
-		if(!firing){
-			return frames.get(currentFrame).getColour(shapeNo,currentIndex);
+	public Vertex getVertex(int index,int currentFrame,int state){
+		
+		if(state == 0){
+			return frames.get(currentFrame).getVertex(shapeNo, index);
+		}else if(state == 1){
+			return fireFrames.get(currentFrame).getVertex(shapeNo, index);
 		}else{
+			return deathFrames.get(currentFrame).getVertex(shapeNo, index);
+		}
+	}
+	
+	public Colour getColour(int currentFrame, int state){
+		if(state == 0){
+			return frames.get(currentFrame).getColour(shapeNo,currentIndex);
+		}else if(state == 1){
 			return fireFrames.get(currentFrame).getColour(shapeNo,currentIndex);
+		}else{
+			return deathFrames.get(currentFrame).getColour(shapeNo,currentIndex);
 		}
 	}
 	

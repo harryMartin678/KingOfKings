@@ -29,5 +29,31 @@ public class UnitList {
 		
 		}
 	}
+	
+	public void addPathToUnit(int unitNo,ArrayList<int[]> path){
+		
+		units.get(unitNo).moving();
+		units.get(unitNo).setPath(path);
+	}
+	
+	public int getUnitMap(int unitNo){
+		
+		return units.get(unitNo).getMap();
+	}
+	
+	public int getUnitX(int unitNo){
+		
+		return units.get(unitNo).getX();
+	}
+	
+	public int getUnitY(int unitNo){
+		
+		return units.get(unitNo).getY();
+	}
+	
+	///public int[] getNextNode(int unitNo){
+		
+		
+	//}
 
 }

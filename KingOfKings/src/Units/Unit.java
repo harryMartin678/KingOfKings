@@ -1,5 +1,7 @@
 package Units;
 
+import java.util.ArrayList;
+
 public class Unit {
 	
 	private int x;
@@ -7,10 +9,13 @@ public class Unit {
 	private int map;
 	private int health;
 	private int player;
+	private ArrayList<int[]> path;
+	private boolean move;
 	
 	public Unit(){
 		
 		health = this.getMaxHealth();
+		move = false;
 	}
 	
 	public int turnsPerAHit(){
@@ -111,6 +116,22 @@ public class Unit {
 		}else{
 			health = 0;
 		}
+	}
+	
+	public void setPath(ArrayList<int[]> path){
+		
+		this.path = path;
+	}
+	
+	public void moving(){
+		
+		move = true;
+	}
+	
+	public void stop(){
+		
+		move = false;
+	
 	}
 
 }

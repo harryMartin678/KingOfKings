@@ -19,6 +19,6 @@ public interface Commands {
 	public void requestedBuildingInformation(int buildingNo);
 	public void getMapInformation(int mapNo);
 	
-	public void updateFramePos(int playerNo, int frameX, int frameY);
+	public void updateGraphicalFramePos(int playerNo, int frameX, int frameY);
 
 }

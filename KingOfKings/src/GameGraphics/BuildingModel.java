@@ -10,7 +10,7 @@ public class BuildingModel extends Model{
 
 	public BuildingModel(String filename, String folder, int noOfFrames)
 			throws IOException {
-		super(filename, folder, noOfFrames);
+		super(filename, folder, noOfFrames,true);
 		// TODO Auto-generated constructor stub
 	}
 	

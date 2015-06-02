@@ -51,6 +51,11 @@ public class MapList {
 		}
 	}
 	
+	public Map getMap(int mapNo){
+		
+		return maps.get(mapNo);
+	}
+	
 	public int getTile(int mapNo, int x, int y){
 		
 		return maps.get(mapNo).getTile(x, y);
