@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import Buildings.BuildingList;
 import IntermediateAI.Pathfinder;
+import Map.CollisionMap;
 import Map.Map;
 import Map.MapList;
 import Player.Diplomacy;
@@ -40,6 +41,52 @@ public class GameEngine implements Commands {
 			units.addUnit(0, i, (maps.getMapWidth(i)/2)+5, (maps.getMapHeight(i)/2)+5, maps.getPlayer(i));
 		}
 		
+		this.moveUnit(0, 15, 18);
+		
+		new CollisionMap(buildings,units,maps.getMap(0));
+		
+		Thread onFrame = new Thread(new Runnable(){
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				
+				while(true){
+					
+					doOnFrame();
+					
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+			
+			
+		});
+		
+		onFrame.start();
+		
+	}
+	
+	public void doOnFrame(){
+		
+		//move units
+		units.moveUnits();
+		
+		
+		
+		//progress unit fights
+		
+		//progress unit to tower fights
+		
+		//increment building unit queues progress
+		
+		//add resources from farms and mines 
+		
+		//increment building build progress 
 	}
 	
 	public static void main(String[] args) {
@@ -51,8 +98,9 @@ public class GameEngine implements Commands {
 	public void moveUnit(int unitNo, int targetX, int targetY) {
 		// TODO Auto-generated method stub
 		units.addPathToUnit(unitNo, 
-				new Pathfinder(maps.getMap(units.getUnitMap(unitNo)).toArray()).getPath(
-						units.getUnitX(unitNo),units.getUnitY(unitNo),targetX,targetY));
+				new Pathfinder(new CollisionMap(buildings,units,
+						maps.getMap(units.getUnitMap(unitNo))).getCollisionMap()).getPath(
+						(int) units.getUnitX(unitNo),(int) units.getUnitY(unitNo),targetX,targetY));
 	}
 
 	@Override
@@ -127,4 +175,28 @@ public class GameEngine implements Commands {
 		
 	}
 
+	@Override
+	public void destroyBuilding(int buildingNo) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void newViewMap(int mapNo) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void saveGame() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addMessageToChat(String message) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 }

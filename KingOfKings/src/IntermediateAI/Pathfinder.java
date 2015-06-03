@@ -202,7 +202,7 @@ public class Pathfinder {
 			node = getSmallestNode();
 			//adds the new current node to the closedList
 			closedList.add(node);
-			
+				
 			//if there is not route 
 			if(node == null){
 				
@@ -217,6 +217,7 @@ public class Pathfinder {
 				break;
 				
 			} 
+
 			
 		}
 		
@@ -251,7 +252,7 @@ public class Pathfinder {
 			//walkable
 			if(currentNode.getY() >= map.length || currentNode.getX() >= map[0].length || 
 					currentNode.getX() < 0 ||currentNode.getY() < 0 
-					|| map[currentNode.getY()][currentNode.getX()] != '.'){
+					|| map[currentNode.getY()][currentNode.getX()] != 0){
 				
 				closedList.add(currentNode);
 				continue;

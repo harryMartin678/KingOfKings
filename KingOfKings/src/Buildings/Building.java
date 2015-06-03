@@ -59,6 +59,21 @@ public class Building {
 		hitpoints -= amount;
 	}
 	
+	public int getSizeX(){
+		
+		return 0;
+	}
+	
+	public int getSizeY(){
+		
+		return 0;
+	}
+	
+	public boolean inBuilding(int cx, int cy){
+		
+		return (Math.abs(x-cx) <= this.getSizeX()/2 && Math.abs(y-cy) <= this.getSizeY()/2);
+	}
+	
 	public void setPos(int x, int y){
 		
 		this.x = x;

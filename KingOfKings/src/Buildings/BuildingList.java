@@ -12,6 +12,16 @@ public class BuildingList {
 		
 	}
 	
+	public int getBuildingsSize(){
+		
+		return buildings.size();
+	}
+	
+	public boolean inBuilding(int x, int y, int buildingNo){
+		
+		return buildings.get(buildingNo).inBuilding(x, y);
+	}
+	
 	public void addBuilding(int player, int map, int x, int y, int type){
 		
 		if(type == 0){
