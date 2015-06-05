@@ -18,6 +18,7 @@ public class Unit {
 		forward = true;
 		state = 0;
 		this.unitType = unitType;
+
 	}
 	
 	public void setFiring(){
@@ -43,6 +44,11 @@ public class Unit {
 	public void moving(){
 		
 		moving = true;
+	}
+	
+	public boolean getMove(){
+		
+		return moving;
 	}
 	
 	public void stopMoving(){

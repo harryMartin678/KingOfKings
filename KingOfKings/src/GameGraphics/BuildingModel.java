@@ -4,9 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class BuildingModel extends Model{
-	
-	private float angle;
-	private float size;
 
 	public BuildingModel(String filename, String folder, int noOfFrames)
 			throws IOException {
@@ -28,20 +25,5 @@ public class BuildingModel extends Model{
 		return texturePaths;
 	}
 	
-	public void setProp(float angle, float size){
-		
-		this.angle = angle;
-		this.size = size;
-	}
-	
-	public float getAngle(){
-		
-		return angle;
-	}
-	
-	public float getSize(){
-		
-		return size;
-	}
 
 }

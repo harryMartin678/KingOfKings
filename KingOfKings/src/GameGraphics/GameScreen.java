@@ -37,6 +37,9 @@ public class GameScreen implements GLEventListener {
 	private ChariotModel heavyChariot;
 	private Model archer;
 	private Model heavyarcher;
+	private Model batteringRam;
+	private Model heavyBatteringRam;
+	
 	private BuildingModel archeryTower;
 	private BuildingModel ballisticTower;
 	private BuildingModel barrack;
@@ -48,10 +51,20 @@ public class GameScreen implements GLEventListener {
 	private BuildingModel stable;
 	private BuildingModel stockpile;
 	private BuildingModel wall;
+	private BuildingModel mine;
+	
+	private BuildingModel tree;
+	private BuildingModel gold;
+	private BuildingModel rock;
+	
+	private Unit treeUn;
+	
 	private GLU glu;
 	private ArrayList<Unit> units;
 	private ArrayList<Building> buildings;
 	private Map map;
+	
+	private int treeTime = 0;
 	
 	public GameScreen(){
 		
@@ -67,6 +80,9 @@ public class GameScreen implements GLEventListener {
 		heavyChariot = null;
 		archer = null;
 		heavyarcher = null;
+		batteringRam = null;
+		heavyBatteringRam = null;
+		
 		archeryTower = null;
 		ballisticTower = null;
 		barrack = null;
@@ -77,9 +93,17 @@ public class GameScreen implements GLEventListener {
 		stable = null;
 		stockpile = null;
 		wall = null;
+		mine = null;
+		
+		tree = null;
+		gold = null;
+		rock = null;
 		
 		units = new ArrayList<Unit>();
 		buildings = new ArrayList<Building>();
+		
+		treeUn = new Unit(0,10,"tree");
+		treeUn.moving();
 		
 		map = new LoadMap("map1").getMap();
 		
@@ -90,35 +114,50 @@ public class GameScreen implements GLEventListener {
 			swordsman = new Model("swordsman","Models",3,false);
 			spearman = new Model("spearman","Models",3,false);
 			fishingBoat = new Model("fishingboat","Models",1,true);
+			fishingBoat.setSize(0.1f, 0.1f, 0.2f);
 			warship = new Model("warship","Models",1,true);
+			warship.setSize(0.1f, 0.1f, 0.2f);
 			flagship = new Model("flagship","Models",1,true);
+			warship.setSize(0.1f, 0.1f, 0.2f);
 			lightChariot = new ChariotModel("lightchariot","Models",3);
+			lightChariot.setSize(0.15f, 0.15f, 0.2f);
 			heavyChariot = new ChariotModel("heavychariot","Models",3);
+			heavyChariot.setSize(0.15f, 0.15f, 0.2f);
 			archer = new Model("archer","Models",3,false);
 			heavyarcher = new Model("heavyarcher","Models",3,false);
+			batteringRam = new Model("batteringram","Models",3,false);
+			batteringRam.setSize(0.1f, 0.1f, 0.2f);
+			heavyBatteringRam = new Model("heavybatteringram","Models",3,false);
+			heavyBatteringRam.setSize(0.1f, 0.2f, 0.2f);
 			
 			archeryTower = new BuildingModel("archerytower","Models",1);
-			archeryTower.setProp(45.0f, 0.25f);
+			archeryTower.setSize(0.25f, 0.25f, 0.25f);
 			ballisticTower = new BuildingModel("ballisticTower","Models",1);
-			ballisticTower.setProp(45.0f, 0.1f);
-			barrack = new BuildingModel("barrack","Models",1);
-			barrack.setProp(45.0f, 0.1f);
-			castle = new BuildingModel("castle","Models",1);
-			castle.setProp(45.0f, 0.1f);
-			dock = new BuildingModel("dock","Models",1);
-			dock.setProp(45.0f, 0.1f);
-			farm = new BuildingModel("farm","Models",1);
-			farm.setProp(45.0f, 0.1f);
-			fort = new BuildingModel("fort","Models",1);
-			fort.setProp(45.0f, 0.1f);
-			royalPalace = new BuildingModel("royalPalace","Models",1);
-			royalPalace.setProp(45.0f, 0.1f);
-			stable = new BuildingModel("stable","Models",1);
-			stable.setProp(45.0f, 0.1f);
-			stockpile = new BuildingModel("stockpile","Models",1);
-			stockpile.setProp(45.0f, 0.1f);
-			wall = new BuildingModel("wall","Models",1);
-			wall.setProp(45.0f, 0.1f);
+			ballisticTower.setSize(0.25f, 0.25f, 0.25f);
+			barrack = new BuildingModel("barrack","Models",1); //2 2
+			barrack.setSize(0.15f, 0.15f, 0.15f);
+			castle = new BuildingModel("castle","Models",1);//3 3
+			castle.setSize(0.05f, 0.05f, 0.1f);
+			dock = new BuildingModel("dock","Models",1);//2 2
+			dock.setSize(0.075f, 0.075f, 0.075f);
+			farm = new BuildingModel("farm","Models",1);//2 2
+			farm.setSize(0.15f, 0.15f, 0.15f);
+			fort = new BuildingModel("fort","Models",1);//3 3
+			fort.setSize(0.2f, 0.2f, 0.25f);
+			royalPalace = new BuildingModel("royalPalace","Models",1);//4 4 
+			stable = new BuildingModel("stable","Models",1); //2 2
+			stockpile = new BuildingModel("stockpile","Models",1);//2 2
+			wall = new BuildingModel("wall","Models",1);//1 1
+			wall.setSize(0.15f, 0.15f, 0.1f);
+			wall.setAngle(90.0f);
+			mine = new BuildingModel("mine","Models",1);//1 1
+			mine.setSize(0.15f, 0.15f, 0.15f);
+			
+			tree = new BuildingModel("tree1","Models",3);
+			gold = new BuildingModel("gold","Models",1);
+			gold.setSize(0.3f, 0.3f, 0.3f);
+			rock = new BuildingModel("rocks","Models",1);
+			rock.setSize(0.35f, 0.35f, 0.35f);
 			
 			
 		} catch (IOException e) {
@@ -128,16 +167,15 @@ public class GameScreen implements GLEventListener {
 		
 		//long time = System.currentTimeMillis();
 		for(int y = map.getHeight()-1; y >= 0; y--){
-			for(int x = map.getWidth()-1; x >= 0; x--){
+			for(int x = map.getWidth()-1; x >= 0; x-=3){
 				
-				//units.add(new Unit(x-(map.getWidth()/2),y-(map.getHeight()/2),"lightchariot"));
-				//units.get(units.size()-1).moving();
+				//units.add(new Unit(x-(map.getWidth()/2),y-(map.getHeight()/2),"flagship"));
 			
 				
-				if(map.getTile(x, y) == 1){
+				/*if(map.getTile(x, y) == 1){
 
-					units.add(new Unit(x-(map.getWidth()/2),y-(map.getHeight()/2),"slave"));
-					units.get(units.size()-1).setFiring();
+					units.add(new Unit(x-(map.getWidth()/2),y-(map.getHeight()/2),"tree"));
+					units.get(units.size()-1).moving();
 					
 				}else if(map.getTile(x, y) == 2){
 					
@@ -192,13 +230,13 @@ public class GameScreen implements GLEventListener {
 				}else if(map.getTile(x,y) == 20){
 					
 					buildings.add(new Building(x-(map.getWidth()/2),y-(map.getHeight()/2),"archerytower"));
-				}
+				}*/
 	
 			}
 		
 		
 		}
-
+		
 		
 		Thread animation = new Thread(new Runnable(){
 
@@ -213,6 +251,18 @@ public class GameScreen implements GLEventListener {
 					for(int i = 0; i < units.size(); i++){
 						
 						units.get(i).changeCurrentFrame();
+					}
+
+					treeTime ++;
+					
+					if(treeTime > 4){
+						
+						treeUn.changeCurrentFrame();
+						
+						if(treeTime == 8){
+							
+							treeTime = 0;
+						}
 					}
 					
 					try {
@@ -306,12 +356,28 @@ public class GameScreen implements GLEventListener {
 	    	}else if(units.get(i).getUnitType().equals("heavyarcher")){
 	    		
 	    		drawModel(heavyarcher,draw,units.get(i).getX(),units.get(i).getY(),units.get(i));
+	    	
+	    	}else if(units.get(i).getUnitType().equals("batteringram")){
+	    		
+	    		drawModel(batteringRam,draw,units.get(i).getX(),units.get(i).getY(),units.get(i));
+	    	
+	    	}else if(units.get(i).getUnitType().equals("heavybatteringram")){
+	    		
+	    		drawModel(heavyBatteringRam,draw,units.get(i).getX(),units.get(i).getY(),units.get(i));
+	    	
 	    	}
 			
 	    }	
 	    
 	    //draw.glEnable(draw.GL_LIGHTING);
-	    drawBuildingModel(archeryTower,draw,0,10,new Building(0,100,"barrack"));
+	 //   drawModel(tree,draw,0,10,treeUn);
+	    
+	    for(int y = 49; y >= 0; y--){
+	    	for(int x = 49; x >= 0; x--){
+	    		
+	    		drawBuildingModel(rock,draw,x-25,y-25,new Building(0,10,"archeryTower"));
+	    	}
+	    }
 
 
 	    drawable.swapBuffers();
@@ -325,7 +391,7 @@ public class GameScreen implements GLEventListener {
 		draw.glLoadIdentity();
 
 		draw.glTranslatef(x, y, -35); //-35
-		draw.glScalef(0.2f, 0.2f, 0.2f);
+		draw.glScalef(model.sizeX(), model.sizeY(), model.sizeZ());
 		draw.glRotatef(45, 1, 0, 0);
 		
 		int currentFrame = unit.getCurrentFrame();
@@ -362,8 +428,9 @@ public class GameScreen implements GLEventListener {
 		draw.glLoadIdentity();
 
 		draw.glTranslatef(x, y, -35); //-35
-		draw.glScalef(model.getSize(), model.getSize(), model.getSize());
-		draw.glRotatef(model.getAngle(), 1, 0, 0);
+		draw.glScalef(model.sizeX(), model.sizeY(), model.sizeZ());
+		draw.glRotatef(45.0f, 1, 0, 0);
+		draw.glRotatef(model.getAngle(), 0, 1, 0);
 
 		while((next = model.popFace(0,0)) != null){
 			
@@ -435,7 +502,7 @@ public class GameScreen implements GLEventListener {
 		// TODO Auto-generated method stub
 		GL2 draw = drawable.getGL().getGL2();      // get the OpenGL graphics context
 		glu = new GLU();
-	    draw.glClearColor(0.0f, 1.0f, 0.0f, 0.0f); // set background (clear) color
+	    draw.glClearColor(0.93f, 0.79f, 0.68f, 0.0f); // set background (clear) color
 	    draw.glClearDepth(1.0f);      // set clear depth value to farthest
 	    draw.glEnable(draw.GL_DEPTH_TEST); // enables depth testing
 	    draw.glDepthFunc(draw.GL_LEQUAL);  // the type of depth test to do

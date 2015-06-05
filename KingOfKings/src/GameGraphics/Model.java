@@ -12,6 +12,10 @@ public class Model {
 	protected int shapeNo;
 	protected int currentIndex;
 	private boolean moving;
+	protected float sizeX;
+	protected float sizeY;
+	protected float sizeZ;
+	protected float angle;
 	
 	public Model(String filename, String folder, int noOfFrames, boolean building) throws IOException{
 		
@@ -21,6 +25,11 @@ public class Model {
 		shapeNo = 0;
 		currentIndex = -1;
 		moving = false;
+		
+		sizeX = 0.2f;
+		sizeY = 0.2f;
+		sizeZ = 0.2f;
+		angle = 0.0f;
 		
 		//load all of the model's moving frames 
 		for(int i = 1; i <= noOfFrames; i++){
@@ -40,6 +49,38 @@ public class Model {
 				deathFrames.add(new Frame(filename+new Integer(f).toString()+"d",folder));
 			}
 		}
+	}
+	
+	public void setSize(float sizeX, float sizeY, float sizeZ){
+		
+		this.sizeX = sizeX;
+		this.sizeY = sizeY;
+		this.sizeZ = sizeZ;
+	}
+	
+	public float sizeX(){
+		
+		return sizeX;
+	}
+	
+	public float sizeY(){
+		
+		return sizeY;
+	}
+	
+	public float sizeZ(){
+		
+		return sizeZ;
+	}
+	
+	public void setAngle(float angle){
+		
+		this.angle = angle;
+	}
+	
+	public float getAngle(){
+		
+		return angle;
 	}
 	
 	//for debugging 
