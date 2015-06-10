@@ -2,6 +2,8 @@ package Units;
 
 public class Worker extends Unit {
 	
+	private int buildingNo;
+	
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
@@ -30,6 +32,16 @@ public class Worker extends Unit {
 	public int getProductivity() {
 		// TODO Auto-generated method stub
 		return super.getProductivity() + 5;
+	}
+	
+	public int isCreating(){
+		
+		return buildingNo;
+	}
+	
+	public void build(int buildingNo){
+		
+		this.buildingNo = buildingNo;
 	}
 
 }

@@ -36,6 +36,11 @@ public class LoadMap {
 		ArrayList<Integer> size = parseLine(header.get(0));
 		
 		map = new Map(size.get(0),size.get(1));
+		
+		for(int t = 2; t < size.size(); t+=3){
+			
+			map.addTransitionPoint(size.get(t), size.get(t+1), size.get(t+2));
+		}
 	}
 	
 	private void parseMap(ArrayList<String> mapStr){

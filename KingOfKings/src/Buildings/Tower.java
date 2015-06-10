@@ -2,6 +2,11 @@ package Buildings;
 
 public class Tower extends Defence {
 
+	public Tower(int buildingNo) {
+		super(buildingNo);
+		// TODO Auto-generated constructor stub
+	}
+
 	public int getAttack(){
 		
 		return 0;

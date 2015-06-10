@@ -6,40 +6,25 @@ import org.junit.Test;
 
 public class TestUnits {
 
-	LightCavalry lc;
-	Knight kn;
-	RomanCavalry rc;
+	LightChariot lc;
+	HeavyChariot rc;
 	Slave sl;
 	Servant sv;
-	Peasant ps;
-	TrainedSwordsman tsm;
-	MasterSwordsman msm;
-	Longbow lb;
-	Crossbow cb;
 	BatteringRam br;
-	Catapult cp;
 	Battle battle;
 	
 	
 	@Test
 	public void test() {
 		
-		lc = new LightCavalry();
-		kn = new Knight();
-		rc = new RomanCavalry();
+		lc = new LightChariot();
+		rc = new HeavyChariot();
 		sl = new Slave();
 		sv = new Servant();
-		ps = new Peasant();
-		tsm = new TrainedSwordsman();
-		msm = new MasterSwordsman();
-		lb = new Longbow();
-		cb = new Crossbow();
 		br = new BatteringRam();
-		cp = new Catapult();
 		
-		cp.setPos(0, 1);
 		rc.setPos(0,100);
-		battle = new Battle(cp,rc);
+		battle = new Battle(br,rc);
 		
 		//System.out.println(cp.getHealth() + " " + rc.getHealth());
 		battle.similuateHit();
@@ -53,19 +38,19 @@ public class TestUnits {
 		battle.similuateHit();
 		//System.out.println(cp.getHealth() + " " + rc.getHealth());
 		battle.similuateHit();
-		System.out.println(cp.getHealth() + " " + rc.getHealth());
+		//System.out.println(cp.getHealth() + " " + rc.getHealth());
 		
 		testStatsLc();
 		testStatsRc();
 		testStatsKn();
 		testStatsSl();
 		testStatsSv();
-		testStatsPs();
+		/*testStatsPs();
 		testStatsTsm();
 		testStatsMsm();
 		testStatsLb();
-		testStatsCb();
-		testStatsCp();
+		testStatsCb();*/
+		//testStatsCp();
 		testStatsBr();
 		
 		
@@ -96,12 +81,12 @@ public class TestUnits {
 	@Test
 	public void testStatsKn(){
 		
-		assert(kn.getMaxHealth() == 200);
-		assert(kn.getAttack() == 10);
-		assert(kn.getDefence() == 10);
-		assert(kn.getSpeed() == 7);
-		assert(kn.getName().equals("Unit:Cavalry:Knight"));
-		assert(kn.getBiasAttack("Archer") == 13);
+		assert(rc.getMaxHealth() == 200);
+		assert(rc.getAttack() == 10);
+		assert(rc.getDefence() == 10);
+		assert(rc.getSpeed() == 7);
+		assert(rc.getName().equals("Unit:Cavalry:Knight"));
+		assert(rc.getBiasAttack("Archer") == 13);
 		
 	}
 	
@@ -124,6 +109,7 @@ public class TestUnits {
 		
 	}
 	
+	/*
 	@Test
 	public void testStatsPs(){
 		
@@ -178,7 +164,7 @@ public class TestUnits {
 		
 	}
 	
-	@Test
+	/*@Test
 	public void testStatsCp(){
 		
 		assert(cp.getMaxHealth() == 50);
@@ -187,7 +173,7 @@ public class TestUnits {
 		assert(cp.getSpeed() == 2);
 		assert(cp.getRange() == 11);
 		
-	}
+	}*/
 	
 	@Test
 	public void testStatsBr(){

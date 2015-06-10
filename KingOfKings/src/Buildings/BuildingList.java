@@ -24,22 +24,34 @@ public class BuildingList {
 	
 	public void addBuilding(int player, int map, int x, int y, int type){
 		
+		int buildingNo = 0;
+		
+		if(buildings.size() != 0){
+			
+			buildingNo = buildings.get(buildings.size()-1).getBuildingNo()+1;
+		}
+		
 		if(type == 0){
 			
-			buildings.add(new RoyalPalace());
+			buildings.add(new RoyalPalace(buildingNo));
 			buildings.get(buildings.size()-1).setMap(map);
 			buildings.get(buildings.size()-1).setPos(x, y);
 			buildings.get(buildings.size()-1).setPlayer(player);
 			
 		}else if(type == 1){
 			
-			buildings.add(new Stockpile());
+			buildings.add(new Stockpile(buildingNo));
 			buildings.get(buildings.size()-1).setMap(map);
 			buildings.get(buildings.size()-1).setPos(x, y);
 			buildings.get(buildings.size()-1).setPlayer(player);
 			
 		}
 		
+	}
+	
+	public void addBuilding(Building building){
+		
+		buildings.add(building);
 	}
 
 }

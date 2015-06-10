@@ -3,6 +3,9 @@ package GameServer;
 import java.util.ArrayList;
 
 import Buildings.BuildingList;
+import Buildings.BuildingProgress;
+import Buildings.Castle;
+import Buildings.Farm;
 import IntermediateAI.Pathfinder;
 import Map.CollisionMap;
 import Map.Map;
@@ -10,6 +13,7 @@ import Map.MapList;
 import Player.Diplomacy;
 import Player.PlayerList;
 import Units.UnitList;
+import Units.Worker;
 
 public class GameEngine implements Commands {
 	
@@ -19,6 +23,11 @@ public class GameEngine implements Commands {
 	private PlayerList players;
 	private Diplomacy dip;
 	private Pathfinder pf;
+	private BuildingProgress sites;
+	
+	private long time;
+	private int intialSize;
+	private boolean shownTime = false;
 	
 	public GameEngine(String mapEntry,int playerNo){
 		
@@ -27,6 +36,16 @@ public class GameEngine implements Commands {
 		buildings = new BuildingList();
 		players = new PlayerList(2,500,500);
 		dip = new Diplomacy(playerNo);
+		sites = new BuildingProgress();
+
+		time = System.currentTimeMillis();
+		
+		Worker creator = new Worker();
+		Worker one = new Worker();
+		one.build(0);
+		creator.build(0);
+		sites.addSite(new Farm(0),creator);
+		sites.addWorker(one);
 		
 		
 		for(int i = 0; i < maps.getSize(); i++){
@@ -44,6 +63,8 @@ public class GameEngine implements Commands {
 		this.moveUnit(0, 15, 18);
 		
 		new CollisionMap(buildings,units,maps.getMap(0));
+		
+		intialSize = buildings.getBuildingsSize();
 		
 		Thread onFrame = new Thread(new Runnable(){
 
@@ -75,9 +96,7 @@ public class GameEngine implements Commands {
 		
 		//move units
 		units.moveUnits();
-		
-		
-		
+	
 		//progress unit fights
 		
 		//progress unit to tower fights
@@ -87,6 +106,13 @@ public class GameEngine implements Commands {
 		//add resources from farms and mines 
 		
 		//increment building build progress 
+		sites.checkSites(buildings);
+		
+		if(buildings.getBuildingsSize() > intialSize && !shownTime){
+			
+			System.out.println(System.currentTimeMillis() - time);
+			shownTime = true;
+		}
 	}
 	
 	public static void main(String[] args) {

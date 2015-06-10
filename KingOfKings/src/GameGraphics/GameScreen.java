@@ -57,12 +57,19 @@ public class GameScreen implements GLEventListener {
 	private BuildingModel gold;
 	private BuildingModel rock;
 	
-	private Unit treeUn;
-	
 	private GLU glu;
 	private ArrayList<Unit> units;
 	private ArrayList<Building> buildings;
 	private Map map;
+	
+	private final float scaleFactor = 1.0f; 
+	private final float WIDTH_CONST = 1.25f;
+	private final float HEIGHT_CONST = 3;
+	private final int FRAME_X_SIZE = 25;
+	private final int FRAME_Y_SIZE = 40;
+	
+	private int frameX = 0;
+	private int frameY = 0;
 	
 	private int treeTime = 0;
 	
@@ -101,9 +108,6 @@ public class GameScreen implements GLEventListener {
 		
 		units = new ArrayList<Unit>();
 		buildings = new ArrayList<Building>();
-		
-		treeUn = new Unit(0,10,"tree");
-		treeUn.moving();
 		
 		map = new LoadMap("map1").getMap();
 		
@@ -165,78 +169,13 @@ public class GameScreen implements GLEventListener {
 			e.printStackTrace();
 		}
 		
-		//long time = System.currentTimeMillis();
-		for(int y = map.getHeight()-1; y >= 0; y--){
-			for(int x = map.getWidth()-1; x >= 0; x-=3){
-				
-				//units.add(new Unit(x-(map.getWidth()/2),y-(map.getHeight()/2),"flagship"));
-			
-				
-				/*if(map.getTile(x, y) == 1){
-
-					units.add(new Unit(x-(map.getWidth()/2),y-(map.getHeight()/2),"tree"));
-					units.get(units.size()-1).moving();
-					
-				}else if(map.getTile(x, y) == 2){
-					
-					units.add(new Unit(x-(map.getWidth()/2),y-(map.getHeight()/2),"servant"));
-
-				}else if(map.getTile(x,y) == 3){
-					
-					units.add(new Unit(x-(map.getWidth()/2),y-(map.getHeight()/2),"axeman"));
-					units.get(units.size()-1).setFiring();
-					
-				}else if(map.getTile(x,y) == 4){
-					
-					units.add(new Unit(x-(map.getWidth()/2),y-(map.getHeight()/2),"swordsman"));
-
-				}else if(map.getTile(x,y) == 5){
-					
-					units.add(new Unit(x-(map.getWidth()/2),y-(map.getHeight()/2),"spearman"));
-					units.get(units.size()-1).moving();
-					//units.get(units.size()-1).setFiring();
-				}else if(map.getTile(x,y) == 6){
-					
-					units.add(new ChariotUnit(x-(map.getWidth()/2),y-(map.getHeight()/2),"lightchariot"));
-					//units.get(units.size()-1).moving();
-					units.get(units.size()-1).setFiring();
-				}else if(map.getTile(x,y) == 7){
-					
-					units.add(new ChariotUnit(x-(map.getWidth()/2),y-(map.getHeight()/2),"heavychariot"));
-					((ChariotUnit) units.get(units.size()-1)).fireRight();
-					//units.get(units.size()-1).setFiring();
-				}else if(map.getTile(x,y) == 8){
-					
-					units.add(new Unit(x-(map.getWidth()/2),y-(map.getHeight()/2),"archer"));
-					//units.get(units.size()-1).moving();
-					units.get(units.size()-1).setFiring();
-				}else if(map.getTile(x,y) == 9){
-					
-					units.add(new Unit(x-(map.getWidth()/2),y-(map.getHeight()/2),"heavyarcher"));
-					//units.get(units.size()-1).moving();
-					units.get(units.size()-1).die();
-				}else if(map.getTile(x,y) == 10){
-					
-					units.add(new Unit(x-(map.getWidth()/2),y-(map.getHeight()/2),"fishingboat"));
+		Unit axeman = new Unit(24,0,"axeman");
 		
-				}else if(map.getTile(x,y) == 11){
-					
-					units.add(new Unit(x-(map.getWidth()/2),y-(map.getHeight()/2),"warship"));
-				
-				}else if(map.getTile(x,y) == 12){
-					
-					units.add(new Unit(x-(map.getWidth()/2),y-(map.getHeight()/2),"flagship"));
-
-				}else if(map.getTile(x,y) == 20){
-					
-					buildings.add(new Building(x-(map.getWidth()/2),y-(map.getHeight()/2),"archerytower"));
-				}*/
-	
-			}
+		units.add(axeman);
 		
+		Building mine = new Building(10,10,"mine");
 		
-		}
-		
+		buildings.add(mine);
 		
 		Thread animation = new Thread(new Runnable(){
 
@@ -253,6 +192,7 @@ public class GameScreen implements GLEventListener {
 						units.get(i).changeCurrentFrame();
 					}
 
+					/*
 					treeTime ++;
 					
 					if(treeTime > 4){
@@ -263,7 +203,7 @@ public class GameScreen implements GLEventListener {
 							
 							treeTime = 0;
 						}
-					}
+					}*/
 					
 					try {
 						
@@ -302,80 +242,202 @@ public class GameScreen implements GLEventListener {
 		draw.glClear(draw.GL_COLOR_BUFFER_BIT | draw.GL_DEPTH_BUFFER_BIT); // clear color and depth buffers
 	    draw.glLoadIdentity();  // reset the model-view matrix
 	    
+	    if(frameX >= 500){
+	    	
+	    	frameX = 0;
+	    
+	    }else if(frameY >= 500){
+	    	
+	    	frameY = 0;
+	    }
+	    
+	    frameX++;
+	    frameY++;
+	    
 	    glu.gluLookAt(0.0f, 0.0f, 10.0f, 
 	    		0.0f, 10.0f, 0.0f, 
 	    		0.0f, 0.0f, 0.0f);
 	    
 	    //draw.glDisable(draw.GL_LIGHTING);
-	    for(int i = 0; i < units.size(); i++){
+
+	    for(int y = frameX; y < frameX+FRAME_X_SIZE; y++){
+	    	for(int x = frameY; x < frameY+FRAME_Y_SIZE; x++){
 	    	
-	    	if(units.get(i).getUnitType().equals("slave")){
-	    		
-				drawModel(slave,draw,units.get(i).getX(),units.get(i).getY(),units.get(i));
-	    	
-	    	}else if(units.get(i).getUnitType().equals("servant")){
-	    		
-	    		drawModel(servant,draw,units.get(i).getX(),units.get(i).getY(),units.get(i));
-	    	
-	    	}else if(units.get(i).getUnitType().equals("axeman")){
-	    		
-	    		drawModel(axeman,draw,units.get(i).getX(),units.get(i).getY(),units.get(i));
-	    	
-	    	}else if(units.get(i).getUnitType().equals("swordsman")){
-	    		
-	    		drawModel(swordsman,draw,units.get(i).getX(),units.get(i).getY(),units.get(i));
-	    
-	    	}else if(units.get(i).getUnitType().equals("spearman")){
-	    		
-	    		drawModel(spearman,draw,units.get(i).getX(),units.get(i).getY(),units.get(i));
-	    
-	    	}else if(units.get(i).getUnitType().equals("fishingboat")){
-	    		
-	    		drawModel(fishingBoat,draw,units.get(i).getX(),units.get(i).getY(),units.get(i));
-	    	
-	    	}else if(units.get(i).getUnitType().equals("warship")){
-	    		
-	    		drawModel(warship,draw,units.get(i).getX(),units.get(i).getY(),units.get(i));
-	    		
-	    	}else if(units.get(i).getUnitType().equals("flagship")){
-	    		
-	    		drawModel(flagship,draw,units.get(i).getX(),units.get(i).getY(),units.get(i));
-	    	
-	    	}else if(units.get(i).getUnitType().equals("lightchariot")){
-	    		
-	    		drawModel(lightChariot,draw,units.get(i).getX(),units.get(i).getY(),units.get(i));
-	    	
-	    	}else if(units.get(i).getUnitType().equals("heavychariot")){
-	    		
-	    		drawModel(heavyChariot,draw,units.get(i).getX(),units.get(i).getY(),units.get(i));
-	    	
-	    	}else if(units.get(i).getUnitType().equals("archer")){
-	    		
-	    		drawModel(archer,draw,units.get(i).getX(),units.get(i).getY(),units.get(i));
-	    	
-	    	}else if(units.get(i).getUnitType().equals("heavyarcher")){
-	    		
-	    		drawModel(heavyarcher,draw,units.get(i).getX(),units.get(i).getY(),units.get(i));
-	    	
-	    	}else if(units.get(i).getUnitType().equals("batteringram")){
-	    		
-	    		drawModel(batteringRam,draw,units.get(i).getX(),units.get(i).getY(),units.get(i));
-	    	
-	    	}else if(units.get(i).getUnitType().equals("heavybatteringram")){
-	    		
-	    		drawModel(heavyBatteringRam,draw,units.get(i).getX(),units.get(i).getY(),units.get(i));
-	    	
+	    		if(map.getTile(x,y) == -1){
+	    			
+	    			drawTile(draw,(float) x,(float) y,
+	    					0.0f,0.0f,0.0f,FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		}else{
+	    			drawTile(draw,(float) x,(float) y,
+	    					0.93f,0.68f,0.79f,FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		}
 	    	}
-			
-	    }	
+	    }
 	    
-	    //draw.glEnable(draw.GL_LIGHTING);
-	 //   drawModel(tree,draw,0,10,treeUn);
-	    
-	    for(int y = 49; y >= 0; y--){
-	    	for(int x = 49; x >= 0; x--){
+	    for(int y = frameX; y < frameX+FRAME_X_SIZE; y++){
+	    	for(int x = frameY; x < frameY+FRAME_Y_SIZE; x++){
 	    		
-	    		drawBuildingModel(rock,draw,x-25,y-25,new Building(0,10,"archeryTower"));
+	    		if(map.getTile(x, y) == 1){
+	    			
+	    			Unit treeUn =new Unit((float) x,(float) y,"tree");
+	    			drawModel(tree,draw,treeUn,FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		
+	    		}else if(map.getTile(x, y) == 2){
+	    			
+	    			Unit rockUn =new Unit((float) x,(float) y,"rock");
+	    			drawModel(rock,draw,rockUn,FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		
+	    		}else if(map.getTile(x, y) == 3){
+	    			
+	    			Unit goldUn =new Unit((float) x,(float) y,"gold");
+	    			drawModel(gold,draw,goldUn,FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		
+	    		}else if(map.getTile(x,y) == 4){
+	    			
+	    			//transition node
+	    		
+	    		}else if(map.getTile(x, y) == 5){
+	    			
+	    			drawTile(draw,(float) x,(float) y
+	    					,0.11f,0.42f,0.63f,FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		}
+	    	}
+	    	
+	    }
+	    
+	    for(int u = 0; u < units.size(); u++){
+	    	
+	    	if(!(units.get(u).getX() >= frameX && units.get(u).getX() < (frameX + FRAME_X_SIZE)
+	    			&& units.get(u).getY() >= frameY && units.get(u).getY() < (frameY + FRAME_Y_SIZE))){
+	    		
+	    		continue;
+	    	}
+	    	
+	    	if(units.get(u).getUnitType().equals("servant")){
+	    		
+	    		drawModel(servant,draw,units.get(u),FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		
+	    	}else if(units.get(u).getUnitType().equals("slave")){
+	    		
+	    		drawModel(slave,draw,units.get(u),FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		
+	    	}else if(units.get(u).getUnitType().equals("axeman")){
+	    		
+	    		drawModel(axeman,draw,units.get(u),FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		
+	    	}else if(units.get(u).getUnitType().equals("swordsman")){
+	    		
+	    		drawModel(swordsman,draw,units.get(u),FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		
+	    	}else if(units.get(u).getUnitType().equals("spearman")){
+	    		
+	    		drawModel(spearman,draw,units.get(u),FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		
+	    	}else if(units.get(u).getUnitType().equals("archer")){
+	    		
+	    		drawModel(archer,draw,units.get(u),FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		
+	    	}else if(units.get(u).getUnitType().equals("heavyarcher")){
+	    		
+	    		drawModel(heavyarcher,draw,units.get(u),FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		
+	    	}else if(units.get(u).getUnitType().equals("batteringram")){
+	    		
+	    		drawModel(batteringRam,draw,units.get(u),FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		
+	    	}else if(units.get(u).getUnitType().equals("heavybatteringram")){
+	    		
+	    		drawModel(heavyBatteringRam,draw,units.get(u),FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		
+	    	}else if(units.get(u).getUnitType().equals("lightchariot")){
+	    		
+	    		drawModel(lightChariot,draw,units.get(u),FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		
+	    	}else if(units.get(u).getUnitType().equals("heavychariot")){
+	    		
+	    		drawModel(heavyChariot,draw,units.get(u),FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		
+	    	}else if(units.get(u).getUnitType().equals("fishingboat")){
+	    		
+	    		drawModel(fishingBoat,draw,units.get(u),FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		
+	    	}else if(units.get(u).getUnitType().equals("warship")){
+	    		
+	    		drawModel(warship,draw,units.get(u),FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		
+	    	}else if(units.get(u).getUnitType().equals("flagship")){
+	    		
+	    		drawModel(flagship,draw,units.get(u),FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    	}
+	    }
+	    
+	    for(int b = 0; b < buildings.size(); b++){
+	    	
+	    	if(!(buildings.get(b).getX() >= frameX && buildings.get(b).getX() < (frameX + FRAME_X_SIZE)
+	    			&& buildings.get(b).getY() >= frameY && buildings.get(b).getY() < (frameY + FRAME_Y_SIZE))){
+	    		
+	    		continue;
+	    	}
+	    	
+	    	if(buildings.get(b).getName().equals("archerytower")){
+	    		
+	    		drawBuildingModel(archeryTower,draw,buildings.get(b),
+	    				FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		
+	    	}else if(buildings.get(b).getName().equals("ballisticTower")){
+	    		
+	    		drawBuildingModel(ballisticTower,draw,buildings.get(b),
+	    				FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		
+	    	}else if(buildings.get(b).getName().equals("barrack")){
+	    		
+	    		drawBuildingModel(barrack,draw,buildings.get(b),
+	    				FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		
+	    	}else if(buildings.get(b).getName().equals("castle")){
+	    		
+	    		drawBuildingModel(castle,draw,buildings.get(b),
+	    				FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		
+	    	}else if(buildings.get(b).getName().equals("dock")){
+	    		
+	    		drawBuildingModel(dock,draw,buildings.get(b),
+	    				FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		
+	    	}else if(buildings.get(b).getName().equals("farm")){
+	    		
+	    		drawBuildingModel(farm,draw,buildings.get(b),
+	    				FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		
+	    	}else if(buildings.get(b).getName().equals("fort")){
+	    		
+	    		drawBuildingModel(fort,draw,buildings.get(b),
+	    				FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		
+	    	}else if(buildings.get(b).getName().equals("royalPalace")){
+	    		
+	    		drawBuildingModel(royalPalace,draw,buildings.get(b),
+	    				FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		
+	    	}else if(buildings.get(b).getName().equals("stable")){
+	    		
+	    		drawBuildingModel(stable,draw,buildings.get(b),
+	    				FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		
+	    	}else if(buildings.get(b).getName().equals("stockpile")){
+	    		
+	    		drawBuildingModel(stockpile,draw,buildings.get(b),
+	    				FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		
+	    	}else if(buildings.get(b).getName().equals("wall")){
+	    		
+	    		drawBuildingModel(wall,draw,buildings.get(b),
+	    				FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		
+	    	}else if(buildings.get(b).getName().equals("mine")){
+	    		
+	    		drawBuildingModel(mine,draw,buildings.get(b),
+	    				FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
 	    	}
 	    }
 
@@ -384,14 +446,34 @@ public class GameScreen implements GLEventListener {
 	
 	}
 	
-	public void drawModel(Model model, GL2 draw,float x, float y, Unit unit){
+	public void drawTile(GL2 draw,float x, float y, float red, float green, float blue,
+			float width, float height){
+		
+		draw.glLoadIdentity();
+		
+		draw.glTranslatef(x-width-frameX, y-height-frameY, -35f);
+		//draw.glScalef(0.2f, 0.2f, 0.2f);
+		draw.glRotatef(90.0f, 1, 0, 0);
+		draw.glColor3f(red, green, blue);
+		
+		draw.glNormal3f(0.0f, 1.0f, 0.0f);
+		draw.glBegin(draw.GL_QUADS);
+			draw.glVertex3f(1.0f, -1.0f, 1.0f);
+			draw.glVertex3f(-1.0f, -1.0f, 1.0f);
+			draw.glVertex3f(-1.0f, -1.0f, -1.0f);
+			draw.glVertex3f(1.0f, -1.0f, -1.0f);
+		draw.glEnd();
+		
+	}
+	
+	public void drawModel(Model model, GL2 draw, Unit unit,float width, float height){
 		
 		Face next;
 
 		draw.glLoadIdentity();
 
-		draw.glTranslatef(x, y, -35); //-35
-		draw.glScalef(model.sizeX(), model.sizeY(), model.sizeZ());
+		draw.glTranslatef(unit.getX()-width-frameX, unit.getY()-height-frameY, -35); //-35
+		draw.glScalef(model.sizeX()*scaleFactor, model.sizeY()*scaleFactor, model.sizeZ()*scaleFactor);
 		draw.glRotatef(45, 1, 0, 0);
 		
 		int currentFrame = unit.getCurrentFrame();
@@ -421,14 +503,15 @@ public class GameScreen implements GLEventListener {
 		
 	}
 	
-	public void drawBuildingModel(BuildingModel model, GL2 draw,float x, float y, Building building){
+	public void drawBuildingModel(BuildingModel model, GL2 draw, Building building
+			,float width, float height){
 		
 		Face next;
 
 		draw.glLoadIdentity();
 
-		draw.glTranslatef(x, y, -35); //-35
-		draw.glScalef(model.sizeX(), model.sizeY(), model.sizeZ());
+		draw.glTranslatef(building.getX()-width-frameX, building.getY()-height-frameY, -35); //-35
+		draw.glScalef(model.sizeX()*scaleFactor, model.sizeY()*scaleFactor, model.sizeZ()*scaleFactor);
 		draw.glRotatef(45.0f, 1, 0, 0);
 		draw.glRotatef(model.getAngle(), 0, 1, 0);
 
@@ -502,7 +585,8 @@ public class GameScreen implements GLEventListener {
 		// TODO Auto-generated method stub
 		GL2 draw = drawable.getGL().getGL2();      // get the OpenGL graphics context
 		glu = new GLU();
-	    draw.glClearColor(0.93f, 0.79f, 0.68f, 0.0f); // set background (clear) color
+	    //draw.glClearColor(0.93f, 0.79f, 0.68f, 0.0f); // set background (clear) color
+		draw.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	    draw.glClearDepth(1.0f);      // set clear depth value to farthest
 	    draw.glEnable(draw.GL_DEPTH_TEST); // enables depth testing
 	    draw.glDepthFunc(draw.GL_LEQUAL);  // the type of depth test to do

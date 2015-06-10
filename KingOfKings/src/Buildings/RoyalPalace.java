@@ -2,7 +2,12 @@ package Buildings;
 
 public class RoyalPalace extends Building {
 	
-	 @Override
+	 public RoyalPalace(int buildingNo) {
+		super(buildingNo);
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
 	public int getMaxHitpoint() {
 		// TODO Auto-generated method stub
 		return super.getMaxHitpoint() + 2500;

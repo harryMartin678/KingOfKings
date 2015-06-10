@@ -1,13 +1,17 @@
 package Map;
 
+import java.util.ArrayList;
+
 public class Map {
 	
 	private int[][] map;
 	private int player;
+	private ArrayList<int[]> transitionPoints;
 	
 	public Map(int x, int y){
 		
 		map = new int[y][x];
+		transitionPoints = new ArrayList<int[]>();
 	}
 	
 	public void setPlayer(int player){
@@ -18,6 +22,50 @@ public class Map {
 	public int getPlayer(){
 		
 		return player;
+	}
+	
+	public void addTransitionPoint(int x, int y, int mapNo){
+		
+		int[] pt = new int[]{x,y,mapNo};
+		
+		transitionPoints.add(pt);
+	}
+	
+	public int getTransitionMap(int x, int y){
+		
+		for(int t = 0; t < transitionPoints.size(); t++){
+			
+			if(x == transitionPoints.get(t)[0] && y == transitionPoints.get(t)[1]){
+				
+				return transitionPoints.get(t)[2];
+			}
+			
+		}
+		
+		return -1;
+	}
+	
+	public int[] getTransitionPoint(int mapNo){
+		
+		for(int t = 0; t < transitionPoints.size(); t++){
+			
+			if(mapNo == transitionPoints.get(t)[2]){
+				
+				return new int[]{transitionPoints.get(t)[0],transitionPoints.get(t)[1]};
+			}
+		}
+		
+		return new int[]{-1,-1};
+	}
+	
+	public int getTransitionSize(){
+		
+		return transitionPoints.size();
+	}
+	
+	public int[] getTransitionPointByIndex(int index){
+		
+		return transitionPoints.get(index);
 	}
 	
 	

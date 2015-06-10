@@ -2,6 +2,11 @@ package Buildings;
 
 public class BallistaTower extends Tower {
 	
+	public BallistaTower(int buildingNo) {
+		super(buildingNo);
+		// TODO Auto-generated constructor stub
+	}
+
 	@Override
 	public int getAttack() {
 		// TODO Auto-generated method stub
@@ -12,6 +17,12 @@ public class BallistaTower extends Tower {
 	public int getMaxHitpoint() {
 		// TODO Auto-generated method stub
 		return super.getMaxHitpoint() + 300;
+	}
+	
+	@Override
+	public int getBuildTime() {
+		// TODO Auto-generated method stub
+		return super.getBuildTime()+30;
 	}
 
 }

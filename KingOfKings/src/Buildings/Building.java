@@ -1,5 +1,7 @@
 package Buildings;
 
+import java.util.ArrayList;
+
 public class Building {
 	
 	private int x;
@@ -7,11 +9,40 @@ public class Building {
 	private int hitpoints;
 	private int player;
 	private int map;
+	private ArrayList<String> unitQueue;
+	private int buildingNo;
 	
 	
-	public Building(){
+	public Building(int buildingNo){
 		
 		hitpoints = this.getMaxHitpoint();
+		unitQueue = new ArrayList<String>();
+		this.buildingNo = buildingNo;
+	}
+	
+	public void addToUnitQueue(String unit){
+		
+		unitQueue.add(unit);
+	}
+	
+	public String getUnitQueue(){
+		
+		String list = "";
+		
+		for(int i = 0; i < unitQueue.size(); i++){
+			
+			list += unitQueue.get(i) + ";";
+		}
+		
+		return list;
+	}
+	
+	public String removeUnit(){
+		
+		String lastUnit = unitQueue.get(unitQueue.size()-1);
+		unitQueue.remove(unitQueue.size()-1);
+		
+		return lastUnit;	
 	}
 	
 	public int getX(){
@@ -32,6 +63,11 @@ public class Building {
 	public int getHitpoints(){
 		
 		return hitpoints;
+	}
+	
+	public int getBuildTime(){
+		
+		return 1;
 	}
 	
 	public int getMap(){
@@ -59,6 +95,8 @@ public class Building {
 		hitpoints -= amount;
 	}
 	
+	
+	
 	public int getSizeX(){
 		
 		return 0;
@@ -78,6 +116,11 @@ public class Building {
 		
 		this.x = x;
 		this.y = y;
+	}
+
+	public int getBuildingNo() {
+		// TODO Auto-generated method stub
+		return buildingNo;
 	}
 	
 	

@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import Units.TrainedSwordsman;
+import Units.Swordsman;
 
 public class BuildingTests {
 	
@@ -15,8 +15,8 @@ public class BuildingTests {
 	@Test
 	public void test() {
 		
-		ct = new Castle();
-		bt = new BallistaTower();
+		ct = new Castle(0);
+		bt = new BallistaTower(0);
 		tb = new TowerBattle(ct,bt);
 		
 	}
@@ -24,8 +24,8 @@ public class BuildingTests {
 	@Test
 	public void TowerVsTower(){
 		
-		ct = new Castle();
-		bt = new BallistaTower();
+		ct = new Castle(0);
+		bt = new BallistaTower(0);
 		tb = new TowerBattle(ct,bt);
 		
 		assert(ct.getHitpoints() == 3700);
@@ -41,8 +41,8 @@ public class BuildingTests {
 	@Test
 	public void TowerVsUnit(){
 		
-		ct = new Castle();
-		TrainedSwordsman ts = new TrainedSwordsman();
+		ct = new Castle(0);
+		Swordsman ts = new Swordsman();
 		ts.setPos(1, 1);
 		tb = new TowerBattle(ts,ct);
 		
@@ -58,8 +58,8 @@ public class BuildingTests {
 	@Test
 	public void BuildingDestruction(){
 		
-		RoyalPalace rp = new RoyalPalace();
-		TrainedSwordsman ts = new TrainedSwordsman();
+		RoyalPalace rp = new RoyalPalace(0);
+		Swordsman ts = new Swordsman();
 		BuildingDestruction bd = new BuildingDestruction(rp,ts);
 		rp.setPos(0, 0);
 		ts.setPos(1, 0);

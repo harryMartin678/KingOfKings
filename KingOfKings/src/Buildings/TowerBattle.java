@@ -81,8 +81,8 @@ public class TowerBattle {
 	
 	public static void main(String[] args) {
 		
-		Castle ct = new Castle();
-		BallistaTower bt = new BallistaTower();
+		Castle ct = new Castle(0);
+		BallistaTower bt = new BallistaTower(0);
 		TowerBattle tb = new TowerBattle(ct,bt);
 		
 		ct.setPos(0, 0);
