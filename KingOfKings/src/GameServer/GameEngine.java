@@ -6,6 +6,7 @@ import Buildings.BuildingList;
 import Buildings.BuildingProgress;
 import Buildings.Castle;
 import Buildings.Farm;
+import IntermediateAI.MapPathFinder;
 import IntermediateAI.Pathfinder;
 import Map.CollisionMap;
 import Map.Map;
@@ -60,7 +61,7 @@ public class GameEngine implements Commands {
 			units.addUnit(0, i, (maps.getMapWidth(i)/2)+5, (maps.getMapHeight(i)/2)+5, maps.getPlayer(i));
 		}
 		
-		this.moveUnit(0, 15, 18);
+		this.moveUnit(0, 15, 15,4);
 		
 		new CollisionMap(buildings,units,maps.getMap(0));
 		
@@ -97,6 +98,7 @@ public class GameEngine implements Commands {
 		//move units
 		units.moveUnits();
 	
+		//System.out.println(units.getUnitX(0) +" " + units.getUnitY(0) + " " + units.getUnitMap(0));
 		//progress unit fights
 		
 		//progress unit to tower fights
@@ -121,12 +123,15 @@ public class GameEngine implements Commands {
 	}
 
 	@Override
-	public void moveUnit(int unitNo, int targetX, int targetY) {
+	public void moveUnit(int unitNo, int targetX, int targetY, int targetMap) {
 		// TODO Auto-generated method stub
+		
+		//add a path to move to the unit 
 		units.addPathToUnit(unitNo, 
-				new Pathfinder(new CollisionMap(buildings,units,
-						maps.getMap(units.getUnitMap(unitNo))).getCollisionMap()).getPath(
-						(int) units.getUnitX(unitNo),(int) units.getUnitY(unitNo),targetX,targetY));
+				new MapPathFinder(maps,units,buildings).getPath(
+						(int) units.getUnitX(unitNo),(int) units.getUnitY(unitNo),
+						units.getUnitMap(unitNo)+1,targetX,targetY,targetMap,0));
+
 	}
 
 	@Override

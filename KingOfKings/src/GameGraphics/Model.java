@@ -145,6 +145,7 @@ public class Model {
 	
 	public Colour getColour(int currentFrame, int state){
 		if(state == 0){
+			System.out.println(currentFrame);
 			return frames.get(currentFrame).getColour(shapeNo,currentIndex);
 		}else if(state == 1){
 			return fireFrames.get(currentFrame).getColour(shapeNo,currentIndex);

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public interface Commands {
 	
-	public void moveUnit(int unitNo, int targetX, int targetY);
+	public void moveUnit(int unitNo, int targetX, int targetY, int targetMap);
 	public void unitInBoat(int unitNo, int boatNo);
 	public void setWayPoints(int unitNo, ArrayList<int[]> positions);
 	public void attackUnit(int unitNo, int targetNo);

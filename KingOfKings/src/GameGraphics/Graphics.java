@@ -31,7 +31,7 @@ public class Graphics{
 		GLJPanel canvas = new GLJPanel(capabilities);
 		
 		FPSAnimator animator = new FPSAnimator(canvas,10);
-		animator.start();
+		//animator.start();
 		
 		GameScreen gs = new GameScreen();
 		

@@ -65,6 +65,7 @@ f 23 19 22 26
 usemtl Material.005
 f 25 24 27 28
 f 23 26 30 29
+usemtl Material.007
 f 24 23 31 32
 f 26 25 33 34
 o Cube.002

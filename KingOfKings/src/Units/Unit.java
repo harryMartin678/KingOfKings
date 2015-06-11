@@ -130,9 +130,15 @@ public class Unit {
 	public void setPath(ArrayList<int[]> path){
 		
 		this.path = path;
+		
+		for(int i = 0; i < path.size(); i++){
+			
+			System.out.println(path.get(i)[0] + " " + path.get(i)[1]);
+		}
 	}
 	
 	
+	//change the orientation of the unit
 	private void setOrientation(float x, float y, float targetX, float targetY){
 		
 		if(targetX - x == 1 && targetY - y == 0){
@@ -176,36 +182,51 @@ public class Unit {
 		return moving;
 	}
 	
+	//gets a unit to follow an path 
 	public void followPath(){
 		
+		//if the unit has moved to the final node then stop
 		if(path.size() == 1){
 			
 			moving = false;
 			
 		}else{
 			
-			float vectorX = path.get(path.size()-2)[0] - path.get(path.size()-1)[0];
-			float vectorY = path.get(path.size()-2)[1] - path.get(path.size()-1)[1];
+			//move in the direction of the next node
+			float vectorX = path.get(1)[0] - path.get(0)[0];
+			float vectorY = path.get(1)[1] - path.get(0)[1];
 			
 			float tempX = x + vectorX * ((float) this.getSpeed()/SPEED_CONSTANT);
 			float tempY = y + vectorY * ((float) this.getSpeed()/SPEED_CONSTANT);
 			
-			if(Math.abs(tempX-path.get(path.size()-1)[0]) > Math.abs(path.get(path.size()-2)[0]-path.get(path.size()-1)[0])
-					|| Math.abs(tempY-path.get(path.size()-1)[1]) > 
-							Math.abs(path.get(path.size()-2)[1]-path.get(path.size()-1)[1])){
+			//if the unit is passed the node in either the x or y direction
+			if(Math.abs(tempX-path.get(0)[0]) > Math.abs(path.get(1)[0]-path.get(0)[0])
+					|| Math.abs(tempY-path.get(0)[1]) > 
+							Math.abs(path.get(1)[1]-path.get(0)[1])){
 				
-				x = path.get(path.size()-2)[0];
-				y = path.get(path.size()-2)[1];
+				//if it's a transtion to another map
+				if(path.get(1)[0] == -1){
+					
+					this.map = path.get(1)[1];
+					path.remove(1);
+				}
 				
-				path.remove(path.size()-1);
+				//then go to the next node 
+				x = path.get(1)[0];
+				y = path.get(1)[1];
 				
+				//remove the last node to repeat the process
+				path.remove(0);
+				
+				//change the orientation
 				if(path.size() > 1){
-					setOrientation(path.get(path.size()-1)[0],path.get(path.size()-1)[1],
-							path.get(path.size()-2)[0],path.get(path.size()-2)[1]);
+					setOrientation(path.get(0)[0],path.get(0)[1],
+							path.get(1)[0],path.get(1)[1]);
 				}
 
 			}else{
 
+				//else just move the unit according to velocity
 				x = tempX;
 				y = tempY;
 			}

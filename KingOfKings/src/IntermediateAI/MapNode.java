@@ -2,35 +2,51 @@ package IntermediateAI;
 
 import java.util.ArrayList;
 
+import Buildings.BuildingList;
+import Map.CollisionMap;
 import Map.Map;
+import Map.MapList;
+import Units.UnitList;
 
 public class MapNode {
 	
-	private Map map;
 	private ArrayList<PathNode> path;
 	private int mapNo;
 	
-	public MapNode(Map map,int startX, int startY,int mapNo){
+	public MapNode(MapList maps,int startX, int startY,int mapNo, 
+			UnitList units, BuildingList buildings, int posX){
 		
-		this.map = map;
 		this.mapNo = mapNo;
 		
 		path = new ArrayList<PathNode>();
 		
-		for(int t = 0; t < map.getTransitionSize(); t++){
+		//get all the transition points
+		for(int t = 0; t < maps.getMap(mapNo).getTransitionSize(); t++){
 			
-			int[] transPoint = map.getTransitionPointByIndex(t);
-			path.add(new PathNode(new Pathfinder(map.toArray()).getPath(
+			int[] transPoint = maps.getMap(mapNo).getTransitionPointByIndex(t);
+			//get the path to that transition point
+			//using a collision map to take into account the units and the buildings
+			/*path.add(new PathNode(
+					new FormationMovement(new CollisionMap(buildings,units,
+									maps.getMap(transPoint[2]-1)).getCollisionMap()).getPath(
+					startX, startY,transPoint[0],transPoint[1],posX)
+					,transPoint[2]));*/
+			
+			path.add(new PathNode(
+					new Pathfinder(new CollisionMap(buildings,units,
+									maps.getMap(transPoint[2]-1)).getCollisionMap()).getPath(
 					startX, startY,transPoint[0],transPoint[1])
 					,transPoint[2]));
 		}
 	}
 	
-	public PathNode getSmallestPath(int targetMap,ArrayList<PathNode> closedList){
+	public PathNode getSmallestPath(int targetMap,ArrayList<Integer> closedList){
 		
 		int index = -1;
 		int size = Integer.MAX_VALUE;
 		
+		//get the path node with the smallest path unless it's on the closed list
+		//if the path goes to the target map then return that path node 
 		for(int i = 0; i < path.size(); i++){
 			
 			if(path.get(i).getTNo() == targetMap){
@@ -52,13 +68,13 @@ public class MapNode {
 		return path.get(index);
 	}
 	
-	private boolean onClosedList(ArrayList<PathNode> closedList,PathNode pathNode) {
+	private boolean onClosedList(ArrayList<Integer> closedList,PathNode pathNode) {
 		// TODO Auto-generated method stub
 		
+		//is the map on the closed list 
 		for(int c = 0; c < closedList.size(); c++){
 			
-			if(closedList.get(c).getTNo() == pathNode.getTNo() 
-					&& closedList.get(c).getPath().equals(pathNode.getPath())){
+			if(closedList.get(c) == pathNode.getTNo()){
 				
 				return true;
 			}
@@ -81,6 +97,4 @@ public class MapNode {
 		return mapNo;
 	}
 	
-	
-
 }

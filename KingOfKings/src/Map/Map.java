@@ -51,11 +51,11 @@ public class Map {
 			
 			if(mapNo == transitionPoints.get(t)[2]){
 				
-				return new int[]{transitionPoints.get(t)[0],transitionPoints.get(t)[1]};
+				return transitionPoints.get(t);
 			}
 		}
 		
-		return new int[]{-1,-1};
+		return new int[]{-1,-1,-1};
 	}
 	
 	public int getTransitionSize(){

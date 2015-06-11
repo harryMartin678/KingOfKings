@@ -21,14 +21,16 @@ public class FormationMovement {
 		
 		ArrayList<int[]> orgPath = pf.getPath(startX, startY, targetX, targetY);
 		
+		System.out.println(startX +" " + startY + " " + targetX +" " + targetY + " " + orgPath.size());
+		
 		for(int i = 0; i < orgPath.size(); i++){
 			
 			int newPos = orgPath.get(i)[0] + posX;
 			
 			//move the path point over up to the posX value 
-			for(int j = posX; j >= 0; j++){
+			for(int j = posX; j >= 0; j--){
 				if(newPos >= map[0].length 
-						|| map[orgPath.get(i)[1]][newPos] != '.'){
+						|| map[orgPath.get(i)[1]][newPos] != 0){
 					
 					newPos --;
 				
@@ -44,6 +46,7 @@ public class FormationMovement {
 		
 		int i = orgPath.size()-1;
 		
+		System.out.println(i + " i");
 		//fill gaps left by shifting the path by differing amounts 
 		while(true){
 			
@@ -146,7 +149,7 @@ public class FormationMovement {
 		
 		FormationMovement fm = new FormationMovement(map);
 		
-		fm.printList(fm.getPath(0,0,5,5,2));
+		//fm.printList(fm.getPath(0,0,2,2,2));
 		fm.printList(fm.getOrgPath(0, 0,5,5));
 		
 		

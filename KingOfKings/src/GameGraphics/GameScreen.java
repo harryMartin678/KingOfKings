@@ -169,11 +169,13 @@ public class GameScreen implements GLEventListener {
 			e.printStackTrace();
 		}
 		
-		Unit axeman = new Unit(24,0,"axeman");
+		Unit axeman = new Unit(24,0,"axeman",1);
+		Unit swordsman = new Unit(23,0,"swordsman",2);
 		
 		units.add(axeman);
+		units.add(swordsman);
 		
-		Building mine = new Building(10,10,"mine");
+		Building mine = new Building(40,10,"mine");
 		
 		buildings.add(mine);
 		
@@ -251,8 +253,8 @@ public class GameScreen implements GLEventListener {
 	    	frameY = 0;
 	    }
 	    
-	    frameX++;
-	    frameY++;
+	   // frameX++;
+	    //frameY++;
 	    
 	    glu.gluLookAt(0.0f, 0.0f, 10.0f, 
 	    		0.0f, 10.0f, 0.0f, 
@@ -279,17 +281,17 @@ public class GameScreen implements GLEventListener {
 	    		
 	    		if(map.getTile(x, y) == 1){
 	    			
-	    			Unit treeUn =new Unit((float) x,(float) y,"tree");
+	    			Unit treeUn =new Unit((float) x,(float) y,"tree",0);
 	    			drawModel(tree,draw,treeUn,FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
 	    		
 	    		}else if(map.getTile(x, y) == 2){
 	    			
-	    			Unit rockUn =new Unit((float) x,(float) y,"rock");
+	    			Unit rockUn =new Unit((float) x,(float) y,"rock",0);
 	    			drawModel(rock,draw,rockUn,FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
 	    		
 	    		}else if(map.getTile(x, y) == 3){
 	    			
-	    			Unit goldUn =new Unit((float) x,(float) y,"gold");
+	    			Unit goldUn =new Unit((float) x,(float) y,"gold",0);
 	    			drawModel(gold,draw,goldUn,FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
 	    		
 	    		}else if(map.getTile(x,y) == 4){
@@ -482,7 +484,22 @@ public class GameScreen implements GLEventListener {
 		while((next = model.popFace(currentFrame,state)) != null){
 			
 			Colour colour = model.getColour(currentFrame,state);
-			draw.glColor3fv(FloatBuffer.wrap(colour.getDiffuse()));
+			
+			float[] check = colour.getDiffuse();
+			if(check[0] == 0.098400f && check[1] == 0.098400f && check[2] == 0.098400f){
+				
+				if(unit.getPlayer() == 1){
+					
+					draw.glColor3fv(FloatBuffer.wrap(new float[]{0.0f,0.0f,1.0f}));
+				
+				}else if(unit.getPlayer() == 2){
+					
+					draw.glColor3fv(FloatBuffer.wrap(new float[]{1.0f,0.0f,0.0f}));
+				}
+				
+			}else{
+				draw.glColor3fv(FloatBuffer.wrap(colour.getDiffuse()));
+			}
 
 			draw.glBegin(draw.GL_POLYGON);
 

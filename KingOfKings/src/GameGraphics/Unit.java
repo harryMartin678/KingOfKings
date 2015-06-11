@@ -9,8 +9,9 @@ public class Unit {
 	private int currentFrame;
 	private boolean forward;
 	protected int state;
+	private int player;
 	
-	public Unit(float x, float y,String unitType){
+	public Unit(float x, float y,String unitType, int player){
 		
 		this.x = x;
 		this.y = y;
@@ -18,7 +19,18 @@ public class Unit {
 		forward = true;
 		state = 0;
 		this.unitType = unitType;
+		this.player = player;
 
+	}
+	
+	public int getPlayer(){
+		
+		return player;
+	}
+	
+	public void setPlayer(int player){
+		
+		this.player = player;
 	}
 	
 	public void setFiring(){
