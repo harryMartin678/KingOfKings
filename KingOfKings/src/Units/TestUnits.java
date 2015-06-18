@@ -24,7 +24,7 @@ public class TestUnits {
 		br = new BatteringRam();
 		
 		rc.setPos(0,100);
-		battle = new Battle(br,rc);
+		battle = new Battle(br,rc,0);
 		
 		//System.out.println(cp.getHealth() + " " + rc.getHealth());
 		battle.similuateHit();

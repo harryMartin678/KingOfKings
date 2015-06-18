@@ -17,6 +17,56 @@ public class BuildingList {
 		return buildings.size();
 	}
 	
+	public int getBuildingX(int buildingNo){
+		
+		return buildings.get(buildingNo).getX();
+	}
+	
+	public int getBuildingY(int buildingNo){
+		
+		return buildings.get(buildingNo).getY();
+	}
+	
+	public int getBuildingMap(int buildingNo){
+		
+		return buildings.get(buildingNo).getMap();
+	}
+	
+	public String getBuildingType(int buildingNo){
+		
+		return buildings.get(buildingNo).getType();
+	}
+	
+	public boolean nextUnit(int buildingNo){
+		
+		return buildings.get(buildingNo).progressUnitQueue();
+	}
+	
+	public String getFinishedUnit(int buildingNo){
+		
+		return buildings.get(buildingNo).removeUnit();
+	}
+	
+	public int getBuildingDiameterX(int buildingNo){
+		
+		return buildings.get(buildingNo).getSizeX();
+	}
+	
+	public int getBuildingDiameterY(int buildingNo){
+		
+		return buildings.get(buildingNo).getSizeX();
+	}
+	
+	public boolean isBuildlingJustBuilt(int buildingNo){
+		
+		return buildings.get(buildingNo).justBuilt();
+	}
+	
+	public int getBuildingPlayer(int buildingNo){
+		
+		return buildings.get(buildingNo).getPlayer();
+	}
+	
 	public boolean inBuilding(int x, int y, int buildingNo){
 		
 		return buildings.get(buildingNo).inBuilding(x, y);

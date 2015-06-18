@@ -137,6 +137,11 @@ public class Unit {
 		}
 	}
 	
+	public boolean dead(){
+		
+		return (health == 0);
+	}
+	
 	
 	//change the orientation of the unit
 	private void setOrientation(float x, float y, float targetX, float targetY){

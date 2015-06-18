@@ -6,7 +6,7 @@ public interface Commands {
 	
 	public void moveUnit(int unitNo, int targetX, int targetY, int targetMap);
 	public void unitInBoat(int unitNo, int boatNo);
-	public void setWayPoints(int unitNo, ArrayList<int[]> positions);
+	public void setWayPoints(int unitNo, int[] targetX, int[] targetY, int[] targetMap);
 	public void attackUnit(int unitNo, int targetNo);
 	public void attackBuilding(int unitNo, int buildingNo);
 	

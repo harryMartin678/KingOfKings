@@ -6,14 +6,21 @@ public class Battle {
 	private Unit two;
 	private boolean turn;
 	private int count;
+	private int id;
 	
-	public Battle(Unit one, Unit two){
+	public Battle(Unit one, Unit two, int id){
 		
 		this.one = one;
 		this.two = two;
+		this.id = id;
 		
 		turn = true;
 		count = 1;
+	}
+	
+	public boolean death(){
+		
+		return one.dead() || two.dead();
 	}
 	
 	public void similuateHit(){
@@ -51,6 +58,11 @@ public class Battle {
 		//battle is turn based hits 
 		turn =! turn;
 		
+	}
+	
+	public boolean thisId(int id){
+		
+		return (id == this.id);
 	}
 
 }

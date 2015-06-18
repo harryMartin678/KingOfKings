@@ -21,6 +21,6 @@ public class Stockpile extends Resource {
 	
 	public String getUnitBuild(){
 		
-		return "Slave;Servant";
+		return "slave;servant";
 	}
 }

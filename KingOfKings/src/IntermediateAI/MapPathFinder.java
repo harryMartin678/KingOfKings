@@ -4,6 +4,7 @@ package IntermediateAI;
 import java.util.ArrayList;
 
 import Buildings.BuildingList;
+import Map.CollisionMap;
 import Map.Map;
 import Map.MapList;
 import Units.UnitList;
@@ -40,11 +41,17 @@ public class MapPathFinder {
 	public ArrayList<int[]> getPath(int startX, int startY, int startMap, int targetX,
 			int targetY, int targetMap, int posX){
 		
-		//start map node, clear path and closedlist
-		MapNode start = new MapNode(maps,startX, startY,startMap, units, buildings, posX);
+		if(targetMap == startMap){
+			
+			return reverseList(new Pathfinder(new CollisionMap(buildings,units,maps.getMap(startMap)).getCollisionMap()
+			).getPath(startX, startY, targetX, targetY));
+		}
+		
 		path.clear();
 		closedList.clear();
-		
+
+		//start map node, clear path and closedlist
+		MapNode start = new MapNode(maps,startX, startY,startMap, units, buildings, posX);	
 		MapNode node = start;
 		MapNode lastNode = null;
 		
@@ -52,19 +59,21 @@ public class MapPathFinder {
 		closedList.add(new Integer(startMap+1));
 		
 		while(true){
-
-			//if the path is in the target map 
-			if(node.getMapNo() == targetMap){
-				
-				path.add(node.getSmallestPath(targetMap,closedList));
-				break;
-			}
+		
+			System.out.println((node.getMapNo()+1) + " mapNo");
 			
 			//get the next map with the smallest path 
 			path.add(node.getSmallestPath(targetMap,closedList));
 			
 			//if the path is in a corner 
 			if(path.get(path.size()-1) == null){
+				
+				for(int i = 0; i < closedList.size(); i++){
+					
+					System.out.println(closedList.get(i).intValue() + " closed");
+				}
+				
+				System.out.println(path.get(path.size()-2).getTNo());
 				
 				//remove the last two maps
 				path.remove(path.size()-1);
@@ -82,7 +91,8 @@ public class MapPathFinder {
 			//[2] - the map that is transitions to
 			int[] transPoint = 
 					maps.getMap(path.get(path.size()-1).getTNo()-1).getTransitionPoint(node.getMapNo()+1);
-
+			
+			
 			//keep track of the last node for back tracking
 			lastNode = node;
 			//set the node to the next map where the unit starts in the corresponding transition point
@@ -91,21 +101,27 @@ public class MapPathFinder {
 					,transPoint[0],transPoint[1],path.get(path.size()-1).getTNo()-1
 					,units, buildings, posX);
 			
-			
+			//if the path is in the target map 
+			if(node.getMapNo() == targetMap){
+				
+				//path.add(node.getSmallestPath(targetMap,closedList));
+				break;
+			}
 				
 		}
 		
 		ArrayList<int[]> pathInt = new ArrayList<int[]>();
-		
+
 		//create path and add {-1, map number} when a map is transitioned to 
 		for(int p = 0; p < path.size(); p++){
+
 			pathInt.addAll(reverseList(path.get(p).getPath()));
 			pathInt.add(new int[]{-1,path.get(p).getTNo()});
 		}
 		
 		//add the path in the final map to the target node
 		int[] transPoint = 
-				maps.getMap(targetMap).getTransitionPoint(path.get(path.size()-1).getTNo());
+				maps.getMap(targetMap).getTransitionPoint(path.get(path.size()-1).getTNo()-1);
 		pathInt.addAll(reverseList(
 				new Pathfinder(maps.getMap(targetMap).toArray()).getPath(transPoint[0], transPoint[1]
 						, targetX, targetY)));
@@ -132,7 +148,7 @@ public class MapPathFinder {
 		}*/
 		
 		ArrayList<int[]> path = new MapPathFinder(maps,new UnitList(), 
-				new BuildingList()).getPath(0, 0, 0, 15, 15, 0,0);
+				new BuildingList()).getPath(0, 0, 2, 15, 15, 3,0);
 		
 		for(int i = 0; i < path.size(); i++){
 			

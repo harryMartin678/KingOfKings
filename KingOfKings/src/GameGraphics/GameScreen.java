@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.FloatBuffer;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
@@ -17,6 +18,7 @@ import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLException;
 import javax.media.opengl.glu.GLU;
 
+import com.jogamp.opengl.util.gl2.GLUT;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
 
@@ -58,6 +60,8 @@ public class GameScreen implements GLEventListener {
 	private BuildingModel rock;
 	
 	private GLU glu;
+	private GLUT glut;
+	private NumberFormat format;
 	private ArrayList<Unit> units;
 	private ArrayList<Building> buildings;
 	private Map map;
@@ -70,6 +74,9 @@ public class GameScreen implements GLEventListener {
 	
 	private int frameX = 0;
 	private int frameY = 0;
+	
+	private float w;
+	private float h;
 	
 	private int treeTime = 0;
 	
@@ -108,6 +115,9 @@ public class GameScreen implements GLEventListener {
 		
 		units = new ArrayList<Unit>();
 		buildings = new ArrayList<Building>();
+		
+		format = NumberFormat.getNumberInstance();
+		glut = new GLUT();
 		
 		map = new LoadMap("map1").getMap();
 		
@@ -169,11 +179,12 @@ public class GameScreen implements GLEventListener {
 			e.printStackTrace();
 		}
 		
-		Unit axeman = new Unit(24,0,"axeman",1);
-		Unit swordsman = new Unit(23,0,"swordsman",2);
+		Unit axeman = new Unit(24,12,"lightchariot",3);
+		axeman.setFiring();
+		//Unit swordsman = new Unit(23,0,"swordsman",2);
 		
 		units.add(axeman);
-		units.add(swordsman);
+		//units.add(swordsman);
 		
 		Building mine = new Building(40,10,"mine");
 		
@@ -443,11 +454,93 @@ public class GameScreen implements GLEventListener {
 	    	}
 	    }
 
+	    draw.glDisable(draw.GL_LIGHTING);
+	    drawMenus(draw);
+	    draw.glEnable(draw.GL_LIGHTING);
 
 	    drawable.swapBuffers();
 	
 	}
 	
+	private void drawMenus(GL2 draw){
+		
+		drawLeftPanel(draw);
+		drawRightPanel(draw);
+		drawTopPanel(draw);
+		drawBottomFill(draw);
+	}
+	
+	private void drawLeftPanel(GL2 draw){
+		
+		//back panel
+		drawMenuQuad(draw,-16.0f,0.0f,-20.0f,0.65f,0.5f,0.39f,2.7f,3.0f,10.0f);
+	
+		//top panel
+		drawMenuQuad(draw,-15.25f,4.0f, -19.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 3.0f);
+		
+		//bottom panel
+		drawMenuQuad(draw,-15.25f,-4.5f, -19.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 3.0f);
+		
+		
+	}
+	
+	private void drawRightPanel(GL2 draw){
+		
+		//back panel
+		drawMenuQuad(draw,16.0f,0.0f,-20.0f,0.65f,0.5f,0.39f,3.5f,3.0f,10.0f);
+		
+		//top panel
+		drawMenuQuad(draw,14.5f,4.0f, -19.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 3.0f);
+		
+		//bottom panel
+		drawMenuQuad(draw,14.5f,-4.5f, -19.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 3.0f);
+		
+	}
+	
+	private void drawTopPanel(GL2 draw){
+		
+		//top panel
+		drawMenuQuad(draw,0.0f,8.5f, -20.0f,0.65f, 0.5f, 0.39f,15.0f, 3.0f, 1.15f);
+		
+		//pause game button
+		drawMenuQuad(draw,0.0f,8.5f, -20.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 0.75f);
+		
+		//save game button
+		drawMenuQuad(draw,-10.0f,8.5f, -20.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 0.75f);
+		
+		//quit game button
+		drawMenuQuad(draw,10.0f,8.5f, -20.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 0.75f);
+		
+	}
+
+	
+	private void drawBottomFill(GL2 draw){
+		
+		drawMenuQuad(draw,0.0f,-9.5f, -20.0f,0.65f, 0.5f, 0.39f,15.0f, 3.0f, 0.5f);
+
+	}
+	
+	
+	private void drawMenuQuad(GL2 draw, float tx, float ty, float tz, float cx, float cy, float cz,
+			float sx, float sy, float sz){
+		
+		draw.glLoadIdentity();
+		
+		draw.glTranslatef(tx,ty, tz);
+		draw.glColor3f(cx, cy, cz);
+		draw.glRotatef(90.0f, 1, 0, 0);
+		draw.glScalef(sx, sy, sz);
+		
+		draw.glNormal3f(0.0f, 0.0f, 0.0f);
+		draw.glBegin(draw.GL_QUADS);
+			draw.glVertex3f(1.0f, -1.0f, 1.0f);
+			draw.glVertex3f(-1.0f, -1.0f, 1.0f);
+			draw.glVertex3f(-1.0f, -1.0f, -1.0f);
+			draw.glVertex3f(1.0f, -1.0f, -1.0f);
+		draw.glEnd();
+	}
+	
+
 	public void drawTile(GL2 draw,float x, float y, float red, float green, float blue,
 			float width, float height){
 		
@@ -488,14 +581,7 @@ public class GameScreen implements GLEventListener {
 			float[] check = colour.getDiffuse();
 			if(check[0] == 0.098400f && check[1] == 0.098400f && check[2] == 0.098400f){
 				
-				if(unit.getPlayer() == 1){
-					
-					draw.glColor3fv(FloatBuffer.wrap(new float[]{0.0f,0.0f,1.0f}));
-				
-				}else if(unit.getPlayer() == 2){
-					
-					draw.glColor3fv(FloatBuffer.wrap(new float[]{1.0f,0.0f,0.0f}));
-				}
+				draw.glColor3fv(getPlayerColour(unit.getPlayer()));
 				
 			}else{
 				draw.glColor3fv(FloatBuffer.wrap(colour.getDiffuse()));
@@ -518,6 +604,39 @@ public class GameScreen implements GLEventListener {
 		}
 		
 		
+	}
+	
+	private FloatBuffer getPlayerColour(int player){
+		
+		if(player == 1){
+			
+			return FloatBuffer.wrap(new float[]{0.0f,0.0f,1.0f});
+		
+		}else if(player == 2){
+			
+			return FloatBuffer.wrap(new float[]{1.0f,0.0f,0.0f});
+		
+		}else if(player == 3){
+			
+			return FloatBuffer.wrap(new float[]{0.0f,1.0f,0.0f});
+		}else if(player == 4){
+			
+			return FloatBuffer.wrap(new float[]{1.0f,1.0f,1.0f});
+		
+		}else if(player == 5){
+			
+			return FloatBuffer.wrap(new float[]{1.0f,1.0f,0.0f});
+		
+		}else if(player == 6){
+			
+			return FloatBuffer.wrap(new float[]{0.0f,1.0f,1.0f});
+		}else if(player == 7){
+			
+			return FloatBuffer.wrap(new float[]{1.0f,0.0f,1.0f});
+		
+		}
+
+		return FloatBuffer.wrap(new float[]{0.0f,0.0f,0.0f});
 	}
 	
 	public void drawBuildingModel(BuildingModel model, GL2 draw, Building building
@@ -642,6 +761,9 @@ public class GameScreen implements GLEventListener {
 		 
 	      if (height == 0) height = 1;   // prevent divide by zero
 	      float aspect = (float)width / height;
+	      
+	      w = width;
+	      h = height;
 	 
 	      // Set the view port (display area) to cover the entire window
 	      gl.glViewport(0, 0, width, height);

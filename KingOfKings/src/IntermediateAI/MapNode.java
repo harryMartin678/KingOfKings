@@ -31,12 +31,16 @@ public class MapNode {
 									maps.getMap(transPoint[2]-1)).getCollisionMap()).getPath(
 					startX, startY,transPoint[0],transPoint[1],posX)
 					,transPoint[2]));*/
-			
+			if(mapNo == 4){
+				System.out.println(startX + " " + startY + " " + transPoint[0] + " " + transPoint[1]
+					+ " " + transPoint[2]);
+			}
 			path.add(new PathNode(
 					new Pathfinder(new CollisionMap(buildings,units,
 									maps.getMap(transPoint[2]-1)).getCollisionMap()).getPath(
 					startX, startY,transPoint[0],transPoint[1])
 					,transPoint[2]));
+
 		}
 	}
 	
@@ -49,7 +53,7 @@ public class MapNode {
 		//if the path goes to the target map then return that path node 
 		for(int i = 0; i < path.size(); i++){
 			
-			if(path.get(i).getTNo() == targetMap){
+			if(path.get(i).getTNo() == targetMap+1){
 				
 				return path.get(i);
 				
@@ -74,6 +78,7 @@ public class MapNode {
 		//is the map on the closed list 
 		for(int c = 0; c < closedList.size(); c++){
 			
+
 			if(closedList.get(c) == pathNode.getTNo()){
 				
 				return true;

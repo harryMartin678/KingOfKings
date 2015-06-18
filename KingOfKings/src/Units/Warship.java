@@ -3,6 +3,12 @@ package Units;
 public class Warship extends Naval {
 	
 	@Override
+	public int boatSize() {
+		// TODO Auto-generated method stub
+		return super.boatSize()+3;
+	}
+	
+	@Override
 	public int getMaxHealth() {
 		// TODO Auto-generated method stub
 		return super.getMaxHealth() + 200;

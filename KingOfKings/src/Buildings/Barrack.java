@@ -19,6 +19,12 @@ public class Barrack extends Army {
 		return super.getBuildTime()+30;
 	}
 	
+	@Override
+	public String unitcreated() {
+		// TODO Auto-generated method stub
+		return super.unitcreated() +"archer;heavyarcher;axeman;spearman;swordsman";
+	}
+	
 	public String getUnitBuild(){
 		
 		return "Spearman;Axeman;Swordsman;Archer;HeavyArcher";

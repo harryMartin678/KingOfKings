@@ -6,6 +6,12 @@ public class Dock extends Naval{
 		super(buildingNo);
 		// TODO Auto-generated constructor stub
 	}
+	
+	@Override
+	public String unitcreated() {
+		// TODO Auto-generated method stub
+		return super.unitcreated() + "flagship;warship;fishingboat";
+	}
 
 	@Override
 	public int getBuildTime() {

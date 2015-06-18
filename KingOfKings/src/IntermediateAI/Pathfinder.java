@@ -173,6 +173,15 @@ public class Pathfinder {
 	 */
 	public ArrayList<int[]> getPath(int startX, int startY, int targetX, int targetY){
 		
+		
+		if(startX == targetX && startY == targetY){
+			
+			ArrayList<int[]> ret = new ArrayList<int[]>();
+			ret.add(new int[]{startX,startY});
+			
+			return ret;
+		}
+		
 		Node start = new Node(startX, startY);
 		start.calculateH(targetX, targetY);
 		

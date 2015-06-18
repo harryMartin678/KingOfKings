@@ -24,5 +24,11 @@ public class Castle extends Fort {
 		// TODO Auto-generated method stub
 		return super.getBuildTime()+60;
 	}
+	
+	@Override
+	public String unitcreated() {
+		// TODO Auto-generated method stub
+		return super.unitcreated() + "batteringram;heavybatteringram";
+	}
 
 }

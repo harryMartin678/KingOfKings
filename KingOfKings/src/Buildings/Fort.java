@@ -25,5 +25,6 @@ public class Fort extends Tower {
 		return super.getBuildTime()+40;
 	}
 	
+	
 
 }

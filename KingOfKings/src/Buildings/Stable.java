@@ -19,8 +19,9 @@ public class Stable extends Army {
 		return super.getBuildTime()+20;
 	}
 	
-	public String getUnitBuild(){
-		
-		return "LightChariot;HeavyChariot";
+	@Override
+	public String unitcreated() {
+		// TODO Auto-generated method stub
+		return super.unitcreated() + "lightchariot;heavychariot";
 	}
 }

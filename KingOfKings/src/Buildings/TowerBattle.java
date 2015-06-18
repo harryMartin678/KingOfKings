@@ -22,6 +22,22 @@ public class TowerBattle {
 		this.towerTwo = two;
 	}
 	
+	public boolean deathTowers(){
+		
+		return (towerOne.destroyed()) || (towerTwo.destroyed());
+	}
+	
+	public boolean death(){
+		
+		return (towerOne.destroyed()) || (unit.dead());
+	}
+	
+	public boolean twoTowers(){
+		
+		return !(towerTwo == null);
+	}
+
+	
 	public void similuateHitTowers(){
 		
 		int distance = (int) Math.sqrt(Math.pow((double) ((towerOne.getX() - towerTwo.getX()) + (towerOne.getY() - towerTwo.getY())),2));

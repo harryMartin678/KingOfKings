@@ -9,20 +9,69 @@ public class Building {
 	private int hitpoints;
 	private int player;
 	private int map;
-	private ArrayList<String> unitQueue;
+	private ArrayList<QueueItem> unitQueue;
 	private int buildingNo;
+	private boolean justBuilt;
+	private String type;
 	
 	
 	public Building(int buildingNo){
 		
 		hitpoints = this.getMaxHitpoint();
-		unitQueue = new ArrayList<String>();
+		unitQueue = new ArrayList<QueueItem>();
 		this.buildingNo = buildingNo;
+		
+		justBuilt = true;
+	}
+	
+	public boolean destroyed(){
+		
+		return (hitpoints <= 0);
+	}
+	
+	public class QueueItem{
+		
+		private String type;
+		private int progress;
+		
+		public QueueItem(String type){
+			
+			this.type = type;
+			progress = 0;
+		}
+		
+		public void progress(){
+			
+			progress++;
+		}
+		
+		public String getType(){
+			
+			return type;
+		}
+		
+		public boolean finished(){
+			
+			return (progress >= 100);
+		}
+	}
+	
+	public String getType(){
+		
+		return type;
 	}
 	
 	public void addToUnitQueue(String unit){
 		
-		unitQueue.add(unit);
+		unitQueue.add(new QueueItem(unit));
+	}
+	
+	public boolean justBuilt(){
+		
+		boolean temp = justBuilt;
+		justBuilt = false;
+		
+		return temp;
 	}
 	
 	public String getUnitQueue(){
@@ -37,9 +86,16 @@ public class Building {
 		return list;
 	}
 	
+	public boolean progressUnitQueue(){
+		
+		unitQueue.get(0).progress();
+		
+		return unitQueue.get(0).finished();
+	}
+	
 	public String removeUnit(){
 		
-		String lastUnit = unitQueue.get(unitQueue.size()-1);
+		String lastUnit = unitQueue.get(unitQueue.size()-1).getType();
 		unitQueue.remove(unitQueue.size()-1);
 		
 		return lastUnit;	
@@ -121,6 +177,11 @@ public class Building {
 	public int getBuildingNo() {
 		// TODO Auto-generated method stub
 		return buildingNo;
+	}
+	
+	public String unitcreated(){
+		
+		return "";
 	}
 	
 	

@@ -46,7 +46,6 @@ public class FormationMovement {
 		
 		int i = orgPath.size()-1;
 		
-		System.out.println(i + " i");
 		//fill gaps left by shifting the path by differing amounts 
 		while(true){
 			
@@ -140,17 +139,18 @@ public class FormationMovement {
 	
 	public static void main(String[] args) {
 		
-		int[][] map = new int[][]{{'.','.','.','.','.','.'},
-									{'.','.','.','.','.','.'},
-									{'.','.','.','#','#','.'},
-									{'.','.','.','.','.','.'},
-									{'.','.','.','.','#','#'},
-									{'.','.','.','.','.','.'}};
+		int[][] map = new int[][]{{0,0,0,0,0,0},
+									{0,0,0,0,0,0},
+									{0,0,0,1,0,0},
+									{0,0,0,1,0,0},
+									{0,0,0,0,0,0},
+									{0,0,0,0,0,0}};
 		
 		FormationMovement fm = new FormationMovement(map);
 		
-		//fm.printList(fm.getPath(0,0,2,2,2));
-		fm.printList(fm.getOrgPath(0, 0,5,5));
+		fm.printList(fm.getPath(0,0,0,5,3));
+		System.out.println("\\\\\\\\\\\\");
+		fm.printList(fm.getOrgPath(0, 0,0,5));
 		
 		
 	}

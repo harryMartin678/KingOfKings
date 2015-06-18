@@ -3,6 +3,12 @@ package Units;
 public class FishingBoat extends Naval{
 	
 	@Override
+	public int boatSize() {
+		// TODO Auto-generated method stub
+		return super.boatSize()+1;
+	}
+	
+	@Override
 	public int getSpeed() {
 		// TODO Auto-generated method stub
 		return super.getSpeed() + 3;
