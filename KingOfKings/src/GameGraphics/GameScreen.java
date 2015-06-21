@@ -1,6 +1,8 @@
 package GameGraphics;
 
 import java.awt.Image;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -14,6 +16,7 @@ import javax.imageio.ImageIO;
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
+import javax.media.opengl.GLDrawable;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLException;
 import javax.media.opengl.glu.GLU;
@@ -59,6 +62,8 @@ public class GameScreen implements GLEventListener {
 	private BuildingModel gold;
 	private BuildingModel rock;
 	
+	private TextModel[] symbols;
+	
 	private GLU glu;
 	private GLUT glut;
 	private NumberFormat format;
@@ -79,6 +84,8 @@ public class GameScreen implements GLEventListener {
 	private float h;
 	
 	private int treeTime = 0;
+	
+	private MouseEvent mouse;
 	
 	public GameScreen(){
 		
@@ -119,29 +126,31 @@ public class GameScreen implements GLEventListener {
 		format = NumberFormat.getNumberInstance();
 		glut = new GLUT();
 		
+		symbols = new TextModel[37];
+		
 		map = new LoadMap("map1").getMap();
 		
 		try {
-			servant = new Model("servant","Models",3,false);
-			slave = new Model("slave","Models",3,false);
-			axeman = new Model("axeman","Models",3,false);
-			swordsman = new Model("swordsman","Models",3,false);
-			spearman = new Model("spearman","Models",3,false);
-			fishingBoat = new Model("fishingboat","Models",1,true);
+			servant = new Model("servant","Models",3,0);
+			slave = new Model("slave","Models",3,0);
+			axeman = new Model("axeman","Models",3,0);
+			swordsman = new Model("swordsman","Models",3,0);
+			spearman = new Model("spearman","Models",3,0);
+			fishingBoat = new Model("fishingboat","Models",1,1);
 			fishingBoat.setSize(0.1f, 0.1f, 0.2f);
-			warship = new Model("warship","Models",1,true);
+			warship = new Model("warship","Models",1,1);
 			warship.setSize(0.1f, 0.1f, 0.2f);
-			flagship = new Model("flagship","Models",1,true);
+			flagship = new Model("flagship","Models",1,1);
 			warship.setSize(0.1f, 0.1f, 0.2f);
 			lightChariot = new ChariotModel("lightchariot","Models",3);
 			lightChariot.setSize(0.15f, 0.15f, 0.2f);
 			heavyChariot = new ChariotModel("heavychariot","Models",3);
 			heavyChariot.setSize(0.15f, 0.15f, 0.2f);
-			archer = new Model("archer","Models",3,false);
-			heavyarcher = new Model("heavyarcher","Models",3,false);
-			batteringRam = new Model("batteringram","Models",3,false);
+			archer = new Model("archer","Models",3,0);
+			heavyarcher = new Model("heavyarcher","Models",3,0);
+			batteringRam = new Model("batteringram","Models",3,0);
 			batteringRam.setSize(0.1f, 0.1f, 0.2f);
-			heavyBatteringRam = new Model("heavybatteringram","Models",3,false);
+			heavyBatteringRam = new Model("heavybatteringram","Models",3,0);
 			heavyBatteringRam.setSize(0.1f, 0.2f, 0.2f);
 			
 			archeryTower = new BuildingModel("archerytower","Models",1);
@@ -173,20 +182,29 @@ public class GameScreen implements GLEventListener {
 			rock = new BuildingModel("rocks","Models",1);
 			rock.setSize(0.35f, 0.35f, 0.35f);
 			
+			String alpha = "abcdefghijklmnopqrstuvwxyz0123456789";
+			
+			for(int s = 0; s < 36; s ++){
+				
+				symbols[s] = new TextModel(alpha.charAt(s)+"uc","Models/Alphabet");
+			}
+			
+			symbols[36] = new TextModel("cluc","Models/Alphabet");
+			
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		Unit axeman = new Unit(24,12,"lightchariot",3);
+		Unit axeman = new Unit(99,99,"lightchariot",3);
 		axeman.setFiring();
 		//Unit swordsman = new Unit(23,0,"swordsman",2);
 		
 		units.add(axeman);
 		//units.add(swordsman);
 		
-		Building mine = new Building(40,10,"mine");
+		Building mine = new Building(10,10,"royalPalace");
 		
 		buildings.add(mine);
 		
@@ -255,6 +273,7 @@ public class GameScreen implements GLEventListener {
 		draw.glClear(draw.GL_COLOR_BUFFER_BIT | draw.GL_DEPTH_BUFFER_BIT); // clear color and depth buffers
 	    draw.glLoadIdentity();  // reset the model-view matrix
 	    
+	    
 	    if(frameX >= 500){
 	    	
 	    	frameX = 0;
@@ -264,7 +283,7 @@ public class GameScreen implements GLEventListener {
 	    	frameY = 0;
 	    }
 	    
-	   // frameX++;
+	    //frameX++;
 	    //frameY++;
 	    
 	    glu.gluLookAt(0.0f, 0.0f, 10.0f, 
@@ -276,7 +295,8 @@ public class GameScreen implements GLEventListener {
 	    for(int y = frameX; y < frameX+FRAME_X_SIZE; y++){
 	    	for(int x = frameY; x < frameY+FRAME_Y_SIZE; x++){
 	    	
-	    		if(map.getTile(x,y) == -1){
+	    		if(x >= map.getWidth() || y >= map.getHeight() || map.getTile(x,y) == -1 ||
+	    				x < 0 || y < 0){
 	    			
 	    			drawTile(draw,(float) x,(float) y,
 	    					0.0f,0.0f,0.0f,FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
@@ -289,6 +309,12 @@ public class GameScreen implements GLEventListener {
 	    
 	    for(int y = frameX; y < frameX+FRAME_X_SIZE; y++){
 	    	for(int x = frameY; x < frameY+FRAME_Y_SIZE; x++){
+	    		
+	    		if(x >= map.getWidth() || y >= map.getHeight() ||
+	    				x < 0 || y < 0){
+	    			
+	    			break;
+	    		}
 	    		
 	    		if(map.getTile(x, y) == 1){
 	    			
@@ -320,8 +346,11 @@ public class GameScreen implements GLEventListener {
 	    
 	    for(int u = 0; u < units.size(); u++){
 	    	
-	    	if(!(units.get(u).getX() >= frameX && units.get(u).getX() < (frameX + FRAME_X_SIZE)
-	    			&& units.get(u).getY() >= frameY && units.get(u).getY() < (frameY + FRAME_Y_SIZE))){
+	    	if(!(units.get(u).getX() >= frameX 
+	    			&& units.get(u).getX() < (frameX + FRAME_X_SIZE)
+	    			&& units.get(u).getY() >= frameY 
+	    			&& units.get(u).getY() < (frameY + FRAME_Y_SIZE)
+	    			|| map.getTile((int) units.get(u).getX(),(int) units.get(u).getY()) == -1)){
 	    		
 	    		continue;
 	    	}
@@ -386,8 +415,11 @@ public class GameScreen implements GLEventListener {
 	    
 	    for(int b = 0; b < buildings.size(); b++){
 	    	
-	    	if(!(buildings.get(b).getX() >= frameX && buildings.get(b).getX() < (frameX + FRAME_X_SIZE)
-	    			&& buildings.get(b).getY() >= frameY && buildings.get(b).getY() < (frameY + FRAME_Y_SIZE))){
+	    	if(!(buildings.get(b).getX() >= frameX 
+	    			&& buildings.get(b).getX() < (frameX + FRAME_X_SIZE)
+	    			&& buildings.get(b).getY() >= frameY 
+	    			&& buildings.get(b).getY() < (frameY + FRAME_Y_SIZE)
+	    			|| map.getTile((int) buildings.get(b).getX(),(int) buildings.get(b).getY()) == -1)){
 	    		
 	    		continue;
 	    	}
@@ -453,6 +485,8 @@ public class GameScreen implements GLEventListener {
 	    				FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
 	    	}
 	    }
+	    
+	    regulateMouse(draw);
 
 	    draw.glDisable(draw.GL_LIGHTING);
 	    drawMenus(draw);
@@ -460,6 +494,74 @@ public class GameScreen implements GLEventListener {
 
 	    drawable.swapBuffers();
 	
+	}
+	
+	private void regulateMouse(GL2 gl){
+		
+		int viewport[] = new int[4];
+	    double mvmatrix[] = new double[16];
+	    double projmatrix[] = new double[16];
+	    int realy = 0;// GL y coord pos
+	    double wcoord[] = new double[4];// wx, wy, wz;// returned xyz coords
+	     
+	    //http://www.java-tips.org/other-api-tips-100035/112-jogl/1628-how-to-use-gluunproject-in-jogl.html
+	    if (mouse != null)
+	    {
+	      int x = mouse.getX(), y = mouse.getY();
+	      
+	      
+	      if(mouse.getButton() == MouseEvent.BUTTON1){
+	          gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
+	          gl.glGetDoublev(gl.GL_MODELVIEW_MATRIX, mvmatrix, 0);
+	          gl.glGetDoublev(gl.GL_PROJECTION_MATRIX, projmatrix, 0);
+	          /* note viewport[3] is height of window in pixels */
+	          realy = viewport[3] - (int) y - 1;
+	          glu.gluUnProject((double) x, (double) realy, 35.0, //
+	              mvmatrix, 0,
+	              projmatrix, 0, 
+	              viewport, 0, 
+	              wcoord, 0);
+	          
+	          System.out.println(wcoord[0] + " " + wcoord[1] + " " + wcoord[2]);
+	          if(!selectMenu(wcoord)){
+	        	
+	        	  
+	          }
+	          
+	          mouse = null;
+	          
+	      }
+	      
+	      
+	    }
+	}
+	
+	private boolean selectMenu(double[] coords){
+		
+		//quit button
+		if(coords[0] >= 49.9923 && coords[0] <= 49.9949
+				&& coords[2] <= -16.6606 && coords[2] >= -16.6617){
+			
+			System.out.println("Quit");
+			return true;
+		
+		//pause button
+		}else if(coords[0] >= 49.9986 && coords[0] <= 50.0013
+			&& coords[2] <= -16.6606 && coords[2] >= -16.6617){
+		
+			System.out.println("Pause");
+			return true;
+		
+		//save button
+		}else if(coords[0] >= 50.005801 && coords[0] <= 50.008309
+				&& coords[2] <= -16.6606 && coords[2] >= -16.6617){
+			
+			System.out.println("Save");
+			return true;
+		}
+		
+		return false;
+		
 	}
 	
 	private void drawMenus(GL2 draw){
@@ -492,9 +594,79 @@ public class GameScreen implements GLEventListener {
 		//top panel
 		drawMenuQuad(draw,14.5f,4.0f, -19.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 3.0f);
 		
+		drawMiniMap(draw,13.5f,-4.25f,-18.0f);
 		//bottom panel
 		drawMenuQuad(draw,14.5f,-4.5f, -19.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 3.0f);
 		
+	}
+	
+	private void drawMiniMap(GL2 draw, float x, float y, float z){
+
+		drawMenuQuad(draw,x,y,z,0.85f,0.82f,0.55f,1.5f,2.5f,2.5f);
+		
+		draw.glLoadIdentity();
+		draw.glTranslatef((x-2.6f) + (frameX*2.55f)/map.getWidth()
+				, (y-1.5f) + (4.35f*frameY)/map.getHeight(), z);
+		draw.glRotatef(90.0f, 1, 0, 0);
+		draw.glColor3f(0.0f, 0.0f, 0.0f);
+		draw.glScalef((FRAME_X_SIZE*2.55f)/map.getWidth(), 
+				(FRAME_Y_SIZE*4.35f)/map.getHeight(), (FRAME_Y_SIZE*4.35f)/map.getHeight());
+		
+		draw.glBegin(draw.GL_LINE_LOOP);
+			draw.glVertex3f(1.0f, -1.0f, 1.0f);
+			draw.glVertex3f(-1.0f, -1.0f, 1.0f);
+			draw.glVertex3f(-1.0f, -1.0f, -1.0f);
+			draw.glVertex3f(1.0f, -1.0f, -1.0f);
+		draw.glEnd();
+		
+		for(int u = 0; u < units.size(); u++){
+			
+			if(map.getTile((int) units.get(u).getX(), (int) units.get(u).getY()) == -1){
+				
+				continue;
+			}
+			
+			drawMenuQuad(draw,(x-2.85f) + (2.55f*units.get(u).getX())/map.getWidth()
+					,(y-1.70f) + (4.35f*units.get(u).getY())/map.getHeight() ,z,1.0f,0.0f
+					,0.0f,30.0f/(2*map.getWidth())
+					,30.0f/(2*map.getHeight()), 30.0f/(2*map.getHeight()));
+		}
+		
+		for(int b = 0; b < buildings.size(); b++){
+			
+			if(map.getTile((int) buildings.get(b).getX(), (int) buildings.get(b).getY()) == -1){
+				
+				continue;
+			}
+			
+			if(buildings.get(b).getName().equals("royalPalace")){
+				
+				drawMenuQuad(draw,(x-2.85f) + (2.55f*buildings.get(b).getX())/map.getWidth()
+						,(y-1.70f) + (4.35f*buildings.get(b).getY())/map.getHeight() ,z,0.58f
+						,0.13f,0.60f,40.0f/(2*map.getWidth()),40.0f/(2*map.getHeight()), 
+						40.0f/(2*map.getHeight()));
+				
+			}else{
+			
+				drawMenuQuad(draw,(x-2.85f) + (2.55f*buildings.get(b).getX())/map.getWidth()
+						,(y-1.70f) + (4.35f*buildings.get(b).getY())/map.getHeight() ,z,0.5f
+						,0.5f,0.5f,30.0f/(2*map.getWidth()),30.0f/(2*map.getHeight()), 
+						30.0f/(2*map.getHeight()));
+			}
+		}
+		
+		for(float xs = 0; xs < map.getWidth(); xs++){
+			for(float ys = 0; ys < map.getHeight(); ys++){
+				
+				if(map.getTile((int) xs, (int) ys) == 3){
+					
+					drawMenuQuad(draw,(x-2.85f) + (2.55f*xs)/map.getWidth()
+							,(y-1.70f) + (4.35f*ys)/map.getHeight() ,z,0.85f
+							,0.65f,0.13f,20.0f/(2*map.getWidth()),20.0f/(2*map.getHeight()), 
+							20.0f/(2*map.getHeight()));
+				}
+			}
+		}
 	}
 	
 	private void drawTopPanel(GL2 draw){
@@ -502,12 +674,15 @@ public class GameScreen implements GLEventListener {
 		//top panel
 		drawMenuQuad(draw,0.0f,8.5f, -20.0f,0.65f, 0.5f, 0.39f,15.0f, 3.0f, 1.15f);
 		
+		drawString(draw,-1.5f,7.75f,-21.0f,0.0f,0.0f,0.0f,0.75f,"pause");
 		//pause game button
 		drawMenuQuad(draw,0.0f,8.5f, -20.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 0.75f);
 		
+		drawString(draw,-11.25f,7.75f, -21.0f,0.0f,0.0f,0.0f,0.75f,"save");
 		//save game button
-		drawMenuQuad(draw,-10.0f,8.5f, -20.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 0.75f);
+		drawMenuQuad(draw,-11.0f,8.5f, -20.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 0.75f);
 		
+		drawString(draw,8.0f,7.75f, -21.0f,0.0f,0.0f,0.0f,0.75f,"quit");
 		//quit game button
 		drawMenuQuad(draw,10.0f,8.5f, -20.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 0.75f);
 		
@@ -518,6 +693,60 @@ public class GameScreen implements GLEventListener {
 		
 		drawMenuQuad(draw,0.0f,-9.5f, -20.0f,0.65f, 0.5f, 0.39f,15.0f, 3.0f, 0.5f);
 
+	}
+	
+	private void drawString(GL2 draw, float x, float y,float z,float r, 
+			float g, float b,float fontSize, String msg){
+		
+		for(int s = 0; s < msg.length(); s++){
+			
+			for(int i = 97; i <= 122; i++){
+				if(msg.charAt(s) == i){
+					drawText(draw,symbols[(i-97)],
+							x+(((float) s)*fontSize),y,z,r,g,b,fontSize);
+				}
+			}
+			
+			for(int i = 48; i <= 57; i++){
+				
+				if(msg.charAt(s) == i){
+					drawText(draw,symbols[(i-22)],
+							x+(((float) s)*fontSize),y,z,r,g,b,fontSize);
+				}
+			}
+		}
+	}
+	
+	private void drawText(GL2 draw, TextModel model, float x, float y,float z
+			,float r, float g, float b,float fontSize){
+		
+		Face next;
+
+		draw.glLoadIdentity();
+
+		draw.glTranslatef(x, y, z); 
+		draw.glScalef(model.sizeX()*scaleFactor*fontSize
+				, model.sizeY()*scaleFactor*fontSize, 
+				model.sizeZ()*scaleFactor*fontSize);
+		draw.glRotatef(45.0f, 1, 0, 0);
+
+		while((next = model.popFace(0,0)) != null){
+			
+			draw.glColor3f(r,g,b);
+
+			draw.glBegin(draw.GL_POLYGON);
+
+			
+				for(int i = 0; i < next.getSize(); i++){
+					
+					Vertex vertex = model.getVertex(next.getFace(i)-1,0,0);
+					draw.glVertex3f(vertex.getX(),vertex.getY(),vertex.getZ());
+				}
+				
+				
+			draw.glEnd();
+			
+		}
 	}
 	
 	
@@ -648,7 +877,7 @@ public class GameScreen implements GLEventListener {
 
 		draw.glTranslatef(building.getX()-width-frameX, building.getY()-height-frameY, -35); //-35
 		draw.glScalef(model.sizeX()*scaleFactor, model.sizeY()*scaleFactor, model.sizeZ()*scaleFactor);
-		draw.glRotatef(45.0f, 1, 0, 0);
+		draw.glRotatef(90.0f, 1, 0, 0);
 		draw.glRotatef(model.getAngle(), 0, 1, 0);
 
 		while((next = model.popFace(0,0)) != null){
@@ -739,11 +968,51 @@ public class GameScreen implements GLEventListener {
 	    draw.glLightfv(draw.GL_FRONT,draw.GL_AMBIENT,ambient,0);//sets material ambient
 	    draw.glLightfv(draw.GL_FRONT,draw.GL_DIFFUSE,diffuse,0);//sets material diffuse
 	    draw.glLightfv(draw.GL_FRONT,draw.GL_SPECULAR,specular,0);//sets material specular
-	    
+
 	   
 	    draw.glHint(draw.GL_PERSPECTIVE_CORRECTION_HINT, draw.GL_NICEST);
 
 
+	}
+	
+	public MouseListener getMouseListener(){
+		
+		return new MouseListener(){
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+				mouse = e;
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			
+		};
 	}
 	
 	public Texture loadTexture(String file) throws GLException, IOException

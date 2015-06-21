@@ -17,7 +17,7 @@ public class Model {
 	protected float sizeZ;
 	protected float angle;
 	
-	public Model(String filename, String folder, int noOfFrames, boolean building) throws IOException{
+	public Model(String filename, String folder, int noOfFrames, int modelType) throws IOException{
 		
 		frames = new ArrayList<Frame>();
 		fireFrames = new ArrayList<Frame>();
@@ -31,13 +31,20 @@ public class Model {
 		sizeZ = 0.2f;
 		angle = 0.0f;
 		
-		//load all of the model's moving frames 
-		for(int i = 1; i <= noOfFrames; i++){
+		if(modelType == 0 || modelType == 1){
+			//load all of the model's moving frames 
+			for(int i = 1; i <= noOfFrames; i++){
+				
+				frames.add(new Frame(filename+new Integer(i).toString(),folder));
+			}
+		
+		}else if(modelType == 2){
+		
+			frames.add(new Frame(filename,folder));
 			
-			frames.add(new Frame(filename+new Integer(i).toString(),folder));
 		}
 		
-		if(!building){
+		if(modelType == 0){
 			//load all of the model's firing frames 
 			for(int f = 1; f <= noOfFrames; f++){
 				

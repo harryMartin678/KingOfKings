@@ -6,6 +6,7 @@ import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLDrawableFactory;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLProfile;
+import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.awt.GLJPanel;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -28,12 +29,16 @@ public class Graphics{
 		
 		final GLProfile profile = GLProfile.get(GLProfile.GL2);
 	    GLCapabilities capabilities = new GLCapabilities(profile);
-		GLJPanel canvas = new GLJPanel(capabilities);
+		GLCanvas canvas = new GLCanvas(capabilities);
+		
+		
 		
 		FPSAnimator animator = new FPSAnimator(canvas,10);
 		animator.start();
 		
 		GameScreen gs = new GameScreen();
+		
+		canvas.addMouseListener(gs.getMouseListener());
 		
 		canvas.addGLEventListener(gs);
 		

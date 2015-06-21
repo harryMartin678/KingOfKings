@@ -10,7 +10,7 @@ public class ChariotModel extends Model {
 	
 	public ChariotModel(String filename, String folder, int noOfFrames) throws IOException{
 		
-		super(filename,folder,noOfFrames,false);
+		super(filename,folder,noOfFrames,0);
 		
 		rightFiringFrames = new ArrayList<Frame>();
 		
