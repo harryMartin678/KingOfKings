@@ -39,6 +39,7 @@ public class Graphics{
 		GameScreen gs = new GameScreen();
 		
 		canvas.addMouseListener(gs.getMouseListener());
+		canvas.addMouseMotionListener(gs.getMouseMotionListener());
 		
 		canvas.addGLEventListener(gs);
 		

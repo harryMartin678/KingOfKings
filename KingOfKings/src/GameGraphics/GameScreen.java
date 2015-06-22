@@ -3,6 +3,7 @@ package GameGraphics;
 import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -86,9 +87,15 @@ public class GameScreen implements GLEventListener {
 	private int treeTime = 0;
 	
 	private MouseEvent mouse;
+	private boolean drag = false;
+	private boolean dragBox = false;
+	private float sx,sy,lx,ly;
+	private int[] startDB,lastDB;
 	
 	public GameScreen(){
 		
+		
+		//load meshes
 		slave = null;
 		servant = null;
 		axeman = null;
@@ -197,17 +204,22 @@ public class GameScreen implements GLEventListener {
 			e.printStackTrace();
 		}
 		
-		Unit axeman = new Unit(99,99,"lightchariot",3);
-		axeman.setFiring();
+		Unit one = new Unit(0,1,"slave",3);
+		Unit two = new Unit(0,0,"slave",3);
+		Unit three = new Unit(1,0,"slave",3);
 		//Unit swordsman = new Unit(23,0,"swordsman",2);
 		
-		units.add(axeman);
+		units.add(one);
+		units.add(two);
+		units.add(three);
 		//units.add(swordsman);
 		
 		Building mine = new Building(10,10,"royalPalace");
 		
 		buildings.add(mine);
 		
+		
+		//deals with animations 
 		Thread animation = new Thread(new Runnable(){
 
 			@Override
@@ -291,7 +303,10 @@ public class GameScreen implements GLEventListener {
 	    		0.0f, 0.0f, 0.0f);
 	    
 	    //draw.glDisable(draw.GL_LIGHTING);
+	    
+	    boolean checked = true;
 
+	    //draw tiles for landscape
 	    for(int y = frameX; y < frameX+FRAME_X_SIZE; y++){
 	    	for(int x = frameY; x < frameY+FRAME_Y_SIZE; x++){
 	    	
@@ -301,12 +316,34 @@ public class GameScreen implements GLEventListener {
 	    			drawTile(draw,(float) x,(float) y,
 	    					0.0f,0.0f,0.0f,FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
 	    		}else{
-	    			drawTile(draw,(float) x,(float) y,
-	    					0.93f,0.68f,0.79f,FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    			
+	    			//0.93f,0.68f,0.79f
+	    		if(dragBox &&
+	    				lastDB != null && startDB != null 
+	    				&&y <= Math.max(lastDB[1],startDB[1]) 
+	    				&& y >= Math.min(lastDB[1],startDB[1])
+	    				&& x <= Math.max(lastDB[0],startDB[0]) 
+	    				&& x >= Math.min(lastDB[0],startDB[0])){
+	    			
+	    			drawTile(draw,(float) x,(float) y
+    						,0.0f,0.0f,1.0f,FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    			
+	    		}else{
+		    		
+		    		drawTile(draw,(float) x,(float) y
+		    			,0.93f,0.68f,0.79f,FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+		    			
+	    		}
+	    			
+	    			checked =! checked;
 	    		}
 	    	}
+	    	
+	    	checked =! checked;
 	    }
+	
 	    
+	    //draw landscape features in view 
 	    for(int y = frameX; y < frameX+FRAME_X_SIZE; y++){
 	    	for(int x = frameY; x < frameY+FRAME_Y_SIZE; x++){
 	    		
@@ -337,13 +374,16 @@ public class GameScreen implements GLEventListener {
 	    		
 	    		}else if(map.getTile(x, y) == 5){
 	    			
+	    			//0.11f,0.42f,0.63f
+
 	    			drawTile(draw,(float) x,(float) y
 	    					,0.11f,0.42f,0.63f,FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
-	    		}
+	    		}	
 	    	}
-	    	
+
 	    }
 	    
+	    //draw units in view 
 	    for(int u = 0; u < units.size(); u++){
 	    	
 	    	if(!(units.get(u).getX() >= frameX 
@@ -413,6 +453,7 @@ public class GameScreen implements GLEventListener {
 	    	}
 	    }
 	    
+	    //draw buildings in view
 	    for(int b = 0; b < buildings.size(); b++){
 	    	
 	    	if(!(buildings.get(b).getX() >= frameX 
@@ -486,9 +527,11 @@ public class GameScreen implements GLEventListener {
 	    	}
 	    }
 	    
+	    //deal with mouse input 
 	    regulateMouse(draw);
 
 	    draw.glDisable(draw.GL_LIGHTING);
+	    //draw menus 
 	    drawMenus(draw);
 	    draw.glEnable(draw.GL_LIGHTING);
 
@@ -503,15 +546,17 @@ public class GameScreen implements GLEventListener {
 	    double projmatrix[] = new double[16];
 	    int realy = 0;// GL y coord pos
 	    double wcoord[] = new double[4];// wx, wy, wz;// returned xyz coords
-	     
+	    double lcoord[] = new double[4];
 	    //http://www.java-tips.org/other-api-tips-100035/112-jogl/1628-how-to-use-gluunproject-in-jogl.html
 	    if (mouse != null)
 	    {
-	      int x = mouse.getX(), y = mouse.getY();
-	      
 	      
 	      if(mouse.getButton() == MouseEvent.BUTTON1){
-	          gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
+	    	  
+	    	  int x = mouse.getX(), y = mouse.getY();
+		      
+	    	  //get world coordinates 
+		      gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
 	          gl.glGetDoublev(gl.GL_MODELVIEW_MATRIX, mvmatrix, 0);
 	          gl.glGetDoublev(gl.GL_PROJECTION_MATRIX, projmatrix, 0);
 	          /* note viewport[3] is height of window in pixels */
@@ -521,20 +566,50 @@ public class GameScreen implements GLEventListener {
 	              projmatrix, 0, 
 	              viewport, 0, 
 	              wcoord, 0);
-	          
-	          System.out.println(wcoord[0] + " " + wcoord[1] + " " + wcoord[2]);
-	          if(!selectMenu(wcoord)){
-	        	
-	        	  
-	          }
-	          
-	          mouse = null;
-	          
+	
+		      // System.out.println(wcoord[0] + " " + wcoord[1] + " " + wcoord[2]);
+		      if(!selectMenu(wcoord)){
+		        	
+		    	  selectMap(wcoord);
+		       }
+	    	   mouse = null;
 	      }
 	      
 	      
 	    }
+	    
+	    //deal with dragging the mouse 
+	    if(drag){
+	    	
+	    	gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
+	          gl.glGetDoublev(gl.GL_MODELVIEW_MATRIX, mvmatrix, 0);
+	          gl.glGetDoublev(gl.GL_PROJECTION_MATRIX, projmatrix, 0);
+	          /* note viewport[3] is height of window in pixels */
+	          realy = viewport[3] - (int) sy - 1;
+	          glu.gluUnProject((double) sx, (double) realy, 35.0, //
+	              mvmatrix, 0,
+	              projmatrix, 0, 
+	              viewport, 0, 
+	              wcoord, 0);
+	          
+	          gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
+	          gl.glGetDoublev(gl.GL_MODELVIEW_MATRIX, mvmatrix, 0);
+	          gl.glGetDoublev(gl.GL_PROJECTION_MATRIX, projmatrix, 0);
+	          /* note viewport[3] is height of window in pixels */
+	          realy = viewport[3] - (int) ly - 1;
+	          glu.gluUnProject((double) lx, (double) realy, 35.0, //
+	              mvmatrix, 0,
+	              projmatrix, 0, 
+	              viewport, 0, 
+	              lcoord, 0);
+	    	
+	    	startDB = selectMap(wcoord);
+	    	lastDB = selectMap(lcoord);
+	    	
+	    	drag = false;
+	    }
 	}
+
 	
 	private boolean selectMenu(double[] coords){
 		
@@ -562,6 +637,24 @@ public class GameScreen implements GLEventListener {
 		
 		return false;
 		
+	}
+	
+	private int[] selectMap(double[] coords){
+
+		//check with square has been selected 
+		for(int y = 0; y < 25; y++){
+			for(int x = 0; x < 40; x++){
+				if(coords[0] >= 50.00810241699 - (0.00041198731*x) 
+						&& coords[0] <= 50.00851821899 - (0.000396728115*x)
+						&& coords[2] >= -16.672410964965 + (0.0003967285156*y)
+						&& coords[2] <= -16.67197799682 + (0.0004215240381*y)){
+				
+					return new int[]{x,y};
+				}
+			}
+		}
+		
+		return new int[]{-1,-1};
 	}
 	
 	private void drawMenus(GL2 draw){
@@ -604,6 +697,7 @@ public class GameScreen implements GLEventListener {
 
 		drawMenuQuad(draw,x,y,z,0.85f,0.82f,0.55f,1.5f,2.5f,2.5f);
 		
+		//square on mini-map
 		draw.glLoadIdentity();
 		draw.glTranslatef((x-2.6f) + (frameX*2.55f)/map.getWidth()
 				, (y-1.5f) + (4.35f*frameY)/map.getHeight(), z);
@@ -619,6 +713,7 @@ public class GameScreen implements GLEventListener {
 			draw.glVertex3f(1.0f, -1.0f, -1.0f);
 		draw.glEnd();
 		
+		//draw units 
 		for(int u = 0; u < units.size(); u++){
 			
 			if(map.getTile((int) units.get(u).getX(), (int) units.get(u).getY()) == -1){
@@ -632,6 +727,7 @@ public class GameScreen implements GLEventListener {
 					,30.0f/(2*map.getHeight()), 30.0f/(2*map.getHeight()));
 		}
 		
+		//draw buildings 
 		for(int b = 0; b < buildings.size(); b++){
 			
 			if(map.getTile((int) buildings.get(b).getX(), (int) buildings.get(b).getY()) == -1){
@@ -655,6 +751,7 @@ public class GameScreen implements GLEventListener {
 			}
 		}
 		
+		//draw the gold on the mini map
 		for(float xs = 0; xs < map.getWidth(); xs++){
 			for(float ys = 0; ys < map.getHeight(); ys++){
 				
@@ -695,6 +792,8 @@ public class GameScreen implements GLEventListener {
 
 	}
 	
+	
+	//draws a string using the letter models 
 	private void drawString(GL2 draw, float x, float y,float z,float r, 
 			float g, float b,float fontSize, String msg){
 		
@@ -776,7 +875,7 @@ public class GameScreen implements GLEventListener {
 		draw.glLoadIdentity();
 		
 		draw.glTranslatef(x-width-frameX, y-height-frameY, -35f);
-		//draw.glScalef(0.2f, 0.2f, 0.2f);
+		draw.glScalef(0.5f, 0.5f, 0.5f);
 		draw.glRotatef(90.0f, 1, 0, 0);
 		draw.glColor3f(red, green, blue);
 		
@@ -796,18 +895,23 @@ public class GameScreen implements GLEventListener {
 
 		draw.glLoadIdentity();
 
+		//move the unit in relation to the width and height of the map, and the frame position
 		draw.glTranslatef(unit.getX()-width-frameX, unit.getY()-height-frameY, -35); //-35
+		//scales the model's size
 		draw.glScalef(model.sizeX()*scaleFactor, model.sizeY()*scaleFactor, model.sizeZ()*scaleFactor);
 		draw.glRotatef(45, 1, 0, 0);
 		
+		//gets the frame and state of a unit 
 		int currentFrame = unit.getCurrentFrame();
 		int state = unit.getState();
 
 		while((next = model.popFace(currentFrame,state)) != null){
 			
+			//get the colour of the face
 			Colour colour = model.getColour(currentFrame,state);
 			
 			float[] check = colour.getDiffuse();
+			//if a indicate colour is since then substitute the player's colour 
 			if(check[0] == 0.098400f && check[1] == 0.098400f && check[2] == 0.098400f){
 				
 				draw.glColor3fv(getPlayerColour(unit.getPlayer()));
@@ -818,6 +922,7 @@ public class GameScreen implements GLEventListener {
 
 			draw.glBegin(draw.GL_POLYGON);
 
+				//get the face's normal 
 				float[] normal = getNormal(next,model, currentFrame,state);
 				draw.glNormal3f(normal[0],normal[1],normal[2]);
 				
@@ -835,6 +940,7 @@ public class GameScreen implements GLEventListener {
 		
 	}
 	
+	//get the colour of the player
 	private FloatBuffer getPlayerColour(int player){
 		
 		if(player == 1){
@@ -905,7 +1011,7 @@ public class GameScreen implements GLEventListener {
 	}
 
 	
-
+	//calculates normals 
 	private float[] getNormal(Face next, Model model, int currentFrame,int state){
 		
 		float[] normal = new float[]{0.0f,0.0f,0.0f};
@@ -975,6 +1081,38 @@ public class GameScreen implements GLEventListener {
 
 	}
 	
+	public MouseMotionListener getMouseMotionListener(){
+		
+		return new MouseMotionListener(){
+
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+				if(!dragBox){
+					
+					sx = e.getX();
+					sy = e.getY();
+				}else{
+					
+					lx = e.getX();
+					ly = e.getY();
+				}
+				drag = true;
+				dragBox = true;
+				mouse = e;
+			}
+
+			@Override
+			public void mouseMoved(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			
+		};
+	}
+	
 	public MouseListener getMouseListener(){
 		
 		return new MouseListener(){
@@ -982,8 +1120,13 @@ public class GameScreen implements GLEventListener {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				// TODO Auto-generated method stub
-				
+
 				mouse = e;
+				dragBox = false;
+				
+				//to remove a left over drag box 
+				startDB = null;
+				lastDB = null;
 			}
 
 			@Override
