@@ -922,7 +922,7 @@ public class GameScreen implements GLEventListener {
 
 			draw.glBegin(draw.GL_POLYGON);
 
-				//get the face's normal 
+				//get the face's normal [
 				float[] normal = getNormal(next,model, currentFrame,state);
 				draw.glNormal3f(normal[0],normal[1],normal[2]);
 				

@@ -49,38 +49,49 @@ public class MapPathFinder {
 		
 		path.clear();
 		closedList.clear();
+		
+		ArrayList<MapNode> backtrack = new ArrayList<MapNode>();
 
 		//start map node, clear path and closedlist
 		MapNode start = new MapNode(maps,startX, startY,startMap, units, buildings, posX);	
 		MapNode node = start;
-		MapNode lastNode = null;
 		
 		//add the first map to the closed list 
 		closedList.add(new Integer(startMap+1));
 		
 		while(true){
 		
-			System.out.println((node.getMapNo()+1) + " mapNo");
+			//System.out.println((node.getMapNo()+1) + " mapNo");
+			
+			backtrack.add(node);
 			
 			//get the next map with the smallest path 
 			path.add(node.getSmallestPath(targetMap,closedList));
+			
+			//for(int i = 0; i < path.size(); i++){
+			
+				//System.out.println(path.get(i).getTNo() + " path");
+		//	}
 			
 			//if the path is in a corner 
 			if(path.get(path.size()-1) == null){
 				
 				for(int i = 0; i < closedList.size(); i++){
 					
-					System.out.println(closedList.get(i).intValue() + " closed");
+					System.out.println(backtrack.get(i).getMapNo() + " back");
 				}
 				
-				System.out.println(path.get(path.size()-2).getTNo());
+				//System.out.println(path.get(path.size()-2).getTNo());
 				
 				//remove the last two maps
-				path.remove(path.size()-1);
-				path.remove(path.size()-1);
-				//make the node equal to the last node to back track
-				node = lastNode;
 				
+				
+				path.remove(path.size()-1);
+				path.remove(path.size()-1);
+				backtrack.remove(backtrack.size()-1);
+				
+				//make the node equal to the last node to back track
+				node = backtrack.get(backtrack.size()-1);
 				continue;
 			}
 			
@@ -94,7 +105,6 @@ public class MapPathFinder {
 			
 			
 			//keep track of the last node for back tracking
-			lastNode = node;
 			//set the node to the next map where the unit starts in the corresponding transition point
 			//in the next map
 			node = new MapNode(maps

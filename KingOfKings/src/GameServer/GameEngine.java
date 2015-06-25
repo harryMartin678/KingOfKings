@@ -6,7 +6,6 @@ import Buildings.BuildingList;
 import Buildings.BuildingProgress;
 import Buildings.Castle;
 import Buildings.Farm;
-import IntermediateAI.MapPathFinder;
 import IntermediateAI.Pathfinder;
 import Map.CollisionMap;
 import Map.Map;
@@ -221,10 +220,10 @@ public class GameEngine implements Commands {
 		// TODO Auto-generated method stub
 		
 		//add a path to move to the unit 
-		units.addPathToUnit(unitNo, 
-				new MapPathFinder(maps,units,buildings).getPath(
-						(int) units.getUnitX(unitNo),(int) units.getUnitY(unitNo),
-						units.getUnitMap(unitNo)+1,targetX,targetY,targetMap,0));
+		//units.addPathToUnit(unitNo, 
+				//new MapPathFinder(maps,units,buildings).getPath(
+					//	(int) units.getUnitX(unitNo),(int) units.getUnitY(unitNo),
+					//	units.getUnitMap(unitNo)+1,targetX,targetY,targetMap,0));
 
 	}
 
@@ -242,9 +241,9 @@ public class GameEngine implements Commands {
 		
 		for(int t = 0; t < targetMap.length; t++){
 			
-			totalPath.addAll(new MapPathFinder(maps,units,buildings).getPath(
-						(int) units.getUnitX(unitNo),(int) units.getUnitY(unitNo),
-						units.getUnitMap(unitNo)+1,targetX[t],targetY[t],targetMap[t],0));
+		//	totalPath.addAll(new MapPathFinder(maps,units,buildings).getPath(
+					//	(int) units.getUnitX(unitNo),(int) units.getUnitY(unitNo),
+					//	units.getUnitMap(unitNo)+1,targetX[t],targetY[t],targetMap[t],0));
 		}
 		
 		units.addPathToUnit(unitNo, totalPath);

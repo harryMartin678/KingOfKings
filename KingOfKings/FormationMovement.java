@@ -2,51 +2,33 @@ package IntermediateAI;
 
 import java.util.ArrayList;
 
-import Buildings.BuildingList;
-import Map.CollisionMap;
-import Map.MapList;
-import Units.UnitList;
-
 public class FormationMovement {
-
-	private MapList maps;
-	private UnitList units;
-	private BuildingList buildings;
 	
-	/*
-	 * use units, buildings and the maps for changing the paths 
-	 */
-	public FormationMovement(MapList maps,UnitList units, BuildingList buildings){
-
-		this.maps = maps;
-		this.units = units;
-		this.buildings = buildings;
+	
+	private Pathfinder pf;
+	private int[][] map;
+	
+	public FormationMovement(int[][] map){
+		
+		pf = new Pathfinder(map);
+		this.map = map;
 	}
 	
 	/*
-	 * gets the path of a unit in formation given the original path  
+	 * gets the path of a unit in formation 
 	 */
-	public ArrayList<int[]> getPath(ArrayList<int[]> orgPath, int posX){
+	public ArrayList<int[]> getPath(int startX, int startY, int targetX, int targetY, int posX){
 		
-		int map = 0;
+		ArrayList<int[]> orgPath = pf.getPath(startX, startY, targetX, targetY);
 		
 		for(int i = 0; i < orgPath.size(); i++){
 			
-			//if we change map
-			if(orgPath.get(i)[0] == -1){
-				
-				map = orgPath.get(i)[1];
-			}
-			
 			int newPos = orgPath.get(i)[0] + posX;
-			
 			
 			//move the path point over up to the posX value 
 			for(int j = posX; j >= 0; j--){
-				if(newPos >= maps.getMapWidth(map) 
-						|| new CollisionMap(buildings, units,
-								maps.getMap(map)).getCollisionMap()[orgPath.get(i)[1]]
-										[newPos] != 0){
+				if(newPos >= map[0].length 
+						|| map[orgPath.get(i)[1]][newPos] != 0){
 					
 					newPos --;
 				
@@ -65,20 +47,11 @@ public class FormationMovement {
 		//fill gaps left by shifting the path by differing amounts 
 		while(true){
 			
-			//if we change map 
-			if(orgPath.get(i)[0] == -1){
-				
-				map = orgPath.get(i)[1];
-			}
-			
 			
 			if(isGap(orgPath.get(i),orgPath.get(i-1))){
 				
-						ArrayList<int[]> newSection = 
-								new Pathfinder(new CollisionMap(buildings, units,
-										maps.getMap(map)).getCollisionMap()).getPath(orgPath.get(i)[0]
-												, orgPath.get(i)[1],orgPath.get(i-1)[0]
-														, orgPath.get(i-1)[1]);
+						ArrayList<int[]> newSection = pf.getPath(orgPath.get(i)[0], orgPath.get(i)[1],
+								orgPath.get(i-1)[0], orgPath.get(i-1)[1]);
 						
 						//add the new path section to connect the two nodes
 						orgPath.addAll(i,newSection);
@@ -106,6 +79,13 @@ public class FormationMovement {
 		
 	}
 	
+	/*
+	 * gets the original path from the path finder 
+	 */
+	public ArrayList<int[]> getOrgPath(int startX, int startY, int targetX, int targetY){
+		
+		return pf.getPath(startX, startY, targetX, targetY);
+	}
 	
 	/*
 	 * is the node on the list
@@ -126,7 +106,7 @@ public class FormationMovement {
 	
 	/*
 	 * for debugging 
-	 
+	 */
 	public void printList(ArrayList<int[]> list){
 		
 
@@ -150,9 +130,9 @@ public class FormationMovement {
 		}
 		
 		
-	}*/
+	}
 	
-	/*public static void main(String[] args) {
+	public static void main(String[] args) {
 		
 		int[][] map = new int[][]{{0,0,0,0,0,0},
 									{0,0,0,0,0,0},
@@ -168,6 +148,6 @@ public class FormationMovement {
 		fm.printList(fm.getOrgPath(0, 0,0,5));
 		
 		
-	}*/
+	}
 
 }
