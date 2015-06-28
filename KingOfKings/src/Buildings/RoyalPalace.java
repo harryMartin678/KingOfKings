@@ -6,6 +6,12 @@ public class RoyalPalace extends Building {
 		super(buildingNo);
 		// TODO Auto-generated constructor stub
 	}
+	 
+	 @Override
+	public String getType() {
+		// TODO Auto-generated method stub
+		return "royalpalace";
+	}
 
 	@Override
 	public int getMaxHitpoint() {

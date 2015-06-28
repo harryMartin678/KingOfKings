@@ -37,9 +37,24 @@ public class BuildingList {
 		return buildings.get(buildingNo).getType();
 	}
 	
+	public String[] getUnitQueueItem(int buildingNo, int index){
+		
+		return buildings.get(buildingNo).getUnitQueueItem(index);
+	}
+	
+	public int getUnitQueueSize(int buildingNo){
+		
+		return buildings.get(buildingNo).getUnitQueueSize();
+	}
+	
 	public boolean nextUnit(int buildingNo){
 		
 		return buildings.get(buildingNo).progressUnitQueue();
+	}
+	
+	public boolean empty(int buildingNo){
+		
+		return buildings.get(buildingNo).emptyUnitQueue();
 	}
 	
 	public String getFinishedUnit(int buildingNo){

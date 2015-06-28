@@ -79,6 +79,11 @@ public class Map {
 		return map[y][x];
 	}
 	
+	public int[] getRow(int row){
+		
+		return map[row];
+	}
+	
 	public int[][] toArray(){
 		
 		return map;

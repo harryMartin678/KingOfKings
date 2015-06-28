@@ -16,6 +16,31 @@ public class UnitList {
 		((Naval) units.get(boatNo)).addUnit(unitNo);
 	}
 	
+	public String getUnitName(int unitNo){
+		
+		return units.get(unitNo).getName();
+	}
+	
+	public boolean getMoving(int unitNo){
+		
+		return units.get(unitNo).getMoving();
+	}
+	
+	public int[] getKnownFollow(int unitNo){
+		
+		return units.get(unitNo).getKnownFollow();
+	}
+	
+	public int getUnitPathSize(int unitNo){
+		
+		return units.get(unitNo).getPathSize();
+	}
+	
+	public int[] getUnitPathNode(int unitNo, int index){
+		
+		return units.get(unitNo).getPath(index);
+	}
+	
 	public void addUnit(String unitType,int map, float x, float y, int player){
 	
 		if(unitType.equals("archer")){
@@ -96,6 +121,28 @@ public class UnitList {
 			units.get(units.size()-1).setPos(x, y);
 			units.get(units.size()-1).setMap(map);
 		}
+	}
+	
+	public void follow(int unitNo,int follow, int followX, int followY, int followMap){
+		
+		units.get(unitNo).follow(follow,followX, followY,followMap);
+	}
+	
+	public boolean isFollowing(int unitNo){
+		
+		return (units.get(unitNo).getFollow() != -1);
+	}
+	
+	public int getFollow(int unitNo){
+		
+		return units.get(unitNo).getFollow();
+	}
+	
+	public boolean correctFollow(int unitNo){
+		
+		return units.get(unitNo).correctFollow((int) units.get(units.get(unitNo).getFollow()).getX(),
+				(int) units.get(units.get(unitNo).getFollow()).getY(),
+				units.get(units.get(unitNo).getFollow()).getMap());
 	}
 	
 	public void addPathToUnit(int unitNo,ArrayList<int[]> path){

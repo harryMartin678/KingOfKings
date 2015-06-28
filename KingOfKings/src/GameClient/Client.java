@@ -1,21 +1,31 @@
 package GameClient;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class Client {
 	
+	private BufferedReader in;
+	private BufferedWriter out;
+	
 	public Client() throws UnknownHostException, IOException{
 		
 		Socket client = new Socket("127.0.0.1",9999);
 		
-		BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+		in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+		out = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
 		
-		String start = in.readLine();
-		System.out.println(start);
+	}
+	
+	public void postMessage(String msg) throws IOException{
+		
+		out.write(msg);
+		out.flush();
 	}
 	
 	public static void main(String[] args) {
@@ -29,6 +39,17 @@ public class Client {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public String getMessage() throws IOException {
+		// TODO Auto-generated method stub
+		return in.readLine();
+	}
+	
+	public void sendMessage(String msg) throws IOException{
+		
+		out.write(msg + "\n");
+		out.flush();
 	}
 
 }

@@ -6,6 +6,12 @@ public class Stable extends Army {
 		super(buildingNo);
 		// TODO Auto-generated constructor stub
 	}
+	
+	@Override
+	public String getType() {
+		// TODO Auto-generated method stub
+		return "stable";
+	}
 
 	@Override
 	public int getMaxHitpoint() {

@@ -6,6 +6,12 @@ public class Fort extends Tower {
 		super(buildingNo);
 		// TODO Auto-generated constructor stub
 	}
+	
+	@Override
+	public String getType() {
+		// TODO Auto-generated method stub
+		return "fort";
+	}
 
 	@Override
 	public int getAttack() {

@@ -1,11 +1,14 @@
 package GameServer;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import Buildings.BuildingList;
 import Buildings.BuildingProgress;
 import Buildings.Castle;
 import Buildings.Farm;
+import IntermediateAI.FormationMovement;
+import IntermediateAI.MapRouteFinder;
 import IntermediateAI.Pathfinder;
 import Map.CollisionMap;
 import Map.Map;
@@ -28,6 +31,8 @@ public class GameEngine implements Commands {
 	private Pathfinder pf;
 	private BuildingProgress sites;
 	private UnitBattleList battles;
+	private SavedGame saveGame;
+	private String gameName;
 	
 	private int beat;
 	
@@ -38,12 +43,20 @@ public class GameEngine implements Commands {
 	public GameEngine(String mapEntry,int playerNo){
 		
 		maps = new MapList(mapEntry);
+		gameName = mapEntry;
 		units = new UnitList();
 		buildings = new BuildingList();
 		players = new PlayerList(2,500,500);
 		dip = new Diplomacy(playerNo);
 		sites = new BuildingProgress();
 		battles = new UnitBattleList();
+		
+		try {
+			saveGame = new SavedGame("SavedGames/game1");
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		beat = 0;
 		
@@ -58,6 +71,11 @@ public class GameEngine implements Commands {
 		sites.addSite(new Farm(0),creator);
 		sites.addWorker(one);
 		
+		for(int i = 0; i < playerNo; i++){
+			
+			maps.getMap(i).setPlayer(i);
+		}
+		
 		
 		for(int i = 0; i < maps.getSize(); i++){
 			
@@ -71,7 +89,7 @@ public class GameEngine implements Commands {
 			units.addUnit("slave", i, (maps.getMapWidth(i)/2)+5, (maps.getMapHeight(i)/2)+5, maps.getPlayer(i));
 		}
 		
-		this.moveUnit(0, 15, 15,4);
+		this.setWayPoints(0, new int[]{0,15,15,15,2}, new int[]{0,15,15,15,15}, new int[]{2,4,3,4,0});
 		
 		new CollisionMap(buildings,units,maps.getMap(0));
 		
@@ -101,6 +119,8 @@ public class GameEngine implements Commands {
 		
 		onFrame.start();
 		
+		this.saveGame();
+		
 	}
 	
 	public void doOnFrame(){
@@ -121,7 +141,7 @@ public class GameEngine implements Commands {
 		//increment building unit queues progress
 		for(int b = 0; b < buildings.getBuildingsSize(); b++){
 			
-			if(buildings.nextUnit(b)){
+			if(!buildings.empty(b) && buildings.nextUnit(b)){
 				
 				addUnit(buildings.getFinishedUnit(b),buildings.getBuildingX(b),
 						buildings.getBuildingY(b),buildings.getBuildingDiameterX(b),
@@ -139,7 +159,7 @@ public class GameEngine implements Commands {
 			int[] playersFood = new int[players.getSize()];
 			
 			for(int b = 0; b < buildings.getBuildingsSize(); b++){
-				
+
 				if(buildings.getBuildingType(b).equals("mine")){
 					
 					playersGold[buildings.getBuildingPlayer(b)]++;
@@ -150,9 +170,18 @@ public class GameEngine implements Commands {
 				}
 			}
 			
+			
 			for(int p = 0; p < playersFood.length; p++){
 				
 				players.addPlayerResource(playersFood[p], playersGold[p], p);
+			}
+			
+			for(int f = 0; f < units.getUnitListSize(); f++){
+				
+				if(units.isFollowing(f) && units.correctFollow(f)){
+					
+					this.follow(f, units.getFollow(f));
+				}
 			}
 		}
 		//increment building build progress 
@@ -220,10 +249,10 @@ public class GameEngine implements Commands {
 		// TODO Auto-generated method stub
 		
 		//add a path to move to the unit 
-		//units.addPathToUnit(unitNo, 
-				//new MapPathFinder(maps,units,buildings).getPath(
-					//	(int) units.getUnitX(unitNo),(int) units.getUnitY(unitNo),
-					//	units.getUnitMap(unitNo)+1,targetX,targetY,targetMap,0));
+		units.addPathToUnit(unitNo, 
+				new MapRouteFinder(units, buildings, maps
+				).getPath((int) units.getUnitX(unitNo),(int) units.getUnitY(unitNo),targetX, targetY,
+						units.getUnitMap(unitNo),targetMap));
 
 	}
 
@@ -239,14 +268,82 @@ public class GameEngine implements Commands {
 		
 		ArrayList<int[]> totalPath = new ArrayList<int[]>();
 		
-		for(int t = 0; t < targetMap.length; t++){
+		//get the x points in the way points path in an array
+		int[] pointsX = new int[targetX.length+1];
+		
+		pointsX[0] = (int) units.getUnitX(unitNo);
+		
+		for(int i = 1; i < targetX.length+1; i++){
 			
-		//	totalPath.addAll(new MapPathFinder(maps,units,buildings).getPath(
-					//	(int) units.getUnitX(unitNo),(int) units.getUnitY(unitNo),
-					//	units.getUnitMap(unitNo)+1,targetX[t],targetY[t],targetMap[t],0));
+			pointsX[i] = targetX[i-1];
 		}
 		
+		//get the y points in the way points path in an array
+		int[] pointsY = new int[targetY.length+1];
+		
+		pointsY[0] = (int) units.getUnitY(unitNo);
+		
+		for(int i = 1; i < targetY.length+1; i++){
+			
+			pointsY[i] = targetY[i-1];
+		}
+		
+		//get the maps to travel to in an array 
+		int[] mapsNo = new int[targetMap.length+1];
+		
+		mapsNo[0] = units.getUnitMap(unitNo);
+		
+		for(int i = 1; i < mapsNo.length; i++){
+			
+			mapsNo[i] = targetMap[i-1];
+		}
+		
+		//combine paths for each path
+		for(int t = 0; t < mapsNo.length-1; t++){
+		
+			totalPath.addAll(new MapRouteFinder(units,buildings,maps).getPath(
+					pointsX[t],pointsY[t],
+					pointsX[t+1],pointsY[t+1],mapsNo[t],mapsNo[t+1]));
+				
+		}
+		
+		//add the path to the unit 
 		units.addPathToUnit(unitNo, totalPath);
+	}
+	
+	@Override
+	public void groupMovement(int[] unitNo, int targetX, int targetY, int targetMap) {
+		// TODO Auto-generated method stub
+		
+		int unitRowSize = (int) Math.sqrt((double) unitNo.length);
+		int row = 0;
+		
+		ArrayList<int[]> orgPath = new MapRouteFinder(units, buildings,maps
+				).getPath((int) units.getUnitX(unitNo[0]), (int) units.getUnitY(unitNo[0]),
+						targetX, targetY, units.getUnitMap(unitNo[0]), targetMap);
+		
+		for(int u = 0; u < unitNo.length; u++){
+			
+			if(row == unitRowSize){
+				
+				row = 0;
+			}
+			
+			units.addPathToUnit(unitNo[u], new FormationMovement(maps,units,buildings
+					).getPath(orgPath, row));
+			
+			row++;
+		}
+	}
+	
+	@Override
+	public void follow(int firstUnit, int secondUnit) {
+		// TODO Auto-generated method stub
+		units.follow(firstUnit,secondUnit,(int) units.getUnitX(secondUnit)
+				,(int) units.getUnitX(firstUnit), units.getUnitMap(firstUnit));
+		
+		this.moveUnit(firstUnit, (int) units.getUnitX(secondUnit), (int) units.getUnitX(firstUnit),
+				units.getUnitMap(firstUnit));
 	}
 
 	@Override
@@ -325,7 +422,12 @@ public class GameEngine implements Commands {
 	@Override
 	public void saveGame() {
 		// TODO Auto-generated method stub
-		
+		try {
+			saveGame.save(units, buildings, players, gameName);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -333,5 +435,104 @@ public class GameEngine implements Commands {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void alliance(int player1, int player2) {
+		// TODO Auto-generated method stub
+		players.setAllied(player1, player2);
+	}
+
+	@Override
+	public void atWar(int player1, int player2) {
+		// TODO Auto-generated method stub
+		players.setAtWar(player1, player2);
+	}
+	
+	//start game 
+	
+	public String getGameName(){
+		
+		return gameName;
+	}
+	
+	public String getWhoOwnsWhatMap(){
+		
+		String mapInfo = "";
+		
+		for(int m = 0; m < maps.getSize(); m++){
+			
+			mapInfo += m + " " + maps.getMap(m).getPlayer() + " ";
+		}
+		
+		return mapInfo;
+	}
+
+	public int getMapOwnedMap(int player){
+		
+		for(int m = 0; m < maps.getSize(); m++){
+			
+			if(maps.getMap(m).getPlayer() == player){
+				
+				return m;
+			}
+		}
+		
+		return -1;
+	}
+	
+	public int getNumberOfMapRows(int map){
+		
+		return maps.getMapWidth(map);
+	}
+	
+	public String getMapRow(int map, int row){
+		
+		int[] mapRow = maps.getMap(map).getRow(row);
+		
+		String ret = "";
+		
+		for(int m = 0; m < mapRow.length; m++){
+			
+			ret += mapRow[m];
+		}
+		
+		return ret;
+	}
+	
+	public String getUnitsOnMap(int map){
+		
+		String info = "";
+		
+		for(int u = 0; u < units.getUnitListSize(); u++){
+			
+			if(units.getUnitMap(u) == map){
+				
+				info += u + " " + units.getUnitName(u) + " " + units.getUnitX(u) +
+						" " + units.getUnitY(u) + " " + units.getUnitPlayer(u) + 
+						"\n";
+			}
+		}
+		
+		return info;
+	}
+	
+	public String getBuildingOnMap(int map){
+		
+		String info = "";
+		
+		for(int b = 0; b < buildings.getBuildingsSize(); b++){
+			
+			if(buildings.getBuildingMap(b) == map){
+				
+				info += b + " " + buildings.getBuildingType(b) + " " 
+						+ buildings.getBuildingX(b) + " " +
+						buildings.getBuildingY(b) + "\n";
+			}
+		}
+		
+		return info;
+	}
+
+	
 	
 }

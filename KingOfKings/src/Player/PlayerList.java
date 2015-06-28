@@ -7,15 +7,33 @@ import Map.MapList;
 public class PlayerList {
 	
 	private Player[] players;
+	private Diplomacy dip;
 	
 	public PlayerList(int playerNo, int initialFood, int initialGold){
 		
 		players = new Player[playerNo];
 		
+		dip = new Diplomacy(playerNo);
+		
 		for(int i = 0; i < players.length; i++){
 			
 			players[i] = new Player(i,initialFood, initialGold);
 		}
+	}
+	
+	public boolean allied(int player1, int player2){
+		
+		return dip.allied(player1, player2);
+	}
+	
+	public void setAllied(int player1, int player2){
+		
+		dip.alliance(player1, player2);
+	}
+	
+	public void setAtWar(int player1, int player2){
+		
+		dip.atWar(player1, player2);
 	}
 	
 	public void revealMap(int x, int y, int mapNo, int player, int size){
@@ -29,6 +47,16 @@ public class PlayerList {
 			
 			players[p].addMaps(maps);
 		}
+	}
+	
+	public int getPlayersGold(int playerNo){
+		
+		return players[playerNo].getGold();
+	}
+	
+	public int getPlayersFood(int playerNo){
+		
+		return players[playerNo].getFood();
 	}
 	
 	public int getSize(){

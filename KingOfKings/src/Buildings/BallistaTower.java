@@ -6,6 +6,12 @@ public class BallistaTower extends Tower {
 		super(buildingNo);
 		// TODO Auto-generated constructor stub
 	}
+	
+	@Override
+	public String getType() {
+		// TODO Auto-generated method stub
+		return "ballistatower";
+	}
 
 	@Override
 	public int getAttack() {

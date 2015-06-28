@@ -8,6 +8,12 @@ public class Dock extends Naval{
 	}
 	
 	@Override
+	public String getType() {
+		// TODO Auto-generated method stub
+		return "dock";
+	}
+	
+	@Override
 	public String unitcreated() {
 		// TODO Auto-generated method stub
 		return super.unitcreated() + "flagship;warship;fishingboat";

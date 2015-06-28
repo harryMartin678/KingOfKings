@@ -7,6 +7,8 @@ public interface Commands {
 	public void moveUnit(int unitNo, int targetX, int targetY, int targetMap);
 	public void unitInBoat(int unitNo, int boatNo);
 	public void setWayPoints(int unitNo, int[] targetX, int[] targetY, int[] targetMap);
+	public void groupMovement(int[] unitNo, int targetX, int targetY, int targetMap);
+	public void follow(int firstUnit, int secondUnit);
 	public void attackUnit(int unitNo, int targetNo);
 	public void attackBuilding(int unitNo, int buildingNo);
 	
@@ -24,5 +26,8 @@ public interface Commands {
 	public void newViewMap(int mapNo);
 	public void saveGame();
 	public void addMessageToChat(String message);
+	
+	public void alliance(int player1, int player2);
+	public void atWar(int player1, int player2);
 	
 }

@@ -9,72 +9,113 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
 
 public class Server {
+	
+	private ArrayList<BufferedWriter> writers;
+	private ArrayList<BufferedReader> readers;
+	
+	private ArrayList<Integer> playersEntered;
+	private boolean start;
 	
 	/*
 	 * Runs a game server
 	 */
 	public Server() throws IOException{
 		
-		ServerSocket server = new ServerSocket(9999);
+		final ServerSocket server = new ServerSocket(9999);
+		start = true;
 		
-		server.setSoTimeout(1000);
+		playersEntered = new ArrayList<Integer>();
 		
-		//accepts clients 
-		while(true){
-			try{
-				
-				final Socket socket = server.accept();
-				
-				//processes a client 
-				Thread client = new Thread(new Runnable(){
-	
-					@Override
-					public void run() {
-						// TODO Auto-generated method stub
-						InetAddress ia = socket.getInetAddress();
-						
-						if(ia != null){
+		writers = new ArrayList<BufferedWriter>();
+		readers = new ArrayList<BufferedReader>();
+		
+		//server.setSoTimeout(1000);
+		
+		Thread serverThread = new Thread(new Runnable(){
+		
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					//accepts clients 
+					while(true){
+			
 							
+						Socket socket = null;
+						try {
+							socket = server.accept();
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						
+						System.out.println("accept");
+						
+						playersEntered.add(readers.size());
+						
+						if(start){
 							try {
-								BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-								BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-								
-								out.write("Start Game \n");
-								out.flush();
-								
-								while(true){
-									
-									try {
-										Thread.sleep(200);
-									} catch (InterruptedException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									}
-								}
-							}catch(IOException e){
-								
-								
+								readers.add(new BufferedReader(new InputStreamReader(socket.getInputStream())));
+								writers.add(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())));
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
 							}
+							
+						}
+						
+						try {
+							Thread.sleep(100);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
 					}
-					
-					
-				});
-				
-				client.start();
+				}	
+		});
+		
+		serverThread.start();
+	}
+	
+	public void endStart(){
+		
+		start = false;
+	}
+	
+	public int getPlayersEntered(){
+		
+		if(playersEntered.size() == 0){
 			
-			}catch(SocketTimeoutException e){
-			
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
+			return -1;
 		}
+		
+		int pe = playersEntered.get(0);
+		playersEntered.remove(0);
+		
+		return pe;
+	}
+	
+	public void sendMessage(int player, String msg) throws IOException{
+		
+		writers.get(player).write(msg + "\n");
+		writers.get(player).flush();
+	}
+	
+	public String getMessage(int player) throws IOException{
+		
+		return readers.get(player).readLine();
+	}
+	
+	public boolean messageReady(int player) throws IOException{
+		
+		return readers.get(player).ready();
+	}
+	
+	public int noOfPlayers(){
+		
+		return readers.size();
 	}
 	
 	public static void main(String[] args) {

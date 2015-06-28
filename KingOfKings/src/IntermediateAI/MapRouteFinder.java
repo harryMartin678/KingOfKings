@@ -138,13 +138,16 @@ public class MapRouteFinder {
 	/*
 	 * gets the minimum path
 	 */
-	public ArrayList<int[]> getPath(){
+	public ArrayList<int[]> getPath(int startX, int startY, int targetX, int targetY,
+			int startMap, int targetMap){
 		
+		getRoute(startX, startY,targetX, targetY, startMap
+				,targetMap,new ArrayList<Integer>(), new ArrayList<int[]>());
 		minPath.remove(minPath.size()-1);
 		return minPath;
 	}
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		
 		MapRouteFinder mrf = new MapRouteFinder(new UnitList(),
 		new BuildingList(), new MapList("game1"));
@@ -157,6 +160,6 @@ public class MapRouteFinder {
 			System.out.println(path.get(i)[0] + " " + path.get(i)[1]);
 		}
 	
- 	}
+ 	}*/
 
 }

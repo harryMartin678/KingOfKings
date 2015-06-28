@@ -12,6 +12,10 @@ public class Unit {
 	private ArrayList<int[]> path;
 	private float angle;
 	private boolean moving;
+	private int follow;
+	private int followX;
+	private int followY;
+	private int followMap;
 	
 	public static float SPEED_CONSTANT = 50.0f;
 	
@@ -19,6 +23,31 @@ public class Unit {
 		
 		health = this.getMaxHealth();
 		moving = false;
+		follow = -1;
+	}
+	
+	public void stopFollow(){
+		
+		follow = -1;
+	}
+	
+	public void follow(int unitNo, int followX, int followY, int followMap){
+		
+		follow = unitNo;
+		this.followX = followX;
+		this.followY = followY;
+		this.followMap = followMap;
+	}
+	
+	public int getFollow(){
+		
+		return follow;
+	}
+	
+	public boolean correctFollow(int followX, int followY, int followMap){
+		
+		return (this.follow == -1 || (this.followX == followX && this.followY == followY
+							&& this.followMap == followMap));
 	}
 	
 	public int turnsPerAHit(){
@@ -131,10 +160,13 @@ public class Unit {
 		
 		this.path = path;
 		
+		/*System.out.println("START////////");
 		for(int i = 0; i < path.size(); i++){
 			
 			System.out.println(path.get(i)[0] + " " + path.get(i)[1]);
 		}
+		System.out.println("END//////");*/
+		
 	}
 	
 	public boolean dead(){
@@ -185,6 +217,26 @@ public class Unit {
 	public boolean getMoving(){
 		
 		return moving;
+	}
+	
+	public int getPathSize(){
+		
+		if(path == null){
+			
+			return 0;
+		}
+		
+		return path.size();
+	}
+	
+	public int[] getPath(int index){
+		
+		return path.get(index);
+	}
+	
+	public int[] getKnownFollow(){
+		
+		return new int[]{followX, followY, followMap};
 	}
 	
 	//gets a unit to follow an path 

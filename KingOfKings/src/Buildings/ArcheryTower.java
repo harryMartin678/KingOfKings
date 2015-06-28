@@ -2,6 +2,12 @@ package Buildings;
 
 public class ArcheryTower extends Tower {
 	
+	@Override
+	public String getType() {
+		// TODO Auto-generated method stub
+		return "archerytower";
+	}
+	
 	public ArcheryTower(int buildingNo) {
 		super(buildingNo);
 		// TODO Auto-generated constructor stub

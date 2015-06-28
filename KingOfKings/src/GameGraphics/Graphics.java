@@ -11,13 +11,15 @@ import javax.media.opengl.awt.GLJPanel;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+
 import com.jogamp.opengl.util.FPSAnimator;
 
 
 public class Graphics{
 	
-	
+
 	public Graphics(){
+
 		
 		JFrame window = new JFrame();
 		window.setSize(500,500);

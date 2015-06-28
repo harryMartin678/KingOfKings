@@ -12,7 +12,6 @@ public class Building {
 	private ArrayList<QueueItem> unitQueue;
 	private int buildingNo;
 	private boolean justBuilt;
-	private String type;
 	
 	
 	public Building(int buildingNo){
@@ -45,6 +44,11 @@ public class Building {
 			progress++;
 		}
 		
+		public int getProgress(){
+			
+			return progress;
+		}
+		
 		public String getType(){
 			
 			return type;
@@ -58,7 +62,7 @@ public class Building {
 	
 	public String getType(){
 		
-		return type;
+		return "";
 	}
 	
 	public void addToUnitQueue(String unit){
@@ -84,6 +88,11 @@ public class Building {
 		}
 		
 		return list;
+	}
+	
+	public boolean emptyUnitQueue(){
+		
+		return (unitQueue.size() == 0);
 	}
 	
 	public boolean progressUnitQueue(){
@@ -177,6 +186,17 @@ public class Building {
 	public int getBuildingNo() {
 		// TODO Auto-generated method stub
 		return buildingNo;
+	}
+	
+	public String[] getUnitQueueItem(int index){
+		
+		return new String[]{unitQueue.get(index).getType(),
+				new Integer(unitQueue.get(index).getProgress()).toString()};
+	}
+	
+	public int getUnitQueueSize(){
+		
+		return unitQueue.size();
 	}
 	
 	public String unitcreated(){
