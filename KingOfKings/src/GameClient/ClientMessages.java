@@ -11,7 +11,6 @@ public class ClientMessages{
 	private ArrayList<String> outputs;
 	private ArrayList<String> inputs;
 	private Client client;
-	private long time = -1;
 	
 	public ClientMessages(){
 		
@@ -39,14 +38,6 @@ public class ClientMessages{
 					try {
 	
 						inputs.add(client.getMessage());
-						
-						if(time == -1){
-							
-							time = System.currentTimeMillis();
-						}else{
-							
-							System.out.println(System.currentTimeMillis()-time);
-						}
 	
 					} catch (IOException e) {
 						// TODO Auto-generated catch block

@@ -7,14 +7,21 @@ public class Building {
 	private float x;
 	private float y;
 	private String name;
+	private int buildingNo;
 	
 	
-	public Building(float x, float y, String name){
+	public Building(float x, float y, String name,int buildingNo){
 		
 		this.x = x;
 		this.y = y;
+		this.buildingNo = buildingNo;
 		
 		this.name = name;
+	}
+	
+	public int getBuildingNo(){
+		
+		return buildingNo;
 	}
 	
 	public void setXY(float x, float y){

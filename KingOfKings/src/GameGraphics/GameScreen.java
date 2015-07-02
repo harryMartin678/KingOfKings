@@ -1,6 +1,8 @@
 package GameGraphics;
 
+import java.awt.Container;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -9,7 +11,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
@@ -21,13 +27,17 @@ import javax.media.opengl.GLDrawable;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLException;
 import javax.media.opengl.glu.GLU;
+import javax.swing.SwingUtilities;
 
 import com.jogamp.opengl.util.gl2.GLUT;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
 
+import GameClient.ClientMessages;
+import GameClient.ParseText;
 import Map.LoadMap;
 import Map.Map;
+import Map.MapList;
 
 public class GameScreen implements GLEventListener {
 	
@@ -71,6 +81,7 @@ public class GameScreen implements GLEventListener {
 	private ArrayList<Unit> units;
 	private ArrayList<Building> buildings;
 	private Map map;
+	private int selectedUnit;
 	
 	private final float scaleFactor = 1.0f; 
 	private final float WIDTH_CONST = 1.25f;
@@ -89,12 +100,123 @@ public class GameScreen implements GLEventListener {
 	private MouseEvent mouse;
 	private boolean drag = false;
 	private boolean dragBox = false;
-	private float sx,sy,lx,ly;
+	private int sx,sy,lx,ly;
 	private int[] startDB,lastDB;
+	private double baseX;
+	private double baseY;
 	
-	public GameScreen(){
+	private ClientMessages cmsg;
+	private MapList maps;
+	//private ArrayList<String> instructions;
+	private Container pane;
+	
+	
+	public GameScreen(final ClientMessages cmsg,Container pane){
 		
+		this.cmsg = cmsg;
+		this.pane = pane;
 		
+		selectedUnit = -1;
+		
+		units = new ArrayList<Unit>();
+		buildings = new ArrayList<Building>();
+		
+		ArrayList<String> load = new ArrayList<String>();
+		
+		while(true){
+			
+			String msg;
+			
+			if((msg = cmsg.getMessage()) != null){
+				
+				if(msg.equals("END_LOAD")){
+					
+					break;
+				}
+				
+				load.add(msg);
+				
+			}
+			
+			try {
+				Thread.sleep(20);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		maps = new MapList(load.get(0));
+		
+		//map = maps.getMap(new Integer(load.get(1)).intValue());
+		///System.out.println(new Integer(load.get(1)).intValue());
+		map = maps.getMap(0);
+		
+		//frameX = map.getWidth()/2 - 5;
+	//	frameY = map.getHeight()/2;
+		
+		processFrame(load,2);
+
+		Thread getFrame = new Thread(new Runnable(){
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				while(true){
+					
+					long time = System.currentTimeMillis();
+					
+					ArrayList<String> msgs = new ArrayList<String>();
+					
+					while(true){
+						
+						String msg;
+						
+						if((msg = cmsg.getMessage()) != "null"){
+							
+							if(msg.equals("END_FRAME")){
+								
+								break;
+							}
+							
+							msgs.add(msg);
+							
+						}
+						
+						try {
+							Thread.sleep(2);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					
+					processFrame(msgs,2);
+					
+					long delay = 100 - (System.currentTimeMillis() - time);
+					
+					if(delay < 5){
+						
+						delay = 5;
+					}
+					
+					try {
+						Thread.sleep(delay);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+			
+			
+		});
+		
+		getFrame.start();
+		
+		//map = new LoadMap("map1").getMap();
+		
+
 		//load meshes
 		slave = null;
 		servant = null;
@@ -127,15 +249,20 @@ public class GameScreen implements GLEventListener {
 		gold = null;
 		rock = null;
 		
-		units = new ArrayList<Unit>();
-		buildings = new ArrayList<Building>();
+		
 		
 		format = NumberFormat.getNumberInstance();
 		glut = new GLUT();
 		
 		symbols = new TextModel[37];
 		
-		map = new LoadMap("map1").getMap();
+		
+		
+		for(int u = 0; u < units.size(); u++){
+			
+			System.out.println(units.get(u).getUnitType() + " " + units.get(u).getPlayer() 
+					+ " " + units.get(u).getX() + " " + units.get(u).getY());
+		}
 		
 		try {
 			servant = new Model("servant","Models",3,0);
@@ -203,22 +330,7 @@ public class GameScreen implements GLEventListener {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		Unit one = new Unit(0,1,"slave",3);
-		Unit two = new Unit(0,0,"slave",3);
-		Unit three = new Unit(1,0,"slave",3);
-		//Unit swordsman = new Unit(23,0,"swordsman",2);
-		
-		units.add(one);
-		units.add(two);
-		units.add(three);
-		//units.add(swordsman);
-		
-		Building mine = new Building(10,10,"royalPalace");
-		
-		buildings.add(mine);
-		
-		
+
 		//deals with animations 
 		Thread animation = new Thread(new Runnable(){
 
@@ -276,6 +388,71 @@ public class GameScreen implements GLEventListener {
 		
 		
 	}
+	
+	private void processFrame(ArrayList<String> msgs, int index){
+		
+		String msg;
+		
+		int m = index+2;
+		
+		//System.out.println("GET FRAME");
+		
+		ArrayList<String> mapInfo = new ParseText(msgs.get(index)).getNumbers();
+		
+		//System.out.println(msgs.get(index));
+		
+		for(int in = 0; in < mapInfo.size(); in+=2){
+			
+			maps.getMap(new Integer(mapInfo.get(in)).intValue()
+					).setPlayer(new Integer(mapInfo.get(in+1)).intValue());
+		}
+		
+		units.clear();
+		
+		while(!(msg = msgs.get(m)).equals("buildinglist")){
+			
+			ParseText parsed = new ParseText(msg);
+			ArrayList<String> numbers = parsed.getNumbers();
+			String unitName = parsed.getUnitName();
+			
+			if(parsed.getUnitType().equals("chariot")){
+				
+				ChariotUnit chariot = new ChariotUnit(new Float(numbers.get(1)).floatValue(),
+						new Float(numbers.get(2)).floatValue()
+						,unitName,
+						new Integer(numbers.get(3)).intValue(),new Integer(numbers.get(0)).intValue());
+				units.add(chariot);
+			
+			}else{
+				
+				Unit unit = new Unit(new Float(numbers.get(1)).floatValue(),
+						new Float(numbers.get(2)).floatValue()
+						,unitName,
+						new Integer(numbers.get(3)).intValue(),new Integer(numbers.get(0)).intValue()+1);
+				units.add(unit);
+			}
+			
+			m++;
+		}
+		
+		buildings.clear();
+		
+		for(int b = m+1; b < msgs.size(); b++){
+		
+			msg = msgs.get(b);
+			ParseText parsed = new ParseText(msg);
+			ArrayList<String> numbers = parsed.getNumbers();
+			String building = parsed.getUnitName();
+			
+			buildings.add(new Building(new Float(numbers.get(1)).floatValue(),
+					new Float(numbers.get(2)).floatValue(),building,
+					new Integer(numbers.get(0)).intValue()));
+			
+		}
+		
+		units.add(new Unit(1,1,"Slave",1,4));
+		units.add(new Unit(0,0,"Slave",1,5));
+	}
 
 	@Override
 	public void display(GLAutoDrawable drawable) {
@@ -284,7 +461,7 @@ public class GameScreen implements GLEventListener {
 		GL2 draw = drawable.getGL().getGL2();
 		draw.glClear(draw.GL_COLOR_BUFFER_BIT | draw.GL_DEPTH_BUFFER_BIT); // clear color and depth buffers
 	    draw.glLoadIdentity();  // reset the model-view matrix
-	    
+
 	    
 	    if(frameX >= 500){
 	    	
@@ -296,7 +473,7 @@ public class GameScreen implements GLEventListener {
 	    }
 	    
 	    //frameX++;
-	    //frameY++;
+	   // frameY++;
 	    
 	    glu.gluLookAt(0.0f, 0.0f, 10.0f, 
 	    		0.0f, 10.0f, 0.0f, 
@@ -355,17 +532,17 @@ public class GameScreen implements GLEventListener {
 	    		
 	    		if(map.getTile(x, y) == 1){
 	    			
-	    			Unit treeUn =new Unit((float) x,(float) y,"tree",0);
+	    			Unit treeUn =new Unit((float) x,(float) y,"tree",0,-1);
 	    			drawModel(tree,draw,treeUn,FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
 	    		
 	    		}else if(map.getTile(x, y) == 2){
 	    			
-	    			Unit rockUn =new Unit((float) x,(float) y,"rock",0);
+	    			Unit rockUn =new Unit((float) x,(float) y,"rock",0,-1);
 	    			drawModel(rock,draw,rockUn,FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
 	    		
 	    		}else if(map.getTile(x, y) == 3){
 	    			
-	    			Unit goldUn =new Unit((float) x,(float) y,"gold",0);
+	    			Unit goldUn =new Unit((float) x,(float) y,"gold",0,-1);
 	    			drawModel(gold,draw,goldUn,FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
 	    		
 	    		}else if(map.getTile(x,y) == 4){
@@ -399,7 +576,7 @@ public class GameScreen implements GLEventListener {
 	    		
 	    		drawModel(servant,draw,units.get(u),FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
 	    		
-	    	}else if(units.get(u).getUnitType().equals("slave")){
+	    	}else if(units.get(u).getUnitType().equals("Slave")){
 	    		
 	    		drawModel(slave,draw,units.get(u),FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
 	    		
@@ -470,7 +647,7 @@ public class GameScreen implements GLEventListener {
 	    		drawBuildingModel(archeryTower,draw,buildings.get(b),
 	    				FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
 	    		
-	    	}else if(buildings.get(b).getName().equals("ballisticTower")){
+	    	}else if(buildings.get(b).getName().equals("ballistictower")){
 	    		
 	    		drawBuildingModel(ballisticTower,draw,buildings.get(b),
 	    				FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
@@ -500,7 +677,7 @@ public class GameScreen implements GLEventListener {
 	    		drawBuildingModel(fort,draw,buildings.get(b),
 	    				FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
 	    		
-	    	}else if(buildings.get(b).getName().equals("royalPalace")){
+	    	}else if(buildings.get(b).getName().equals("royalpalace")){
 	    		
 	    		drawBuildingModel(royalPalace,draw,buildings.get(b),
 	    				FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
@@ -541,12 +718,6 @@ public class GameScreen implements GLEventListener {
 	
 	private void regulateMouse(GL2 gl){
 		
-		int viewport[] = new int[4];
-	    double mvmatrix[] = new double[16];
-	    double projmatrix[] = new double[16];
-	    int realy = 0;// GL y coord pos
-	    double wcoord[] = new double[4];// wx, wy, wz;// returned xyz coords
-	    double lcoord[] = new double[4];
 	    //http://www.java-tips.org/other-api-tips-100035/112-jogl/1628-how-to-use-gluunproject-in-jogl.html
 	    if (mouse != null)
 	    {
@@ -554,82 +725,78 @@ public class GameScreen implements GLEventListener {
 	      if(mouse.getButton() == MouseEvent.BUTTON1){
 	    	  
 	    	  int x = mouse.getX(), y = mouse.getY();
-		      
-	    	  //get world coordinates 
-		      gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
-	          gl.glGetDoublev(gl.GL_MODELVIEW_MATRIX, mvmatrix, 0);
-	          gl.glGetDoublev(gl.GL_PROJECTION_MATRIX, projmatrix, 0);
-	          /* note viewport[3] is height of window in pixels */
-	          realy = viewport[3] - (int) y - 1;
-	          glu.gluUnProject((double) x, (double) realy, 35.0, //
-	              mvmatrix, 0,
-	              projmatrix, 0, 
-	              viewport, 0, 
-	              wcoord, 0);
+
 	
-		      // System.out.println(wcoord[0] + " " + wcoord[1] + " " + wcoord[2]);
-		      if(!selectMenu(wcoord)){
+		      if(!selectMenu(x, y)){
 		        	
-		    	  selectMap(wcoord);
+		    	  int[] click = selectMap(x,y);
+		    	  
+		    	  for(int u = 0; u < units.size(); u++){
+		    		  
+		    		  if(((int) units.get(u).getX()) == click[0] 
+		    				  && ((int) units.get(u).getY()) == click[1]){
+		    			  
+		    			  selectedUnit = units.get(u).getUnitNo();
+		    		  }
+		    	  }
 		       }
 	    	   mouse = null;
 	      }
-	      
 	      
 	    }
 	    
 	    //deal with dragging the mouse 
 	    if(drag){
 	    	
-	    	gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
-	          gl.glGetDoublev(gl.GL_MODELVIEW_MATRIX, mvmatrix, 0);
-	          gl.glGetDoublev(gl.GL_PROJECTION_MATRIX, projmatrix, 0);
-	          /* note viewport[3] is height of window in pixels */
-	          realy = viewport[3] - (int) sy - 1;
-	          glu.gluUnProject((double) sx, (double) realy, 35.0, //
-	              mvmatrix, 0,
-	              projmatrix, 0, 
-	              viewport, 0, 
-	              wcoord, 0);
-	          
-	          gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
-	          gl.glGetDoublev(gl.GL_MODELVIEW_MATRIX, mvmatrix, 0);
-	          gl.glGetDoublev(gl.GL_PROJECTION_MATRIX, projmatrix, 0);
-	          /* note viewport[3] is height of window in pixels */
-	          realy = viewport[3] - (int) ly - 1;
-	          glu.gluUnProject((double) lx, (double) realy, 35.0, //
-	              mvmatrix, 0,
-	              projmatrix, 0, 
-	              viewport, 0, 
-	              lcoord, 0);
-	    	
-	    	startDB = selectMap(wcoord);
-	    	lastDB = selectMap(lcoord);
+	    	startDB = selectMap(sx,sy);
+	    	lastDB = selectMap(lx,ly);
 	    	
 	    	drag = false;
 	    }
 	}
-
 	
-	private boolean selectMenu(double[] coords){
+	private double[] mouseToWorld(float x, float y,GL2 gl){
+		
+		int viewport[] = new int[4];
+	    double mvmatrix[] = new double[16];
+	    double projmatrix[] = new double[16];
+	    int realy = 0;// GL y coord pos
+	    double wcoord[] = new double[4];// wx, wy, wz;// returned xyz coords
+		
+		gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
+        gl.glGetDoublev(gl.GL_MODELVIEW_MATRIX, mvmatrix, 0);
+        gl.glGetDoublev(gl.GL_PROJECTION_MATRIX, projmatrix, 0);
+        /* note viewport[3] is height of window in pixels */
+        realy = viewport[3] - (int) y - 1;
+        
+        glu.gluUnProject((double) x, (double) realy, 105, //
+            mvmatrix, 0,
+            projmatrix, 0, 
+            viewport, 0, 
+            wcoord, 0);
+        
+        
+        return wcoord.clone();
+	}
+	
+	
+	
+	private boolean selectMenu(int x, int y){
 		
 		//quit button
-		if(coords[0] >= 49.9923 && coords[0] <= 49.9949
-				&& coords[2] <= -16.6606 && coords[2] >= -16.6617){
+		if(x >= 979 && x <= 1124 && y >= 10 && y <= 64){
 			
 			System.out.println("Quit");
 			return true;
 		
 		//pause button
-		}else if(coords[0] >= 49.9986 && coords[0] <= 50.0013
-			&& coords[2] <= -16.6606 && coords[2] >= -16.6617){
+		}else if(x >= 609 && x <= 756 && y >= 9 && y <= 64){
 		
 			System.out.println("Pause");
 			return true;
 		
 		//save button
-		}else if(coords[0] >= 50.005801 && coords[0] <= 50.008309
-				&& coords[2] <= -16.6606 && coords[2] >= -16.6617){
+		}else if(x >= 202 && x <= 349 && y >= 10 && y <= 65 ){
 			
 			System.out.println("Save");
 			return true;
@@ -639,15 +806,15 @@ public class GameScreen implements GLEventListener {
 		
 	}
 	
-	private int[] selectMap(double[] coords){
+	private int[] selectMap(int mx, int my){
 
 		//check with square has been selected 
 		for(int y = 0; y < 25; y++){
 			for(int x = 0; x < 40; x++){
-				if(coords[0] >= 50.00810241699 - (0.00041198731*x) 
-						&& coords[0] <= 50.00851821899 - (0.000396728115*x)
-						&& coords[2] >= -16.672410964965 + (0.0003967285156*y)
-						&& coords[2] <= -16.67197799682 + (0.0004215240381*y)){
+				if(mx >= 191 + (24*x) 
+						&& mx <= 215 + (24*x)
+						&& my >= 659 - (25*y)
+						&& my <= 684 - (25*y)){
 				
 					return new int[]{x,y};
 				}
@@ -1121,6 +1288,9 @@ public class GameScreen implements GLEventListener {
 			public void mouseClicked(MouseEvent e) {
 				// TODO Auto-generated method stub
 
+				//System.out.println("click");
+				//System.out.println(e.getX() + " " + e.getY());
+				
 				mouse = e;
 				dragBox = false;
 				

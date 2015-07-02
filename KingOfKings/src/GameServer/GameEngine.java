@@ -64,17 +64,16 @@ public class GameEngine implements Commands {
 
 		time = System.currentTimeMillis();
 		
-		Worker creator = new Worker();
-		Worker one = new Worker();
-		one.build(0);
-		creator.build(0);
-		sites.addSite(new Farm(0),creator);
-		sites.addWorker(one);
 		
 		for(int i = 0; i < playerNo; i++){
 			
 			maps.getMap(i).setPlayer(i);
+			players.setPlayerViewedMap(i,i);
 		}
+		
+		//stub
+		maps.getMap(1).setPlayer(0);
+		players.setPlayerViewedMap(0, 1);
 		
 		
 		for(int i = 0; i < maps.getSize(); i++){
@@ -461,8 +460,11 @@ public class GameEngine implements Commands {
 		
 		for(int m = 0; m < maps.getSize(); m++){
 			
-			mapInfo += m + " " + maps.getMap(m).getPlayer() + " ";
+			mapInfo += " " + m + " " + maps.getMap(m).getPlayer();
+			
 		}
+		
+		mapInfo = mapInfo.substring(1);
 		
 		return mapInfo;
 	}
@@ -531,6 +533,11 @@ public class GameEngine implements Commands {
 		}
 		
 		return info;
+	}
+	
+	public int getPlayerViewedMap(int player){
+		
+		return players.getPlayerViewedMap(player);
 	}
 
 	

@@ -41,6 +41,16 @@ public class PlayerList {
 		players[player].showTiles(x, y, mapNo,size);
 	}
 	
+	public int getPlayerViewedMap(int player){
+		
+		return players[player].getViewedMap();
+	}
+	
+	public void setPlayerViewedMap(int player, int viewedMap){
+		
+		players[player].setViewedMap(viewedMap);
+	}
+	
 	public void showPlayersMaps(MapList maps){
 		
 		for(int p = 0; p < players.length; p++){

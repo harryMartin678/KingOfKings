@@ -1,6 +1,7 @@
 package GameGraphics;
 import java.awt.Container;
 import java.awt.GridLayout;
+import java.util.ArrayList;
 
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLDrawableFactory;
@@ -11,11 +12,14 @@ import javax.media.opengl.awt.GLJPanel;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import GameClient.ClientMessages;
 
 import com.jogamp.opengl.util.FPSAnimator;
 
 
 public class Graphics{
+	
+	private ClientMessages cmsg;
 	
 
 	public Graphics(){
@@ -29,16 +33,16 @@ public class Graphics{
 		
 		Container pane = window.getContentPane();
 		
+		cmsg = new ClientMessages();
+		
 		final GLProfile profile = GLProfile.get(GLProfile.GL2);
 	    GLCapabilities capabilities = new GLCapabilities(profile);
 		GLCanvas canvas = new GLCanvas(capabilities);
 		
-		
-		
 		FPSAnimator animator = new FPSAnimator(canvas,10);
 		animator.start();
 		
-		GameScreen gs = new GameScreen();
+		GameScreen gs = new GameScreen(cmsg,pane);
 		
 		canvas.addMouseListener(gs.getMouseListener());
 		canvas.addMouseMotionListener(gs.getMouseMotionListener());

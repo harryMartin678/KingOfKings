@@ -2,8 +2,8 @@ package GameGraphics;
 
 public class ChariotUnit extends Unit {
 
-	public ChariotUnit(float x, float y, String unitType,int player) {
-		super(x, y, unitType,player);
+	public ChariotUnit(float x, float y, String unitType,int player, int unitNo) {
+		super(x, y, unitType,player,unitNo);
 		// TODO Auto-generated constructor stub
 	}
 	

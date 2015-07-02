@@ -10,8 +10,9 @@ public class Unit {
 	private boolean forward;
 	protected int state;
 	private int player;
+	private int unitNo;
 	
-	public Unit(float x, float y,String unitType, int player){
+	public Unit(float x, float y,String unitType, int player, int unitNo){
 		
 		this.x = x;
 		this.y = y;
@@ -20,7 +21,13 @@ public class Unit {
 		state = 0;
 		this.unitType = unitType;
 		this.player = player;
+		this.unitNo = unitNo;
 
+	}
+	
+	public int getUnitNo(){
+		
+		return unitNo;
 	}
 	
 	public int getPlayer(){

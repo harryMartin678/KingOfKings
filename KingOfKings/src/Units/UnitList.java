@@ -102,6 +102,7 @@ public class UnitList {
 			
 		}else if(unitType.equals("slave")){
 			
+			System.out.println("add slave");
 			units.add(new Slave());
 			units.get(units.size()-1).setPlayer(player);
 			units.get(units.size()-1).setPos(x, y);
