@@ -3,23 +3,20 @@ package GameServer;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import GameClient.ParseText;
+
 public class ServerMessages {
 	
-	private ArrayList<PlayerMsg> inputs;
 	private int playerNo;
 	private Server server;
 	private boolean start;
 	private GameEngine engine;
-	private Thread sendFrames;
 	
 	public ServerMessages(){
-		
-		inputs = new ArrayList<PlayerMsg>();
 		
 		playerNo = 0;
 		
 		start = true;
-		
 		
 		try {
 			System.out.println("success");
@@ -46,8 +43,21 @@ public class ServerMessages {
 						try {
 							if(server.messageReady(p)){
 								String inpt = server.getMessage(p);
-								inputs.add(new PlayerMsg(new Integer(inpt.charAt(0)).intValue(),
-										inpt.substring(1)));
+								
+								if(inpt.substring(0, 4).equals("utat")){
+									
+									System.out.println(inpt);
+									ArrayList<String> numbers = 
+											new ParseText(inpt.substring(5)).getNumbers();
+									engine.moveUnit(new Integer(numbers.get(0)).intValue(),
+											new Integer(numbers.get(1)).intValue(),
+											new Integer(numbers.get(2)).intValue(),
+											new Integer(numbers.get(3)).intValue());
+								
+								}else if(inpt.equals("SEND_FRAME")){
+									
+									sendFrame(p);
+								}
 							}
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
@@ -110,46 +120,24 @@ public class ServerMessages {
 		
 		handleAcceptance.start();
 		
-		sendFrames = new Thread(new Runnable(){
-
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				
-				while(true){
-					
-					sendFrame();
-					
-					try {
-						Thread.sleep(50);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-			
-			
-		});
+		
 	}
 	
-	public void sendFrame(){
+	public void sendFrame(int player){
+			
+		String output = "";
 		
-		for(int p = 0; p < playerNo; p++){
+		int viewedMap = engine.getPlayerViewedMap(player);
 			
-			String output = "";
-			
-			int viewedMap = engine.getPlayerViewedMap(p);
-			
-			output += "START_FRAME\n";
-			output += engine.getWhoOwnsWhatMap() + "\n";
-			output += "unitlist\n";
-			output += engine.getUnitsOnMap(viewedMap);
-			output += "buildinglist\n";
-			output += engine.getBuildingOnMap(viewedMap);
-			output += "END_FRAME\n";
-			addMessage(p,output);
-		}
+		output += "START_FRAME\n";
+		output += engine.getWhoOwnsWhatMap() + "\n";
+		output += "unitlist\n";
+		output += engine.getUnitsOnMap(viewedMap);
+		output += "buildinglist\n";
+		output += engine.getBuildingOnMap(viewedMap);
+		output += "END_FRAME\n";
+		addMessage(player,output);
+		
 	}
 	
 	public void startGame(String game, int noOfPlayers){
@@ -180,8 +168,7 @@ public class ServerMessages {
 			
 			addMessage(p,output);
 		}
-		
-		this.sendFrames.start();
+
 	}
 	
 	public void endStart(){

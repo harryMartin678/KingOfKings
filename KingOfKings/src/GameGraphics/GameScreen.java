@@ -150,7 +150,7 @@ public class GameScreen implements GLEventListener {
 		
 		//map = maps.getMap(new Integer(load.get(1)).intValue());
 		///System.out.println(new Integer(load.get(1)).intValue());
-		map = maps.getMap(0);
+		map = maps.getMap(1);
 		
 		//frameX = map.getWidth()/2 - 5;
 	//	frameY = map.getHeight()/2;
@@ -162,38 +162,49 @@ public class GameScreen implements GLEventListener {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
+				
+				cmsg.addMessage("SEND_FRAME");
+				
 				while(true){
 					
 					long time = System.currentTimeMillis();
 					
-					ArrayList<String> msgs = new ArrayList<String>();
-					
-					while(true){
+					if(cmsg.getMessage().equals("START_FRAME")){
 						
-						String msg;
+						ArrayList<String> msgs = new ArrayList<String>();
 						
-						if((msg = cmsg.getMessage()) != "null"){
+						while(true){
 							
-							if(msg.equals("END_FRAME")){
+							String msg = "";
+							
+							if((msg = cmsg.getMessage()) != null && !msg.equals("null")){
 								
-								break;
+								if(msg.equals("END_FRAME")){
+									
+									//for(int i = 0; i < msgs.size(); i++){
+										
+										//System.out.println(msgs.get(i));
+									//}
+									
+									processFrame(msgs,0);
+									
+									cmsg.addMessage("SEND_FRAME");
+									break;
+								}
+									
+								msgs.add(msg);
 							}
 							
-							msgs.add(msg);
-							
-						}
-						
-						try {
-							Thread.sleep(2);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							try {
+								Thread.sleep(5);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 						}
 					}
 					
-					processFrame(msgs,2);
-					
-					long delay = 100 - (System.currentTimeMillis() - time);
+					long delay = 50 - (System.currentTimeMillis() - time);
 					
 					if(delay < 5){
 						
@@ -344,6 +355,16 @@ public class GameScreen implements GLEventListener {
 					
 					for(int i = 0; i < units.size(); i++){
 						
+						if(i >= units.size()){
+							
+							try {
+								Thread.sleep(2);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+						
 						units.get(i).changeCurrentFrame();
 					}
 
@@ -393,23 +414,39 @@ public class GameScreen implements GLEventListener {
 		
 		String msg;
 		
+		if(msgs.get(0).equals("START_FRAME")){
+			
+			index++;
+		}
+		
 		int m = index+2;
 		
 		//System.out.println("GET FRAME");
 		
-		ArrayList<String> mapInfo = new ParseText(msgs.get(index)).getNumbers();
+		
 		
 		//System.out.println(msgs.get(index));
 		
-		for(int in = 0; in < mapInfo.size(); in+=2){
-			
-			maps.getMap(new Integer(mapInfo.get(in)).intValue()
-					).setPlayer(new Integer(mapInfo.get(in+1)).intValue());
+		if(!msgs.get(index).equals("unitlist")){
+		
+			ArrayList<String> mapInfo = new ParseText(msgs.get(index)).getNumbers();
+			for(int in = 0; in < mapInfo.size(); in+=2){
+				
+				maps.getMap(new Integer(mapInfo.get(in)).intValue()
+						).setPlayer(new Integer(mapInfo.get(in+1)).intValue());
+			}
+		
 		}
+		
 		
 		units.clear();
 		
 		while(!(msg = msgs.get(m)).equals("buildinglist")){
+			
+			if(msg.equals("unitlist")){
+				
+				continue;
+			}
 			
 			ParseText parsed = new ParseText(msg);
 			ArrayList<String> numbers = parsed.getNumbers();
@@ -425,24 +462,45 @@ public class GameScreen implements GLEventListener {
 			
 			}else{
 				
+				
 				Unit unit = new Unit(new Float(numbers.get(1)).floatValue(),
 						new Float(numbers.get(2)).floatValue()
 						,unitName,
-						new Integer(numbers.get(3)).intValue(),new Integer(numbers.get(0)).intValue()+1);
+						new Integer(numbers.get(3)).intValue(),new Integer(numbers.get(0)).intValue());
+				
+				if(new Integer(numbers.get(4)).intValue() == 1){
+					
+					unit.moving();
+				}
+				
+				unit.setAngle(new Integer(numbers.get(5)).intValue());
+				
+				if(unit.getUnitNo() == 5){
+					
+					System.out.println(unit.getUnitNo() + " " + unit.getAngle());
+				}
 				units.add(unit);
 			}
 			
 			m++;
 		}
 		
+		
 		buildings.clear();
 		
 		for(int b = m+1; b < msgs.size(); b++){
 		
 			msg = msgs.get(b);
+			
+			if(msg.equals("buildinglist")){
+				
+				continue;
+			}
+			//System.out.println(msg);
 			ParseText parsed = new ParseText(msg);
 			ArrayList<String> numbers = parsed.getNumbers();
 			String building = parsed.getUnitName();
+			
 			
 			buildings.add(new Building(new Float(numbers.get(1)).floatValue(),
 					new Float(numbers.get(2)).floatValue(),building,
@@ -450,8 +508,8 @@ public class GameScreen implements GLEventListener {
 			
 		}
 		
-		units.add(new Unit(1,1,"Slave",1,4));
-		units.add(new Unit(0,0,"Slave",1,5));
+		//units.add(new Unit(1,1,"Slave",1,4));
+		//units.add(new Unit(0,0,"Slave",1,5));
 	}
 
 	@Override
@@ -461,7 +519,6 @@ public class GameScreen implements GLEventListener {
 		GL2 draw = drawable.getGL().getGL2();
 		draw.glClear(draw.GL_COLOR_BUFFER_BIT | draw.GL_DEPTH_BUFFER_BIT); // clear color and depth buffers
 	    draw.glLoadIdentity();  // reset the model-view matrix
-
 	    
 	    if(frameX >= 500){
 	    	
@@ -628,6 +685,23 @@ public class GameScreen implements GLEventListener {
 	    		
 	    		drawModel(flagship,draw,units.get(u),FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
 	    	}
+	    	
+	    	if(u < units.size() && units.get(u).getUnitNo() == selectedUnit){
+	    		
+	    		draw.glLoadIdentity();
+	    		draw.glTranslatef(units.get(u).getX()-(FRAME_X_SIZE/WIDTH_CONST)-frameX, 
+	    				units.get(u).getY()-(FRAME_Y_SIZE/HEIGHT_CONST)-frameY, -34.0f);
+	    		draw.glColor3f(0.0f, 0.0f, 1.0f);
+	    		draw.glScalef(0.5f, 0.5f, 0.5f);
+	    		
+	    		
+	    		draw.glBegin(draw.GL_LINE_LOOP);
+	    			draw.glVertex3f(1.0f, 1.0f, -1.0f); //bottom face
+	    			draw.glVertex3f(-1.0f, 1.0f, -1.0f);
+	    			draw.glVertex3f(-1.0f, -1.0f, -1.0f);
+	    			draw.glVertex3f(1.0f, -1.0f, -1.0f);
+	    		draw.glEnd();
+	    	}
 	    }
 	    
 	    //draw buildings in view
@@ -731,12 +805,23 @@ public class GameScreen implements GLEventListener {
 		        	
 		    	  int[] click = selectMap(x,y);
 		    	  
-		    	  for(int u = 0; u < units.size(); u++){
+		    	  if(selectedUnit != -1){
 		    		  
-		    		  if(((int) units.get(u).getX()) == click[0] 
-		    				  && ((int) units.get(u).getY()) == click[1]){
+		    		  System.out.println(selectedUnit + " " + (click[0]+frameX) 
+		    				  + " " + (click[1]+frameY));
+		    		  cmsg.addMessage("utat " + selectedUnit + " "
+		    				  + (click[0]+frameX) + " " + (click[1]+frameY) + " " + 1);
+		    		  selectedUnit = -1;
+		    		  
+		    	  }else{
+		    	  
+		    		  for(int u = 0; u < units.size(); u++){
 		    			  
-		    			  selectedUnit = units.get(u).getUnitNo();
+		    			  if(((int) units.get(u).getX()) == click[0] 
+		    					  && ((int) units.get(u).getY()) == click[1]){
+		    			  
+		    				  selectedUnit = units.get(u).getUnitNo();
+		    		 	}
 		    		  }
 		    	  }
 		       }
@@ -753,6 +838,19 @@ public class GameScreen implements GLEventListener {
 	    	
 	    	drag = false;
 	    }
+	}
+	
+	private Unit getUnitFromUnitNo(int unitNo){
+		
+		for(int u = 0; u < units.size(); u++){
+			
+			if(units.get(u).getUnitNo() == unitNo){
+				
+				return units.get(u);
+			}
+		}
+		
+		return null;
 	}
 	
 	private double[] mouseToWorld(float x, float y,GL2 gl){
@@ -1067,6 +1165,7 @@ public class GameScreen implements GLEventListener {
 		//scales the model's size
 		draw.glScalef(model.sizeX()*scaleFactor, model.sizeY()*scaleFactor, model.sizeZ()*scaleFactor);
 		draw.glRotatef(45, 1, 0, 0);
+		draw.glRotatef((float) unit.getAngle(), 0, 1, 0);
 		
 		//gets the frame and state of a unit 
 		int currentFrame = unit.getCurrentFrame();

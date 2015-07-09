@@ -11,6 +11,7 @@ public class Unit {
 	protected int state;
 	private int player;
 	private int unitNo;
+	private int angle;
 	
 	public Unit(float x, float y,String unitType, int player, int unitNo){
 		
@@ -23,6 +24,16 @@ public class Unit {
 		this.player = player;
 		this.unitNo = unitNo;
 
+	}
+	
+	public void setAngle(int angle){
+		
+		this.angle = angle;
+	}
+	
+	public int getAngle(){
+		
+		return angle;
 	}
 	
 	public int getUnitNo(){

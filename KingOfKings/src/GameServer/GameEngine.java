@@ -67,7 +67,7 @@ public class GameEngine implements Commands {
 		
 		for(int i = 0; i < playerNo; i++){
 			
-			maps.getMap(i).setPlayer(i);
+			maps.getMap(i).setPlayer(i+1);
 			players.setPlayerViewedMap(i,i);
 		}
 		
@@ -88,7 +88,7 @@ public class GameEngine implements Commands {
 			units.addUnit("slave", i, (maps.getMapWidth(i)/2)+5, (maps.getMapHeight(i)/2)+5, maps.getPlayer(i));
 		}
 		
-		this.setWayPoints(0, new int[]{0,15,15,15,2}, new int[]{0,15,15,15,15}, new int[]{2,4,3,4,0});
+		///this.setWayPoints(0, new int[]{0,15,15,15,2}, new int[]{0,15,15,15,15}, new int[]{2,4,3,4,0});
 		
 		new CollisionMap(buildings,units,maps.getMap(0));
 		
@@ -126,8 +126,8 @@ public class GameEngine implements Commands {
 		
 		//move units
 		units.moveUnits();
-	
-		//System.out.println(units.getUnitX(0) +" " + units.getUnitY(0) + " " + units.getUnitMap(0));
+		
+		//System.out.println(units.getUnitX(5) + " " + units.getUnitY(5));
 		
 		//reveal map 
 		revealMap();
@@ -247,6 +247,9 @@ public class GameEngine implements Commands {
 	public void moveUnit(int unitNo, int targetX, int targetY, int targetMap) {
 		// TODO Auto-generated method stub
 		
+		System.out.println(targetX + " " + targetY + " " + targetMap);
+		System.out.println(units.getUnitMap(unitNo) + " " + units.getUnitX(unitNo) 
+				+ " " + units.getUnitY(unitNo));
 		//add a path to move to the unit 
 		units.addPathToUnit(unitNo, 
 				new MapRouteFinder(units, buildings, maps
@@ -509,9 +512,16 @@ public class GameEngine implements Commands {
 			
 			if(units.getUnitMap(u) == map){
 				
+				int moving = 0;
+				
+				if(units.getUnitMoving(u)){
+					
+					moving = 1;
+				}
+				
 				info += u + " " + units.getUnitName(u) + " " + units.getUnitX(u) +
 						" " + units.getUnitY(u) + " " + units.getUnitPlayer(u) + 
-						"\n";
+						" " + moving + " " + units.getOrientation(u) + "\n";
 			}
 		}
 		

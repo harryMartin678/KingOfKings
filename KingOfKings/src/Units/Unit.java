@@ -10,7 +10,7 @@ public class Unit {
 	private int health;
 	private int player;
 	private ArrayList<int[]> path;
-	private float angle;
+	private int angle;
 	private boolean moving;
 	private int follow;
 	private int followX;
@@ -160,12 +160,12 @@ public class Unit {
 		
 		this.path = path;
 		
-		/*System.out.println("START////////");
+		System.out.println("START////////");
 		for(int i = 0; i < path.size(); i++){
 			
 			System.out.println(path.get(i)[0] + " " + path.get(i)[1]);
 		}
-		System.out.println("END//////");*/
+		System.out.println("END//////");
 		
 	}
 	
@@ -174,37 +174,42 @@ public class Unit {
 		return (health == 0);
 	}
 	
+	public int getOrientation(){
+		
+		return angle;
+	}
+	
 	
 	//change the orientation of the unit
 	private void setOrientation(float x, float y, float targetX, float targetY){
 		
 		if(targetX - x == 1 && targetY - y == 0){
 			
-			angle = 0;
+			angle = 90;
 			
 		}else if(targetX - x == -1 && targetY - y == 0){
 			
-			angle = 180;
+			angle = 270;
 		
 		}else if(targetX - x == 0 && targetY - y == 1){
 			
-			angle = 270;
+			angle = 180;
 		
 		}else if(targetX - x == 0 && targetY - y == -1){
 			
-			angle = 90;
+			angle = 0;
 		
 		}else if(targetX - x == 1 && targetY - y == -1){
 			
-			angle = 45;
+			angle = 315;
 		
 		}else if(targetX - x == 1 && targetY - y == 1){
 			
-			angle = 315;
+			angle = 225;
 		
 		}else if(targetX - x == -1 && targetY - y == 1){
 			
-			angle = 225;
+			angle = 45;
 		
 		}
 	}

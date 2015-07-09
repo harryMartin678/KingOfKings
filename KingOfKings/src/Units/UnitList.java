@@ -26,6 +26,11 @@ public class UnitList {
 		return units.get(unitNo).getMoving();
 	}
 	
+	public int getOrientation(int unitNo){
+		
+		return units.get(unitNo).getOrientation();
+	}
+	
 	public int[] getKnownFollow(int unitNo){
 		
 		return units.get(unitNo).getKnownFollow();

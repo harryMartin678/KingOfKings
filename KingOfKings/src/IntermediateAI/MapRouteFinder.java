@@ -100,6 +100,7 @@ public class MapRouteFinder {
 					path.clear();
 			}
 		}
+		
 
 	}
 	
@@ -151,9 +152,8 @@ public class MapRouteFinder {
 		
 		MapRouteFinder mrf = new MapRouteFinder(new UnitList(),
 		new BuildingList(), new MapList("game1"));
-		mrf.getRoute(0, 0, 15, 15, 0, 3, new ArrayList<Integer>(), new ArrayList<int[]>());
 		
-		ArrayList<int[]> path = mrf.getPath();
+		ArrayList<int[]> path = mrf.getPath(17,17,17,24,1,1);
 
 		for(int i = 0; i < path.size(); i++){
 			
