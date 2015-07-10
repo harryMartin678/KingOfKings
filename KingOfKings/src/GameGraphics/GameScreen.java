@@ -169,6 +169,15 @@ public class GameScreen implements GLEventListener {
 					
 					long time = System.currentTimeMillis();
 					
+					/*try {
+						Thread.sleep(2);
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}*/
+					
+					//System.out.println("DO FRAME");
+					
 					if(cmsg.getMessage().equals("START_FRAME")){
 						
 						ArrayList<String> msgs = new ArrayList<String>();
@@ -181,12 +190,25 @@ public class GameScreen implements GLEventListener {
 								
 								if(msg.equals("END_FRAME")){
 									
-									//for(int i = 0; i < msgs.size(); i++){
-										
-										//System.out.println(msgs.get(i));
-									//}
+									boolean building = false;
+									boolean unit = false;
 									
-									processFrame(msgs,0);
+									for(int m = 0; m < msgs.size(); m++){
+										
+										if(msgs.get(m).equals("buildinglist")){
+											
+											building = true;
+											break;
+										
+										}else if(msgs.get(m).equals("unitlist")){
+											
+											unit = true;
+										}
+									}
+									
+									if(unit && building){
+										processFrame(msgs,0);
+									}
 									
 									cmsg.addMessage("SEND_FRAME");
 									break;
@@ -421,12 +443,6 @@ public class GameScreen implements GLEventListener {
 		
 		int m = index+2;
 		
-		//System.out.println("GET FRAME");
-		
-		
-		
-		//System.out.println(msgs.get(index));
-		
 		if(!msgs.get(index).equals("unitlist")){
 		
 			ArrayList<String> mapInfo = new ParseText(msgs.get(index)).getNumbers();
@@ -475,16 +491,17 @@ public class GameScreen implements GLEventListener {
 				
 				unit.setAngle(new Integer(numbers.get(5)).intValue());
 				
-				if(unit.getUnitNo() == 5){
+				//if(unit.getUnitNo() == 5){
 					
-					System.out.println(unit.getUnitNo() + " " + unit.getAngle());
-				}
+					//System.out.println(unit.getUnitNo() + " " + unit.getAngle());
+				//}
 				units.add(unit);
 			}
-			
+				
 			m++;
 		}
 		
+		//System.out.println(units.size() + " unitSize");
 		
 		buildings.clear();
 		
@@ -507,9 +524,7 @@ public class GameScreen implements GLEventListener {
 					new Integer(numbers.get(0)).intValue()));
 			
 		}
-		
-		//units.add(new Unit(1,1,"Slave",1,4));
-		//units.add(new Unit(0,0,"Slave",1,5));
+
 	}
 
 	@Override
@@ -620,6 +635,18 @@ public class GameScreen implements GLEventListener {
 	    //draw units in view 
 	    for(int u = 0; u < units.size(); u++){
 	    	
+	    	while(u > units.size()){
+	    		
+	    		try {
+					Thread.sleep(2);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	    	}
+	    	
+	    	ArrayList<Unit> units = (ArrayList<Unit>) this.units.clone();
+	    	
 	    	if(!(units.get(u).getX() >= frameX 
 	    			&& units.get(u).getX() < (frameX + FRAME_X_SIZE)
 	    			&& units.get(u).getY() >= frameY 
@@ -706,6 +733,18 @@ public class GameScreen implements GLEventListener {
 	    
 	    //draw buildings in view
 	    for(int b = 0; b < buildings.size(); b++){
+	    	
+	    	while(b > buildings.size()){
+	    		
+	    		try {
+					Thread.sleep(2);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	    	}
+	    	
+	    	ArrayList<Building> buildings = (ArrayList<Building>) this.buildings.clone();
 	    	
 	    	if(!(buildings.get(b).getX() >= frameX 
 	    			&& buildings.get(b).getX() < (frameX + FRAME_X_SIZE)
@@ -1248,7 +1287,7 @@ public class GameScreen implements GLEventListener {
 		draw.glLoadIdentity();
 
 		draw.glTranslatef(building.getX()-width-frameX, building.getY()-height-frameY, -35); //-35
-		draw.glScalef(model.sizeX()*scaleFactor, model.sizeY()*scaleFactor, model.sizeZ()*scaleFactor);
+		draw.glScalef(model.sizeX()*scaleFactor, model.sizeY()*scaleFactor,model.sizeZ()*scaleFactor);
 		draw.glRotatef(90.0f, 1, 0, 0);
 		draw.glRotatef(model.getAngle(), 0, 1, 0);
 

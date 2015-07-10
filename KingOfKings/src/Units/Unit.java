@@ -201,16 +201,19 @@ public class Unit {
 		
 		}else if(targetX - x == 1 && targetY - y == -1){
 			
-			angle = 315;
+			angle = 45;
 		
 		}else if(targetX - x == 1 && targetY - y == 1){
 			
-			angle = 225;
+			angle = 315;
 		
 		}else if(targetX - x == -1 && targetY - y == 1){
 			
-			angle = 45;
+			angle = 225;
 		
+		}else if(targetX - x == -1 && targetY - y == -1){
+			
+			angle = 135;
 		}
 	}
 	
@@ -291,6 +294,12 @@ public class Unit {
 				//else just move the unit according to velocity
 				x = tempX;
 				y = tempY;
+				
+				//change the orientation
+				if(path.size() > 1){
+					setOrientation(path.get(0)[0],path.get(0)[1],
+							path.get(1)[0],path.get(1)[1]);
+				}
 			}
 
 		}

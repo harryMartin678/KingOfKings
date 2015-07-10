@@ -29,4 +29,16 @@ public class Stockpile extends Resource {
 		
 		return "slave;servant";
 	}
+	
+	@Override
+	public int getSizeX() {
+		// TODO Auto-generated method stub
+		return super.getSizeX()+2;
+	}
+	
+	@Override
+	public int getSizeY() {
+		// TODO Auto-generated method stub
+		return super.getSizeY()+2;
+	}
 }
