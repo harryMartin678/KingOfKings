@@ -2,6 +2,7 @@ package GameGraphics;
 
 import java.awt.Container;
 import java.awt.Image;
+import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -110,6 +111,9 @@ public class GameScreen implements GLEventListener {
 	//private ArrayList<String> instructions;
 	private Container pane;
 	
+	private int MOUSE_SEN = 5;
+	private int movedPrint = 0;
+	
 	
 	public GameScreen(final ClientMessages cmsg,Container pane){
 		
@@ -150,10 +154,10 @@ public class GameScreen implements GLEventListener {
 		
 		//map = maps.getMap(new Integer(load.get(1)).intValue());
 		///System.out.println(new Integer(load.get(1)).intValue());
-		map = maps.getMap(1);
+		map = maps.getMap(0);
 		
 		//frameX = map.getWidth()/2 - 5;
-	//	frameY = map.getHeight()/2;
+		//frameY = map.getHeight()/2;
 		
 		processFrame(load,2);
 
@@ -375,6 +379,9 @@ public class GameScreen implements GLEventListener {
 					
 					long startTime = System.currentTimeMillis();
 					
+					//deal with mouse input 
+				    regulateMouse();
+					
 					for(int i = 0; i < units.size(); i++){
 						
 						if(i >= units.size()){
@@ -535,7 +542,7 @@ public class GameScreen implements GLEventListener {
 		draw.glClear(draw.GL_COLOR_BUFFER_BIT | draw.GL_DEPTH_BUFFER_BIT); // clear color and depth buffers
 	    draw.glLoadIdentity();  // reset the model-view matrix
 	    
-	    if(frameX >= 500){
+	    /*if(frameX >= 500){
 	    	
 	    	frameX = 0;
 	    
@@ -544,8 +551,8 @@ public class GameScreen implements GLEventListener {
 	    	frameY = 0;
 	    }
 	    
-	    //frameX++;
-	   // frameY++;
+	    frameX++;
+	    frameY++;*/
 	    
 	    glu.gluLookAt(0.0f, 0.0f, 10.0f, 
 	    		0.0f, 10.0f, 0.0f, 
@@ -556,8 +563,8 @@ public class GameScreen implements GLEventListener {
 	    boolean checked = true;
 
 	    //draw tiles for landscape
-	    for(int y = frameX; y < frameX+FRAME_X_SIZE; y++){
-	    	for(int x = frameY; x < frameY+FRAME_Y_SIZE; x++){
+	    for(int y = frameY; y < frameY+FRAME_X_SIZE; y++){
+	    	for(int x = frameX; x < frameX+FRAME_Y_SIZE; x++){
 	    	
 	    		if(x >= map.getWidth() || y >= map.getHeight() || map.getTile(x,y) == -1 ||
 	    				x < 0 || y < 0){
@@ -593,8 +600,8 @@ public class GameScreen implements GLEventListener {
 	
 	    
 	    //draw landscape features in view 
-	    for(int y = frameX; y < frameX+FRAME_X_SIZE; y++){
-	    	for(int x = frameY; x < frameY+FRAME_Y_SIZE; x++){
+	    for(int y = frameY; y < frameY+FRAME_X_SIZE; y++){
+	    	for(int x = frameX; x < frameX+FRAME_Y_SIZE; x++){
 	    		
 	    		if(x >= map.getWidth() || y >= map.getHeight() ||
 	    				x < 0 || y < 0){
@@ -817,8 +824,7 @@ public class GameScreen implements GLEventListener {
 	    	}
 	    }
 	    
-	    //deal with mouse input 
-	    regulateMouse(draw);
+	    
 
 	    draw.glDisable(draw.GL_LIGHTING);
 	    //draw menus 
@@ -829,7 +835,7 @@ public class GameScreen implements GLEventListener {
 	
 	}
 	
-	private void regulateMouse(GL2 gl){
+	private void regulateMouse(){
 		
 	    //http://www.java-tips.org/other-api-tips-100035/112-jogl/1628-how-to-use-gluunproject-in-jogl.html
 	    if (mouse != null)
@@ -845,9 +851,7 @@ public class GameScreen implements GLEventListener {
 		    	  int[] click = selectMap(x,y);
 		    	  
 		    	  if(selectedUnit != -1){
-		    		  
-		    		  System.out.println(selectedUnit + " " + (click[0]+frameX) 
-		    				  + " " + (click[1]+frameY));
+		    	
 		    		  cmsg.addMessage("utat " + selectedUnit + " "
 		    				  + (click[0]+frameX) + " " + (click[1]+frameY) + " " + 1);
 		    		  selectedUnit = -1;
@@ -876,7 +880,73 @@ public class GameScreen implements GLEventListener {
 	    	lastDB = selectMap(lx,ly);
 	    	
 	    	drag = false;
+	    
 	    }
+	    	
+	    int mx = (int) MouseInfo.getPointerInfo().getLocation().getX();
+	    int my = (int) MouseInfo.getPointerInfo().getLocation().getY();
+	    	
+		int square[] = selectMap(mx,my);    
+	
+		
+		if(square[1] < (FRAME_X_SIZE+frameY) && square[1] > (FRAME_X_SIZE-6+frameY)){
+			
+			if(square[1] < (FRAME_X_SIZE+frameY) && square[1] > (FRAME_X_SIZE-3+frameY)){	
+				if(frameY < map.getHeight()-FRAME_X_SIZE){
+					frameY+=2;
+				}
+			}else{
+				
+				if(frameY < map.getHeight()-FRAME_X_SIZE){
+					frameY++;
+				}
+			}
+		
+		}
+		
+		if(square[1] >= frameY && square[1] < frameY + 6){
+			
+			if((square[1] >= frameY && square[1] < frameY + 3)){
+				if(frameY > 1){
+					frameY-=2;
+				}
+			}else{
+				
+				if(frameY > 0){
+					frameY--;
+				}
+			}
+		}
+		
+		if(square[0] < (FRAME_Y_SIZE+frameX) && square[0] > (FRAME_Y_SIZE-6+frameX)){
+			
+			if(square[0] < (FRAME_Y_SIZE+frameX) && square[0] > (FRAME_Y_SIZE-3+frameX)){
+				if(frameX < map.getWidth()-FRAME_Y_SIZE){
+					frameX+=2;
+				}
+			}else{
+				
+				if(frameX < map.getWidth()-FRAME_Y_SIZE){
+					frameX++;
+				}
+			}
+		
+		}
+		
+		if(square[0] >= frameX && square[0] < frameX + 6){
+			
+			if(square[0] >= frameX && square[0] < frameX + 3){
+				if(frameX > 1){
+					frameX-=2;
+				}
+			}else{
+				
+				if(frameX > 0){
+					frameX--;
+				}
+			}
+		}
+	   
 	}
 	
 	private Unit getUnitFromUnitNo(int unitNo){
@@ -892,29 +962,6 @@ public class GameScreen implements GLEventListener {
 		return null;
 	}
 	
-	private double[] mouseToWorld(float x, float y,GL2 gl){
-		
-		int viewport[] = new int[4];
-	    double mvmatrix[] = new double[16];
-	    double projmatrix[] = new double[16];
-	    int realy = 0;// GL y coord pos
-	    double wcoord[] = new double[4];// wx, wy, wz;// returned xyz coords
-		
-		gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
-        gl.glGetDoublev(gl.GL_MODELVIEW_MATRIX, mvmatrix, 0);
-        gl.glGetDoublev(gl.GL_PROJECTION_MATRIX, projmatrix, 0);
-        /* note viewport[3] is height of window in pixels */
-        realy = viewport[3] - (int) y - 1;
-        
-        glu.gluUnProject((double) x, (double) realy, 105, //
-            mvmatrix, 0,
-            projmatrix, 0, 
-            viewport, 0, 
-            wcoord, 0);
-        
-        
-        return wcoord.clone();
-	}
 	
 	
 	
@@ -953,7 +1000,7 @@ public class GameScreen implements GLEventListener {
 						&& my >= 659 - (25*y)
 						&& my <= 684 - (25*y)){
 				
-					return new int[]{x,y};
+					return new int[]{x+frameX,y+frameY};
 				}
 			}
 		}
@@ -1409,9 +1456,9 @@ public class GameScreen implements GLEventListener {
 			}
 
 			@Override
-			public void mouseMoved(MouseEvent arg0) {
+			public void mouseMoved(MouseEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
 			
 			
