@@ -7,6 +7,7 @@ public class Map {
 	private int[][] map;
 	private int player;
 	private ArrayList<int[]> transitionPoints;
+	private String name;
 	
 	public Map(int x, int y){
 		
@@ -17,6 +18,16 @@ public class Map {
 	public void setPlayer(int player){
 		
 		this.player = player;
+	}
+	
+	public void setName(String name){
+		
+		this.name = name;
+	}
+	
+	public String getName(){
+		
+		return name;
 	}
 	
 	public int getPlayer(){

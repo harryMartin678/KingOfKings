@@ -82,6 +82,7 @@ public class GameScreen implements GLEventListener {
 	private ArrayList<Unit> units;
 	private ArrayList<Building> buildings;
 	private Map map;
+	private int viewedMap;
 	private int selectedUnit;
 	
 	private final float scaleFactor = 1.0f; 
@@ -108,17 +109,14 @@ public class GameScreen implements GLEventListener {
 	
 	private ClientMessages cmsg;
 	private MapList maps;
-	//private ArrayList<String> instructions;
-	private Container pane;
 	
-	private int MOUSE_SEN = 5;
-	private int movedPrint = 0;
+	private int[][] lastMapFrames;
 	
 	
-	public GameScreen(final ClientMessages cmsg,Container pane){
+	
+	public GameScreen(final ClientMessages cmsg){
 		
 		this.cmsg = cmsg;
-		this.pane = pane;
 		
 		selectedUnit = -1;
 		
@@ -152,14 +150,21 @@ public class GameScreen implements GLEventListener {
 		
 		maps = new MapList(load.get(0));
 		
+		lastMapFrames = new int[maps.getSize()][3];
+		
+		for(int m = 0; m < lastMapFrames.length; m++){
+			
+			lastMapFrames[m][0] = m;
+		}
+		
 		//map = maps.getMap(new Integer(load.get(1)).intValue());
 		///System.out.println(new Integer(load.get(1)).intValue());
-		map = maps.getMap(0);
+		//map = maps.getMap(0);
 		
 		//frameX = map.getWidth()/2 - 5;
 		//frameY = map.getHeight()/2;
 		
-		processFrame(load,2);
+		processFrame(load,1);
 
 		Thread getFrame = new Thread(new Runnable(){
 
@@ -211,7 +216,13 @@ public class GameScreen implements GLEventListener {
 									}
 									
 									if(unit && building){
-										processFrame(msgs,0);
+										
+										try{
+											processFrame(msgs,0);
+										}catch(Exception e){
+											
+											
+										}
 									}
 									
 									cmsg.addMessage("SEND_FRAME");
@@ -443,12 +454,34 @@ public class GameScreen implements GLEventListener {
 		
 		String msg;
 		
+		//for(int i = 0; i < msgs.size(); i++){
+			
+			//System.out.println(msgs.get(i));
+		//}
+		
 		if(msgs.get(0).equals("START_FRAME")){
 			
 			index++;
 		}
 		
-		int m = index+2;
+		int viewedMap = new Integer(msgs.get(index)).intValue();
+
+		
+		if(this.viewedMap != viewedMap){
+			
+			lastMapFrames[this.viewedMap][1] = frameX;
+			lastMapFrames[this.viewedMap][2] = frameY;
+			
+			frameX = lastMapFrames[viewedMap][1]; 
+			frameY = lastMapFrames[viewedMap][2];
+		}
+		
+		this.viewedMap = viewedMap;
+		index++;
+		
+		map = maps.getMap(viewedMap);
+		
+		int m = index+3;
 		
 		if(!msgs.get(index).equals("unitlist")){
 		
@@ -852,8 +885,9 @@ public class GameScreen implements GLEventListener {
 		    	  
 		    	  if(selectedUnit != -1){
 		    	
+		    		  //System.out.println((click[0]+frameX) + " " + (click[1]+frameY));
 		    		  cmsg.addMessage("utat " + selectedUnit + " "
-		    				  + (click[0]+frameX) + " " + (click[1]+frameY) + " " + 1);
+		    				  + click[0] + " " + click[1] + " " + viewedMap);
 		    		  selectedUnit = -1;
 		    		  
 		    	  }else{
@@ -949,21 +983,6 @@ public class GameScreen implements GLEventListener {
 	   
 	}
 	
-	private Unit getUnitFromUnitNo(int unitNo){
-		
-		for(int u = 0; u < units.size(); u++){
-			
-			if(units.get(u).getUnitNo() == unitNo){
-				
-				return units.get(u);
-			}
-		}
-		
-		return null;
-	}
-	
-	
-	
 	
 	private boolean selectMenu(int x, int y){
 		
@@ -984,10 +1003,27 @@ public class GameScreen implements GLEventListener {
 			
 			System.out.println("Save");
 			return true;
+		}else{
+			
+			return selectMapInfo(x,y);
+		}
+		
+		
+	}
+	
+	private boolean selectMapInfo(int x, int y){
+		
+		for(int m = 0; m < maps.getSize(); m++){
+			
+			if(x <= 1320 && x >= 1168 && y >= 293-(m*25) && y <= 312 - (m*21)){
+				
+				cmsg.addMessage("vwmp "+m);
+				return true;
+			}
+			
 		}
 		
 		return false;
-		
 	}
 	
 	private int[] selectMap(int mx, int my){
@@ -1024,12 +1060,14 @@ public class GameScreen implements GLEventListener {
 		//top panel
 		drawMenuQuad(draw,-15.25f,4.0f, -19.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 3.0f);
 		
+		
 		//bottom panel
 		drawMenuQuad(draw,-15.25f,-4.5f, -19.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 3.0f);
 		
 		
 	}
 	
+
 	private void drawRightPanel(GL2 draw){
 		
 		//back panel
@@ -1037,11 +1075,21 @@ public class GameScreen implements GLEventListener {
 		
 		//top panel
 		drawMenuQuad(draw,14.5f,4.0f, -19.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 3.0f);
+		drawMapInfo(draw,11.0f,1.0f, -19.0f);
 		
 		drawMiniMap(draw,13.5f,-4.25f,-18.0f);
 		//bottom panel
 		drawMenuQuad(draw,14.5f,-4.5f, -19.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 3.0f);
 		
+	}
+	
+	private void drawMapInfo(GL2 draw,float x, float y, float z){
+		
+		for(int m = 0; m < maps.getSize(); m++){
+			
+			drawString(draw,x,y+0.5f*m,z,0.0f,0.0f,0.0f,0.4f, maps.getMap(m).getName()
+					+ " " + new Integer(maps.getMap(m).getPlayer()));
+		}
 	}
 	
 	private void drawMiniMap(GL2 draw, float x, float y, float z){

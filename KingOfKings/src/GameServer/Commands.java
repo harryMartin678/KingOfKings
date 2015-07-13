@@ -23,7 +23,7 @@ public interface Commands {
 	public void getMapInformation(int mapNo);
 	
 	public void updateGraphicalFramePos(int playerNo, int frameX, int frameY);
-	public void newViewMap(int mapNo);
+	public void newViewMap(int mapNo,int player);
 	public void saveGame();
 	public void addMessageToChat(String message);
 	

@@ -29,6 +29,8 @@ public class LoadMap {
 		parseHeader(info);
 		parseMap(info);
 		
+		this.map.setName(map);
+		
 	}
 	
 	private void parseHeader(ArrayList<String> header){

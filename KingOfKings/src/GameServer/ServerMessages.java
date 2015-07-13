@@ -57,6 +57,11 @@ public class ServerMessages {
 								}else if(inpt.equals("SEND_FRAME")){
 									
 									sendFrame(p);
+								
+								}else if(inpt.substring(0,4).equals("vwmp")){
+									
+									engine.newViewMap(new Integer(inpt.substring(5)).intValue()
+											,p);
 								}
 							}
 						} catch (IOException e) {
@@ -130,6 +135,7 @@ public class ServerMessages {
 		int viewedMap = engine.getPlayerViewedMap(player);
 			
 		output += "START_FRAME\n";
+		output += viewedMap +"\n";
 		output += engine.getWhoOwnsWhatMap() + "\n";
 		output += "unitlist\n";
 		output += engine.getUnitsOnMap(viewedMap);

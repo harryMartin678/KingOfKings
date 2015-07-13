@@ -416,9 +416,10 @@ public class GameEngine implements Commands {
 	}
 
 	@Override
-	public void newViewMap(int mapNo) {
+	public void newViewMap(int mapNo,int player) {
 		// TODO Auto-generated method stub
 		
+		players.setPlayerViewedMap(player, mapNo);
 	}
 
 	@Override

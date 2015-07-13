@@ -42,7 +42,7 @@ public class Graphics{
 		FPSAnimator animator = new FPSAnimator(canvas,10);
 		animator.start();
 		
-		GameScreen gs = new GameScreen(cmsg,pane);
+		GameScreen gs = new GameScreen(cmsg);
 		
 		canvas.addMouseListener(gs.getMouseListener());
 		canvas.addMouseMotionListener(gs.getMouseMotionListener());
