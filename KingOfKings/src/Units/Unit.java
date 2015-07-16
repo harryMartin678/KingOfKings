@@ -44,6 +44,28 @@ public class Unit {
 		return follow;
 	}
 	
+	public float getMoveUnitX(){
+		
+		if(path != null && path.size() > 2 && path.get(1)[1] != -1){
+			
+			return (float) path.get(1)[0];
+		}else{
+			
+			return x;
+		}
+	}
+	
+	public float getMoveUnitY(){
+		
+		if(path != null && path.size() > 2 && path.get(1)[1] != -1){
+			
+			return (float) path.get(1)[1];
+		}else{
+			
+			return y;
+		}
+	}
+	
 	public boolean correctFollow(int followX, int followY, int followMap){
 		
 		return (this.follow == -1 || (this.followX == followX && this.followY == followY
@@ -269,25 +291,36 @@ public class Unit {
 					|| Math.abs(tempY-path.get(0)[1]) > 
 							Math.abs(path.get(1)[1]-path.get(0)[1])){
 				
-				//if it's a transtion to another map
-				if(path.get(1)[0] == -1){
-					
-					this.map = path.get(1)[1];
-					path.remove(1);
-				}
-				
 				//then go to the next node 
 				x = path.get(1)[0];
 				y = path.get(1)[1];
-				
+					
 				//remove the last node to repeat the process
 				path.remove(0);
 				
 				//change the orientation
 				if(path.size() > 1){
 					setOrientation(path.get(0)[0],path.get(0)[1],
-							path.get(1)[0],path.get(1)[1]);
+					path.get(1)[0],path.get(1)[1]);
+					
+					//if it's a transtion to another map
+					if(path.get(1)[0] == -1){
+						
+						this.map = path.get(1)[1];
+						
+						path.remove(1);
+						path.remove(0);
+						
+						x = path.get(0)[0];
+						y = path.get(0)[1];
+						
+					}
 				}
+				
+					
+				
+				
+				
 
 			}else{
 

@@ -127,7 +127,8 @@ public class GameEngine implements Commands {
 		//move units
 		units.moveUnits();
 		
-		//System.out.println(units.getUnitX(5) + " " + units.getUnitY(5));
+		//System.out.println(units.getUnitX(5) + " " + units.getUnitY(5) + " " 
+	///	+ units.getUnitMap(5));
 		
 		//reveal map 
 		revealMap();
@@ -247,14 +248,11 @@ public class GameEngine implements Commands {
 	public void moveUnit(int unitNo, int targetX, int targetY, int targetMap) {
 		// TODO Auto-generated method stub
 		
-		System.out.println(targetX + " " + targetY + " " + targetMap);
-		System.out.println(units.getUnitMap(unitNo) + " " + units.getUnitX(unitNo) 
-				+ " " + units.getUnitY(unitNo));
 		//add a path to move to the unit 
 		units.addPathToUnit(unitNo, 
 				new MapRouteFinder(units, buildings, maps
-				).getPath((int) units.getUnitX(unitNo),(int) units.getUnitY(unitNo),targetX, targetY,
-						units.getUnitMap(unitNo),targetMap));
+				).getPath((int) units.getMoveUnitX(unitNo),(int) units.getMoveUnitY(unitNo)
+						,targetX, targetY,units.getUnitMap(unitNo),targetMap));
 
 	}
 

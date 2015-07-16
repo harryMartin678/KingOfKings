@@ -173,6 +173,16 @@ public class UnitList {
 		return units.get(unitNo).getY();
 	}
 	
+	public float getMoveUnitX(int unitNo){
+		
+		return units.get(unitNo).getMoveUnitX();
+	}
+	
+	public float getMoveUnitY(int unitNo){
+		
+		return units.get(unitNo).getMoveUnitY();
+	}
+	
 	public int getUnitPlayer(int unitNo){
 		
 		return units.get(unitNo).getPlayer();

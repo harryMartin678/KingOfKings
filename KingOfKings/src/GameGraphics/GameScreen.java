@@ -79,8 +79,8 @@ public class GameScreen implements GLEventListener {
 	private GLU glu;
 	private GLUT glut;
 	private NumberFormat format;
-	private ArrayList<Unit> units;
-	private ArrayList<Building> buildings;
+	private UnitList units;
+	private BuildingList buildings;
 	private Map map;
 	private int viewedMap;
 	private int selectedUnit;
@@ -88,8 +88,8 @@ public class GameScreen implements GLEventListener {
 	private final float scaleFactor = 1.0f; 
 	private final float WIDTH_CONST = 1.25f;
 	private final float HEIGHT_CONST = 3;
-	private final int FRAME_X_SIZE = 25;
-	private final int FRAME_Y_SIZE = 40;
+	private final int FRAME_Y_SIZE = 25;
+	private final int FRAME_X_SIZE = 40;
 	
 	private int frameX = 0;
 	private int frameY = 0;
@@ -104,8 +104,7 @@ public class GameScreen implements GLEventListener {
 	private boolean dragBox = false;
 	private int sx,sy,lx,ly;
 	private int[] startDB,lastDB;
-	private double baseX;
-	private double baseY;
+
 	
 	private ClientMessages cmsg;
 	private MapList maps;
@@ -120,8 +119,8 @@ public class GameScreen implements GLEventListener {
 		
 		selectedUnit = -1;
 		
-		units = new ArrayList<Unit>();
-		buildings = new ArrayList<Building>();
+		units = new UnitList();
+		buildings = new BuildingList();
 		
 		ArrayList<String> load = new ArrayList<String>();
 		
@@ -481,7 +480,7 @@ public class GameScreen implements GLEventListener {
 		
 		map = maps.getMap(viewedMap);
 		
-		int m = index+3;
+		int m = index+2;
 		
 		if(!msgs.get(index).equals("unitlist")){
 		
@@ -494,6 +493,7 @@ public class GameScreen implements GLEventListener {
 		
 		}
 		
+		units.begin();
 		
 		units.clear();
 		
@@ -501,6 +501,7 @@ public class GameScreen implements GLEventListener {
 			
 			if(msg.equals("unitlist")){
 				
+				m++;
 				continue;
 			}
 			
@@ -533,7 +534,8 @@ public class GameScreen implements GLEventListener {
 				
 				//if(unit.getUnitNo() == 5){
 					
-					//System.out.println(unit.getUnitNo() + " " + unit.getAngle());
+					//System.out.println(unit.getUnitNo() + " " + unit.getX()
+						//	+ " " + unit.getY());
 				//}
 				units.add(unit);
 			}
@@ -541,7 +543,11 @@ public class GameScreen implements GLEventListener {
 			m++;
 		}
 		
+		units.end();
+		
 		//System.out.println(units.size() + " unitSize");
+
+		buildings.begin();
 		
 		buildings.clear();
 		
@@ -565,6 +571,7 @@ public class GameScreen implements GLEventListener {
 			
 		}
 
+		buildings.end();
 	}
 
 	@Override
@@ -574,18 +581,7 @@ public class GameScreen implements GLEventListener {
 		GL2 draw = drawable.getGL().getGL2();
 		draw.glClear(draw.GL_COLOR_BUFFER_BIT | draw.GL_DEPTH_BUFFER_BIT); // clear color and depth buffers
 	    draw.glLoadIdentity();  // reset the model-view matrix
-	    
-	    /*if(frameX >= 500){
-	    	
-	    	frameX = 0;
-	    
-	    }else if(frameY >= 500){
-	    	
-	    	frameY = 0;
-	    }
-	    
-	    frameX++;
-	    frameY++;*/
+	   
 	    
 	    glu.gluLookAt(0.0f, 0.0f, 10.0f, 
 	    		0.0f, 10.0f, 0.0f, 
@@ -596,31 +592,31 @@ public class GameScreen implements GLEventListener {
 	    boolean checked = true;
 
 	    //draw tiles for landscape
-	    for(int y = frameY; y < frameY+FRAME_X_SIZE; y++){
-	    	for(int x = frameX; x < frameX+FRAME_Y_SIZE; x++){
+	    for(int y = frameY; y < frameY+FRAME_Y_SIZE; y++){
+	    	for(int x = frameX; x < frameX+FRAME_X_SIZE; x++){
 	    	
 	    		if(x >= map.getWidth() || y >= map.getHeight() || map.getTile(x,y) == -1 ||
 	    				x < 0 || y < 0){
 	    			
 	    			drawTile(draw,(float) x,(float) y,
-	    					0.0f,0.0f,0.0f,FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    					0.0f,0.0f,0.0f,FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		}else{
 	    			
 	    			//0.93f,0.68f,0.79f
 	    		if(dragBox &&
 	    				lastDB != null && startDB != null 
-	    				&&y <= Math.max(lastDB[1],startDB[1]) 
+	    				&& y <= Math.max(lastDB[1],startDB[1]) 
 	    				&& y >= Math.min(lastDB[1],startDB[1])
 	    				&& x <= Math.max(lastDB[0],startDB[0]) 
 	    				&& x >= Math.min(lastDB[0],startDB[0])){
 	    			
 	    			drawTile(draw,(float) x,(float) y
-    						,0.0f,0.0f,1.0f,FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+    						,0.0f,0.0f,1.0f,FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    			
 	    		}else{
 		    		
 		    		drawTile(draw,(float) x,(float) y
-		    			,0.93f,0.68f,0.79f,FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+		    			,0.93f,0.68f,0.79f,FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 		    			
 	    		}
 	    			
@@ -633,8 +629,8 @@ public class GameScreen implements GLEventListener {
 	
 	    
 	    //draw landscape features in view 
-	    for(int y = frameY; y < frameY+FRAME_X_SIZE; y++){
-	    	for(int x = frameX; x < frameX+FRAME_Y_SIZE; x++){
+	    for(int y = frameY; y < frameY+FRAME_Y_SIZE; y++){
+	    	for(int x = frameX; x < frameX+FRAME_X_SIZE; x++){
 	    		
 	    		if(x >= map.getWidth() || y >= map.getHeight() ||
 	    				x < 0 || y < 0){
@@ -645,17 +641,17 @@ public class GameScreen implements GLEventListener {
 	    		if(map.getTile(x, y) == 1){
 	    			
 	    			Unit treeUn =new Unit((float) x,(float) y,"tree",0,-1);
-	    			drawModel(tree,draw,treeUn,FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    			drawModel(tree,draw,treeUn,FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
 	    		}else if(map.getTile(x, y) == 2){
 	    			
 	    			Unit rockUn =new Unit((float) x,(float) y,"rock",0,-1);
-	    			drawModel(rock,draw,rockUn,FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    			drawModel(rock,draw,rockUn,FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
 	    		}else if(map.getTile(x, y) == 3){
 	    			
 	    			Unit goldUn =new Unit((float) x,(float) y,"gold",0,-1);
-	    			drawModel(gold,draw,goldUn,FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    			drawModel(gold,draw,goldUn,FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
 	    		}else if(map.getTile(x,y) == 4){
 	    			
@@ -666,26 +662,16 @@ public class GameScreen implements GLEventListener {
 	    			//0.11f,0.42f,0.63f
 
 	    			drawTile(draw,(float) x,(float) y
-	    					,0.11f,0.42f,0.63f,FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    					,0.11f,0.42f,0.63f,FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		}	
 	    	}
 
 	    }
 	    
+	    units.begin();
+	    
 	    //draw units in view 
 	    for(int u = 0; u < units.size(); u++){
-	    	
-	    	while(u > units.size()){
-	    		
-	    		try {
-					Thread.sleep(2);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-	    	}
-	    	
-	    	ArrayList<Unit> units = (ArrayList<Unit>) this.units.clone();
 	    	
 	    	if(!(units.get(u).getX() >= frameX 
 	    			&& units.get(u).getX() < (frameX + FRAME_X_SIZE)
@@ -698,66 +684,66 @@ public class GameScreen implements GLEventListener {
 	    	
 	    	if(units.get(u).getUnitType().equals("servant")){
 	    		
-	    		drawModel(servant,draw,units.get(u),FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		drawModel(servant,draw,units.get(u),FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
 	    	}else if(units.get(u).getUnitType().equals("Slave")){
 	    		
-	    		drawModel(slave,draw,units.get(u),FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		drawModel(slave,draw,units.get(u),FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
 	    	}else if(units.get(u).getUnitType().equals("axeman")){
 	    		
-	    		drawModel(axeman,draw,units.get(u),FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		drawModel(axeman,draw,units.get(u),FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
 	    	}else if(units.get(u).getUnitType().equals("swordsman")){
 	    		
-	    		drawModel(swordsman,draw,units.get(u),FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		drawModel(swordsman,draw,units.get(u),FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
 	    	}else if(units.get(u).getUnitType().equals("spearman")){
 	    		
-	    		drawModel(spearman,draw,units.get(u),FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		drawModel(spearman,draw,units.get(u),FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
 	    	}else if(units.get(u).getUnitType().equals("archer")){
 	    		
-	    		drawModel(archer,draw,units.get(u),FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		drawModel(archer,draw,units.get(u),FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
 	    	}else if(units.get(u).getUnitType().equals("heavyarcher")){
 	    		
-	    		drawModel(heavyarcher,draw,units.get(u),FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		drawModel(heavyarcher,draw,units.get(u),FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
 	    	}else if(units.get(u).getUnitType().equals("batteringram")){
 	    		
-	    		drawModel(batteringRam,draw,units.get(u),FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		drawModel(batteringRam,draw,units.get(u),FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
 	    	}else if(units.get(u).getUnitType().equals("heavybatteringram")){
 	    		
-	    		drawModel(heavyBatteringRam,draw,units.get(u),FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		drawModel(heavyBatteringRam,draw,units.get(u),FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
 	    	}else if(units.get(u).getUnitType().equals("lightchariot")){
 	    		
-	    		drawModel(lightChariot,draw,units.get(u),FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		drawModel(lightChariot,draw,units.get(u),FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
 	    	}else if(units.get(u).getUnitType().equals("heavychariot")){
 	    		
-	    		drawModel(heavyChariot,draw,units.get(u),FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		drawModel(heavyChariot,draw,units.get(u),FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
 	    	}else if(units.get(u).getUnitType().equals("fishingboat")){
 	    		
-	    		drawModel(fishingBoat,draw,units.get(u),FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		drawModel(fishingBoat,draw,units.get(u),FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
 	    	}else if(units.get(u).getUnitType().equals("warship")){
 	    		
-	    		drawModel(warship,draw,units.get(u),FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		drawModel(warship,draw,units.get(u),FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
 	    	}else if(units.get(u).getUnitType().equals("flagship")){
 	    		
-	    		drawModel(flagship,draw,units.get(u),FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    		drawModel(flagship,draw,units.get(u),FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    	}
 	    	
 	    	if(u < units.size() && units.get(u).getUnitNo() == selectedUnit){
 	    		
 	    		draw.glLoadIdentity();
-	    		draw.glTranslatef(units.get(u).getX()-(FRAME_X_SIZE/WIDTH_CONST)-frameX, 
-	    				units.get(u).getY()-(FRAME_Y_SIZE/HEIGHT_CONST)-frameY, -34.0f);
+	    		draw.glTranslatef(units.get(u).getX()-(FRAME_Y_SIZE/WIDTH_CONST)-frameX, 
+	    				units.get(u).getY()-(FRAME_X_SIZE/HEIGHT_CONST)-frameY, -34.0f);
 	    		draw.glColor3f(0.0f, 0.0f, 1.0f);
 	    		draw.glScalef(0.5f, 0.5f, 0.5f);
 	    		
@@ -771,20 +757,13 @@ public class GameScreen implements GLEventListener {
 	    	}
 	    }
 	    
+	    units.end();
+
+	    buildings.begin();
+	    
 	    //draw buildings in view
 	    for(int b = 0; b < buildings.size(); b++){
-	    	
-	    	while(b > buildings.size()){
-	    		
-	    		try {
-					Thread.sleep(2);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-	    	}
-	    	
-	    	ArrayList<Building> buildings = (ArrayList<Building>) this.buildings.clone();
+
 	    	
 	    	if(!(buildings.get(b).getX() >= frameX 
 	    			&& buildings.get(b).getX() < (frameX + FRAME_X_SIZE)
@@ -798,66 +777,66 @@ public class GameScreen implements GLEventListener {
 	    	if(buildings.get(b).getName().equals("archerytower")){
 	    		
 	    		drawBuildingModel(archeryTower,draw,buildings.get(b),
-	    				FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    				FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
 	    	}else if(buildings.get(b).getName().equals("ballistictower")){
 	    		
 	    		drawBuildingModel(ballisticTower,draw,buildings.get(b),
-	    				FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    				FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
 	    	}else if(buildings.get(b).getName().equals("barrack")){
 	    		
 	    		drawBuildingModel(barrack,draw,buildings.get(b),
-	    				FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    				FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
 	    	}else if(buildings.get(b).getName().equals("castle")){
 	    		
 	    		drawBuildingModel(castle,draw,buildings.get(b),
-	    				FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    				FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
 	    	}else if(buildings.get(b).getName().equals("dock")){
 	    		
 	    		drawBuildingModel(dock,draw,buildings.get(b),
-	    				FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    				FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
 	    	}else if(buildings.get(b).getName().equals("farm")){
 	    		
 	    		drawBuildingModel(farm,draw,buildings.get(b),
-	    				FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    				FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
 	    	}else if(buildings.get(b).getName().equals("fort")){
 	    		
 	    		drawBuildingModel(fort,draw,buildings.get(b),
-	    				FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    				FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
 	    	}else if(buildings.get(b).getName().equals("royalpalace")){
 	    		
 	    		drawBuildingModel(royalPalace,draw,buildings.get(b),
-	    				FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    				FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
 	    	}else if(buildings.get(b).getName().equals("stable")){
 	    		
 	    		drawBuildingModel(stable,draw,buildings.get(b),
-	    				FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    				FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
 	    	}else if(buildings.get(b).getName().equals("stockpile")){
 	    		
 	    		drawBuildingModel(stockpile,draw,buildings.get(b),
-	    				FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    				FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
 	    	}else if(buildings.get(b).getName().equals("wall")){
 	    		
 	    		drawBuildingModel(wall,draw,buildings.get(b),
-	    				FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    				FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
 	    	}else if(buildings.get(b).getName().equals("mine")){
 	    		
 	    		drawBuildingModel(mine,draw,buildings.get(b),
-	    				FRAME_X_SIZE/WIDTH_CONST,FRAME_Y_SIZE/HEIGHT_CONST);
+	    				FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    	}
 	    }
 	    
-	    
+	    buildings.end();
 
 	    draw.glDisable(draw.GL_LIGHTING);
 	    //draw menus 
@@ -910,10 +889,19 @@ public class GameScreen implements GLEventListener {
 	    //deal with dragging the mouse 
 	    if(drag){
 	    	
-	    	startDB = selectMap(sx,sy);
-	    	lastDB = selectMap(lx,ly);
+	    	if(lx >= 1181 && lx <= 1306 && ly >= 424 && ly <= 633){
+	    		
+	    		selectMiniMap(lx,ly);
+	    		
+	    		drag = false;
+	    		
+	    	}else{
 	    	
-	    	drag = false;
+	    		startDB = selectMap(sx,sy);
+	    		lastDB = selectMap(lx,ly);
+	    	
+	    		drag = false;
+	    	}
 	    
 	    }
 	    	
@@ -923,15 +911,15 @@ public class GameScreen implements GLEventListener {
 		int square[] = selectMap(mx,my);    
 	
 		
-		if(square[1] < (FRAME_X_SIZE+frameY) && square[1] > (FRAME_X_SIZE-6+frameY)){
+		if(square[1] < (FRAME_Y_SIZE+frameY) && square[1] > (FRAME_Y_SIZE-6+frameY)){
 			
-			if(square[1] < (FRAME_X_SIZE+frameY) && square[1] > (FRAME_X_SIZE-3+frameY)){	
-				if(frameY < map.getHeight()-FRAME_X_SIZE){
+			if(square[1] < (FRAME_Y_SIZE+frameY) && square[1] > (FRAME_Y_SIZE-3+frameY)){	
+				if(frameY < map.getHeight()-FRAME_Y_SIZE){
 					frameY+=2;
 				}
 			}else{
 				
-				if(frameY < map.getHeight()-FRAME_X_SIZE){
+				if(frameY < map.getHeight()-FRAME_Y_SIZE){
 					frameY++;
 				}
 			}
@@ -952,15 +940,15 @@ public class GameScreen implements GLEventListener {
 			}
 		}
 		
-		if(square[0] < (FRAME_Y_SIZE+frameX) && square[0] > (FRAME_Y_SIZE-6+frameX)){
+		if(square[0] < (FRAME_X_SIZE+frameX) && square[0] > (FRAME_X_SIZE-6+frameX)){
 			
-			if(square[0] < (FRAME_Y_SIZE+frameX) && square[0] > (FRAME_Y_SIZE-3+frameX)){
-				if(frameX < map.getWidth()-FRAME_Y_SIZE){
+			if(square[0] < (FRAME_X_SIZE+frameX) && square[0] > (FRAME_X_SIZE-3+frameX)){
+				if(frameX < map.getWidth()-FRAME_X_SIZE){
 					frameX+=2;
 				}
 			}else{
 				
-				if(frameX < map.getWidth()-FRAME_Y_SIZE){
+				if(frameX < map.getWidth()-FRAME_X_SIZE){
 					frameX++;
 				}
 			}
@@ -986,6 +974,12 @@ public class GameScreen implements GLEventListener {
 	
 	private boolean selectMenu(int x, int y){
 		
+		if(x >= 1181 && x <= 1306 && y >= 424 && y <= 633){
+			
+			selectMiniMap(x,y);
+			return true;
+		}
+		
 		//quit button
 		if(x >= 979 && x <= 1124 && y >= 10 && y <= 64){
 			
@@ -1008,6 +1002,43 @@ public class GameScreen implements GLEventListener {
 			return selectMapInfo(x,y);
 		}
 		
+		
+	}
+	
+	private void selectMiniMap(int x, int y){
+		
+		float squareSizeX = ((float) (1307-1181))/ (float) map.getWidth();
+		float squareSizeY = ((float) (633-424))/ (float) map.getHeight();
+		
+		int squareX = 0;
+		int squareY = map.getHeight();
+		
+		for(float xc = 1181; xc <= 1307; xc+=squareSizeX){
+			
+			if(xc > x){
+				
+				break;
+				
+			}else{
+				
+				squareX++;
+			}
+		}
+		
+		for(float yc = 424; yc <= 633; yc += squareSizeY){
+			
+			if(yc > y){
+				
+				break;
+			}else{
+				
+				squareY--;
+			}
+			
+		}
+		
+		frameX = squareX;
+		frameY = squareY;
 		
 	}
 	
@@ -1098,12 +1129,12 @@ public class GameScreen implements GLEventListener {
 		
 		//square on mini-map
 		draw.glLoadIdentity();
-		draw.glTranslatef((x-2.6f) + (frameX*2.55f)/map.getWidth()
-				, (y-1.5f) + (4.35f*frameY)/map.getHeight(), z);
+		draw.glTranslatef((x-2.70f) + (frameX*2.55f)/map.getWidth()
+				, (y-1.50f) + (4.15f*frameY)/map.getHeight(), z);
 		draw.glRotatef(90.0f, 1, 0, 0);
 		draw.glColor3f(0.0f, 0.0f, 0.0f);
-		draw.glScalef((FRAME_X_SIZE*2.55f)/map.getWidth(), 
-				(FRAME_Y_SIZE*4.35f)/map.getHeight(), (FRAME_Y_SIZE*4.35f)/map.getHeight());
+		draw.glScalef((FRAME_X_SIZE*1.5f)/map.getWidth(), 
+				(FRAME_Y_SIZE*1.8f)/map.getHeight(), (FRAME_Y_SIZE*1.8f)/map.getHeight());
 		
 		draw.glBegin(draw.GL_LINE_LOOP);
 			draw.glVertex3f(1.0f, -1.0f, 1.0f);
@@ -1153,6 +1184,12 @@ public class GameScreen implements GLEventListener {
 		//draw the gold on the mini map
 		for(float xs = 0; xs < map.getWidth(); xs++){
 			for(float ys = 0; ys < map.getHeight(); ys++){
+				
+				//map changes during loop
+				if(xs >= map.getWidth() || ys >= map.getHeight()){
+					
+					break;
+				}
 				
 				if(map.getTile((int) xs, (int) ys) == 3){
 					
