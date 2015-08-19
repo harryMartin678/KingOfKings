@@ -46,6 +46,7 @@ public class Graphics{
 		
 		canvas.addMouseListener(gs.getMouseListener());
 		canvas.addMouseMotionListener(gs.getMouseMotionListener());
+		canvas.addKeyListener(gs.getKeyboardListener());
 		
 		canvas.addGLEventListener(gs);
 		

@@ -7,6 +7,7 @@ import Buildings.BuildingList;
 import Buildings.BuildingProgress;
 import Buildings.Castle;
 import Buildings.Farm;
+import GameClient.ParseText;
 import IntermediateAI.FormationMovement;
 import IntermediateAI.MapRouteFinder;
 import IntermediateAI.Pathfinder;
@@ -297,14 +298,26 @@ public class GameEngine implements Commands {
 			
 			mapsNo[i] = targetMap[i-1];
 		}
+
 		
 		//combine paths for each path
 		for(int t = 0; t < mapsNo.length-1; t++){
 		
-			totalPath.addAll(new MapRouteFinder(units,buildings,maps).getPath(
+			ArrayList<int[]> next = new MapRouteFinder(units,buildings,maps).getPath(
 					pointsX[t],pointsY[t],
-					pointsX[t+1],pointsY[t+1],mapsNo[t],mapsNo[t+1]));
+					pointsX[t+1],pointsY[t+1],mapsNo[t],mapsNo[t+1]);
+			
+			next.remove(next.size()-1);
+			
+			totalPath.addAll(next);
 				
+		}
+		
+		
+		
+		for(int p = 0; p < pointsX.length; p++){
+			
+			System.out.println(pointsX[p] + " " + pointsY[p] + " " + mapsNo[p]);
 		}
 		
 		//add the path to the unit 
@@ -547,6 +560,35 @@ public class GameEngine implements Commands {
 	public int getPlayerViewedMap(int player){
 		
 		return players.getPlayerViewedMap(player);
+	}
+	
+	public void parseWayPoints(String input, int player){
+		
+		int unitNo = new Integer(input.charAt(0)).intValue() - 48;
+		
+		//remove unitNo and the space at the end of the input string 
+		input = input.substring(2, input.length()-1);
+
+		ArrayList<String> numbers = new ParseText(input).getNumbers();
+		
+		int[] targetX = new int[numbers.size()/3];
+		int[] targetY = new int[numbers.size()/3];
+		int[] targetMap = new int[numbers.size()/3];
+		
+		for(int n = 0; n < numbers.size(); n++){
+			
+			System.out.println(numbers.get(n));
+		}
+		
+		for(int t = 0; t < numbers.size(); t+=3){
+			
+			targetX[t/3] = new Integer(numbers.get(t)).intValue();
+			targetY[t/3] = new Integer(numbers.get(t+1)).intValue();
+			targetMap[t/3] = new Integer(numbers.get(t+2)).intValue();
+		}
+	
+		
+		this.setWayPoints(unitNo,targetX, targetY, targetMap);
 	}
 
 	

@@ -4,6 +4,8 @@ import java.awt.Container;
 import java.awt.Image;
 import java.awt.MouseInfo;
 import java.awt.Point;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -19,6 +21,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.imageio.ImageIO;
 import javax.media.opengl.GL;
@@ -73,8 +76,13 @@ public class GameScreen implements GLEventListener {
 	private BuildingModel tree;
 	private BuildingModel gold;
 	private BuildingModel rock;
+	private BuildingModel flag;
 	
 	private TextModel[] symbols;
+	
+	private boolean wayPointSetting;
+	private boolean shiftDown;
+	private ArrayList<int[]> wayPoints;
 	
 	private GLU glu;
 	private GLUT glut;
@@ -118,6 +126,8 @@ public class GameScreen implements GLEventListener {
 		this.cmsg = cmsg;
 		
 		selectedUnit = -1;
+		this.wayPointSetting = false;
+		wayPoints = new ArrayList<int[]>();
 		
 		units = new UnitList();
 		buildings = new BuildingList();
@@ -295,6 +305,7 @@ public class GameScreen implements GLEventListener {
 		tree = null;
 		gold = null;
 		rock = null;
+		flag = null;
 		
 		
 		
@@ -362,6 +373,8 @@ public class GameScreen implements GLEventListener {
 			gold.setSize(0.3f, 0.3f, 0.3f);
 			rock = new BuildingModel("rocks","Models",1);
 			rock.setSize(0.35f, 0.35f, 0.35f);
+			flag = new BuildingModel("flag","Models",1);
+			flag.setSize(0.3f,0.3f, 0.3f);
 			
 			String alpha = "abcdefghijklmnopqrstuvwxyz0123456789";
 			
@@ -589,7 +602,17 @@ public class GameScreen implements GLEventListener {
 	    
 	    //draw.glDisable(draw.GL_LIGHTING);
 	    
+	    for(int w = 0; w < wayPoints.size(); w++){
+	    	
+	    	if(wayPoints.get(w)[2] == viewedMap){
+		    	Unit flagUn = new Unit(wayPoints.get(w)[0],wayPoints.get(w)[1],"flag", 1, 0);
+		    	
+		    	drawModel(flag,draw,flagUn,FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
+	    	}
+	    }
+	    
 	    boolean checked = true;
+	    
 
 	    //draw tiles for landscape
 	    for(int y = frameY; y < frameY+FRAME_Y_SIZE; y++){
@@ -864,10 +887,8 @@ public class GameScreen implements GLEventListener {
 		    	  
 		    	  if(selectedUnit != -1){
 		    	
-		    		  //System.out.println((click[0]+frameX) + " " + (click[1]+frameY));
-		    		  cmsg.addMessage("utat " + selectedUnit + " "
-		    				  + click[0] + " " + click[1] + " " + viewedMap);
-		    		  selectedUnit = -1;
+		    		  
+		    		  moveUnit(click[0],click[1]);
 		    		  
 		    	  }else{
 		    	  
@@ -971,6 +992,40 @@ public class GameScreen implements GLEventListener {
 	   
 	}
 	
+	private void moveUnit(int tx, int ty){
+		
+		if(!wayPointSetting){
+  		  cmsg.addMessage("utat " + selectedUnit + " "
+  				  + tx + " " + ty + " " + viewedMap);
+  		  selectedUnit = -1;
+		  }else{
+			  
+			  wayPoints.add(new int[]{tx,ty,viewedMap});
+
+			  
+			  if(!shiftDown){
+				  
+				  String points = "";
+				  
+				  for(int w = 0; w < wayPoints.size(); w++){
+					  
+					  points += wayPoints.get(w)[0] + " " + wayPoints.get(w)[1] + " "
+							  + wayPoints.get(w)[2] + " ";
+				  }
+				  
+				  //space at end of points
+				  cmsg.addMessage("utwp " + selectedUnit + " " + points);
+				  
+				  System.out.println("Waypoint sent");
+				  
+				  selectedUnit = -1;
+				  wayPointSetting = false;
+				  
+				  wayPoints.clear();
+			  }
+		  }
+	}
+	
 	
 	private boolean selectMenu(int x, int y){
 		
@@ -1037,8 +1092,19 @@ public class GameScreen implements GLEventListener {
 			
 		}
 		
-		frameX = squareX;
-		frameY = squareY;
+		if(selectedUnit != -1){
+			
+			moveUnit(squareX,squareY);
+		
+		}else{
+		
+			frameX = squareX;
+			frameY = squareY;
+		}
+		
+		
+		
+		
 		
 	}
 	
@@ -1590,6 +1656,42 @@ public class GameScreen implements GLEventListener {
 
 			@Override
 			public void mouseReleased(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			
+		};
+	}
+	
+	public KeyListener getKeyboardListener(){
+		
+		return new KeyListener(){
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+				if(e.isShiftDown()){
+					
+					shiftDown = true;
+					wayPointSetting = true;
+					System.out.println("shiftDown");
+				
+				}
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+				if(!e.isShiftDown()){
+					shiftDown = false;
+				}
+			}
+
+			@Override
+			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
 				
 			}

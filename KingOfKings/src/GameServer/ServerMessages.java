@@ -44,6 +44,10 @@ public class ServerMessages {
 							if(server.messageReady(p)){
 								String inpt = server.getMessage(p);
 								
+								if(!inpt.equals("SEND_FRAME")){
+									System.out.println(inpt);
+								}
+								
 								if(inpt.substring(0, 4).equals("utat")){
 									
 									System.out.println(inpt);
@@ -62,6 +66,10 @@ public class ServerMessages {
 									
 									engine.newViewMap(new Integer(inpt.substring(5)).intValue()
 											,p);
+								
+								}else if(inpt.substring(0,4).equals("utwp")){
+									
+									engine.parseWayPoints(inpt.substring(5),p);
 								}
 							}
 						} catch (IOException e) {
