@@ -70,6 +70,10 @@ public class ServerMessages {
 								}else if(inpt.substring(0,4).equals("utwp")){
 									
 									engine.parseWayPoints(inpt.substring(5),p);
+								
+								}else if(inpt.substring(0,4).equals("gtat")){
+									
+									engine.parseGroupMovement(inpt.substring(5));
 								}
 							}
 						} catch (IOException e) {

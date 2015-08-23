@@ -17,6 +17,10 @@ public class Unit {
 	private int followY;
 	private int followMap;
 	
+	private float groupSpeed;
+	private boolean stop;
+	private boolean recalculate;
+	
 	public static float SPEED_CONSTANT = 50.0f;
 	
 	public Unit(){
@@ -24,6 +28,8 @@ public class Unit {
 		health = this.getMaxHealth();
 		moving = false;
 		follow = -1;
+		groupSpeed = -1;
+		stop = false;
 	}
 	
 	public void stopFollow(){
@@ -182,6 +188,10 @@ public class Unit {
 		
 		this.path = path;
 		
+		groupSpeed = -1;
+		
+		recalculate = false;
+		
 		System.out.println("START////////");
 		for(int i = 0; i < path.size(); i++){
 			
@@ -269,73 +279,157 @@ public class Unit {
 		return new int[]{followX, followY, followMap};
 	}
 	
-	//gets a unit to follow an path 
-	public void followPath(){
+	public void setGroupSpeed(float groupSpeed){
 		
-		//if the unit has moved to the final node then stop
-		if(path.size() == 1){
+		this.groupSpeed = groupSpeed;
+	}
+	
+	public int[] getTarget(){
+		
+		if(path.size() == 0){
 			
-			moving = false;
-			
+			return null;
 		}else{
 			
-			//move in the direction of the next node
-			float vectorX = path.get(1)[0] - path.get(0)[0];
-			float vectorY = path.get(1)[1] - path.get(0)[1];
-			
-			float tempX = x + vectorX * ((float) this.getSpeed()/SPEED_CONSTANT);
-			float tempY = y + vectorY * ((float) this.getSpeed()/SPEED_CONSTANT);
-			
-			//if the unit is passed the node in either the x or y direction
-			if(Math.abs(tempX-path.get(0)[0]) > Math.abs(path.get(1)[0]-path.get(0)[0])
-					|| Math.abs(tempY-path.get(0)[1]) > 
-							Math.abs(path.get(1)[1]-path.get(0)[1])){
+			if(recalculate){
 				
-				//then go to the next node 
-				x = path.get(1)[0];
-				y = path.get(1)[1];
-					
-				//remove the last node to repeat the process
-				path.remove(0);
+				recalculate = false;
+			}
+			return new int[]{path.get(0)[0],path.get(0)[1],map};
+		}
+	}
+	
+	
+	
+	public boolean getRecalculate(){
+		
+		return recalculate;
+	}
+	
+	//gets a unit to follow an path 
+	public void followPath(ArrayList<Unit> units, int ownNo){
+		
+		//if the unit has moved to the final node then stop
+		if(path.size() < 2){
+			
+			moving = false;
+			//end of group movement if this is a group movement
+			groupSpeed = -1;
+			
+		}else{
+
+			stop = false;
+			
+			for(int u = 0; u < units.size(); u++){
 				
-				//change the orientation
-				if(path.size() > 1){
-					setOrientation(path.get(0)[0],path.get(0)[1],
-					path.get(1)[0],path.get(1)[1]);
+				if(u == ownNo){
 					
-					//if it's a transtion to another map
-					if(path.get(1)[0] == -1){
+					continue;
+				}
+				
+				if(path.size() < 1){
+					
+					stop = true;
+					break;
+					
+				}
+				
+				if(path.get(1)[0] == (int) units.get(u).getX()
+						&& path.get(1)[1] == (int) units.get(u).getY()){
+					
+					if(units.get(u).getMoving()){
 						
-						this.map = path.get(1)[1];
+						stop = true;
+					}else{
 						
-						path.remove(1);
-						path.remove(0);
+						if(path.size() == 2){
+							
+							path.clear();
+							moving = false;
+						}else{
+							
+							recalculate = true;
+						}
 						
-						x = path.get(0)[0];
-						y = path.get(0)[1];
 						
 					}
 				}
+			}
+			
+			if(!stop){
+			
+				//move in the direction of the next node
+				float vectorX = path.get(1)[0] - path.get(0)[0];
+				float vectorY = path.get(1)[1] - path.get(0)[1];
 				
+				float speed;
+				
+				if(groupSpeed == -1){
+					speed = ((float) this.getSpeed()/SPEED_CONSTANT);
 					
+				}else{
+					speed = groupSpeed/SPEED_CONSTANT;
+				}
 				
+				float tempX = x + vectorX * speed;
+				float tempY = y + vectorY * speed;
 				
-				
-
-			}else{
-
-				//else just move the unit according to velocity
-				x = tempX;
-				y = tempY;
-				
-				//change the orientation
-				if(path.size() > 1){
-					setOrientation(path.get(0)[0],path.get(0)[1],
-							path.get(1)[0],path.get(1)[1]);
+				//if the unit is passed the node in either the x or y direction
+				if(Math.abs(tempX-path.get(0)[0]) > Math.abs(path.get(1)[0]-path.get(0)[0])
+						|| Math.abs(tempY-path.get(0)[1]) > 
+								Math.abs(path.get(1)[1]-path.get(0)[1])){
+					
+					//then go to the next node 
+					x = path.get(1)[0];
+					y = path.get(1)[1];
+						
+					//remove the last node to repeat the process
+					path.remove(0);
+					
+					//change the orientation
+					if(path.size() > 1){
+						setOrientation(path.get(0)[0],path.get(0)[1],
+						path.get(1)[0],path.get(1)[1]);
+						
+						//if it's a transtion to another map
+						if(path.get(1)[0] == -1){
+							
+							this.map = path.get(1)[1];
+							
+							path.remove(1);
+							path.remove(0);
+							
+							x = path.get(0)[0];
+							y = path.get(0)[1];
+							
+						}
+					}
+					
+						
+					
+					
+					
+	
+				}else{
+	
+					//else just move the unit according to velocity
+					x = tempX;
+					y = tempY;
+					
+					//change the orientation
+					if(path.size() > 1){
+						setOrientation(path.get(0)[0],path.get(0)[1],
+								path.get(1)[0],path.get(1)[1]);
+					}
 				}
 			}
 
 		}
+	}
+
+	public boolean getStop() {
+		// TODO Auto-generated method stub
+		return stop;
 	}
 
 }

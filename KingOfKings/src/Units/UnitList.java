@@ -173,6 +173,66 @@ public class UnitList {
 		return units.get(unitNo).getY();
 	}
 	
+	public void setUnitGroupSpeed(int[] unitNo, float groupSpeed){
+		
+		for(int u = 0; u < unitNo.length; u++){
+			
+			units.get(unitNo[u]).setGroupSpeed(groupSpeed);
+		}
+	}
+	
+	public ArrayList<int[]> getRecalculated(){
+		
+		ArrayList<int[]> recalculated = new ArrayList<int[]>();
+		
+		for(int u = 0; u < units.size(); u++){
+			
+			if(units.get(u).getRecalculate() && units.get(u).getTarget() != null){
+				
+				int[] target = units.get(u).getTarget();
+				recalculated.add(new int[]{u,target[0],target[1],target[2]});
+			}
+		}
+		
+		return recalculated;
+	}
+	
+	public float getSmallestSpeed(int unitNo[]){
+		
+		float smallestSpeed = Float.MAX_VALUE;
+		
+		for(int u = 0; u < unitNo.length; u++){
+			
+			if(units.get(unitNo[u]).getSpeed() < smallestSpeed){
+				
+				smallestSpeed = units.get(unitNo[u]).getSpeed();
+			}
+		}
+		
+		return smallestSpeed;
+	}
+	
+	public boolean collision(int one, int two){
+		
+		if(units.get(one).getMap() != units.get(two).getMap()){
+			
+			return false;
+		}
+		
+		Unit oneUn = units.get(one);
+		Unit twoUn = units.get(two);
+		
+		float distance = 
+				(float) Math.sqrt((Math.pow((oneUn.getX() - twoUn.getX()),2) + 
+						Math.pow((oneUn.getY() - twoUn.getY()),2)));
+		
+		return (distance < 1);
+		
+		
+		
+		
+	}
+	
 	public float getMoveUnitX(int unitNo){
 		
 		return units.get(unitNo).getMoveUnitX();
@@ -205,9 +265,14 @@ public class UnitList {
 			
 			if(units.get(u).getMoving()){
 				
-				units.get(u).followPath();
+				units.get(u).followPath(units,u);
 			}
 		}
+	}
+	
+	public boolean getUnitStop(int unitNo){
+		
+		return units.get(unitNo).getStop();
 	}
 
 	public boolean getUnitMoving(int unitNo) {

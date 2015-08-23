@@ -91,7 +91,7 @@ public class GameScreen implements GLEventListener {
 	private BuildingList buildings;
 	private Map map;
 	private int viewedMap;
-	private int selectedUnit;
+	private ArrayList<Integer> selectedUnits;
 	
 	private final float scaleFactor = 1.0f; 
 	private final float WIDTH_CONST = 1.25f;
@@ -125,7 +125,7 @@ public class GameScreen implements GLEventListener {
 		
 		this.cmsg = cmsg;
 		
-		selectedUnit = -1;
+		selectedUnits = new ArrayList<Integer>();
 		this.wayPointSetting = false;
 		wayPoints = new ArrayList<int[]>();
 		
@@ -762,7 +762,7 @@ public class GameScreen implements GLEventListener {
 	    		drawModel(flagship,draw,units.get(u),FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    	}
 	    	
-	    	if(u < units.size() && units.get(u).getUnitNo() == selectedUnit){
+	    	if(u < units.size() && selectedUnits.contains(units.get(u).getUnitNo())){
 	    		
 	    		draw.glLoadIdentity();
 	    		draw.glTranslatef(units.get(u).getX()-(FRAME_Y_SIZE/WIDTH_CONST)-frameX, 
@@ -885,7 +885,7 @@ public class GameScreen implements GLEventListener {
 		        	
 		    	  int[] click = selectMap(x,y);
 		    	  
-		    	  if(selectedUnit != -1){
+		    	  if(selectedUnits.size() > 0){
 		    	
 		    		  
 		    		  moveUnit(click[0],click[1]);
@@ -897,7 +897,7 @@ public class GameScreen implements GLEventListener {
 		    			  if(((int) units.get(u).getX()) == click[0] 
 		    					  && ((int) units.get(u).getY()) == click[1]){
 		    			  
-		    				  selectedUnit = units.get(u).getUnitNo();
+		    				  selectedUnits.add(units.get(u).getUnitNo());
 		    		 	}
 		    		  }
 		    	  }
@@ -920,6 +920,22 @@ public class GameScreen implements GLEventListener {
 	    	
 	    		startDB = selectMap(sx,sy);
 	    		lastDB = selectMap(lx,ly);
+	    		
+	    		selectedUnits.clear();
+	    		
+	    		for(int u = 0; u < units.size(); u++){
+	    			
+
+	    			if(units.get(u).getX() <= Math.max(startDB[0], lastDB[0])
+	    					&& units.get(u).getX() >= Math.min(startDB[0],lastDB[0])
+	    					&&units.get(u).getY() <= Math.max(startDB[1], lastDB[1])
+	    	    					&& units.get(u).getY() >= Math.min(startDB[1],lastDB[1])){
+	    				
+	    				selectedUnits.add(units.get(u).getUnitNo());
+	    				
+	    			}
+	    		}
+	    		
 	    	
 	    		drag = false;
 	    	}
@@ -994,36 +1010,54 @@ public class GameScreen implements GLEventListener {
 	
 	private void moveUnit(int tx, int ty){
 		
-		if(!wayPointSetting){
-  		  cmsg.addMessage("utat " + selectedUnit + " "
-  				  + tx + " " + ty + " " + viewedMap);
-  		  selectedUnit = -1;
-		  }else{
-			  
-			  wayPoints.add(new int[]{tx,ty,viewedMap});
-
-			  
-			  if(!shiftDown){
+		if(selectedUnits.size() == 1){
+			if(!wayPointSetting){
+	  		  cmsg.addMessage("utat " + selectedUnits.get(0) + " "
+	  				  + tx + " " + ty + " " + viewedMap);
+	  		  selectedUnits.remove(0);
+			}else{
 				  
-				  String points = "";
+				  wayPoints.add(new int[]{tx,ty,viewedMap});
+	
 				  
-				  for(int w = 0; w < wayPoints.size(); w++){
+				  if(!shiftDown){
 					  
-					  points += wayPoints.get(w)[0] + " " + wayPoints.get(w)[1] + " "
-							  + wayPoints.get(w)[2] + " ";
+					  String points = "";
+					  
+					  for(int w = 0; w < wayPoints.size(); w++){
+						  
+						  points += wayPoints.get(w)[0] + " " + wayPoints.get(w)[1] + " "
+								  + wayPoints.get(w)[2] + " ";
+					  }
+					  
+					  //space at end of points
+					  cmsg.addMessage("utwp " + selectedUnits.get(0) + " " + points);
+					  
+					  System.out.println("Waypoint sent");
+					  
+					  selectedUnits.remove(0);
+					  wayPointSetting = false;
+					  
+					  wayPoints.clear();
 				  }
 				  
-				  //space at end of points
-				  cmsg.addMessage("utwp " + selectedUnit + " " + points);
-				  
-				  System.out.println("Waypoint sent");
-				  
-				  selectedUnit = -1;
-				  wayPointSetting = false;
-				  
-				  wayPoints.clear();
 			  }
-		  }
+			
+		}else{
+			
+			String units = "";
+			
+			for(int u = 0; u < selectedUnits.size(); u++){
+				
+				units += selectedUnits.get(u) + " ";
+			}
+			
+			units = units.substring(0, units.length()-1);
+			
+			cmsg.addMessage("gtat "+ tx + " " + ty + " " + viewedMap + " " + units);
+			
+			selectedUnits.clear();
+		}
 	}
 	
 	
@@ -1092,7 +1126,7 @@ public class GameScreen implements GLEventListener {
 			
 		}
 		
-		if(selectedUnit != -1){
+		if(selectedUnits.size() > 0){
 			
 			moveUnit(squareX,squareY);
 		
@@ -1657,7 +1691,6 @@ public class GameScreen implements GLEventListener {
 			@Override
 			public void mouseReleased(MouseEvent arg0) {
 				// TODO Auto-generated method stub
-				
 			}
 			
 			

@@ -36,10 +36,7 @@ public class GameEngine implements Commands {
 	private String gameName;
 	
 	private int beat;
-	
-	private long time;
-	private int intialSize;
-	private boolean shownTime = false;
+
 	
 	public GameEngine(String mapEntry,int playerNo){
 		
@@ -62,8 +59,6 @@ public class GameEngine implements Commands {
 		beat = 0;
 		
 		players.showPlayersMaps(maps);
-
-		time = System.currentTimeMillis();
 		
 		
 		for(int i = 0; i < playerNo; i++){
@@ -92,8 +87,7 @@ public class GameEngine implements Commands {
 		///this.setWayPoints(0, new int[]{0,15,15,15,2}, new int[]{0,15,15,15,15}, new int[]{2,4,3,4,0});
 		
 		new CollisionMap(buildings,units,maps.getMap(0));
-		
-		intialSize = buildings.getBuildingsSize();
+
 		
 		Thread onFrame = new Thread(new Runnable(){
 
@@ -149,6 +143,14 @@ public class GameEngine implements Commands {
 						buildings.getBuildingDiameterY(b),buildings.getBuildingPlayer(b),
 						buildings.getBuildingMap(b));
 			}
+		}
+		
+		ArrayList<int[]> unitsToRecalculate = units.getRecalculated();
+		
+		for(int r = 0; r < unitsToRecalculate.size(); r++){
+
+			this.moveUnit(unitsToRecalculate.get(r)[0], unitsToRecalculate.get(r)[1],
+					unitsToRecalculate.get(r)[2], unitsToRecalculate.get(r)[3]);
 		}
 		
 		//add resources from farms and mines 
@@ -328,25 +330,32 @@ public class GameEngine implements Commands {
 	public void groupMovement(int[] unitNo, int targetX, int targetY, int targetMap) {
 		// TODO Auto-generated method stub
 		
-		int unitRowSize = (int) Math.sqrt((double) unitNo.length);
-		int row = 0;
+		//int unitRowSize = (int) Math.sqrt((double) unitNo.length);
+		//int row = 0;
 		
-		ArrayList<int[]> orgPath = new MapRouteFinder(units, buildings,maps
-				).getPath((int) units.getUnitX(unitNo[0]), (int) units.getUnitY(unitNo[0]),
-						targetX, targetY, units.getUnitMap(unitNo[0]), targetMap);
+		//ArrayList<int[]> orgPath = new MapRouteFinder(units, buildings,maps
+		//		).getPath((int) units.getUnitX(unitNo[0]), (int) units.getUnitY(unitNo[0]),
+		//				targetX, targetY, units.getUnitMap(unitNo[0]), targetMap);
+		//
+	//	for(int u = 0; u < unitNo.length; u++){
+			
+			//if(row == unitRowSize){
+				
+			//	row = 0;
+			//}
+			
+		//	units.addPathToUnit(unitNo[u], new FormationMovement(maps,units,buildings
+				//	).getPath(orgPath, row));
+			
+			//row++;
+		//}
 		
 		for(int u = 0; u < unitNo.length; u++){
 			
-			if(row == unitRowSize){
-				
-				row = 0;
-			}
-			
-			units.addPathToUnit(unitNo[u], new FormationMovement(maps,units,buildings
-					).getPath(orgPath, row));
-			
-			row++;
+			moveUnit(unitNo[u], targetX, targetY, targetMap);
 		}
+		
+		units.setUnitGroupSpeed(unitNo, units.getSmallestSpeed(unitNo));
 	}
 	
 	@Override
@@ -526,7 +535,7 @@ public class GameEngine implements Commands {
 				
 				int moving = 0;
 				
-				if(units.getUnitMoving(u)){
+				if(units.getUnitMoving(u) && !units.getUnitStop(u)){
 					
 					moving = 1;
 				}
@@ -574,11 +583,7 @@ public class GameEngine implements Commands {
 		int[] targetX = new int[numbers.size()/3];
 		int[] targetY = new int[numbers.size()/3];
 		int[] targetMap = new int[numbers.size()/3];
-		
-		for(int n = 0; n < numbers.size(); n++){
-			
-			System.out.println(numbers.get(n));
-		}
+	
 		
 		for(int t = 0; t < numbers.size(); t+=3){
 			
@@ -589,6 +594,25 @@ public class GameEngine implements Commands {
 	
 		
 		this.setWayPoints(unitNo,targetX, targetY, targetMap);
+	}
+	
+	public void parseGroupMovement(String inpt){
+		
+		ArrayList<String> numbers = new ParseText(inpt).getNumbers();
+		int[] unitNos = new int[numbers.size()-3];
+		
+		int targetX = new Integer(numbers.get(0)).intValue();
+		int targetY = new Integer(numbers.get(1)).intValue();
+		int targetMap = new Integer(numbers.get(2)).intValue();
+		
+		for(int g = 3; g < numbers.size(); g++){
+			
+			unitNos[g-3] = new Integer(numbers.get(g)).intValue();
+		}
+		
+		
+		this.groupMovement(unitNos, targetX, targetY, targetMap);
+		
 	}
 
 	
