@@ -74,6 +74,10 @@ public class ServerMessages {
 								}else if(inpt.substring(0,4).equals("gtat")){
 									
 									engine.parseGroupMovement(inpt.substring(5));
+								
+								}else if(inpt.substring(0,4).equals("utfl")){
+									
+									engine.parseFollowMovement(inpt);
 								}
 							}
 						} catch (IOException e) {

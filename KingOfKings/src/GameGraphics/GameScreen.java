@@ -82,6 +82,7 @@ public class GameScreen implements GLEventListener {
 	
 	private boolean wayPointSetting;
 	private boolean shiftDown;
+	private boolean fDown;
 	private ArrayList<int[]> wayPoints;
 	
 	private GLU glu;
@@ -892,14 +893,7 @@ public class GameScreen implements GLEventListener {
 		    		  
 		    	  }else{
 		    	  
-		    		  for(int u = 0; u < units.size(); u++){
-		    			  
-		    			  if(((int) units.get(u).getX()) == click[0] 
-		    					  && ((int) units.get(u).getY()) == click[1]){
-		    			  
-		    				  selectedUnits.add(units.get(u).getUnitNo());
-		    		 	}
-		    		  }
+		    		  getSelectedUnit(click);
 		    	  }
 		       }
 	    	   mouse = null;
@@ -1008,13 +1002,50 @@ public class GameScreen implements GLEventListener {
 	   
 	}
 	
+	private void getSelectedUnit(int[] click){
+		
+		for(int u = 0; u < units.size(); u++){
+			  
+			  if(((int) units.get(u).getX()) == click[0] 
+					  && ((int) units.get(u).getY()) == click[1]){
+			  
+				  selectedUnits.add(units.get(u).getUnitNo());
+		 	}
+		  }
+	}
+	
 	private void moveUnit(int tx, int ty){
+
 		
 		if(selectedUnits.size() == 1){
 			if(!wayPointSetting){
-	  		  cmsg.addMessage("utat " + selectedUnits.get(0) + " "
-	  				  + tx + " " + ty + " " + viewedMap);
-	  		  selectedUnits.remove(0);
+				
+				if(fDown){
+					  
+					 
+					  getSelectedUnit(new int[]{tx,ty});
+					  
+					  if(selectedUnits.size() == 1){
+						  
+						  selectedUnits.clear();
+
+					  }else{
+						  
+						  int unitFollow = selectedUnits.get(1);
+						  int unitNo = selectedUnits.get(0);
+						  
+						  selectedUnits.clear();
+						  
+						  cmsg.addMessage("utfl " + unitNo + " " + unitFollow);
+					  }
+					  
+				  }else{
+					  
+					  cmsg.addMessage("utat " + selectedUnits.get(0) + " "
+			  				  + tx + " " + ty + " " + viewedMap);
+			  		  selectedUnits.remove(0);
+				  }
+	  		  
 			}else{
 				  
 				  wayPoints.add(new int[]{tx,ty,viewedMap});
@@ -1033,12 +1064,11 @@ public class GameScreen implements GLEventListener {
 					  //space at end of points
 					  cmsg.addMessage("utwp " + selectedUnits.get(0) + " " + points);
 					  
-					  System.out.println("Waypoint sent");
-					  
 					  selectedUnits.remove(0);
 					  wayPointSetting = false;
 					  
 					  wayPoints.clear();
+				  
 				  }
 				  
 			  }
@@ -1709,17 +1739,27 @@ public class GameScreen implements GLEventListener {
 					
 					shiftDown = true;
 					wayPointSetting = true;
-					System.out.println("shiftDown");
 				
+				}else if(e.getKeyChar() == 'f'){
+					
+					fDown = true;
+
 				}
 			}
 
 			@Override
 			public void keyReleased(KeyEvent e) {
 				// TODO Auto-generated method stub
-				
+
 				if(!e.isShiftDown()){
+					
 					shiftDown = false;
+				
+				}
+				
+				if(e.getKeyChar() == 'f'){
+					
+					fDown = false;
 				}
 			}
 

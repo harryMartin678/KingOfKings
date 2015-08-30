@@ -13,9 +13,6 @@ public class Unit {
 	private int angle;
 	private boolean moving;
 	private int follow;
-	private int followX;
-	private int followY;
-	private int followMap;
 	
 	private float groupSpeed;
 	private boolean stop;
@@ -40,9 +37,6 @@ public class Unit {
 	public void follow(int unitNo, int followX, int followY, int followMap){
 		
 		follow = unitNo;
-		this.followX = followX;
-		this.followY = followY;
-		this.followMap = followMap;
 	}
 	
 	public int getFollow(){
@@ -72,11 +66,6 @@ public class Unit {
 		}
 	}
 	
-	public boolean correctFollow(int followX, int followY, int followMap){
-		
-		return (this.follow == -1 || (this.followX == followX && this.followY == followY
-							&& this.followMap == followMap));
-	}
 	
 	public int turnsPerAHit(){
 		
@@ -274,14 +263,14 @@ public class Unit {
 		return path.get(index);
 	}
 	
-	public int[] getKnownFollow(){
-		
-		return new int[]{followX, followY, followMap};
-	}
-	
 	public void setGroupSpeed(float groupSpeed){
 		
 		this.groupSpeed = groupSpeed;
+	}
+	
+	public void setFollow(int unitNo){
+		
+		this.follow = unitNo;
 	}
 	
 	public int[] getTarget(){
@@ -426,6 +415,7 @@ public class Unit {
 
 		}
 	}
+
 
 	public boolean getStop() {
 		// TODO Auto-generated method stub

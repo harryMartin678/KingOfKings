@@ -181,9 +181,17 @@ public class GameEngine implements Commands {
 			
 			for(int f = 0; f < units.getUnitListSize(); f++){
 				
-				if(units.isFollowing(f) && units.correctFollow(f)){
+				if(units.getFollow(f) != -1){
 					
-					this.follow(f, units.getFollow(f));
+					int unitFollow = units.getFollow(f);
+					
+					if(units.getMoving(unitFollow)){
+						
+						System.out.println("Follow");
+						this.moveUnit(f, (int) units.getUnitX(unitFollow), (int) units.getUnitY(unitFollow),
+								units.getUnitMap(unitFollow),unitFollow);
+						
+					}
 				}
 			}
 		}
@@ -250,14 +258,42 @@ public class GameEngine implements Commands {
 	@Override
 	public void moveUnit(int unitNo, int targetX, int targetY, int targetMap) {
 		// TODO Auto-generated method stub
-		
 		//add a path to move to the unit 
+		
+		units.unfollow(unitNo);
 		units.addPathToUnit(unitNo, 
 				new MapRouteFinder(units, buildings, maps
 				).getPath((int) units.getMoveUnitX(unitNo),(int) units.getMoveUnitY(unitNo)
 						,targetX, targetY,units.getUnitMap(unitNo),targetMap));
 
 	}
+	
+	
+	public void moveUnit(int unitNo, int targetX, int targetY, int targetMap,int ignoreUnit){
+		// TODO Auto-generated method stub
+		
+		//add a path to move to the unit 
+		units.addPathToUnit(unitNo, 
+				new MapRouteFinder(units, buildings, maps,ignoreUnit
+				).getPath((int) units.getMoveUnitX(unitNo),(int) units.getMoveUnitY(unitNo)
+						,targetX, targetY,units.getUnitMap(unitNo),targetMap));
+
+	}
+	
+	@Override
+	public void followUnit(int unitNo, int unitFollow) {
+		// TODO Auto-generated method stub
+		
+		units.setFollow(unitNo,unitFollow);
+		
+		System.out.println("Follow: " + units.getUnitX(unitNo) + " " + units.getUnitY(unitNo) + " "
+				+ units.getUnitMap(unitNo) + " " + units.getUnitX(unitFollow) + " " + units.getUnitY(unitFollow)
+				+ " " + units.getUnitMap(unitFollow));
+		this.moveUnit(unitNo, (int) units.getUnitX(unitFollow), (int) units.getUnitY(unitFollow),
+				units.getUnitMap(unitFollow),unitFollow);
+		
+	}
+	
 
 	@Override
 	public void unitInBoat(int unitNo, int boatNo) {
@@ -358,15 +394,6 @@ public class GameEngine implements Commands {
 		units.setUnitGroupSpeed(unitNo, units.getSmallestSpeed(unitNo));
 	}
 	
-	@Override
-	public void follow(int firstUnit, int secondUnit) {
-		// TODO Auto-generated method stub
-		units.follow(firstUnit,secondUnit,(int) units.getUnitX(secondUnit)
-				,(int) units.getUnitX(firstUnit), units.getUnitMap(firstUnit));
-		
-		this.moveUnit(firstUnit, (int) units.getUnitX(secondUnit), (int) units.getUnitX(firstUnit),
-				units.getUnitMap(firstUnit));
-	}
 
 	@Override
 	public void attackUnit(int unitNo, int targetNo) {
@@ -614,6 +641,17 @@ public class GameEngine implements Commands {
 		this.groupMovement(unitNos, targetX, targetY, targetMap);
 		
 	}
+	
+	public void parseFollowMovement(String inpt){
+		
+		ArrayList<String> numbers = new ParseText(inpt).getNumbers();
+		
+		int unitNo = new Integer(numbers.get(0)).intValue();
+		int unitFollow = new Integer(numbers.get(1)).intValue();
+		this.followUnit(unitNo, unitFollow);
+	}
+
+	
 
 	
 	

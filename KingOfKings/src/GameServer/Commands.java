@@ -8,7 +8,7 @@ public interface Commands {
 	public void unitInBoat(int unitNo, int boatNo);
 	public void setWayPoints(int unitNo, int[] targetX, int[] targetY, int[] targetMap);
 	public void groupMovement(int[] unitNo, int targetX, int targetY, int targetMap);
-	public void follow(int firstUnit, int secondUnit);
+	public void followUnit(int unitNo, int unitFollow);
 	public void attackUnit(int unitNo, int targetNo);
 	public void attackBuilding(int unitNo, int buildingNo);
 	

@@ -19,6 +19,8 @@ public class Pathfinder {
 		openList = new ArrayList<Node>();
 		path = new ArrayList<Node>();
 		this.map = map;
+		
+		
 	}
 	
 	/*
@@ -175,7 +177,7 @@ public class Pathfinder {
 		
 		
 		if(startX == targetX && startY == targetY){
-			
+		
 			ArrayList<int[]> ret = new ArrayList<int[]>();
 			ret.add(new int[]{startX,startY});
 			

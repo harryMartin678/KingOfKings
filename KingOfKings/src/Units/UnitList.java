@@ -2,13 +2,31 @@ package Units;
 
 import java.util.ArrayList;
 
-public class UnitList {
+public class UnitList implements Cloneable {
 	
 	private ArrayList<Unit> units;
 	
 	public UnitList(){
 		
 		units = new ArrayList<Unit>();
+	}
+	
+	@Override
+	protected Object clone() {
+		// TODO Auto-generated method stub
+		UnitList unitsNew = new UnitList();
+		
+		for(int u = 0; u < this.getUnitListSize(); u++){
+			
+			unitsNew.addUnit(units.get(u));
+		}
+		
+		return unitsNew;
+	}
+	
+	private void addUnit(Unit unit){
+		
+		units.add(unit);
 	}
 	
 	public void addUnitToBoat(int unitNo, int boatNo){
@@ -30,12 +48,6 @@ public class UnitList {
 		
 		return units.get(unitNo).getOrientation();
 	}
-	
-	public int[] getKnownFollow(int unitNo){
-		
-		return units.get(unitNo).getKnownFollow();
-	}
-	
 	public int getUnitPathSize(int unitNo){
 		
 		return units.get(unitNo).getPathSize();
@@ -129,14 +141,15 @@ public class UnitList {
 		}
 	}
 	
-	public void follow(int unitNo,int follow, int followX, int followY, int followMap){
+
+	public void setFollow(int unitNo, int unitFollow){
 		
-		units.get(unitNo).follow(follow,followX, followY,followMap);
+		units.get(unitNo).setFollow(unitFollow);
 	}
 	
-	public boolean isFollowing(int unitNo){
+	public void unfollow(int unitNo){
 		
-		return (units.get(unitNo).getFollow() != -1);
+		units.get(unitNo).stopFollow();
 	}
 	
 	public int getFollow(int unitNo){
@@ -144,12 +157,12 @@ public class UnitList {
 		return units.get(unitNo).getFollow();
 	}
 	
-	public boolean correctFollow(int unitNo){
+	public void remove(int unitNo){
 		
-		return units.get(unitNo).correctFollow((int) units.get(units.get(unitNo).getFollow()).getX(),
-				(int) units.get(units.get(unitNo).getFollow()).getY(),
-				units.get(units.get(unitNo).getFollow()).getMap());
+		this.units.remove(unitNo);
 	}
+	
+
 	
 	public void addPathToUnit(int unitNo,ArrayList<int[]> path){
 		

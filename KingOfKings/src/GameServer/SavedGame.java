@@ -33,8 +33,7 @@ public class SavedGame {
 			String line = u + " " + units.getUnitName(u) + " " + units.getUnitX(u) 
 					+ " " + units.getUnitY(u) + " " + units.getUnitPlayer(u)
 					+ " " + units.getUnitMap(u) + " " + units.getMoving(u)
-					+ " " + units.getFollow(u) + " " + units.getKnownFollow(u)[0]
-					+ " " + units.getKnownFollow(u)[1] + " " + units.getKnownFollow(u)[2];
+					+ " " + units.getFollow(u) + " " + units.getFollow(u);
 			
 			for(int p = 0; p < units.getUnitPathSize(u); p++){
 				

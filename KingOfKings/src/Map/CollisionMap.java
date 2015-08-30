@@ -8,14 +8,29 @@ public class CollisionMap {
 	private BuildingList buildings;
 	private UnitList units;
 	private int[][] collisionMap;
+	private int ignoreUnit;
 	
 	
 	public CollisionMap(BuildingList buildings, UnitList units, Map map){
 		
 		this.buildings = buildings;
 		this.units = units;
+		ignoreUnit = -1;
 		
 		collisionMap = map.toArray();
+		createCollisionMap();
+		
+	}
+	
+	public CollisionMap(BuildingList buildings, UnitList units, Map map, int ignoreUnit){
+		
+		this.buildings = buildings;
+		this.units = units;
+		this.ignoreUnit = ignoreUnit;
+		
+		System.out.println("ignore Unit " + ignoreUnit);
+		
+		collisionMap = map.toArray().clone();
 		createCollisionMap();
 		
 	}
@@ -49,7 +64,15 @@ public class CollisionMap {
 					
 					continue;
 				}
+				
+				
 				for(int u = 0; u < units.getUnitListSize(); u++){
+				
+					
+					if(u == ignoreUnit){
+						
+						break;
+					}
 					
 					if(units.checkInUnit(x, y, u)){
 						

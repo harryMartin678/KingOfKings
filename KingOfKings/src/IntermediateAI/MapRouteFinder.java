@@ -13,6 +13,7 @@ public class MapRouteFinder {
 	private BuildingList buildings;
 	private MapList maps;
 	private ArrayList<int[]> minPath;
+	private int ignoreUnit;
 	
 	/*
 	 * use units, buildings and maps to correctly navigate the map 
@@ -23,6 +24,16 @@ public class MapRouteFinder {
 		this.buildings = buildings;
 		this.maps = maps;
 		minPath = new ArrayList<int[]>();
+		ignoreUnit = -1;
+	}
+	
+	public MapRouteFinder(UnitList units, BuildingList buildings, MapList maps,int ignoreUnit){
+		
+		this.units = units;
+		this.buildings = buildings;
+		this.maps = maps;
+		minPath = new ArrayList<int[]>();
+		this.ignoreUnit = ignoreUnit;
 	}
 	
 	/*
@@ -36,11 +47,21 @@ public class MapRouteFinder {
 		if(currentMap == targetMap){
 			
 			ArrayList<int[]> path = new ArrayList<int[]>();
+			
+			if(ignoreUnit == -1){
 
-			//find a path to the target node from the transition point 
-			path.addAll(reverseList(new Pathfinder(new CollisionMap(buildings,units
-					,maps.getMap(currentMap)).getCollisionMap()
-					).getPath(startX, startY, targetX, targetY)));
+				//find a path to the target node from the transition point 
+				path.addAll(reverseList(new Pathfinder(new CollisionMap(buildings,units
+						,maps.getMap(currentMap)).getCollisionMap()
+						).getPath(startX, startY, targetX, targetY)));
+			}else{
+				
+				//find a path to the target node from the transition point 
+				path.addAll(reverseList(new Pathfinder(new CollisionMap(buildings,units
+						,maps.getMap(currentMap),ignoreUnit).getCollisionMap()
+						).getPath(startX, startY, targetX, targetY)));
+				
+			}
 			
 			//end of path
 			path.add(new int[]{-2,-2});
@@ -55,49 +76,50 @@ public class MapRouteFinder {
 			}
 			
 			
-		}
+		}else{
 		
-		//add the current map to the closed list to stop it from going in circles 
-		closedList.add(currentMap);
-	
-		ArrayList<int[]> path = new ArrayList<int[]>();
+			//add the current map to the closed list to stop it from going in circles 
+			closedList.add(currentMap);
 		
-		//-no where else to go
-		//recurse into every possible map
-		for(int m = 0; m < maps.getMap(currentMap).getTransitionSize(); m++){
+			ArrayList<int[]> path = new ArrayList<int[]>();
 			
-			//finds the next transition point 
-			int mapTo = maps.getMap(currentMap).getTransitionPointByIndex(m)[2]-1;
-	
-			//-not into a map on the closedlist 
-			if(!onClosedList(closedList,mapTo)){
-
-					//find a path from the start transition point to the transition point 
-					//of the next map
-					path.addAll(reverseList(new Pathfinder(new CollisionMap(buildings,units
-					,maps.getMap(currentMap)).getCollisionMap()
-					).getPath(startX, startY, 
-							maps.getMap(currentMap).getTransitionPointByIndex(m)[0],
-							maps.getMap(currentMap).getTransitionPointByIndex(m)[1])));
-					
-					//we have moved maps 
-					path.add(new int[]{-1,mapTo});
-
-					//record path so far
-					ArrayList<int[]> next = new ArrayList<int[]>();
-					next.addAll((ArrayList<int[]>) pathsf.clone());
-					next.addAll((ArrayList<int[]>) path.clone());
+			//-no where else to go
+			//recurse into every possible map
+			for(int m = 0; m < maps.getMap(currentMap).getTransitionSize(); m++){
 				
-					//look for next map to move to
-					getRoute(maps.getMap(mapTo
-									).getTransitionPoint(currentMap+1)[0],
-							maps.getMap(mapTo).getTransitionPoint(currentMap+1)[1],
-									targetX,targetY,mapTo,targetMap
-									,(ArrayList<Integer>) closedList.clone()
-									,(ArrayList<int[]>)next.clone());
+				//finds the next transition point 
+				int mapTo = maps.getMap(currentMap).getTransitionPointByIndex(m)[2]-1;
+		
+				//-not into a map on the closedlist 
+				if(!onClosedList(closedList,mapTo)){
+	
+						//find a path from the start transition point to the transition point 
+						//of the next map
+						path.addAll(reverseList(new Pathfinder(new CollisionMap(buildings,units
+						,maps.getMap(currentMap)).getCollisionMap()
+						).getPath(startX, startY, 
+								maps.getMap(currentMap).getTransitionPointByIndex(m)[0],
+								maps.getMap(currentMap).getTransitionPointByIndex(m)[1])));
+						
+						//we have moved maps 
+						path.add(new int[]{-1,mapTo});
+	
+						//record path so far
+						ArrayList<int[]> next = new ArrayList<int[]>();
+						next.addAll((ArrayList<int[]>) pathsf.clone());
+						next.addAll((ArrayList<int[]>) path.clone());
 					
-					//clear the path for the next iteration
-					path.clear();
+						//look for next map to move to
+						getRoute(maps.getMap(mapTo
+										).getTransitionPoint(currentMap+1)[0],
+								maps.getMap(mapTo).getTransitionPoint(currentMap+1)[1],
+										targetX,targetY,mapTo,targetMap
+										,(ArrayList<Integer>) closedList.clone()
+										,(ArrayList<int[]>)next.clone());
+						
+						//clear the path for the next iteration
+						path.clear();
+				}
 			}
 		}
 		
