@@ -78,6 +78,22 @@ public class ServerMessages {
 								}else if(inpt.substring(0,4).equals("utfl")){
 									
 									engine.parseFollowMovement(inpt);
+								
+								}else if(inpt.substring(0,4).equals("utak")){
+									
+									engine.parseAttack(inpt);
+								
+								}else if(inpt.substring(0,4).equals("gtwp")){
+									
+									engine.parseGroupWayMovement(inpt.substring(5));
+								
+								}else if(inpt.substring(0,4).equals("gtfl")){
+									
+									engine.parseGroupFollowMovement(inpt.substring(5));
+								
+								}else if(inpt.substring(0,4).equals("gtak")){
+									
+									engine.parseGroupAttack(inpt.substring(5));
 								}
 							}
 						} catch (IOException e) {

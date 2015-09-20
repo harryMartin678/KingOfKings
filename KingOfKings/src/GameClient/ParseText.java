@@ -1,6 +1,7 @@
 package GameClient;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ParseText {
 	
@@ -16,18 +17,20 @@ public class ParseText {
 		String nextNumber = "";
 		String unitNameTree = "";
 		unitType = "";
+
 		
 		for(int i = 0; i < text.length(); i++){
 			
 			if(text.charAt(i) == ' '){
 				
 				if(nextNumber != ""){
+					
 					numbers.add(nextNumber);
 					nextNumber = "";
 				}
-			
+
 			}else if((text.charAt(i) <='9' && text.charAt(i) >= '0') ||
-					text.charAt(i) == '.'){
+					text.charAt(i) == '.' || text.charAt(i) == '-'){
 				
 				nextNumber += text.charAt(i);
 				
@@ -83,6 +86,41 @@ public class ParseText {
 	public String getUnitType(){
 		
 		return unitType;
+	}
+	
+	public static int[] toIntArray(ArrayList<Integer> list){
+		
+		int[] array = new int[list.size()];
+		
+		for(int a = 0; a < list.size(); a++){
+			
+			array[a] = list.get(a);
+		}
+		
+		return array;
+	}
+	
+	public static int[] toIntArray(List<Integer> list){
+		
+		int[] array = new int[list.size()];
+		
+		for(int a = 0; a < list.size(); a++){
+			
+			array[a] = list.get(a);
+		}
+		
+		return array;
+	}
+	
+	public static int round(float num){
+		
+		if(num - (int) num >= 0.5){
+			
+			return ((int) num) + 1;
+		}else{
+			
+			return (int) num;
+		}
 	}
 	
 	public static void main(String[] args) {

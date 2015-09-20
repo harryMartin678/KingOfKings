@@ -26,12 +26,33 @@ public class UnitList implements Cloneable {
 	
 	private void addUnit(Unit unit){
 		
+		unit.setUnit(units.size());
 		units.add(unit);
 	}
 	
 	public void addUnitToBoat(int unitNo, int boatNo){
 		
 		((Naval) units.get(boatNo)).addUnit(unitNo);
+	}
+	
+	public Unit getUnits(int id){
+		
+		return units.get(id);
+	}
+	
+	public void attack(int unitNo,int ax, int ay){
+		
+		units.get(unitNo).attack(ax,ay);
+	}
+	
+	public void stopAttack(int unitNo){
+		
+		units.get(unitNo).stopAttack();
+	}
+	
+	public boolean isAttacking(int unitNo){
+		
+		return units.get(unitNo).isAttacking();
 	}
 	
 	public String getUnitName(int unitNo){
@@ -60,6 +81,7 @@ public class UnitList implements Cloneable {
 	
 	public void addUnit(String unitType,int map, float x, float y, int player){
 	
+		
 		if(unitType.equals("archer")){
 			
 			units.add(new Archer());
@@ -139,6 +161,8 @@ public class UnitList implements Cloneable {
 			units.get(units.size()-1).setPos(x, y);
 			units.get(units.size()-1).setMap(map);
 		}
+		
+		units.get(units.size()-1).setUnit(units.size()-1);
 	}
 	
 
@@ -200,10 +224,11 @@ public class UnitList implements Cloneable {
 		
 		for(int u = 0; u < units.size(); u++){
 			
-			if(units.get(u).getRecalculate() && units.get(u).getTarget() != null){
+			if(units.get(u).getRecalculate() != 0 && units.get(u).getTarget() != null){
 				
 				int[] target = units.get(u).getTarget();
-				recalculated.add(new int[]{u,target[0],target[1],target[2]});
+				recalculated.add(new int[]{u,units.get(u).getRecalculate(),target[0],
+						target[1],target[2],units.get(u).getFollow()});
 			}
 		}
 		
@@ -227,6 +252,18 @@ public class UnitList implements Cloneable {
 	
 	public boolean collision(int one, int two){
 		
+		return generalCollision(one,two,1.0f);
+
+		
+	}
+	
+	public boolean getStopped(int unitNo){
+		
+		return units.get(unitNo).getStop();
+	}
+	
+	private boolean generalCollision(int one, int two,float reqDist){
+		
 		if(units.get(one).getMap() != units.get(two).getMap()){
 			
 			return false;
@@ -235,15 +272,18 @@ public class UnitList implements Cloneable {
 		Unit oneUn = units.get(one);
 		Unit twoUn = units.get(two);
 		
-		float distance = 
-				(float) Math.sqrt((Math.pow((oneUn.getX() - twoUn.getX()),2) + 
-						Math.pow((oneUn.getY() - twoUn.getY()),2)));
+		/*float distance = 
+				Math.abs(((float) Math.sqrt((Math.pow((oneUn.getX() - twoUn.getX()),2) + 
+						Math.pow((oneUn.getY() - twoUn.getY()),2)))));*/
+		float distance = (float) Math.max(Math.abs(oneUn.getX() - twoUn.getX()), 
+				Math.abs(oneUn.getY() - twoUn.getY()));
 		
-		return (distance < 1);
+		return (distance <= reqDist);
+	}
+	
+	public boolean getUnitDead(int unitNo){
 		
-		
-		
-		
+		return units.get(unitNo).dead();
 	}
 	
 	public float getMoveUnitX(int unitNo){

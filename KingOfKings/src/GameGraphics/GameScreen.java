@@ -119,6 +119,9 @@ public class GameScreen implements GLEventListener {
 	private MapList maps;
 	
 	private int[][] lastMapFrames;
+	private int myPlayerNumber;
+	
+	//0 1 1 0 2 0 3 0 4 0
 	
 	
 	
@@ -166,6 +169,7 @@ public class GameScreen implements GLEventListener {
 			
 			lastMapFrames[m][0] = m;
 		}
+
 		
 		//map = maps.getMap(new Integer(load.get(1)).intValue());
 		///System.out.println(new Integer(load.get(1)).intValue());
@@ -231,7 +235,7 @@ public class GameScreen implements GLEventListener {
 											processFrame(msgs,0);
 										}catch(Exception e){
 											
-											
+											e.printStackTrace();
 										}
 									}
 									
@@ -477,6 +481,8 @@ public class GameScreen implements GLEventListener {
 			index++;
 		}
 		
+		
+		//bug here
 		int viewedMap = new Integer(msgs.get(index)).intValue();
 
 		
@@ -499,7 +505,13 @@ public class GameScreen implements GLEventListener {
 		if(!msgs.get(index).equals("unitlist")){
 		
 			ArrayList<String> mapInfo = new ParseText(msgs.get(index)).getNumbers();
+			
 			for(int in = 0; in < mapInfo.size(); in+=2){
+				
+				if(new Integer(mapInfo.get(in)).intValue() == viewedMap){
+					
+					this.myPlayerNumber = new Integer(mapInfo.get(in+1)).intValue();
+				}
 				
 				maps.getMap(new Integer(mapInfo.get(in)).intValue()
 						).setPlayer(new Integer(mapInfo.get(in+1)).intValue());
@@ -522,6 +534,14 @@ public class GameScreen implements GLEventListener {
 			ParseText parsed = new ParseText(msg);
 			ArrayList<String> numbers = parsed.getNumbers();
 			String unitName = parsed.getUnitName();
+
+			
+			if(unitName.equals("die")){
+				
+				units.removeByUnitNo(new Integer(numbers.get(0)).intValue());
+				m++;
+				continue;
+			}
 			
 			if(parsed.getUnitType().equals("chariot")){
 				
@@ -532,18 +552,26 @@ public class GameScreen implements GLEventListener {
 				units.add(chariot);
 			
 			}else{
-				
+
 				
 				Unit unit = new Unit(new Float(numbers.get(1)).floatValue(),
 						new Float(numbers.get(2)).floatValue()
 						,unitName,
 						new Integer(numbers.get(3)).intValue(),new Integer(numbers.get(0)).intValue());
 				
+				
 				if(new Integer(numbers.get(4)).intValue() == 1){
 					
 					unit.moving();
+				
+				}
+				if(new Integer(numbers.get(6)).intValue() == 1){
+					
+					unit.setFiring();
+					
 				}
 				
+
 				unit.setAngle(new Integer(numbers.get(5)).intValue());
 				
 				//if(unit.getUnitNo() == 5){
@@ -586,6 +614,19 @@ public class GameScreen implements GLEventListener {
 		}
 
 		buildings.end();
+	}
+	
+	private boolean unitSelected(int unitNo){
+		
+		for(int u = 0; u < selectedUnits.size(); u++){
+			
+			if(selectedUnits.get(u) == unitNo){
+				
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 	@Override
@@ -763,7 +804,7 @@ public class GameScreen implements GLEventListener {
 	    		drawModel(flagship,draw,units.get(u),FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    	}
 	    	
-	    	if(u < units.size() && selectedUnits.contains(units.get(u).getUnitNo())){
+	    	if(u < units.size() && unitSelected(units.get(u).getUnitNo())){
 	    		
 	    		draw.glLoadIdentity();
 	    		draw.glTranslatef(units.get(u).getX()-(FRAME_Y_SIZE/WIDTH_CONST)-frameX, 
@@ -893,7 +934,7 @@ public class GameScreen implements GLEventListener {
 		    		  
 		    	  }else{
 		    	  
-		    		  getSelectedUnit(click);
+		    		  addSelectedUnit(click);
 		    	  }
 		       }
 	    	   mouse = null;
@@ -923,7 +964,8 @@ public class GameScreen implements GLEventListener {
 	    			if(units.get(u).getX() <= Math.max(startDB[0], lastDB[0])
 	    					&& units.get(u).getX() >= Math.min(startDB[0],lastDB[0])
 	    					&&units.get(u).getY() <= Math.max(startDB[1], lastDB[1])
-	    	    					&& units.get(u).getY() >= Math.min(startDB[1],lastDB[1])){
+	    	    					&& units.get(u).getY() >= Math.min(startDB[1],lastDB[1])
+	    	    						&& units.get(u).getPlayer() == this.myPlayerNumber){
 	    				
 	    				selectedUnits.add(units.get(u).getUnitNo());
 	    				
@@ -1002,28 +1044,45 @@ public class GameScreen implements GLEventListener {
 	   
 	}
 	
-	private void getSelectedUnit(int[] click){
+	private void addSelectedUnit(int[] click){
 		
 		for(int u = 0; u < units.size(); u++){
 			  
 			  if(((int) units.get(u).getX()) == click[0] 
-					  && ((int) units.get(u).getY()) == click[1]){
+					  && ((int) units.get(u).getY()) == click[1]
+							  && units.get(u).getPlayer() == this.myPlayerNumber){
 			  
 				  selectedUnits.add(units.get(u).getUnitNo());
-		 	}
+			  	}
 		  }
+	}
+	
+	private int getSelectedUnitToAttack(int[] click){
+		
+		for(int u = 0; u < units.size(); u++){
+			  
+			  if(((int) units.get(u).getX()) == click[0] 
+					  && ((int) units.get(u).getY()) == click[1]
+							  && units.get(u).getPlayer() != this.myPlayerNumber){
+				  	
+				  	return units.get(u).getUnitNo();
+			  }
+			  
+		}
+		
+		return -1;
 	}
 	
 	private void moveUnit(int tx, int ty){
 
 		
 		if(selectedUnits.size() == 1){
+			
 			if(!wayPointSetting){
 				
 				if(fDown){
-					  
 					 
-					  getSelectedUnit(new int[]{tx,ty});
+					addSelectedUnit(new int[]{tx,ty});
 					  
 					  if(selectedUnits.size() == 1){
 						  
@@ -1041,9 +1100,20 @@ public class GameScreen implements GLEventListener {
 					  
 				  }else{
 					  
-					  cmsg.addMessage("utat " + selectedUnits.get(0) + " "
-			  				  + tx + " " + ty + " " + viewedMap);
-			  		  selectedUnits.remove(0);
+					  int unitAttack;
+					  
+					  if((unitAttack = getSelectedUnitToAttack(new int[]{tx,ty})) != -1){
+						  
+						  cmsg.addMessage("utak " + selectedUnits.get(0) + " " +
+								  unitAttack);
+						  selectedUnits.remove(0);
+					  
+					  }else{
+					  
+						  cmsg.addMessage("utat " + selectedUnits.get(0) + " "
+				  				  + tx + " " + ty + " " + viewedMap);
+				  		  selectedUnits.remove(0);
+					  }
 				  }
 	  		  
 			}else{
@@ -1053,16 +1123,9 @@ public class GameScreen implements GLEventListener {
 				  
 				  if(!shiftDown){
 					  
-					  String points = "";
-					  
-					  for(int w = 0; w < wayPoints.size(); w++){
-						  
-						  points += wayPoints.get(w)[0] + " " + wayPoints.get(w)[1] + " "
-								  + wayPoints.get(w)[2] + " ";
-					  }
-					  
+
 					  //space at end of points
-					  cmsg.addMessage("utwp " + selectedUnits.get(0) + " " + points);
+					  cmsg.addMessage("utwp " + selectedUnits.get(0) + " " + getWayPoints());
 					  
 					  selectedUnits.remove(0);
 					  wayPointSetting = false;
@@ -1075,19 +1138,95 @@ public class GameScreen implements GLEventListener {
 			
 		}else{
 			
-			String units = "";
-			
-			for(int u = 0; u < selectedUnits.size(); u++){
+
+			if(!wayPointSetting){
 				
-				units += selectedUnits.get(u) + " ";
+				if(fDown){
+					 
+					  int oldSize = selectedUnits.size();
+					
+					  addSelectedUnit(new int[]{tx,ty});
+					  
+					  if(selectedUnits.size() == oldSize){
+						  
+						  selectedUnits.clear();
+
+					  }else{
+						  
+						  cmsg.addMessage("gtfl " + getUnitsSelectedString());
+						  selectedUnits.clear();
+					  }
+					  
+				  }else{
+					  
+					  int unitAttack;
+					  
+					  if((unitAttack = getSelectedUnitToAttack(new int[]{tx,ty})) != -1){
+						  
+						  cmsg.addMessage("gtak " + getUnitsSelectedString() +
+								  unitAttack);
+					  
+					  }else{
+					  
+						  	String units = getUnitsSelectedString();
+							units = units.substring(0, units.length()-1);
+						
+							cmsg.addMessage("gtat "+ tx + " " + ty + " " + viewedMap + " " 
+							+ units);
+							
+					  }
+					  
+					  selectedUnits.clear();
+				  }
+				
+				
+			
+			}else{
+				
+				wayPoints.add(new int[]{tx,ty,viewedMap});
+				
+				if(!shiftDown){
+					  
+					  //space at end of points
+					  cmsg.addMessage("gtwp " + getUnitsSelectedString() + "-1 " + getWayPoints());
+					  
+					  selectedUnits.clear();
+					  wayPointSetting = false;
+					  
+					  wayPoints.clear();
+					  selectedUnits.clear();
+				}
+				
 			}
 			
-			units = units.substring(0, units.length()-1);
 			
-			cmsg.addMessage("gtat "+ tx + " " + ty + " " + viewedMap + " " + units);
-			
-			selectedUnits.clear();
 		}
+	}
+	
+	private String getWayPoints(){
+		
+		String points = "";
+		  
+		for(int w = 0; w < wayPoints.size(); w++){
+			  
+			points += wayPoints.get(w)[0] + " " + wayPoints.get(w)[1] + " "
+					+ wayPoints.get(w)[2] + " ";
+		}
+		  
+		return points;
+	}
+	
+	private String getUnitsSelectedString(){
+		
+		String units = "";
+		
+		for(int u = 0; u < selectedUnits.size(); u++){
+		
+			units += selectedUnits.get(u) + " ";
+		}
+		
+		
+		return units;
 	}
 	
 	

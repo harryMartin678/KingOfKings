@@ -43,6 +43,19 @@ public class UnitList {
 		units.remove(index);
 	}
 	
+	public void removeByUnitNo(int unitNo){
+
+		for(int r = 0; r < units.size(); r++){
+			
+			//System.out.println("remove " + unitNo + " " + units.get(r).getUnitNo() + " " + r);
+			if(unitNo == units.get(r).getUnitNo()){
+				
+				units.remove(r);
+				break;
+			}
+		}
+	}
+	
 	public int size(){
 		
 		return units.size();

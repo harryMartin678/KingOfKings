@@ -2,6 +2,8 @@ package Units;
 
 import java.util.ArrayList;
 
+import GameClient.ParseText;
+
 public class Unit {
 	
 	private float x;
@@ -13,10 +15,12 @@ public class Unit {
 	private int angle;
 	private boolean moving;
 	private int follow;
+	private int unitNo;
+	private boolean isAttack;
 	
 	private float groupSpeed;
 	private boolean stop;
-	private boolean recalculate;
+	private int recalculate;
 	
 	public static float SPEED_CONSTANT = 50.0f;
 	
@@ -27,6 +31,33 @@ public class Unit {
 		follow = -1;
 		groupSpeed = -1;
 		stop = false;
+		isAttack = false;
+	}
+	
+	public void attack(int ax, int ay){
+		
+		this.setOrientation(this.x,this.y, ax, ay);
+		isAttack = true;
+	}
+	
+	public void stopAttack(){
+		
+		isAttack = false;
+	}
+	
+	public boolean isAttacking(){
+		
+		return isAttack;
+	}
+	
+	public int getUnitNo(){
+		
+		return unitNo;
+	}
+	
+	public void setUnit(int unitNo){
+		
+		this.unitNo = unitNo;
 	}
 	
 	public void stopFollow(){
@@ -179,7 +210,7 @@ public class Unit {
 		
 		groupSpeed = -1;
 		
-		recalculate = false;
+		recalculate = 0;
 		
 		System.out.println("START////////");
 		for(int i = 0; i < path.size(); i++){
@@ -273,6 +304,7 @@ public class Unit {
 		this.follow = unitNo;
 	}
 	
+	//get the target it's moving to and don't recalculate
 	public int[] getTarget(){
 		
 		if(path.size() == 0){
@@ -280,9 +312,9 @@ public class Unit {
 			return null;
 		}else{
 			
-			if(recalculate){
+			if(recalculate != 0){
 				
-				recalculate = false;
+				recalculate = 0;
 			}
 			return new int[]{path.get(0)[0],path.get(0)[1],map};
 		}
@@ -290,17 +322,19 @@ public class Unit {
 	
 	
 	
-	public boolean getRecalculate(){
+	public int getRecalculate(){
 		
 		return recalculate;
 	}
+	
+	
 	
 	//gets a unit to follow an path 
 	public void followPath(ArrayList<Unit> units, int ownNo){
 		
 		//if the unit has moved to the final node then stop
 		if(path.size() < 2){
-			
+
 			moving = false;
 			//end of group movement if this is a group movement
 			groupSpeed = -1;
@@ -309,42 +343,55 @@ public class Unit {
 
 			stop = false;
 			
+			//if there is a unit in front of this unit
 			for(int u = 0; u < units.size(); u++){
 				
+				//ignore itself
 				if(u == ownNo){
 					
 					continue;
 				}
 				
-				if(path.size() < 1){
+				//don't worry if it's the destination
+				if(path.size() == 0){
 					
-					stop = true;
+					moving = false;
 					break;
 					
 				}
-				
-				if(path.get(1)[0] == (int) units.get(u).getX()
-						&& path.get(1)[1] == (int) units.get(u).getY()){
+			
+				//if there is a unit in front of it
+				if(!units.get(u).dead() && path.get(1)[0] ==  ParseText.round(units.get(u).getX())
+						&& path.get(1)[1] == ParseText.round(units.get(u).getY())){
 					
 					if(units.get(u).getMoving()){
 						
 						stop = true;
+						
 					}else{
 						
-						if(path.size() == 2){
+						//if it's close to the destination then stop
+						//if(path.size() == 2){
 							
-							path.clear();
-							moving = false;
-						}else{
+							//path.clear();
+							//moving = false;
 							
-							recalculate = true;
-						}
+						//else find another route 
+						//}else{
+							
+							if(u == follow){
+								recalculate = 2;
+							}else{
+								recalculate = 1;
+							}
+						//}
 						
 						
 					}
 				}
 			}
 			
+			//if the unit hasn't stopped then keep going 
 			if(!stop){
 			
 				//move in the direction of the next node
@@ -354,6 +401,7 @@ public class Unit {
 				float speed;
 				
 				if(groupSpeed == -1){
+					
 					speed = ((float) this.getSpeed()/SPEED_CONSTANT);
 					
 				}else{
@@ -393,12 +441,7 @@ public class Unit {
 							
 						}
 					}
-					
-						
-					
-					
-					
-	
+
 				}else{
 	
 					//else just move the unit according to velocity
@@ -421,5 +464,6 @@ public class Unit {
 		// TODO Auto-generated method stub
 		return stop;
 	}
+	
 
 }

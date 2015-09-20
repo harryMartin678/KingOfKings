@@ -47,7 +47,7 @@ public class GameEngine implements Commands {
 		players = new PlayerList(2,500,500);
 		dip = new Diplomacy(playerNo);
 		sites = new BuildingProgress();
-		battles = new UnitBattleList();
+		battles = new UnitBattleList(units);
 		
 		try {
 			saveGame = new SavedGame("SavedGames/game1");
@@ -81,12 +81,9 @@ public class GameEngine implements Commands {
 			
 			units.addUnit("slave", i, (maps.getMapWidth(i)/2)-4, (maps.getMapHeight(i)/2)-4, maps.getPlayer(i));
 			units.addUnit("slave", i, (maps.getMapWidth(i)/2)-3, (maps.getMapHeight(i)/2)-3, maps.getPlayer(i));
-			units.addUnit("slave", i, (maps.getMapWidth(i)/2)+5, (maps.getMapHeight(i)/2)+5, maps.getPlayer(i));
+			units.addUnit("slave", i, (maps.getMapWidth(i)/2)+5, (maps.getMapHeight(i)/2)+5, 2);
+			units.addUnit("slave", i, (maps.getMapWidth(i)/2)-4, (maps.getMapHeight(i)/2)-2, maps.getPlayer(i));
 		}
-		
-		///this.setWayPoints(0, new int[]{0,15,15,15,2}, new int[]{0,15,15,15,15}, new int[]{2,4,3,4,0});
-		
-		new CollisionMap(buildings,units,maps.getMap(0));
 
 		
 		Thread onFrame = new Thread(new Runnable(){
@@ -149,8 +146,21 @@ public class GameEngine implements Commands {
 		
 		for(int r = 0; r < unitsToRecalculate.size(); r++){
 
-			this.moveUnit(unitsToRecalculate.get(r)[0], unitsToRecalculate.get(r)[1],
-					unitsToRecalculate.get(r)[2], unitsToRecalculate.get(r)[3]);
+			if(unitsToRecalculate.get(r)[1] == 1){
+				this.moveUnit(unitsToRecalculate.get(r)[0], unitsToRecalculate.get(r)[2],
+						unitsToRecalculate.get(r)[3], unitsToRecalculate.get(r)[4]);
+			}else{
+				this.moveUnit(unitsToRecalculate.get(r)[0], unitsToRecalculate.get(r)[2],
+						unitsToRecalculate.get(r)[3], unitsToRecalculate.get(r)[4],
+						unitsToRecalculate.get(r)[5]);
+			}
+		}
+		
+		int[] com;
+		
+		while((com = battles.getUnitsToFollow()) != null){
+			
+			this.followUnit(com[0], com[1]);
 		}
 		
 		//add resources from farms and mines 
@@ -232,13 +242,13 @@ public class GameEngine implements Commands {
 	
 	private void revealMap(){
 		
-		for(int u = 0; u < units.getUnitListSize(); u++){
+		//for(int u = 0; u < units.getUnitListSize(); u++){
 			
-			if(units.getUnitMoving(u)){
-				players.revealMap((int) units.getUnitX(u), (int) units.getUnitY(u), 
-						units.getUnitMap(u), units.getUnitPlayer(u),1);
-			}
-		}
+			//if(units.getUnitMoving(u)){
+				//players.revealMap((int) units.getUnitX(u), (int) units.getUnitY(u), 
+					//	units.getUnitMap(u), units.getUnitPlayer(u),1);
+			//}
+		//}
 		
 		for(int b = 0; b < buildings.getBuildingsSize(); b++){
 			
@@ -250,10 +260,6 @@ public class GameEngine implements Commands {
 		}
 	}
 	
-	public static void main(String[] args) {
-		
-		new GameEngine("game1",2);
-	}
 
 	@Override
 	public void moveUnit(int unitNo, int targetX, int targetY, int targetMap) {
@@ -281,18 +287,30 @@ public class GameEngine implements Commands {
 	}
 	
 	@Override
+	public void groupFollow(int[] unitNo, int unitFollow) {
+		// TODO Auto-generated method stub
+		
+		for(int u = 0; u < unitNo.length; u++){
+			
+			units.setFollow(unitNo[u], unitFollow);
+			this.moveUnit(unitNo[u], (int) units.getUnitX(unitFollow), (int) units.getUnitY(unitFollow),
+					(int) units.getUnitMap(unitFollow), unitFollow);
+		}
+		
+	}
+	
+	@Override
 	public void followUnit(int unitNo, int unitFollow) {
 		// TODO Auto-generated method stub
 		
 		units.setFollow(unitNo,unitFollow);
 		
-		System.out.println("Follow: " + units.getUnitX(unitNo) + " " + units.getUnitY(unitNo) + " "
-				+ units.getUnitMap(unitNo) + " " + units.getUnitX(unitFollow) + " " + units.getUnitY(unitFollow)
-				+ " " + units.getUnitMap(unitFollow));
 		this.moveUnit(unitNo, (int) units.getUnitX(unitFollow), (int) units.getUnitY(unitFollow),
 				units.getUnitMap(unitFollow),unitFollow);
 		
 	}
+	
+	
 	
 
 	@Override
@@ -394,11 +412,38 @@ public class GameEngine implements Commands {
 		units.setUnitGroupSpeed(unitNo, units.getSmallestSpeed(unitNo));
 	}
 	
-
 	@Override
-	public void attackUnit(int unitNo, int targetNo) {
+	public void groupWayPointsMovement(int[] unitNo, int[] targetX,
+			int[] targetY, int[] targetMap) {
 		// TODO Auto-generated method stub
 		
+		for(int u = 0; u < unitNo.length; u++){
+			
+			this.setWayPoints(unitNo[u], targetX, targetY, targetMap);
+		}
+		
+		units.setUnitGroupSpeed(unitNo, units.getSmallestSpeed(unitNo));
+		
+	}
+
+	
+
+	@Override
+	public void attackUnit(int unitNo, int targetUnit) {
+		// TODO Auto-generated method stub
+		this.followUnit(unitNo, targetUnit);
+		battles.addBattle(unitNo, targetUnit);
+	}
+	
+	@Override
+	public void attackGroup(int[] unitNo, int targetUnit) {
+		// TODO Auto-generated method stub
+		
+		for(int u = 0; u < unitNo.length; u++){
+			
+			this.followUnit(unitNo[u], targetUnit);
+			battles.addBattle(unitNo[u], targetUnit);
+		}
 	}
 
 	@Override
@@ -560,16 +605,30 @@ public class GameEngine implements Commands {
 			
 			if(units.getUnitMap(u) == map){
 				
-				int moving = 0;
-				
-				if(units.getUnitMoving(u) && !units.getUnitStop(u)){
+				if(!units.getUnitDead(u)){
 					
-					moving = 1;
+					int moving = 0;
+					int attacking = 0;
+					
+					if(units.getUnitMoving(u) && !units.getUnitStop(u)){
+						
+						moving = 1;
+					
+					}
+					
+					if(units.isAttacking(u)){
+						
+						attacking = 1;
+					}
+					
+					info += u + " " + units.getUnitName(u) + " " + units.getUnitX(u) +
+							" " + units.getUnitY(u) + " " + units.getUnitPlayer(u) + 
+							" " + moving + " " + units.getOrientation(u) + " " +
+							 attacking + "\n";
+				}else{
+					
+					info += u + " die\n";
 				}
-				
-				info += u + " " + units.getUnitName(u) + " " + units.getUnitX(u) +
-						" " + units.getUnitY(u) + " " + units.getUnitPlayer(u) + 
-						" " + moving + " " + units.getOrientation(u) + "\n";
 			}
 		}
 		
@@ -642,6 +701,38 @@ public class GameEngine implements Commands {
 		
 	}
 	
+	public void parseGroupWayMovement(String inpt){
+		
+		ArrayList<String> numbers = new ParseText(inpt).getNumbers();
+		ArrayList<Integer> unitNos = new ArrayList<Integer>();
+		ArrayList<Integer> targetX = new ArrayList<Integer>();
+		ArrayList<Integer> targetY = new ArrayList<Integer>();
+		ArrayList<Integer> targetMap = new ArrayList<Integer>();
+		
+		int n = 0;
+		
+		while(new Integer(numbers.get(n)).intValue() != -1){
+			
+			System.out.println(new Integer(numbers.get(n)).intValue());
+			unitNos.add(new Integer(numbers.get(n)));
+			n++;
+		}
+		
+		n++;
+		
+		for(int p = n; p < numbers.size()-2; p+=3){
+			
+			targetX.add(new Integer(numbers.get(p)));
+			targetY.add(new Integer(numbers.get(p+1)));
+			targetMap.add(new Integer(numbers.get(p+2)));
+		}
+		
+		
+		this.groupWayPointsMovement(ParseText.toIntArray(unitNos),
+				ParseText.toIntArray(targetX), ParseText.toIntArray(targetY), ParseText.toIntArray(targetMap));
+		
+	}
+	
 	public void parseFollowMovement(String inpt){
 		
 		ArrayList<String> numbers = new ParseText(inpt).getNumbers();
@@ -650,9 +741,45 @@ public class GameEngine implements Commands {
 		int unitFollow = new Integer(numbers.get(1)).intValue();
 		this.followUnit(unitNo, unitFollow);
 	}
-
 	
-
+	public void parseGroupFollowMovement(String inpt){
+		
+		ArrayList<Integer> unitNos = getUnitNos(inpt.substring(0, inpt.length()-1));
+		
+		this.groupFollow(ParseText.toIntArray(unitNos.subList(0, unitNos.size()-1))
+				,unitNos.get(unitNos.size()-1));
+	}
 	
+	public void parseGroupAttack(String inpt){
+		
+		ArrayList<Integer> unitNos = getUnitNos(inpt);
+		
+		this.attackGroup(ParseText.toIntArray(unitNos.subList(0, unitNos.size()-1)),
+				unitNos.get(unitNos.size()-1));
+	}
+	
+	private ArrayList<Integer> getUnitNos(String inpt){
+		
+		ArrayList<String> numbers = new ParseText(inpt).getNumbers();	
+		ArrayList<Integer> unitNos = new ArrayList<Integer>();
+		
+		for(int u = 0; u < numbers.size(); u++){
+			
+			unitNos.add(new Integer(numbers.get(u)));
+		}
+		
+		return unitNos;
+	}
+	
+	public void parseAttack(String inpt){
+		
+		ArrayList<String> numbers = new ParseText(inpt).getNumbers();
+		int unitNo = new Integer(numbers.get(0)).intValue();
+		int unitAttack = new Integer(numbers.get(1)).intValue();
+		
+		this.attackUnit(unitNo, unitAttack);
+	}
+
+
 	
 }

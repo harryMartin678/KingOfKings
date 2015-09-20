@@ -9,16 +9,33 @@ public class UnitBattleList {
 	
 	private ArrayList<Battle> battles;
 	private ArrayList<TowerBattle> towerBattles;
+	private ArrayList<int[]> unitsToFollow;
+	private UnitList units;
 	
-	public UnitBattleList(){
+	public UnitBattleList(UnitList units){
 		
 		battles = new ArrayList<Battle>();
 		towerBattles = new ArrayList<TowerBattle>();
+		unitsToFollow = new ArrayList<int[]>();
+		this.units = units;
 	}
 	
-	public void addBattle(Unit one, Unit two, int id){
+	public void addBattle(int one, int two){
 		
-		battles.add(new Battle(one,two,id));
+		boolean noBattle = true;
+		
+		for(int b = 0; b < battles.size(); b++){
+			
+			if(battles.get(b).getOneID() == one && battles.get(b).getTwoID() == two){
+				
+				noBattle = false;
+			}
+		}
+		
+		if(noBattle){
+			battles.add(new Battle(units.getUnits(one),units.getUnits(two)));
+		}
+		
 	}
 	
 	public void addTowerUnitBattle(Unit one, Tower two){
@@ -60,15 +77,64 @@ public class UnitBattleList {
 		
 		for(int u = 0; u < battles.size(); u++){
 			
-			if(!battles.get(u).death()){
+			if(battles.get(u).death()){
+						
+				units.stopAttack(battles.get(u).getOneID());
+				units.stopAttack(battles.get(u).getTwoID());
+				removeBattle(u);
+
+				continue;
+			}
+		
+			if(units.collision(battles.get(u).getOneID(),
+					battles.get(u).getTwoID())){
 				
 				battles.get(u).similuateHit();
+				
+				if(!units.isAttacking(battles.get(u).getOneID())){
+					
+					units.attack(battles.get(u).getOneID(),battles.get(u).getUnitPosTwo()[0],
+							battles.get(u).getUnitPosTwo()[1]);
+				
+				}else if(units.getUnitMoving(battles.get(u).getOneID())){
+					
+					units.stopAttack(battles.get(u).getOneID());
+				}
+				
+				if(!units.isAttacking(battles.get(u).getTwoID())){
+					
+					units.attack(battles.get(u).getTwoID(),battles.get(u).getUnitPosOne()[0],
+							battles.get(u).getUnitPosOne()[1]);
+					
+					unitsToFollow.add(new int[]{battles.get(u).getTwoID(),battles.get(u).getOneID()});
+				
+				}else if(units.getUnitMoving(battles.get(u).getTwoID())){
+					
+					units.stopAttack(battles.get(u).getTwoID());
+				}
+				
+				
 			
 			}else{
-			
-					removeBattle(u);
+				
+				units.stopAttack(battles.get(u).getOneID());
+				units.stopAttack(battles.get(u).getTwoID());
 			}
 		}
+	}
+	
+	public int[] getUnitsToFollow(){
+		
+		if(unitsToFollow.size() == 0){
+			
+			return null;
+		}
+		
+		int[] dqueue = unitsToFollow.get(0);
+		
+		unitsToFollow.remove(0);
+		
+		return dqueue;
 	}
 	
 	public boolean unitDead(int id){
