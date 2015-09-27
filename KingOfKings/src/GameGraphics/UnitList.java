@@ -56,6 +56,19 @@ public class UnitList {
 		}
 	}
 	
+	public Unit getUnitByUnitNo(int unitNo){
+		
+		for(int a = 0; a < units.size(); a++){
+			
+			if(unitNo == units.get(a).getUnitNo()){
+				
+				return units.get(a);
+			}
+		}
+		
+		return null;
+	}
+	
 	public int size(){
 		
 		return units.size();

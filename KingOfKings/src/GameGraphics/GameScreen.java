@@ -921,9 +921,8 @@ public class GameScreen implements GLEventListener {
 	      if(mouse.getButton() == MouseEvent.BUTTON1){
 	    	  
 	    	  int x = mouse.getX(), y = mouse.getY();
-
 	
-		      if(!selectMenu(x, y)){
+		      if(!selectMenu(x, y)){	
 		        	
 		    	  int[] click = selectMap(x,y);
 		    	  
@@ -1232,6 +1231,12 @@ public class GameScreen implements GLEventListener {
 	
 	private boolean selectMenu(int x, int y){
 		
+		if(x >= 16 && x <= 169 && y >= 411 && y <= 642){
+			
+			selectBuildingIcons(x,y);
+			return true;
+		}
+		
 		if(x >= 1181 && x <= 1306 && y >= 424 && y <= 633){
 			
 			selectMiniMap(x,y);
@@ -1261,6 +1266,27 @@ public class GameScreen implements GLEventListener {
 		}
 		
 		
+	}
+	
+	private void selectBuildingIcons(int x, int y){
+		/*
+		 * 
+		 * 23 414
+			72 438
+			125 440
+			67 501
+		 */
+		System.out.println("Building Icons");
+		for(int my = 0; my < 3; my++){
+			for(int mx = 0; mx < 3; mx++){
+			
+				if(23 + mx*100 >= x && 72 + mx*100 <= x
+						&& 414 + my*90 >= y && 438 + my*90 <= y){
+					
+					System.out.println(mx + " " + my);
+				}
+			}
+		}
 	}
 	
 	private void selectMiniMap(int x, int y){
@@ -1305,10 +1331,7 @@ public class GameScreen implements GLEventListener {
 			frameY = squareY;
 		}
 		
-		
-		
-		
-		
+
 	}
 	
 	private boolean selectMapInfo(int x, int y){
@@ -1360,12 +1383,86 @@ public class GameScreen implements GLEventListener {
 		//top panel
 		drawMenuQuad(draw,-15.25f,4.0f, -19.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 3.0f);
 		
-		
+		drawBuildingIcons(-15.25f,-4.5f,-18.0f,draw);
 		//bottom panel
 		drawMenuQuad(draw,-15.25f,-4.5f, -19.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 3.0f);
 		
 		
 	}
+	
+	private void drawBuildingIcons(float x, float y,float z, GL2 draw){
+		
+		if(selectedUnits.size() == 1 && units.getUnitByUnitNo(selectedUnits.get(0)).getUnitType() != null 
+				&& (units.getUnitByUnitNo(selectedUnits.get(0)).getUnitType().equals("Slave")
+				 	|| units.getUnitByUnitNo(selectedUnits.get(0)).getUnitType().equals("Servant"))){
+			
+			
+			Building archTower = new Building(x+2.0f, y - 1.0f, "archeryTower",-1);
+			drawBuildingModel(archeryTower, draw,archTower,
+					FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST,z,false,0.3f);
+			
+			Building ballisTower = new Building(x + 3.0f, y - 1.0f, "ballisticTower",-1);
+			drawBuildingModel(ballisticTower, draw,ballisTower,
+					FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST,z,false,0.3f);
+			
+			Building barr = new Building(x + 4.0f, y - 1.0f, "barrack",-1);
+			drawBuildingModel(barrack, draw,barr,
+					FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST,z,false,0.3f);
+			
+			Building cast = new Building(x + 2.0f, y + 0.5f, "castle",-1);
+			drawBuildingModel(castle, draw,cast,
+					FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST,z,false,0.3f);
+			
+			Building doc = new Building(x + 3.0f, y + 0.30f, "dock",-1);
+			drawBuildingModel(dock, draw,doc,
+					FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST,z,false,0.3f);
+			
+			Building far = new Building(x + 4.0f, y + 0.5f, "farm",-1);
+			drawBuildingModel(farm, draw,far,
+					FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST,z,false,0.3f);
+			
+			Building fortb = new Building(x + 1.5f, y + 1.5f, "fort",-1);
+			drawBuildingModel(fort, draw,fortb,
+					FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST,z,false,0.2f);
+			
+			Building royalPala = new Building(x + 3.0f, y + 1.75f, "royalPalace",-1);
+			drawBuildingModel(royalPalace, draw,royalPala,
+					FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST,z,false,0.15f);
+			
+			Building stab = new Building(x + 4.0f, y + 1.5f, "stable",-1);
+			drawBuildingModel(stable, draw,stab,
+					FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST,z,false,0.3f);
+			
+			Building stock = new Building(x + 2.0f, y + 3.0f, "stockpile",-1);
+			drawBuildingModel(stockpile, draw,stock,
+					FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST,z,false,0.3f);
+			
+			Building wal = new Building(x + 3.0f, y + 3.0f, "wall",-1);
+			drawBuildingModel(wall, draw,wal,
+					FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST,z,false,0.4f);
+			
+			Building min = new Building(x + 4.0f, y + 3.0f, "mine",-1);
+			drawBuildingModel(mine, draw,min,
+					FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST,z,false,0.4f);
+		}
+	}
+	
+	/*
+	 * private BuildingModel archeryTower;
+	private BuildingModel ballisticTower;
+	private BuildingModel barrack;
+	private BuildingModel castle;
+	private BuildingModel dock;
+	private BuildingModel farm;
+	private BuildingModel fort;
+	private BuildingModel royalPalace;
+	private BuildingModel stable;
+	private BuildingModel stockpile;
+	private BuildingModel wall;
+	private BuildingModel mine;
+	
+	 * 
+	 */
 	
 
 	private void drawRightPanel(GL2 draw){
@@ -1683,12 +1780,21 @@ public class GameScreen implements GLEventListener {
 	public void drawBuildingModel(BuildingModel model, GL2 draw, Building building
 			,float width, float height){
 		
+		drawBuildingModel(model,draw, building
+				,width, height,-35.0f,true,1.0f);
+	}
+	
+	public void drawBuildingModel(BuildingModel model, GL2 draw, Building building
+			,float width, float height,float z,boolean onMap,float extraScalefactor){
+		
 		Face next;
 
 		draw.glLoadIdentity();
 
-		draw.glTranslatef(building.getX()-width-frameX, building.getY()-height-frameY, -35); //-35
-		draw.glScalef(model.sizeX()*scaleFactor, model.sizeY()*scaleFactor,model.sizeZ()*scaleFactor);
+		if(onMap) draw.glTranslatef(building.getX()-width-frameX, building.getY()-height-frameY, z);
+		else draw.glTranslatef(building.getX(), building.getY(), z);
+		draw.glScalef(model.sizeX()*scaleFactor*extraScalefactor,
+				model.sizeY()*scaleFactor*extraScalefactor,model.sizeZ()*scaleFactor*extraScalefactor);
 		draw.glRotatef(90.0f, 1, 0, 0);
 		draw.glRotatef(model.getAngle(), 0, 1, 0);
 
