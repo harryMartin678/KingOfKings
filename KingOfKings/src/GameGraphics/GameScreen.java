@@ -31,6 +31,7 @@ import javax.media.opengl.GLDrawable;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLException;
 import javax.media.opengl.glu.GLU;
+import javax.swing.JButton;
 import javax.swing.SwingUtilities;
 
 import com.jogamp.opengl.util.gl2.GLUT;
@@ -128,6 +129,9 @@ public class GameScreen implements GLEventListener {
 	public GameScreen(final ClientMessages cmsg){
 		
 		this.cmsg = cmsg;
+		
+		
+		
 		
 		selectedUnits = new ArrayList<Integer>();
 		this.wayPointSetting = false;
@@ -235,7 +239,8 @@ public class GameScreen implements GLEventListener {
 											processFrame(msgs,0);
 										}catch(Exception e){
 											
-											e.printStackTrace();
+											//catch the intermediate exceptions here 
+											//e.printStackTrace();
 										}
 									}
 									
@@ -1231,11 +1236,14 @@ public class GameScreen implements GLEventListener {
 	
 	private boolean selectMenu(int x, int y){
 		
+		
 		if(x >= 16 && x <= 169 && y >= 411 && y <= 642){
 			
 			selectBuildingIcons(x,y);
 			return true;
 		}
+		
+		System.out.println(x + " " + y);
 		
 		if(x >= 1181 && x <= 1306 && y >= 424 && y <= 633){
 			
@@ -1276,17 +1284,49 @@ public class GameScreen implements GLEventListener {
 			125 440
 			67 501
 		 */
+		
+		//121 509  19 412 74 451
 		System.out.println("Building Icons");
-		for(int my = 0; my < 3; my++){
+		System.out.println(x + " " + y);
+		
+		int[] diffY = new int[]{67,47,77};
+		int indexY = 0;
+		
+		int fx = -1;
+		int fy = -1;
+		//System.out.println(x + " " + y);
+		for(int my = 0; my < 4; my++){
+			
+			if(my == 2){
+				
+				indexY = 1;
+			
+			}else if(my == 3){
+				
+				indexY = 2;
+			}
 			for(int mx = 0; mx < 3; mx++){
 			
-				if(23 + mx*100 >= x && 72 + mx*100 <= x
-						&& 414 + my*90 >= y && 438 + my*90 <= y){
+				
+				System.out.println("x: " + x + " actual vs wanted between " + (16 + mx*55) + " " + (74 + mx*55)
+						+ " y: " + y + " actual vs wanted between " + (451 + my*diffY[indexY]) + " " +  (412 + my*diffY[indexY])
+						+ " " + mx + " " + my);
+				System.out.println("x >= 16 + mx*55 " + (x >= 16 + mx*55) + " x <= 74 + mx*55 "
+						+ (x <= 74 + mx*55 ) + " y <= 451 + my*67  " + (y <= 451 + my*diffY[indexY])
+						+ " y >= 412 + my*67 " + (y >= 412 + my*diffY[indexY]));
+				if(x >= 16 + mx*55  && x <= 74 + mx*55 
+						&&  y <= 451 + my*diffY[indexY]  && y >= 412 + my*diffY[indexY] ){
 					
-					System.out.println(mx + " " + my);
+					fx = mx;
+					fy = my;
+				
 				}
 			}
 		}
+		
+		
+		
+		System.out.println(fx + " " + fy + " found");
 	}
 	
 	private void selectMiniMap(int x, int y){

@@ -1,4 +1,6 @@
 package GameGraphics;
+import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.GridLayout;
 import java.util.ArrayList;
@@ -9,8 +11,11 @@ import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.awt.GLJPanel;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+import javax.swing.OverlayLayout;
 
 import GameClient.ClientMessages;
 
@@ -31,13 +36,11 @@ public class Graphics{
 		
 		window.setTitle("King of Kings");
 		
-		Container pane = window.getContentPane();
-		
 		cmsg = new ClientMessages();
 		
 		final GLProfile profile = GLProfile.get(GLProfile.GL2);
 	    GLCapabilities capabilities = new GLCapabilities(profile);
-		GLCanvas canvas = new GLCanvas(capabilities);
+		GLJPanel canvas = new GLJPanel(capabilities);
 		
 		FPSAnimator animator = new FPSAnimator(canvas,10);
 		animator.start();
@@ -48,13 +51,31 @@ public class Graphics{
 		canvas.addMouseListener(gs.getMouseListener());
 		canvas.addMouseMotionListener(gs.getMouseMotionListener());
 		canvas.addKeyListener(gs.getKeyboardListener());
+		//JButton button = new JButton("test");
+		//canvas.add(button);
 		
 		canvas.addGLEventListener(gs);
+		//canvas.setBackground(new Color(1,1,1,0));
 		
+		MouseButtons mb = new MouseButtons();
+		mb.setOpaque(false);
+		mb.setBackground(new Color(1,1,1,0));
 		
-		pane.setLayout(new GridLayout(1,2));
-		pane.add(canvas);
-
+		Container pane = window.getContentPane();
+		
+		JPanel main = new JPanel();
+		main.setLayout(new OverlayLayout(main));
+		main.add(mb);
+		main.add(canvas);
+		main.revalidate();
+		main.repaint();
+		
+	
+		//JLayeredPane main = window.getLayeredPane();
+		//main.add(canvas,Integer.valueOf(1));
+		//main.add(mb,Integer.valueOf(2));
+		
+		pane.add(main);
 		
 		window.setVisible(true);
 	}
