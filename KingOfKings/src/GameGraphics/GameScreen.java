@@ -130,9 +130,6 @@ public class GameScreen implements GLEventListener {
 		
 		this.cmsg = cmsg;
 		
-		
-		
-		
 		selectedUnits = new ArrayList<Integer>();
 		this.wayPointSetting = false;
 		wayPoints = new ArrayList<int[]>();
@@ -926,6 +923,7 @@ public class GameScreen implements GLEventListener {
 	      if(mouse.getButton() == MouseEvent.BUTTON1){
 	    	  
 	    	  int x = mouse.getX(), y = mouse.getY();
+	    	 
 	
 		      if(!selectMenu(x, y)){	
 		        	
@@ -1236,35 +1234,38 @@ public class GameScreen implements GLEventListener {
 	
 	private boolean selectMenu(int x, int y){
 		
+		float xa = x/w;
+		float ya = y/h;
 		
-		if(x >= 16 && x <= 169 && y >= 411 && y <= 642){
+		System.out.println("MENU");
+		System.out.println(xa + " " + ya);
+		
+		if(inRect(0.011713031,0.5829787,0.12445095,0.9106383,xa,ya)){
 			
 			selectBuildingIcons(x,y);
 			return true;
 		}
 		
-		System.out.println(x + " " + y);
-		
-		if(x >= 1181 && x <= 1306 && y >= 424 && y <= 633){
+		if(inRect(0.85431916,0.5829787,0.9670571,0.9106383,xa,ya)){
 			
 			selectMiniMap(x,y);
 			return true;
 		}
 		
 		//quit button
-		if(x >= 979 && x <= 1124 && y >= 10 && y <= 64){
+		if(inRect(0.715959,0.012765957,0.8250366,0.09219858,xa,ya)){
 			
 			System.out.println("Quit");
 			return true;
 		
 		//pause button
-		}else if(x >= 609 && x <= 756 && y >= 9 && y <= 64){
+		}else if(inRect(0.44582725,0.012765957,0.5534407,0.09078014,xa,ya)){
 		
 			System.out.println("Pause");
 			return true;
 		
 		//save button
-		}else if(x >= 202 && x <= 349 && y >= 10 && y <= 65 ){
+		}else if(inRect(0.14787701,0.012765957,0.25549048,0.09219858,xa,ya)){
 			
 			System.out.println("Save");
 			return true;
@@ -1277,56 +1278,78 @@ public class GameScreen implements GLEventListener {
 	}
 	
 	private void selectBuildingIcons(int x, int y){
-		/*
-		 * 
-		 * 23 414
-			72 438
-			125 440
-			67 501
-		 */
 		
-		//121 509  19 412 74 451
-		System.out.println("Building Icons");
-		System.out.println(x + " " + y);
+		float xa = (x/w);
+		float ya = (y/w);
+
+		//1 1
+		if(inRect(0.011713,0.300878,0.0563689,0.331625,xa,ya)){
+			
+			System.out.println(1 + " " + 1);
 		
-		int[] diffY = new int[]{67,47,77};
-		int indexY = 0;
+		//2 1
+		}else if(inRect(0.059297,0.30161,0.09004,0.327964,xa,ya)){
+			
+			System.out.println(2 + " " + 1);
 		
-		int fx = -1;
-		int fy = -1;
-		//System.out.println(x + " " + y);
-		for(int my = 0; my < 4; my++){
+		//3 1
+		}else if(inRect(0.0907759,0.3008784,0.122986,0.3294,xa,ya)){
 			
-			if(my == 2){
-				
-				indexY = 1;
+			System.out.println(3 + " " + 1);
+		
+		//1 2
+		}else if(inRect(0.011713031,0.33308932,0.050512444,0.37335286,xa,ya)){
 			
-			}else if(my == 3){
-				
-				indexY = 2;
-			}
-			for(int mx = 0; mx < 3; mx++){
+			System.out.println(1 + " " + 2);
+		
+		//2 2
+		}else if(inRect(0.054904833,0.33601758,0.08784773,0.37115666,xa,ya)){
 			
-				
-				System.out.println("x: " + x + " actual vs wanted between " + (16 + mx*55) + " " + (74 + mx*55)
-						+ " y: " + y + " actual vs wanted between " + (451 + my*diffY[indexY]) + " " +  (412 + my*diffY[indexY])
-						+ " " + mx + " " + my);
-				System.out.println("x >= 16 + mx*55 " + (x >= 16 + mx*55) + " x <= 74 + mx*55 "
-						+ (x <= 74 + mx*55 ) + " y <= 451 + my*67  " + (y <= 451 + my*diffY[indexY])
-						+ " y >= 412 + my*67 " + (y >= 412 + my*diffY[indexY]));
-				if(x >= 16 + mx*55  && x <= 74 + mx*55 
-						&&  y <= 451 + my*diffY[indexY]  && y >= 412 + my*diffY[indexY] ){
-					
-					fx = mx;
-					fy = my;
-				
-				}
-			}
+			System.out.println(2 + " " + 2);
+		
+		//3 2
+		}else if(inRect(0.090043925,0.33016106,0.12225476,0.37335286,xa,ya)){
+			
+			System.out.println(3 + " " + 2);
+			
+		//1 3
+		}else if(inRect(0.012445095,0.3762811,0.05783309,0.42313322,xa,ya)){
+			
+			System.out.println(1 + " " + 3);
+		
+		//2 3
+		}else if(inRect(0.060761347,0.37774524,0.08784773,0.42532942,xa,ya)){
+			
+			System.out.println(2 + " " + 3);
+		
+		//3 3
+		}else if(inRect(0.08931186,0.37774524,0.121522695,0.42093703,xa,ya)){
+			
+			System.out.println(3 + " " + 3);
+		
+		//1 4
+		}else if(inRect(0.011713031,0.431918,0.04831625,0.46852124,xa,ya)){
+			
+			System.out.println(1 + " " + 4);
+		
+		//2 4
+		}else if(inRect(0.050512444,0.4275256,0.0863836,0.4670571,xa,ya)){
+			
+			System.out.println(2 + " " + 4);
+		
+		//3 4
+		}else if(inRect(0.08711567,0.42532942,0.12225476,0.46852124,xa,ya)){
+			
+			System.out.println(3 + " " + 4);
+			
 		}
 		
+
+	}
+	
+	private boolean inRect(double xs,double ys,double xl,double yl, float xa, float ya){
 		
-		
-		System.out.println(fx + " " + fy + " found");
+		return (xa >= xs && xa <= xl && ya >= ys && ya <= yl);
 	}
 	
 	private void selectMiniMap(int x, int y){

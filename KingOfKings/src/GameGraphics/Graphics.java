@@ -57,25 +57,28 @@ public class Graphics{
 		canvas.addGLEventListener(gs);
 		//canvas.setBackground(new Color(1,1,1,0));
 		
-		MouseButtons mb = new MouseButtons();
+		/*MouseButtons mb = new MouseButtons();
 		mb.setOpaque(false);
-		mb.setBackground(new Color(1,1,1,0));
+		mb.setBackground(new Color(1,1,1,0));*/
 		
 		Container pane = window.getContentPane();
 		
-		JPanel main = new JPanel();
+		/*JPanel main = new JPanel();
 		main.setLayout(new OverlayLayout(main));
 		main.add(mb);
 		main.add(canvas);
 		main.revalidate();
-		main.repaint();
+		main.repaint();*/
+		
+		pane.setLayout(new GridLayout(1,1));
+		pane.add(canvas);
 		
 	
 		//JLayeredPane main = window.getLayeredPane();
 		//main.add(canvas,Integer.valueOf(1));
 		//main.add(mb,Integer.valueOf(2));
 		
-		pane.add(main);
+		//pane.add(main);
 		
 		window.setVisible(true);
 	}
