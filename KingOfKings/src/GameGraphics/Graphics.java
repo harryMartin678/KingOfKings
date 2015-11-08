@@ -62,7 +62,7 @@ public class Graphics{
 		mb.setBackground(new Color(1,1,1,0));*/
 		
 		Container pane = window.getContentPane();
-		
+		 
 		/*JPanel main = new JPanel();
 		main.setLayout(new OverlayLayout(main));
 		main.add(mb);

@@ -2,16 +2,18 @@ package Map;
 
 import Units.UnitList;
 import Buildings.BuildingList;
+import GameGraphics.IBuildingList;
+import GameGraphics.IUnitList;
 
 public class CollisionMap {
 	
-	private BuildingList buildings;
-	private UnitList units;
+	private IBuildingList buildings;
+	private IUnitList units;
 	private int[][] collisionMap;
 	private int ignoreUnit;
 	
 	
-	public CollisionMap(BuildingList buildings, UnitList units, Map map){
+	public CollisionMap(IBuildingList buildings, IUnitList units, Map map){
 		
 		this.buildings = buildings;
 		this.units = units;
@@ -22,7 +24,8 @@ public class CollisionMap {
 		
 	}
 	
-	public CollisionMap(BuildingList buildings, UnitList units, Map map, int ignoreUnit){
+	
+	public CollisionMap(IBuildingList buildings, IUnitList units, Map map, int ignoreUnit){
 		
 		this.buildings = buildings;
 		this.units = units;
@@ -32,6 +35,28 @@ public class CollisionMap {
 		
 		collisionMap = map.toArray().clone();
 		createCollisionMap();
+		
+	}
+	
+	public void printCollisionMap(int mx, int my){
+		
+		for(int y = 0; y < collisionMap.length; y++){
+			for(int x = 0; x < collisionMap[y].length; x++){
+				
+				if(y == my && x == mx){
+					
+					System.out.print(3 + " ");
+				
+				}else{
+					
+					System.out.print(collisionMap[y][x] + " ");
+				}
+				
+				
+			}
+			
+			System.out.println();
+		}
 		
 	}
 	
@@ -98,22 +123,49 @@ public class CollisionMap {
 		}
 	}
 	
-	public static void main(String[] args) {
+	public boolean inArea(int x, int y, int sizeX, int sizeY){
 		
-		BuildingList buildings = new BuildingList();
-		buildings.addBuilding(1, 1,5, 5, 0);
-		
-		int[][] map = new CollisionMap(buildings,new UnitList()
-				,new MapList("game1").getMap(1)).getCollisionMap();
-		
-		for(int x = 0; x < map.length; x++){
-			for(int y = 0; y < map[x].length; y++){
-				
-				System.out.print(map[x][y]);
-			}
+		if(x - sizeX < 0 || x + sizeX > collisionMap[0].length
+				|| y - sizeY < 0 || y + sizeY > collisionMap.length){
 			
-			System.out.println();
+			return false;
 		}
+		
+		for(int cy = y - sizeY; cy <= y + sizeY; cy++){
+			for(int cx = x - sizeX; cx <= x + sizeX; cx++){
+				
+				if(collisionMap[cy][cx] != 0){
+					
+					return false;
+				}
+			}
+		}
+		
+		
+		return true;
 	}
+	
+	
+//	public static void main(String[] args) {
+//		
+//		BuildingList buildings = new BuildingList();
+//		buildings.addBuilding(1, 1,5, 5, 0);
+//		
+//		CollisionMap map = new CollisionMap(buildings,new UnitList()
+//				,new MapList("game1").getMap(1));
+//		
+//		boolean canBuild = map.inArea(4,4, 2, 2);
+//		
+//		System.out.println(canBuild);
+//		
+////		for(int x = 0; x < map.length; x++){
+////			for(int y = 0; y < map[x].length; y++){
+////				
+////				System.out.print(map[x][y]);
+////			}
+////			
+////			System.out.println();
+////		}
+//	}
 
 }

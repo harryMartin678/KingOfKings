@@ -86,6 +86,11 @@ public class Unit {
 		moving = false;
 	}
 	
+	public boolean inUnit(int x, int y){
+		
+		return (((int)this.x) - x) == 0 && (((int)this.y) - y) == 0; 
+	}
+	
 	public void changeCurrentFrame(){
 		
 		if(moving || state > 0){

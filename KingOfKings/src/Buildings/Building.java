@@ -28,6 +28,11 @@ public class Building {
 		return (hitpoints <= 0);
 	}
 	
+	public void SetBuildingNo(int buildingNo){
+		
+		this.buildingNo = buildingNo;
+	}
+	
 	public class QueueItem{
 		
 		private String type;

@@ -2,7 +2,9 @@ package Buildings;
 
 import java.util.ArrayList;
 
-public class BuildingList {
+import GameGraphics.IBuildingList;
+
+public class BuildingList implements IBuildingList {
 	
 	private ArrayList<Building> buildings;
 	

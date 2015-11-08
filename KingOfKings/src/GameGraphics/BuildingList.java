@@ -2,7 +2,7 @@ package GameGraphics;
 
 import java.util.ArrayList;
 
-public class BuildingList {
+public class BuildingList implements IBuildingList {
 	
 	private ArrayList<Building> buildings;
 	private boolean used;
@@ -56,6 +56,18 @@ public class BuildingList {
 	public void end(){
 		
 		used = false;
+	}
+
+	@Override
+	public int getBuildingsSize() {
+		// TODO Auto-generated method stub
+		return size();
+	}
+
+	@Override
+	public boolean inBuilding(int x, int y, int unitNo) {
+		// TODO Auto-generated method stub
+		return buildings.get(unitNo).inBuilding(x,y);
 	}
 
 }

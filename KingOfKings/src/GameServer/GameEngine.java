@@ -3,6 +3,7 @@ package GameServer;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import Buildings.Building;
 import Buildings.BuildingList;
 import Buildings.BuildingProgress;
 import Buildings.Castle;
@@ -454,9 +455,12 @@ public class GameEngine implements Commands {
 	}
 
 	@Override
-	public void buildBuilding(int x, int y, int buildingType) {
+	public void buildBuilding(int x, int y,int player, String buildingType) {
 		// TODO Auto-generated method stub
-		
+		Building newBuilding = GameGraphics.Building.GetBuildingClass(buildingType);
+		newBuilding.setPlayer(player);
+		newBuilding.SetBuildingNo(buildings.getBuildingsSize());
+		buildings.addBuilding(newBuilding);
 	}
 
 	@Override
@@ -778,6 +782,23 @@ public class GameEngine implements Commands {
 		int unitAttack = new Integer(numbers.get(1)).intValue();
 		
 		this.attackUnit(unitNo, unitAttack);
+	}
+	
+	public void parseBuildings(String inpt, int player){
+		
+		ParseText text = new ParseText(inpt);
+		ArrayList<String> numbers = text.getNumbers();
+		String name = text.getUnitName();
+		
+		this.buildBuilding(new Integer(numbers.get(0)).intValue(), new Integer(numbers.get(0)).intValue(),
+				player,name);
+		
+		System.out.println(name);
+		
+		for(int n = 0; n < numbers.size(); n++){
+			
+			System.out.println(numbers.get(n));
+		}
 	}
 
 

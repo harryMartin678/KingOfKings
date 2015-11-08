@@ -2,7 +2,7 @@ package GameGraphics;
 
 import java.util.ArrayList;
 
-public class UnitList {
+public class UnitList implements IUnitList {
 	
 	private ArrayList<Unit> units;
 	private boolean used;
@@ -82,6 +82,18 @@ public class UnitList {
 	public void end(){
 		
 		used = false;
+	}
+
+	@Override
+	public int getUnitListSize() {
+		// TODO Auto-generated method stub
+		return size();
+	}
+
+	@Override
+	public boolean checkInUnit(int x, int y,int unitNo) {
+		// TODO Auto-generated method stub
+		return units.get(unitNo).inUnit(x,y);
 	}
 
 }

@@ -2,7 +2,9 @@ package Units;
 
 import java.util.ArrayList;
 
-public class UnitList implements Cloneable {
+import GameGraphics.IUnitList;
+
+public class UnitList implements Cloneable,IUnitList {
 	
 	private ArrayList<Unit> units;
 	

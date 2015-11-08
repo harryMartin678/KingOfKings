@@ -105,6 +105,11 @@ public class Colour {
 		return specular;
 	}
 	
+	public void makeRed(){
+		
+		diffuse[0] = 1.0f;
+	}
+	
 	public String getTexturePath(){
 		
 		return texturePath;

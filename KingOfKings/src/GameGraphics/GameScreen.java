@@ -38,8 +38,10 @@ import com.jogamp.opengl.util.gl2.GLUT;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
 
+import Buildings.Names;
 import GameClient.ClientMessages;
 import GameClient.ParseText;
+import Map.CollisionMap;
 import Map.LoadMap;
 import Map.Map;
 import Map.MapList;
@@ -112,7 +114,7 @@ public class GameScreen implements GLEventListener {
 	private MouseEvent mouse;
 	private boolean drag = false;
 	private boolean dragBox = false;
-	private int sx,sy,lx,ly;
+	private double sx,sy,lx,ly;
 	private int[] startDB,lastDB;
 
 	
@@ -121,6 +123,8 @@ public class GameScreen implements GLEventListener {
 	
 	private int[][] lastMapFrames;
 	private int myPlayerNumber;
+	
+	private Building buildingSelection;
 	
 	//0 1 1 0 2 0 3 0 4 0
 	
@@ -136,6 +140,8 @@ public class GameScreen implements GLEventListener {
 		
 		units = new UnitList();
 		buildings = new BuildingList();
+	
+		
 		
 		ArrayList<String> load = new ArrayList<String>();
 		
@@ -170,6 +176,8 @@ public class GameScreen implements GLEventListener {
 			
 			lastMapFrames[m][0] = m;
 		}
+		
+		
 
 		
 		//map = maps.getMap(new Integer(load.get(1)).intValue());
@@ -330,49 +338,49 @@ public class GameScreen implements GLEventListener {
 		}
 		
 		try {
-			servant = new Model("servant","Models",3,0);
-			slave = new Model("slave","Models",3,0);
-			axeman = new Model("axeman","Models",3,0);
-			swordsman = new Model("swordsman","Models",3,0);
-			spearman = new Model("spearman","Models",3,0);
-			fishingBoat = new Model("fishingboat","Models",1,1);
+			servant = new Model(Names.SERVANT,"Models",3,0);
+			slave = new Model(Names.SLAVE,"Models",3,0);
+			axeman = new Model(Names.AXEMAN,"Models",3,0);
+			swordsman = new Model(Names.SWORDSMAN,"Models",3,0);
+			spearman = new Model(Names.SPEARMAN,"Models",3,0);
+			fishingBoat = new Model(Names.FISHINGBOAT,"Models",1,1);
 			fishingBoat.setSize(0.1f, 0.1f, 0.2f);
-			warship = new Model("warship","Models",1,1);
+			warship = new Model(Names.WARSHIP,"Models",1,1);
 			warship.setSize(0.1f, 0.1f, 0.2f);
-			flagship = new Model("flagship","Models",1,1);
+			flagship = new Model(Names.FLAGSHIP,"Models",1,1);
 			warship.setSize(0.1f, 0.1f, 0.2f);
-			lightChariot = new ChariotModel("lightchariot","Models",3);
+			lightChariot = new ChariotModel(Names.LIGHTCHARIOT,"Models",3);
 			lightChariot.setSize(0.15f, 0.15f, 0.2f);
-			heavyChariot = new ChariotModel("heavychariot","Models",3);
+			heavyChariot = new ChariotModel(Names.HEAVYCHARIOT,"Models",3);
 			heavyChariot.setSize(0.15f, 0.15f, 0.2f);
-			archer = new Model("archer","Models",3,0);
-			heavyarcher = new Model("heavyarcher","Models",3,0);
-			batteringRam = new Model("batteringram","Models",3,0);
+			archer = new Model(Names.ARCHER,"Models",3,0);
+			heavyarcher = new Model(Names.HEAVYARCHER,"Models",3,0);
+			batteringRam = new Model(Names.BATTERINGRAM,"Models",3,0);
 			batteringRam.setSize(0.1f, 0.1f, 0.2f);
-			heavyBatteringRam = new Model("heavybatteringram","Models",3,0);
+			heavyBatteringRam = new Model(Names.HEAVYBATTERINGRAM,"Models",3,0);
 			heavyBatteringRam.setSize(0.1f, 0.2f, 0.2f);
 			
-			archeryTower = new BuildingModel("archerytower","Models",1);
+			archeryTower = new BuildingModel(Names.ARCHERYTOWER,"Models",1);
 			archeryTower.setSize(0.25f, 0.25f, 0.25f);
-			ballisticTower = new BuildingModel("ballisticTower","Models",1);
+			ballisticTower = new BuildingModel(Names.BALLISTICTOWER,"Models",1);
 			ballisticTower.setSize(0.25f, 0.25f, 0.25f);
-			barrack = new BuildingModel("barrack","Models",1); //2 2
+			barrack = new BuildingModel(Names.BARRACK,"Models",1); //2 2
 			barrack.setSize(0.15f, 0.15f, 0.15f);
-			castle = new BuildingModel("castle","Models",1);//3 3
+			castle = new BuildingModel(Names.CASTLE,"Models",1);//3 3
 			castle.setSize(0.05f, 0.05f, 0.1f);
-			dock = new BuildingModel("dock","Models",1);//2 2
+			dock = new BuildingModel(Names.DOCK,"Models",1);//2 2
 			dock.setSize(0.075f, 0.075f, 0.075f);
-			farm = new BuildingModel("farm","Models",1);//2 2
+			farm = new BuildingModel(Names.FARM,"Models",1);//2 2
 			farm.setSize(0.15f, 0.15f, 0.15f);
-			fort = new BuildingModel("fort","Models",1);//3 3
+			fort = new BuildingModel(Names.FORT,"Models",1);//3 3
 			fort.setSize(0.2f, 0.2f, 0.25f);
-			royalPalace = new BuildingModel("royalPalace","Models",1);//4 4 
-			stable = new BuildingModel("stable","Models",1); //2 2
-			stockpile = new BuildingModel("stockpile","Models",1);//2 2
-			wall = new BuildingModel("wall","Models",1);//1 1
+			royalPalace = new BuildingModel(Names.ROYALPALACE,"Models",1);//4 4 
+			stable = new BuildingModel(Names.STABLE,"Models",1); //2 2
+			stockpile = new BuildingModel(Names.STOCKPILE,"Models",1);//2 2
+			wall = new BuildingModel(Names.WALL,"Models",1);//1 1
 			wall.setSize(0.15f, 0.15f, 0.1f);
 			wall.setAngle(90.0f);
-			mine = new BuildingModel("mine","Models",1);//1 1
+			mine = new BuildingModel(Names.MINE,"Models",1);//1 1
 			mine.setSize(0.15f, 0.15f, 0.15f);
 			
 			tree = new BuildingModel("tree1","Models",3);
@@ -684,6 +692,15 @@ public class GameScreen implements GLEventListener {
 		    		
 		    		drawTile(draw,(float) x,(float) y
 		    			,0.93f,0.68f,0.79f,FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
+//	    			
+//	    			if(checked){
+//		    			drawTile(draw,(float) x,(float) y
+//				    			,0.0f,0.0f,0.0f,FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
+//	    			}else{
+//		    					
+//		    			drawTile(draw,(float) x,(float) y
+//		    					,1.0f,1.0f,1.0f,FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
+//	    			}
 		    			
 	    		}
 	    			
@@ -691,7 +708,7 @@ public class GameScreen implements GLEventListener {
 	    		}
 	    	}
 	    	
-	    	checked =! checked;
+	    	//checked =! checked;
 	    }
 	
 	    
@@ -749,59 +766,59 @@ public class GameScreen implements GLEventListener {
 	    		continue;
 	    	}
 	    	
-	    	if(units.get(u).getUnitType().equals("servant")){
+	    	if(units.get(u).getUnitType().equals(Names.SERVANT)){
 	    		
 	    		drawModel(servant,draw,units.get(u),FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
-	    	}else if(units.get(u).getUnitType().equals("Slave")){
+	    	}else if(units.get(u).getUnitType().equals(Names.SLAVE)){
 	    		
 	    		drawModel(slave,draw,units.get(u),FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
-	    	}else if(units.get(u).getUnitType().equals("axeman")){
+	    	}else if(units.get(u).getUnitType().equals(Names.AXEMAN)){
 	    		
 	    		drawModel(axeman,draw,units.get(u),FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
-	    	}else if(units.get(u).getUnitType().equals("swordsman")){
+	    	}else if(units.get(u).getUnitType().equals(Names.SWORDSMAN)){
 	    		
 	    		drawModel(swordsman,draw,units.get(u),FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
-	    	}else if(units.get(u).getUnitType().equals("spearman")){
+	    	}else if(units.get(u).getUnitType().equals(Names.SPEARMAN)){
 	    		
 	    		drawModel(spearman,draw,units.get(u),FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
-	    	}else if(units.get(u).getUnitType().equals("archer")){
+	    	}else if(units.get(u).getUnitType().equals(Names.ARCHER)){
 	    		
 	    		drawModel(archer,draw,units.get(u),FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
-	    	}else if(units.get(u).getUnitType().equals("heavyarcher")){
+	    	}else if(units.get(u).getUnitType().equals(Names.HEAVYARCHER)){
 	    		
 	    		drawModel(heavyarcher,draw,units.get(u),FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
-	    	}else if(units.get(u).getUnitType().equals("batteringram")){
+	    	}else if(units.get(u).getUnitType().equals(Names.BATTERINGRAM)){
 	    		
 	    		drawModel(batteringRam,draw,units.get(u),FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
-	    	}else if(units.get(u).getUnitType().equals("heavybatteringram")){
+	    	}else if(units.get(u).getUnitType().equals(Names.HEAVYBATTERINGRAM)){
 	    		
 	    		drawModel(heavyBatteringRam,draw,units.get(u),FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
-	    	}else if(units.get(u).getUnitType().equals("lightchariot")){
+	    	}else if(units.get(u).getUnitType().equals(Names.LIGHTCHARIOT)){
 	    		
 	    		drawModel(lightChariot,draw,units.get(u),FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
-	    	}else if(units.get(u).getUnitType().equals("heavychariot")){
+	    	}else if(units.get(u).getUnitType().equals(Names.HEAVYCHARIOT)){
 	    		
 	    		drawModel(heavyChariot,draw,units.get(u),FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
-	    	}else if(units.get(u).getUnitType().equals("fishingboat")){
+	    	}else if(units.get(u).getUnitType().equals(Names.FISHINGBOAT)){
 	    		
 	    		drawModel(fishingBoat,draw,units.get(u),FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
-	    	}else if(units.get(u).getUnitType().equals("warship")){
+	    	}else if(units.get(u).getUnitType().equals(Names.WARSHIP)){
 	    		
 	    		drawModel(warship,draw,units.get(u),FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
-	    	}else if(units.get(u).getUnitType().equals("flagship")){
+	    	}else if(units.get(u).getUnitType().equals(Names.FLAGSHIP)){
 	    		
 	    		drawModel(flagship,draw,units.get(u),FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    	}
@@ -828,6 +845,15 @@ public class GameScreen implements GLEventListener {
 
 	    buildings.begin();
 	    
+	    
+	    if(buildingSelection != null){
+	    	CollisionMap map = new CollisionMap(buildings,units,this.map);
+	    	//map.printCollisionMap((int)buildingSelection.getX(),(int)buildingSelection.getY());
+	    	buildingSelection.CanBuildThere(map);
+	    	//System.out.println(buildingSelection.cantBuild());
+	    	buildings.add(buildingSelection);
+	    }
+	    
 	    //draw buildings in view
 	    for(int b = 0; b < buildings.size(); b++){
 
@@ -841,68 +867,70 @@ public class GameScreen implements GLEventListener {
 	    		continue;
 	    	}
 	    	
-	    	if(buildings.get(b).getName().equals("archerytower")){
+	    	if(buildings.get(b).getName().equals(Names.ARCHERYTOWER)){
 	    		
 	    		drawBuildingModel(archeryTower,draw,buildings.get(b),
 	    				FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
-	    	}else if(buildings.get(b).getName().equals("ballistictower")){
+	    	}else if(buildings.get(b).getName().equals(Names.BALLISTICTOWER)){
 	    		
 	    		drawBuildingModel(ballisticTower,draw,buildings.get(b),
 	    				FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
-	    	}else if(buildings.get(b).getName().equals("barrack")){
+	    	}else if(buildings.get(b).getName().equals(Names.BARRACK)){
 	    		
 	    		drawBuildingModel(barrack,draw,buildings.get(b),
 	    				FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
-	    	}else if(buildings.get(b).getName().equals("castle")){
+	    	}else if(buildings.get(b).getName().equals(Names.CASTLE)){
 	    		
 	    		drawBuildingModel(castle,draw,buildings.get(b),
 	    				FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
-	    	}else if(buildings.get(b).getName().equals("dock")){
+	    	}else if(buildings.get(b).getName().equals(Names.DOCK)){
 	    		
 	    		drawBuildingModel(dock,draw,buildings.get(b),
 	    				FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
-	    	}else if(buildings.get(b).getName().equals("farm")){
+	    	}else if(buildings.get(b).getName().equals(Names.FARM)){
 	    		
 	    		drawBuildingModel(farm,draw,buildings.get(b),
 	    				FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
-	    	}else if(buildings.get(b).getName().equals("fort")){
+	    	}else if(buildings.get(b).getName().equals(Names.FORT)){
 	    		
 	    		drawBuildingModel(fort,draw,buildings.get(b),
 	    				FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
-	    	}else if(buildings.get(b).getName().equals("royalpalace")){
+	    	}else if(buildings.get(b).getName().equals(Names.ROYALPALACE)){
 	    		
 	    		drawBuildingModel(royalPalace,draw,buildings.get(b),
 	    				FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
-	    	}else if(buildings.get(b).getName().equals("stable")){
+	    	}else if(buildings.get(b).getName().equals(Names.STABLE)){
 	    		
 	    		drawBuildingModel(stable,draw,buildings.get(b),
 	    				FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
-	    	}else if(buildings.get(b).getName().equals("stockpile")){
+	    	}else if(buildings.get(b).getName().equals(Names.STOCKPILE)){
 	    		
 	    		drawBuildingModel(stockpile,draw,buildings.get(b),
 	    				FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
-	    	}else if(buildings.get(b).getName().equals("wall")){
+	    	}else if(buildings.get(b).getName().equals(Names.WALL)){
 	    		
 	    		drawBuildingModel(wall,draw,buildings.get(b),
 	    				FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    		
-	    	}else if(buildings.get(b).getName().equals("mine")){
+	    	}else if(buildings.get(b).getName().equals(Names.MINE)){
 	    		
 	    		drawBuildingModel(mine,draw,buildings.get(b),
 	    				FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    	}
 	    }
-	    
+	    if(buildingSelection != null){
+	    	buildings.remove(buildings.size()-1);
+	    }
 	    buildings.end();
 
 	    draw.glDisable(draw.GL_LIGHTING);
@@ -922,24 +950,45 @@ public class GameScreen implements GLEventListener {
 	      
 	      if(mouse.getButton() == MouseEvent.BUTTON1){
 	    	  
-	    	  int x = mouse.getX(), y = mouse.getY();
+	    	  double x = mouse.getX()/w, y = mouse.getY()/h;
 	    	 
+	    	  //System.out.println(x + " " + y);
 	
 		      if(!selectMenu(x, y)){	
 		        	
+		    	 // System.out.println("Select Map");
+		    	  
+		  		
+//		  		System.out.println("Map");
+//		  		
+//		  		System.out.println(x +" " + y + "\n" + (0.14055637 + (3*0.01903367)) +
+//						" " + (0.93191487 - (3*0.0340425)) + " " + (0.15080526 + (3*0.01903367))
+//						+ " " + (0.96879435 - (3*0.0340425)));
+		    	  
 		    	  int[] click = selectMap(x,y);
 		    	  
-		    	  if(selectedUnits.size() > 0){
+		    	  if(selectedUnits.size() > 0 && buildingSelection == null){
 		    	
 		    		  
 		    		  moveUnit(click[0],click[1]);
 		    		  
+		    	  }else if(buildingSelection != null && !buildingSelection.cantBuild()){
+		    		  
+		    		  cmsg.addMessage("bb " + buildingSelection.getX() + " " + buildingSelection.getY()
+		    				  + " " + selectedUnits.get(0).intValue() + " " + buildingSelection.getName());
+		    		  
+		    		  buildingSelection = null;
+		    	  
 		    	  }else{
 		    	  
 		    		  addSelectedUnit(click);
 		    	  }
 		       }
 	    	   mouse = null;
+	     
+	      }else if(mouse.getButton() == MouseEvent.BUTTON3){
+	    		  
+	    	  buildingSelection = null;
 	      }
 	      
 	    }
@@ -947,7 +996,10 @@ public class GameScreen implements GLEventListener {
 	    //deal with dragging the mouse 
 	    if(drag){
 	    	
-	    	if(lx >= 1181 && lx <= 1306 && ly >= 424 && ly <= 633){
+	    	System.out.println("Other mouse click");
+	    	System.out.println(lx + " " + ly);
+	    	if(inRect(0.8631039261817932,0.6014184355735779,0.9546120166778564,
+	    			0.8978723287582397,lx,ly)){
 	    		
 	    		selectMiniMap(lx,ly);
 	    		
@@ -957,6 +1009,9 @@ public class GameScreen implements GLEventListener {
 	    	
 	    		startDB = selectMap(sx,sy);
 	    		lastDB = selectMap(lx,ly);
+	    		
+	    		System.out.println(startDB[0] + " " + startDB[1] +
+	    				" " + lastDB[0] + " " + lastDB[1] + " DB");
 	    		
 	    		selectedUnits.clear();
 	    		
@@ -980,8 +1035,8 @@ public class GameScreen implements GLEventListener {
 	    
 	    }
 	    	
-	    int mx = (int) MouseInfo.getPointerInfo().getLocation().getX();
-	    int my = (int) MouseInfo.getPointerInfo().getLocation().getY();
+	    double mx = (int) MouseInfo.getPointerInfo().getLocation().getX()/w;
+	    double my = (int) MouseInfo.getPointerInfo().getLocation().getY()/h;
 	    	
 		int square[] = selectMap(mx,my);    
 	
@@ -1042,6 +1097,13 @@ public class GameScreen implements GLEventListener {
 					frameX--;
 				}
 			}
+		}
+		
+//		System.out.println((buildingSelection != null) + " " + square[0] + " " + square[1] + 
+//				" building selection");
+		if(buildingSelection != null && square[0] != -1 && square[1] != -1){
+			
+			buildingSelection.setXY(square[0], square[1]);
 		}
 	   
 	}
@@ -1232,40 +1294,38 @@ public class GameScreen implements GLEventListener {
 	}
 	
 	
-	private boolean selectMenu(int x, int y){
+	private boolean selectMenu(double x, double y){
 		
-		float xa = x/w;
-		float ya = y/h;
 		
-		System.out.println("MENU");
-		System.out.println(xa + " " + ya);
+//		System.out.println("MENU");
+//		System.out.println(xa + " " + ya);
 		
-		if(inRect(0.011713031,0.5829787,0.12445095,0.9106383,xa,ya)){
+		if(inRect(0.011713031,0.5829787,0.12445095,0.9106383,x,y)){
 			
-			selectBuildingIcons(x,y);
+			selectBuildingIcons(x, y);
 			return true;
 		}
 		
-		if(inRect(0.85431916,0.5829787,0.9670571,0.9106383,xa,ya)){
+		if(inRect(0.85431916,0.5829787,0.9670571,0.9106383,x,y)){
 			
 			selectMiniMap(x,y);
 			return true;
 		}
 		
 		//quit button
-		if(inRect(0.715959,0.012765957,0.8250366,0.09219858,xa,ya)){
+		if(inRect(0.715959,0.012765957,0.8250366,0.09219858,x,y)){
 			
 			System.out.println("Quit");
 			return true;
 		
 		//pause button
-		}else if(inRect(0.44582725,0.012765957,0.5534407,0.09078014,xa,ya)){
+		}else if(inRect(0.44582725,0.012765957,0.5534407,0.09078014,x,y)){
 		
 			System.out.println("Pause");
 			return true;
 		
 		//save button
-		}else if(inRect(0.14787701,0.012765957,0.25549048,0.09219858,xa,ya)){
+		}else if(inRect(0.14787701,0.012765957,0.25549048,0.09219858,x,y)){
 			
 			System.out.println("Save");
 			return true;
@@ -1277,82 +1337,103 @@ public class GameScreen implements GLEventListener {
 		
 	}
 	
-	private void selectBuildingIcons(int x, int y){
+	private void selectBuildingIcons(double x, double y){
 		
-		float xa = (x/w);
-		float ya = (y/w);
-
 		//1 1
-		if(inRect(0.011713,0.300878,0.0563689,0.331625,xa,ya)){
+		if(inRect(0.013177159242331982,0.5843971371650696,0.05490483343601227,0.6425532102584839
+				,x,y)){
 			
-			System.out.println(1 + " " + 1);
+			//System.out.println(1 + " " + 1);
+			buildingSelection = new Building(Names.STOCKPILE);
 		
 		//2 1
-		}else if(inRect(0.059297,0.30161,0.09004,0.327964,xa,ya)){
+		}else if(inRect(0.05710102617740631,0.5829787254333496,0.0907759889960289,0.6397163271903992,
+				x,y)){
 			
-			System.out.println(2 + " " + 1);
+			//System.out.println(2 + " " + 1);
+			buildingSelection = new Building(Names.WALL);
 		
 		//3 1
-		}else if(inRect(0.0907759,0.3008784,0.122986,0.3294,xa,ya)){
+		}else if(inRect(0.0922401174902916,0.5829787254333496,0.1229868233203888,0.6368794441223145,
+				x,y)){
 			
-			System.out.println(3 + " " + 1);
+			//System.out.println(3 + " " + 1);
+			buildingSelection = new Building(Names.MINE);
 		
 		//1 2
-		}else if(inRect(0.011713031,0.33308932,0.050512444,0.37335286,xa,ya)){
+		}else if(inRect(0.012445094995200634,0.6439716219902039,0.04904831573367119,0.7191489338874817,
+				x,y)){
 			
-			System.out.println(1 + " " + 2);
+			//System.out.println(1 + " " + 2);
+			buildingSelection = new Building(Names.FORT);
 		
 		//2 2
-		}else if(inRect(0.054904833,0.33601758,0.08784773,0.37115666,xa,ya)){
+		}else if(inRect(0.055636897683143616,0.6397163271903992,0.0893118605017662,0.7262411117553711
+				,x,y)){
 			
-			System.out.println(2 + " " + 2);
+			//System.out.println(2 + " " + 2);
+			buildingSelection = new Building(Names.ROYALPALACE);
 		
 		//3 2
-		}else if(inRect(0.090043925,0.33016106,0.12225476,0.37335286,xa,ya)){
+		}else if(inRect(0.09297218173742294,0.6354609727859497,0.1229868233203888,0.7248227000236511,
+				x,y)){
 			
-			System.out.println(3 + " " + 2);
+			//System.out.println(3 + " " + 2);
+			buildingSelection = new Building(Names.STABLE);
 			
 		//1 3
-		}else if(inRect(0.012445095,0.3762811,0.05783309,0.42313322,xa,ya)){
+		}else if(inRect(0.012445094995200634,0.7276595830917358,0.059297218918800354,0.8283687829971313,
+				x,y)){
 			
-			System.out.println(1 + " " + 3);
+			//System.out.println(1 + " " + 3);
+			buildingSelection = new Building(Names.CASTLE);
 		
 		//2 3
-		}else if(inRect(0.060761347,0.37774524,0.08784773,0.42532942,xa,ya)){
+		}else if(inRect(0.0614934116601944,0.7290779948234558,0.08711566776037216,0.8184397220611572,
+				x,y)){
 			
-			System.out.println(2 + " " + 3);
+			//System.out.println(2 + " " + 3);
+			buildingSelection = new Building(Names.DOCK);
 		
 		//3 3
-		}else if(inRect(0.08931186,0.37774524,0.121522695,0.42093703,xa,ya)){
+		}else if(inRect(0.0907759889960289,0.7262411117553711,0.12225475907325745,0.8141843676567078,
+				x,y)){
 			
-			System.out.println(3 + " " + 3);
+			//System.out.println(3 + " " + 3);
+			buildingSelection = new Building(Names.FARM);
 		
 		//1 4
-		}else if(inRect(0.011713031,0.431918,0.04831625,0.46852124,xa,ya)){
+		}else if(inRect(0.012445094995200634,0.8382978439331055,0.04758418723940849,0.9063829779624939,
+				x,y)){
 			
-			System.out.println(1 + " " + 4);
+			//System.out.println(1 + " " + 4);
+			buildingSelection = new Building(Names.ARCHERYTOWER);
 		
 		//2 4
-		}else if(inRect(0.050512444,0.4275256,0.0863836,0.4670571,xa,ya)){
+		}else if(inRect(0.058565154671669006,0.8269503712654114,0.08857979625463486,0.9092198610305786,
+				x,y)){
 			
-			System.out.println(2 + " " + 4);
+			//System.out.println(2 + " " + 4);
+			buildingSelection = new Building(Names.BALLISTICTOWER);
 		
 		//3 4
-		}else if(inRect(0.08711567,0.42532942,0.12225476,0.46852124,xa,ya)){
+		}else if(inRect(0.08784773200750351,0.8255318999290466,0.1229868233203888,0.9063829779624939,
+				x,y)){
 			
-			System.out.println(3 + " " + 4);
+			//System.out.println(3 + " " + 4);
+			buildingSelection = new Building(Names.BARRACK);
 			
 		}
 		
 
 	}
 	
-	private boolean inRect(double xs,double ys,double xl,double yl, float xa, float ya){
+	private boolean inRect(double xs,double ys,double xl,double yl, double xa, double ya){
 		
 		return (xa >= xs && xa <= xl && ya >= ys && ya <= yl);
 	}
 	
-	private void selectMiniMap(int x, int y){
+	private void selectMiniMap(double x, double y){
 		
 		float squareSizeX = ((float) (1307-1181))/ (float) map.getWidth();
 		float squareSizeY = ((float) (633-424))/ (float) map.getHeight();
@@ -1397,7 +1478,7 @@ public class GameScreen implements GLEventListener {
 
 	}
 	
-	private boolean selectMapInfo(int x, int y){
+	private boolean selectMapInfo(double x, double y){
 		
 		for(int m = 0; m < maps.getSize(); m++){
 			
@@ -1412,16 +1493,31 @@ public class GameScreen implements GLEventListener {
 		return false;
 	}
 	
-	private int[] selectMap(int mx, int my){
+	private int[] selectMap(double mx, double my){
 
 		//check with square has been selected 
+//		for(int y = 0; y < 25; y++){
+//			for(int x = 0; x < 40; x++){
+//				if(mx >= 191 + (24*x) 
+//						&& mx <= 215 + (24*x)
+//						&& my >= 659 - (25*y)
+//						&& my <= 684 - (25*y)){
+//				
+//					return new int[]{x+frameX,y+frameY};
+//				}
+//			}
+		
+		
+		
 		for(int y = 0; y < 25; y++){
 			for(int x = 0; x < 40; x++){
-				if(mx >= 191 + (24*x) 
-						&& mx <= 215 + (24*x)
-						&& my >= 659 - (25*y)
-						&& my <= 684 - (25*y)){
-				
+			
+				if(inRect(0.1398243010044098 + (x*(0.03513909876/2.0)),
+						0.9347517490386963 - (y*(0.06950354576/2.0)),
+						0.15739385783672333 + (x*(0.03513909876/2.0)),
+						0.9702127575874329 - (y*(0.06950354576/2.0)),
+							mx,my)){
+					
 					return new int[]{x+frameX,y+frameY};
 				}
 			}
@@ -1456,55 +1552,55 @@ public class GameScreen implements GLEventListener {
 	private void drawBuildingIcons(float x, float y,float z, GL2 draw){
 		
 		if(selectedUnits.size() == 1 && units.getUnitByUnitNo(selectedUnits.get(0)).getUnitType() != null 
-				&& (units.getUnitByUnitNo(selectedUnits.get(0)).getUnitType().equals("Slave")
-				 	|| units.getUnitByUnitNo(selectedUnits.get(0)).getUnitType().equals("Servant"))){
+				&& (units.getUnitByUnitNo(selectedUnits.get(0)).getUnitType().equals(Names.SLAVE)
+				 	|| units.getUnitByUnitNo(selectedUnits.get(0)).getUnitType().equals(Names.SERVANT))){
 			
 			
-			Building archTower = new Building(x+2.0f, y - 1.0f, "archeryTower",-1);
+			Building archTower = new Building(x+2.0f, y - 1.0f, Names.ARCHERYTOWER,-1);
 			drawBuildingModel(archeryTower, draw,archTower,
 					FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST,z,false,0.3f);
 			
-			Building ballisTower = new Building(x + 3.0f, y - 1.0f, "ballisticTower",-1);
+			Building ballisTower = new Building(x + 3.0f, y - 1.0f, Names.BALLISTICTOWER,-1);
 			drawBuildingModel(ballisticTower, draw,ballisTower,
 					FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST,z,false,0.3f);
 			
-			Building barr = new Building(x + 4.0f, y - 1.0f, "barrack",-1);
+			Building barr = new Building(x + 4.0f, y - 1.0f, Names.BARRACK,-1);
 			drawBuildingModel(barrack, draw,barr,
 					FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST,z,false,0.3f);
 			
-			Building cast = new Building(x + 2.0f, y + 0.5f, "castle",-1);
+			Building cast = new Building(x + 2.0f, y + 0.5f, Names.CASTLE,-1);
 			drawBuildingModel(castle, draw,cast,
 					FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST,z,false,0.3f);
 			
-			Building doc = new Building(x + 3.0f, y + 0.30f, "dock",-1);
+			Building doc = new Building(x + 3.0f, y + 0.30f, Names.DOCK,-1);
 			drawBuildingModel(dock, draw,doc,
 					FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST,z,false,0.3f);
 			
-			Building far = new Building(x + 4.0f, y + 0.5f, "farm",-1);
+			Building far = new Building(x + 4.0f, y + 0.5f, Names.FARM,-1);
 			drawBuildingModel(farm, draw,far,
 					FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST,z,false,0.3f);
 			
-			Building fortb = new Building(x + 1.5f, y + 1.5f, "fort",-1);
+			Building fortb = new Building(x + 1.5f, y + 1.5f, Names.FORT,-1);
 			drawBuildingModel(fort, draw,fortb,
 					FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST,z,false,0.2f);
 			
-			Building royalPala = new Building(x + 3.0f, y + 1.75f, "royalPalace",-1);
+			Building royalPala = new Building(x + 3.0f, y + 1.75f, Names.ROYALPALACE,-1);
 			drawBuildingModel(royalPalace, draw,royalPala,
 					FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST,z,false,0.15f);
 			
-			Building stab = new Building(x + 4.0f, y + 1.5f, "stable",-1);
+			Building stab = new Building(x + 4.0f, y + 1.5f, Names.STABLE,-1);
 			drawBuildingModel(stable, draw,stab,
 					FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST,z,false,0.3f);
 			
-			Building stock = new Building(x + 2.0f, y + 3.0f, "stockpile",-1);
+			Building stock = new Building(x + 2.0f, y + 3.0f, Names.STOCKPILE,-1);
 			drawBuildingModel(stockpile, draw,stock,
 					FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST,z,false,0.3f);
 			
-			Building wal = new Building(x + 3.0f, y + 3.0f, "wall",-1);
+			Building wal = new Building(x + 3.0f, y + 3.0f, Names.WALL,-1);
 			drawBuildingModel(wall, draw,wal,
 					FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST,z,false,0.4f);
 			
-			Building min = new Building(x + 4.0f, y + 3.0f, "mine",-1);
+			Building min = new Building(x + 4.0f, y + 3.0f, Names.MINE,-1);
 			drawBuildingModel(mine, draw,min,
 					FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST,z,false,0.4f);
 		}
@@ -1594,7 +1690,7 @@ public class GameScreen implements GLEventListener {
 				continue;
 			}
 			
-			if(buildings.get(b).getName().equals("royalPalace")){
+			if(buildings.get(b).getName().equals(Names.ROYALPALACE)){
 				
 				drawMenuQuad(draw,(x-2.85f) + (2.55f*buildings.get(b).getX())/map.getWidth()
 						,(y-1.70f) + (4.35f*buildings.get(b).getY())/map.getHeight() ,z,0.58f
@@ -1863,8 +1959,13 @@ public class GameScreen implements GLEventListener {
 
 		while((next = model.popFace(0,0)) != null){
 			
-			Colour colour = model.getColour(0,0);
-			draw.glColor3fv(FloatBuffer.wrap(colour.getDiffuse()));
+			
+			if(building.cantBuild()) 
+				draw.glColor3f(1.0f, 0.0f, 0.0f);
+			else{ 
+				Colour colour = model.getColour(0,0); 
+				draw.glColor3fv(FloatBuffer.wrap(colour.getDiffuse()));
+			}
 
 			draw.glBegin(draw.GL_POLYGON);
 
@@ -1966,12 +2067,12 @@ public class GameScreen implements GLEventListener {
 				
 				if(!dragBox){
 					
-					sx = e.getX();
-					sy = e.getY();
+					sx = e.getX()/w;
+					sy = e.getY()/h;
 				}else{
 					
-					lx = e.getX();
-					ly = e.getY();
+					lx = e.getX()/w;
+					ly = e.getY()/h;
 				}
 				drag = true;
 				dragBox = true;

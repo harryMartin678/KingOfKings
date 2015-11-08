@@ -94,7 +94,12 @@ public class ServerMessages {
 								}else if(inpt.substring(0,4).equals("gtak")){
 									
 									engine.parseGroupAttack(inpt.substring(5));
+								
+								}else if(inpt.substring(0, 2).equals("bb")){
+									
+									engine.parseBuildings(inpt.substring(2),p);
 								}
+								
 							}
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
