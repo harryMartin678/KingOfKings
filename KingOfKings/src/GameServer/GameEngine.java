@@ -23,6 +23,9 @@ import Units.UnitBattleList;
 import Units.UnitList;
 import Units.Worker;
 
+
+//composition:
+//
 public class GameEngine implements Commands {
 	
 	private MapList maps;
@@ -124,7 +127,7 @@ public class GameEngine implements Commands {
 	///	+ units.getUnitMap(5));
 		
 		//reveal map 
-		revealMap();
+		//revealMap();
 		//progress unit fights
 		battles.simulateHit();
 		
@@ -455,12 +458,14 @@ public class GameEngine implements Commands {
 	}
 
 	@Override
-	public void buildBuilding(int x, int y,int player, String buildingType) {
+	public void buildBuilding(int x, int y,int player,int map, String buildingType) {
 		// TODO Auto-generated method stub
 		Building newBuilding = GameGraphics.Building.GetBuildingClass(buildingType);
 		newBuilding.setPlayer(player);
+		newBuilding.setMap(map);
 		newBuilding.SetBuildingNo(buildings.getBuildingsSize());
 		buildings.addBuilding(newBuilding);
+		
 	}
 
 	@Override
@@ -790,15 +795,17 @@ public class GameEngine implements Commands {
 		ArrayList<String> numbers = text.getNumbers();
 		String name = text.getUnitName();
 		
-		this.buildBuilding(new Integer(numbers.get(0)).intValue(), new Integer(numbers.get(0)).intValue(),
-				player,name);
-		
 		System.out.println(name);
 		
 		for(int n = 0; n < numbers.size(); n++){
 			
 			System.out.println(numbers.get(n));
 		}
+		
+		this.buildBuilding(new Float(numbers.get(0)).intValue(), new Float(numbers.get(1)).intValue(),
+				new Float(numbers.get(2)).intValue(),player,name);
+		
+		
 	}
 
 

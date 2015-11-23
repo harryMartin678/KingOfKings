@@ -1,5 +1,7 @@
 package GameGraphics;
 
+import GameGraphics.GameScreenComposition.IComBuildingList;
+
 public interface IBuildingList {
 	
 	public int getBuildingsSize();

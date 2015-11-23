@@ -2,15 +2,28 @@ package GameGraphics;
 
 import java.util.ArrayList;
 
-public class UnitList implements IUnitList {
+import Buildings.Names;
+import GameGraphics.GameScreenComposition.IComUnitListDisplay;
+import GameGraphics.GameScreenComposition.IComUnitListFrameProcess;
+import GameGraphics.GameScreenComposition.IComUnitListMouseKeyboard;
+
+public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,IComUnitListFrameProcess {
 	
 	private ArrayList<Unit> units;
 	private boolean used;
+	private ArrayList<int[]> wayPoints;
+	private ArrayList<Integer> selectedUnits;
+	private int myPlayerNumber;
+	private boolean wayPointSetting;
 	
-	public UnitList(){
+	public UnitList(int myPlayerNumber){
 		
 		units = new ArrayList<Unit>();
 		used = false;
+		
+		wayPoints = new ArrayList<int[]>();
+		selectedUnits = new ArrayList<Integer>();
+		this.myPlayerNumber = myPlayerNumber;
 	}
 	
 	public void begin(){
@@ -94,6 +107,196 @@ public class UnitList implements IUnitList {
 	public boolean checkInUnit(int x, int y,int unitNo) {
 		// TODO Auto-generated method stub
 		return units.get(unitNo).inUnit(x,y);
+	}
+
+	@Override
+	public int getNumberOfWayPoints() {
+		// TODO Auto-generated method stub
+		return wayPoints.size();
+	}
+
+	@Override
+	public int[] getWayPoint(int index) {
+		// TODO Auto-generated method stub
+		return wayPoints.get(index);
+	}
+
+	@Override
+	public boolean inFrame(int unitNo, int frameX, int frameY,
+			int FRAME_X_SIZE, int FRAME_Y_SIZE) {
+		// TODO Auto-generated method stub
+		return !(units.get(unitNo).getX() >= frameX 
+		&& units.get(unitNo).getX() < (frameX + FRAME_X_SIZE)
+		&& units.get(unitNo).getY() >= frameY 
+		&& units.get(unitNo).getY() < (frameY + FRAME_Y_SIZE));
+		
+	}
+
+	@Override
+	public boolean isUnitSelected(int unitNo) {
+		// TODO Auto-generated method stub
+		
+		for(int u = 0; u < selectedUnits.size(); u++){
+			
+			if(selectedUnits.get(u) == unitNo){
+				
+				return true;
+			}
+		}
+		
+		return false;
+		
+	}
+
+	@Override
+	public boolean workSelected() {
+		// TODO Auto-generated method stub
+		return selectedUnits != null && selectedUnits.size() == 1 && getUnitByUnitNo(selectedUnits.get(0)).getUnitType() != null 
+				&& (getUnitByUnitNo(selectedUnits.get(0)).getUnitType().equals(Names.SLAVE)
+					 	|| getUnitByUnitNo(selectedUnits.get(0)).getUnitType().equals(Names.SERVANT));
+	}
+
+	@Override
+	public int getBaseSelectedUnit() {
+		// TODO Auto-generated method stub
+		return selectedUnits.get(0);
+	}
+
+	@Override
+	public void addSelectedUnits(int[] startDB, int[] lastDB) {
+		// TODO Auto-generated method stub
+		selectedUnits.clear();
+		
+		for(int u = 0; u < units.size(); u++){
+			
+	
+			if(units.get(u).getX() <= Math.max(startDB[0], lastDB[0])
+					&& units.get(u).getX() >= Math.min(startDB[0],lastDB[0])
+					&&units.get(u).getY() <= Math.max(startDB[1], lastDB[1])
+	    					&& units.get(u).getY() >= Math.min(startDB[1],lastDB[1])
+	    						&& units.get(u).getPlayer() == this.myPlayerNumber){
+				
+				selectedUnits.add(units.get(u).getUnitNo());
+				
+			}
+		}
+	}
+
+	@Override
+	public void addSelectedUnit(int[] click) {
+		// TODO Auto-generated method stub
+		for(int u = 0; u < units.size(); u++){
+			  
+			  if(((int) units.get(u).getX()) == click[0] 
+					  && ((int) units.get(u).getY()) == click[1]
+							  && units.get(u).getPlayer() == this.myPlayerNumber){
+			  
+				  selectedUnits.add(units.get(u).getUnitNo());
+			  	}
+		  }
+	}
+
+	@Override
+	public int getSelectedUnitsSize() {
+		// TODO Auto-generated method stub
+		return selectedUnits.size();
+	}
+
+	@Override
+	public boolean areWayPointSetting() {
+		// TODO Auto-generated method stub
+		return wayPointSetting;
+	}
+
+	@Override
+	public void clearSelectedUnits() {
+		// TODO Auto-generated method stub
+		selectedUnits.clear();
+	}
+
+	@Override
+	public int getFollowUnit() {
+		// TODO Auto-generated method stub
+		return selectedUnits.get(1);
+	}
+
+	@Override
+	public int getFollowingUnit() {
+		// TODO Auto-generated method stub
+		return selectedUnits.get(0);
+	}
+
+	@Override
+	public boolean canAttackUnit(int[] click, int unitNo) {
+		// TODO Auto-generated method stub
+		return ((int) units.get(unitNo).getX()) == click[0] 
+		  && ((int) units.get(unitNo).getY()) == click[1]
+				  && units.get(unitNo).getPlayer() != this.myPlayerNumber;
+		
+	}
+
+	@Override
+	public void removeBaseUnit() {
+		// TODO Auto-generated method stub
+		selectedUnits.remove(0);
+	}
+
+	@Override
+	public void addWayPoints(int[] point) {
+		// TODO Auto-generated method stub
+		wayPoints.add(point);
+	}
+
+	@Override
+	public String getWayPoints() {
+		// TODO Auto-generated method stub
+		String points = "";
+		  
+		for(int w = 0; w < wayPoints.size(); w++){
+			  
+			points += wayPoints.get(w)[0] + " " + wayPoints.get(w)[1] + " "
+					+ wayPoints.get(w)[2] + " ";
+		}
+		  
+		return points;
+	}
+
+	@Override
+	public void setWayPointSetting(boolean flag) {
+		// TODO Auto-generated method stub
+		wayPointSetting = flag;
+	}
+
+	@Override
+	public void clearWayPoints() {
+		// TODO Auto-generated method stub
+		wayPoints.clear();
+	}
+
+	@Override
+	public String getUnitsSelectedString() {
+		// TODO Auto-generated method stub
+		String units = "";
+		
+		for(int u = 0; u < selectedUnits.size(); u++){
+		
+			units += selectedUnits.get(u) + " ";
+		}
+		
+		
+		return units;
+	}
+	
+	//units.get(i).changeCurrentFrame();
+	public void changeCurrentFrame(int unitNo){
+		
+		units.get(unitNo).changeCurrentFrame();
+	}
+
+	@Override
+	public int getSelectedUnitSize() {
+		// TODO Auto-generated method stub
+		return selectedUnits.size();
 	}
 
 }

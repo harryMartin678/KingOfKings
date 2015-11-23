@@ -46,6 +46,28 @@ import Map.LoadMap;
 import Map.Map;
 import Map.MapList;
 
+/*
+ * Composition:
+ * -GameScreen
+ * 		-Process frame
+ * 		-Event listening
+ * 		-game loop
+ * 		-talk to: all
+ * 
+ * -Display
+ * 		-Models
+ * 		-Drawing
+ * 		-talk to: building list and unit list
+ * -UnitList 
+ * 		-selected units 
+ * 		-talk to: no one
+ * -BuildingList
+ * 		-buildingSelection
+ * 		-talk to: no one
+ * -Mouse and keyboard events
+ * 		-talk to: unit list, building list
+ * -
+ */
 public class GameScreen implements GLEventListener {
 	
 	private Model slave;
@@ -138,7 +160,7 @@ public class GameScreen implements GLEventListener {
 		this.wayPointSetting = false;
 		wayPoints = new ArrayList<int[]>();
 		
-		units = new UnitList();
+		units = new UnitList(this.myPlayerNumber);
 		buildings = new BuildingList();
 	
 		
@@ -975,7 +997,8 @@ public class GameScreen implements GLEventListener {
 		    	  }else if(buildingSelection != null && !buildingSelection.cantBuild()){
 		    		  
 		    		  cmsg.addMessage("bb " + buildingSelection.getX() + " " + buildingSelection.getY()
-		    				  + " " + selectedUnits.get(0).intValue() + " " + buildingSelection.getName());
+		    				  + " " + selectedUnits.get(0).intValue() + " " + this.viewedMap + 
+		    				  " " + buildingSelection.getName());
 		    		  
 		    		  buildingSelection = null;
 		    	  

@@ -1,21 +1,11 @@
 package GameGraphics;
-import java.awt.CardLayout;
-import java.awt.Color;
 import java.awt.Container;
 import java.awt.GridLayout;
-import java.util.ArrayList;
 
 import javax.media.opengl.GLCapabilities;
-import javax.media.opengl.GLDrawableFactory;
-import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLProfile;
-import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.awt.GLJPanel;
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
-import javax.swing.OverlayLayout;
 
 import GameClient.ClientMessages;
 
@@ -46,7 +36,8 @@ public class Graphics{
 		animator.start();
 		
 		
-		GameScreen gs = new GameScreen(cmsg);
+		GameGraphics.GameScreenComposition.GameScreen gs = 
+				new GameGraphics.GameScreenComposition.GameScreen(cmsg);
 		
 		canvas.addMouseListener(gs.getMouseListener());
 		canvas.addMouseMotionListener(gs.getMouseMotionListener());
