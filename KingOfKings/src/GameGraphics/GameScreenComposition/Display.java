@@ -10,6 +10,7 @@ import javax.media.opengl.glu.GLU;
 import com.jogamp.opengl.util.gl2.GLUT;
 
 import Buildings.Names;
+import GameGraphics.Building;
 import GameGraphics.BuildingModel;
 import GameGraphics.ChariotModel;
 import GameGraphics.Face;
@@ -49,7 +50,7 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	}
 	
 	public void setUpDisplay(IComUnitListDisplay units, IComBuildingListDisplay buildings,
-			IComMouseKeyboard mouseKeyboard,IComMapDisplay map) throws IOException{
+			IComMouseKeyboard mouseKeyboard,IComMapDisplay map,int playerNumber) throws IOException{
 		
 		this.units = units;
 		this.buildings = buildings;
@@ -60,7 +61,7 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 		unitModels = new UnitModelList(FRAME_X_SIZE/HEIGHT_CONST,FRAME_Y_SIZE/WIDTH_CONST,scaleFactor);
 		
 		menus = new DisplayMenus(FRAME_X_SIZE/HEIGHT_CONST,FRAME_Y_SIZE/WIDTH_CONST,scaleFactor,
-				units,buildings,buildingModels,map,FRAME_X_SIZE,FRAME_Y_SIZE);
+				units,buildings,buildingModels,unitModels,map,FRAME_X_SIZE,FRAME_Y_SIZE,playerNumber);
 		
 		
 	}
@@ -80,7 +81,7 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	private void drawTiles(GL2 draw){
 		
 		
-		boolean checked = true;
+		//boolean checked = true;
 		 //draw tiles for landscape
 	    for(int y = frameY; y < frameY+FRAME_Y_SIZE; y++){
 	    	for(int x = frameX; x < frameX+FRAME_X_SIZE; x++){
@@ -193,14 +194,34 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    //draw buildings in view
 	    for(int b = 0; b < buildings.size(); b++){
 
-	    	
 	    	if(buildings.inFrame(b, frameX, frameY, FRAME_X_SIZE, FRAME_Y_SIZE)
 	    			|| map.getTile((int) buildings.get(b).getX(),(int) buildings.get(b).getY()) == -1){
 	    		
 	    		continue;
 	    	}
 	    	
-	    	buildingModels.drawBuilding(draw, buildings.get(b), frameX, frameY);
+	    	if(buildings.isSelectedBuilding(buildings.get(b))){
+	    		
+	    		Buildings.Building type = Building.GetBuildingClass(buildings.get(b).getName());
+	    		
+	    		draw.glLoadIdentity();
+	    		draw.glTranslatef(buildings.get(b).getX()-(FRAME_Y_SIZE/WIDTH_CONST)-frameX, 
+	    				buildings.get(b).getY()-(FRAME_X_SIZE/HEIGHT_CONST)-frameY, -34.0f);
+	    		draw.glColor3f(0.0f, 0.0f, 1.0f);
+	    		draw.glScalef(0.5f*type.getSizeX(), 0.5f*type.getSizeY(), 0.5f);
+	    		
+	    		
+	    		draw.glBegin(draw.GL_LINE_LOOP);
+	    			draw.glVertex3f(1.0f, 1.0f, -1.0f); //bottom face
+	    			draw.glVertex3f(-1.0f, 1.0f, -1.0f);
+	    			draw.glVertex3f(-1.0f, -1.0f, -1.0f);
+	    			draw.glVertex3f(1.0f, -1.0f, -1.0f);
+	    		draw.glEnd();
+	    	}
+	    	
+	    	if(buildings.get(b) != null){
+	    		buildingModels.drawBuilding(draw, buildings.get(b), frameX, frameY);
+	    	}
 	    }
 	    buildings.removeGhostBuilding();
 	    buildings.end();

@@ -42,7 +42,7 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 		buildings = new BuildingList();
 		
 		display.setUpDisplay((IComUnitListDisplay) units, (IComBuildingListDisplay) buildings,
-				(IComMouseKeyboard) mouseKeyboard, map);
+				(IComMouseKeyboard) mouseKeyboard, map,myPlayerNumber);
 		
 		mouseKeyboard.setUpMouseKeyboard((IComUnitListMouseKeyboard)units,
 				(IComBuildingListMouseKeyboard)buildings,(IComDisplayMouseKeyboard) display, 
@@ -260,6 +260,12 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 			
 			
 		};
+	}
+
+	@Override
+	public int getPlayerNumber() {
+		// TODO Auto-generated method stub
+		return this.myPlayerNumber;
 	}	
 	
 	

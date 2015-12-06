@@ -12,6 +12,7 @@ import Buildings.Fort;
 import Buildings.Names;
 import Buildings.RoyalPalace;
 import Buildings.Stable;
+import Buildings.Stockpile;
 import Map.CollisionMap;
 
 public class Building {
@@ -21,6 +22,8 @@ public class Building {
 	private String name;
 	private int buildingNo;
 	private boolean cantBuild;
+	private boolean site;
+	private int player;
 	
 	public Building(String name){
 		
@@ -28,11 +31,12 @@ public class Building {
 		cantBuild = false;
 	}
 	
-	public Building(float x, float y, String name,int buildingNo){
+	public Building(float x, float y, String name,int buildingNo,int player){
 		
 		this.x = x;
 		this.y = y;
 		this.buildingNo = buildingNo;
+		this.player = player;
 		
 		this.name = name;
 	}
@@ -63,6 +67,11 @@ public class Building {
 		return name;
 	}
 	
+	public int getPlayer(){
+		
+		return player;
+	}
+	
 	public boolean inBuilding(int x, int y){
 		
 		
@@ -91,71 +100,90 @@ public class Building {
 	
 	public static Buildings.Building GetBuildingClass(String name){
 		
+		return GetBuildingClass(name,0);
+	}
+	
+	public static Buildings.Building GetBuildingClass(String name,int buildingNo){
+		
 		Buildings.Building check = null;
 		
 		if(name.equals(Names.ARCHERYTOWER)){
 			
-			check  = new ArcheryTower(0);
+			check  = new ArcheryTower(buildingNo);
 		
 		}else if(name.equals(Names.BALLISTICTOWER)){
 			
-			check = new BallistaTower(0);
+			check = new BallistaTower(buildingNo);
 		
 		}else if(name.equals(Names.CASTLE)){
 			
-			check = new Castle(0);
+			check = new Castle(buildingNo);
 		
 		}else if(name.equals(Names.DOCK)){
 			
-			check = new Dock(0);
+			check = new Dock(buildingNo);
 		
 		}else if(name.equals(Names.FARM)){
 			
-			check = new Farm(0);
+			check = new Farm(buildingNo);
 		
 		}else if(name.equals(Names.FORT)){
 			
-			check = new Fort(0);
+			check = new Fort(buildingNo);
 		
 		}else if(name.equals(Names.ROYALPALACE)){
 			
-			check = new RoyalPalace(0);
+			check = new RoyalPalace(buildingNo);
 		
 		}else if(name.equals(Names.STABLE)){
 			
-			check = new Stable(0);
+			check = new Stable(buildingNo);
 		
 		}else if(name.equals(Names.CASTLE)){
 			
-			check = new Castle(0);
+			check = new Castle(buildingNo);
 		
 		}else if(name.equals(Names.DOCK)){
 			
-			check = new Dock(0);
+			check = new Dock(buildingNo);
 		
 		}else if(name.equals(Names.FARM)){
 			
-			check = new Farm(0);
+			check = new Farm(buildingNo);
 		
 		}else if(name.equals(Names.ARCHERYTOWER)){
 			
-			check = new ArcheryTower(0);
+			check = new ArcheryTower(buildingNo);
 		
 		}else if(name.equals(Names.BALLISTICTOWER)){
 			
-			check = new BallistaTower(0);
+			check = new BallistaTower(buildingNo);
 		
 		}else if(name.equals(Names.BARRACK)){
 			
-			check = new Barrack(0);
+			check = new Barrack(buildingNo);
+		
+		}else if(name.equals(Names.STOCKPILE)){
+			
+			check = new Stockpile(buildingNo);
 		}
 		
 		if(check == null){
 			
-			check = new Buildings.Building(0);
+			check = new Buildings.Building(buildingNo);
 		}
 		
 		return check;
+	}
+
+	public void SetSite(boolean site) {
+		// TODO Auto-generated method stub
+		this.site = site;
+	}
+
+	public boolean isSite() {
+		// TODO Auto-generated method stub
+		return site;
 	}
 
 

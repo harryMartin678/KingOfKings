@@ -12,7 +12,7 @@ public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,I
 	private ArrayList<Unit> units;
 	private boolean used;
 	private ArrayList<int[]> wayPoints;
-	private ArrayList<Integer> selectedUnits;
+	private ArrayList<SelectedUnit> selectedUnits;
 	private int myPlayerNumber;
 	private boolean wayPointSetting;
 	
@@ -22,8 +22,14 @@ public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,I
 		used = false;
 		
 		wayPoints = new ArrayList<int[]>();
-		selectedUnits = new ArrayList<Integer>();
+		selectedUnits = new ArrayList<SelectedUnit>();
 		this.myPlayerNumber = myPlayerNumber;
+	}
+	
+	public class SelectedUnit{
+		
+		public int unitNo;
+		public boolean isWorker;
 	}
 	
 	public void begin(){
@@ -138,7 +144,7 @@ public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,I
 		
 		for(int u = 0; u < selectedUnits.size(); u++){
 			
-			if(selectedUnits.get(u) == unitNo){
+			if(selectedUnits.get(u).unitNo == unitNo){
 				
 				return true;
 			}
@@ -151,15 +157,29 @@ public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,I
 	@Override
 	public boolean workSelected() {
 		// TODO Auto-generated method stub
-		return selectedUnits != null && selectedUnits.size() == 1 && getUnitByUnitNo(selectedUnits.get(0)).getUnitType() != null 
-				&& (getUnitByUnitNo(selectedUnits.get(0)).getUnitType().equals(Names.SLAVE)
-					 	|| getUnitByUnitNo(selectedUnits.get(0)).getUnitType().equals(Names.SERVANT));
+	
+//		if(selectedUnits == null || selectedUnits.size() == 0){
+//			
+//			return false;
+//		}
+//		
+//		Unit unit = getUnitByUnitNo(selectedUnits.get(0));
+//		
+//		if(unit == null){
+//			
+//			return false;
+//		}
+//		
+//		return  (unit.getUnitType().equals(Names.SLAVE)
+//					 	|| unit.getUnitType().equals(Names.SERVANT));
+		
+		return this.isWorkerSelected();
 	}
 
 	@Override
 	public int getBaseSelectedUnit() {
 		// TODO Auto-generated method stub
-		return selectedUnits.get(0);
+		return selectedUnits.get(0).unitNo;
 	}
 
 	@Override
@@ -176,7 +196,12 @@ public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,I
 	    					&& units.get(u).getY() >= Math.min(startDB[1],lastDB[1])
 	    						&& units.get(u).getPlayer() == this.myPlayerNumber){
 				
-				selectedUnits.add(units.get(u).getUnitNo());
+				SelectedUnit su = new SelectedUnit();
+				su.unitNo = units.get(u).getUnitNo();
+				su.isWorker = units.get(u).getUnitType().equals(Names.SLAVE)
+						|| units.get(u).getUnitType().equals(Names.SERVANT);
+				
+				selectedUnits.add(su);
 				
 			}
 		}
@@ -191,7 +216,11 @@ public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,I
 					  && ((int) units.get(u).getY()) == click[1]
 							  && units.get(u).getPlayer() == this.myPlayerNumber){
 			  
-				  selectedUnits.add(units.get(u).getUnitNo());
+				  SelectedUnit su = new SelectedUnit();
+					su.unitNo = units.get(u).getUnitNo();
+					su.isWorker = units.get(u).getUnitType().equals(Names.SLAVE)
+							|| units.get(u).getUnitType().equals(Names.SERVANT);
+				  selectedUnits.add(su);
 			  	}
 		  }
 	}
@@ -217,13 +246,13 @@ public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,I
 	@Override
 	public int getFollowUnit() {
 		// TODO Auto-generated method stub
-		return selectedUnits.get(1);
+		return selectedUnits.get(1).unitNo;
 	}
 
 	@Override
 	public int getFollowingUnit() {
 		// TODO Auto-generated method stub
-		return selectedUnits.get(0);
+		return selectedUnits.get(0).unitNo;
 	}
 
 	@Override
@@ -297,6 +326,21 @@ public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,I
 	public int getSelectedUnitSize() {
 		// TODO Auto-generated method stub
 		return selectedUnits.size();
+	}
+
+	@Override
+	public boolean isWorkerSelected() {
+		// TODO Auto-generated method stub
+		
+		for(int w = 0; w < selectedUnits.size(); w++){
+			
+			if(selectedUnits.get(w).isWorker){
+				
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 }

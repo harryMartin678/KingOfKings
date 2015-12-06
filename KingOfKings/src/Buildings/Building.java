@@ -2,6 +2,10 @@ package Buildings;
 
 import java.util.ArrayList;
 
+import GameGraphics.UnitList;
+import Map.CollisionMap;
+import Map.Map;
+
 public class Building {
 	
 	private int x;
@@ -207,6 +211,85 @@ public class Building {
 	public String unitcreated(){
 		
 		return "";
+	}
+	
+	
+	public int[] getFreeSpace(CollisionMap map,int unitX, int unitY,ArrayList<int[]> taken){
+		
+		//the corners of the building 
+		int[] corners = new int[]{x - this.getSizeX(), y - this.getSizeY(),
+				x + this.getSizeX(),y - this.getSizeY()
+				,x + this.getSizeX(),y + this.getSizeY(),
+				x - this.getSizeX(),y + this.getSizeY()};
+		
+		//the directions between the corners 
+		int[] directions = new int[]{1,0,0,1,-1,0,0,-1};
+		
+		
+		int closestDistance = Integer.MAX_VALUE;
+		int[] closestPos = new int[]{-1,-1};
+		
+		int[][] mapArray = map.getCollisionMap();
+		
+		//go though each corner
+		for(int c = 0; c < corners.length; c+=2){
+			
+			//Abs(directions[c] + direction[c+1]) <= 1 
+			//travel between corners checking for the closet free square as you go 
+			for(int l = 0; l < (directions[c] * this.getSizeX()) 
+					+ (directions[c+1] * this.getSizeY())+1; l+= directions[c] + directions[c+1]){
+				
+				//calculates the currently checked square 
+				int cx = corners[c] + (directions[c] * l);
+				int cy = corners[c+1] + (directions[c+1] * l);
+				
+				//if this square is free and on the map
+				if(cx >= 0 && cy >= 0 && cx < mapArray.length && cy < mapArray[0].length &&
+						mapArray[cx][cy] == 0 ){
+					
+					int distance = Math.abs(cx - unitX) + Math.abs(cy - unitY);
+
+					//if it is the closest so far seen then set it as the current closet point
+					if(distance < closestDistance && !OnTakenList(taken,new int[]{cx,cy})){
+						
+						closestDistance = distance;
+						closestPos[0] = cx;
+						closestPos[1] = cy;
+					}
+				}
+			}
+		}
+		
+		return closestPos;
+	}
+	
+	public static boolean OnTakenList(ArrayList<int[]> list,int[] obj){
+		
+		for(int p = 0; p < list.size(); p++){
+			
+			if(obj[0] == list.get(p)[0] && obj[1] == list.get(p)[1]){
+				
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public static void main(String[] args) {
+		
+//		RoyalPalace building = new RoyalPalace(0);
+//		
+//		building.setPos(2, 2);
+//		
+//		BuildingList buildings = new BuildingList();
+//		
+//		int[] pos = building.getFreeSpace(new CollisionMap(new BuildingList(),new UnitList(0),new Map(10,10)),
+//				7, 7);
+//		
+//		
+//		System.out.println(pos[0] + " " + pos[1] + " closestPos");
+		
 	}
 	
 	

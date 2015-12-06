@@ -82,19 +82,36 @@ public class MouseKeyboard implements IComMouseKeyboard {
 		    	  
 		    	  if(units.getSelectedUnitsSize() > 0 && !buildings.isBuildingGhost()){
 		    	
-		    		  move.moveUnit(click[0],click[1],fDown,shiftDown);
+		    		  if(!buildings.setSelectedBuilding(click[0], click[1],this.playerNumber)){
+		    			  
+		    		  	move.moveUnit(click[0],click[1],fDown,shiftDown);
+		    		  	buildings.clearSelectedBuilding();
+		    		  
+		    		  }else{
+		    			  
+		    			  units.clearSelectedUnits();
+		    		  }
 		    		  
 		    	  }else if(buildings.isBuildingGhost() && buildings.canBuildGhostBuilding()){
 		    		  
 		    		  cmsg.addMessage("bb " + buildings.getGhostBuildingX() + " " + buildings.getGhostBuildingY()
-		    				  + " " + units.getBaseSelectedUnit() + " " + viewedMap + 
-		    				  " " + buildings.getGhostBuildingName());
+		    				   + " " + viewedMap + " " + units.getUnitsSelectedString() 
+		    				   + buildings.getGhostBuildingName() );
 		    		  
 		    		  buildings.removeGhostBuilding();
+		    		  buildings.endGhostBuildingSession();
 		    	  
 		    	  }else{
 		    	  
-		    		  units.addSelectedUnit(click);
+		    		  if(!buildings.setSelectedBuilding(click[0], click[1], this.playerNumber)){
+		    			 
+		    			 units.addSelectedUnit(click);
+		    			 buildings.clearSelectedBuilding();
+		    			 
+		    		  }else{
+		    			  
+		    			  
+		    		  }
 		    	  }
 		       }
 	    	   mouse = null;
@@ -102,6 +119,8 @@ public class MouseKeyboard implements IComMouseKeyboard {
 	      }else if(mouse.getButton() == MouseEvent.BUTTON3){
 	    		  
 	    	  buildings.removeGhostBuilding();
+	    	  buildings.endGhostBuildingSession();
+	    	  mouse = null;
 	      }
 	      
 	    }
@@ -149,7 +168,14 @@ public class MouseKeyboard implements IComMouseKeyboard {
 		
 		if(inRect(0.011713031,0.5829787,0.12445095,0.9106383,x,y)){
 			
-			selectBuildingIcons(x, y);
+			if(units.isWorkerSelected()){
+				
+				selectBuildingIcons(x, y);
+			
+			}else if(buildings.isBuildingSelected()){
+				
+				selectUnitIcons(x,y);
+			}
 			return true;
 		}
 		
@@ -182,6 +208,25 @@ public class MouseKeyboard implements IComMouseKeyboard {
 		}
 		
 		
+	}
+	
+	private void selectUnitIcons(double x, double y){
+//		0.012445095168374817 0.5843971631205673
+//		0.05197657393850659 0.6425531914893617
+		
+		
+		for(int ys = 0; ys < 2; ys++){
+			for(int xs = 0; xs < 3; xs++){
+				
+				if(inRect(0.012445095168374817 + (0.0395314787701317*xs),
+						0.5843971631205673 + (0.0581560283687944*ys),
+						0.05197657393850659 + (0.0395314787701317*xs),
+						0.6425531914893617 + (0.0581560283687944*ys),x,y)){
+					
+					buildings.unitIconSelected(xs + (ys*3));
+				}
+			}
+		}
 	}
 	
 	private void selectBuildingIcons(double x, double y){

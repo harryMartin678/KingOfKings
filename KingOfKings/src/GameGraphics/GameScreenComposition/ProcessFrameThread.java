@@ -88,7 +88,7 @@ public class ProcessFrameThread {
 									}catch(Exception e){
 										
 										//catch the intermediate exceptions here 
-										//e.printStackTrace();
+										e.printStackTrace();
 									}
 								}
 								
@@ -140,22 +140,28 @@ public class ProcessFrameThread {
 			
 			index++;
 		}
-		
-		
-		//bug here
-		int viewedMap = new Integer(msgs.get(index)).intValue();
-
-		
-		if(map.getViewedMap() != viewedMap){
+		int viewedMap;
+		//if viewed map has not made it over then skip it 
+		if(msgs.get(index).length() < 3){
+			//bug here
+			viewedMap = new Integer(msgs.get(index)).intValue();
+	
 			
-			map.setLastMapFrames(display.getFrameX(),display.getFrameY());
-			display.setFrameX(map.getLastMapFramesX());
-			display.setFrameY(map.getLastMapFrameY());
+			if(map.getViewedMap() != viewedMap){
+				
+				map.setLastMapFrames(display.getFrameX(),display.getFrameY());
+				display.setFrameX(map.getLastMapFramesX());
+				display.setFrameY(map.getLastMapFrameY());
+			}
+			
+			map.setViewedMap(viewedMap);
+			index++;
+		}else{
+			
+			viewedMap = engine.getPlayerNumber();
 		}
 		
-		map.setViewedMap(viewedMap);
 		
-		index++;
 		
 		int m = index+2;
 		
@@ -250,12 +256,13 @@ public class ProcessFrameThread {
 		
 		buildings.clear();
 		
-		for(int b = m+1; b < msgs.size(); b++){
+		while(!(msg = msgs.get(m)).equals("sites")){
 		
-			msg = msgs.get(b);
+			msg = msgs.get(m);
 			
 			if(msg.equals("buildinglist")){
 				
+				m++;
 				continue;
 			}
 			//System.out.println(msg);
@@ -266,17 +273,43 @@ public class ProcessFrameThread {
 			
 			buildings.add(new Building(new Float(numbers.get(1)).floatValue(),
 					new Float(numbers.get(2)).floatValue(),building,
-					new Integer(numbers.get(0)).intValue()));
-			
+					new Integer(numbers.get(0)).intValue(),new Integer(numbers.get(3)).intValue()));
+			buildings.get(buildings.size()-1).SetSite(false);
+			m++;
 		}
+		
+		for(int b = m; b < msgs.size(); b++){
+
+			if(msgs.get(b).equals("sites")){
+				
+				continue;
+			}
+			
+			ParseText parsed = new ParseText(msgs.get(b));
+			ArrayList<String> numbers = parsed.getNumbers();
+			String building = parsed.getUnitName();
+			
+			buildings.add(new Building(new Float(numbers.get(1)).intValue(),
+					new Float(numbers.get(2)).intValue(),building,new Float(numbers.get(0)).intValue(),
+					new Integer(numbers.get(3)).intValue()));
+			buildings.get(buildings.size()-1).SetSite(true);
+		}
+		
+//		for(int b = 0; b < buildings.size(); b++){
+//			
+//			System.out.println(buildings.get(b).getBuildingNo() + " " 
+//					+ buildings.get(b).getName() + " " + buildings.get(b).isSite());
+//		}
 
 		buildings.end();
 	}
 	
 	public void start(ArrayList<String> load){
 		
+		
 		processFrame(load,1);
 		getFrame.start();
+		
 	}
 
 }

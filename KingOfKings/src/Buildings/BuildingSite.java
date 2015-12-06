@@ -10,11 +10,10 @@ public class BuildingSite {
 	private ArrayList<Worker> creators;
 	private int progress;
 	
-	public BuildingSite(Building building, Worker creator){
+	public BuildingSite(Building building, ArrayList<Worker> creators){
 		
 		this.building = building;
-		creators = new ArrayList<Worker>();
-		creators.add(creator);
+		this.creators = creators;
 		progress = 0;
 	}
 	
@@ -27,6 +26,18 @@ public class BuildingSite {
 		
 		creators.add(creator);
 	}
+//	b + " " + buildings.getBuildingType(b) + " " 
+//	+ buildings.getBuildingX(b) + " " +
+//	buildings.getBuildingY(b) + "\n";
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		
+		return  building.getBuildingNo() + " " + building.getType() 
+				+ " " + ((float)building.getX()) + " " + ((float)building.getY()) 
+				+ " " + building.getPlayer() + "\n";
+		
+	}
 	
 	public boolean progress(){
 		
@@ -34,21 +45,32 @@ public class BuildingSite {
 		
 		for(int i = 0; i < creators.size(); i++){
 			
-			if(creators.get(i).isCreating() == building.getBuildingNo()){
+			if(creators.get(i).isCreating() == building.getBuildingNo()
+					&& creators.get(i).nearBuilding(building)){
+				
+				creators.get(i).attack(building.getX(), building.getY());
 				tempProgress += (double) 1/ (double) (i+1);
+				
+			}else{
+				creators.get(i).stopAttack();
 			}
 		}
 		
 		progress = (int) tempProgress;
 		
-			if(progress < (building.getBuildTime()*10)){
-				
-				return true;
+		if(progress < (building.getBuildTime()*10)){
 			
-			}else{
+			return true;
+		
+		}else{
+			
+			for(int c = 0; c < creators.size(); c++){
 				
-				return false;
+				creators.get(c).stopAttack();
 			}
+			
+			return false;
+		}
 		
 	}
 

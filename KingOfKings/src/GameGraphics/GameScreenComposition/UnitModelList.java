@@ -6,6 +6,8 @@ import java.nio.FloatBuffer;
 import javax.media.opengl.GL2;
 
 import Buildings.Names;
+import Buildings.UnitCreator;
+import GameGraphics.Building;
 import GameGraphics.BuildingModel;
 import GameGraphics.ChariotModel;
 import GameGraphics.Colour;
@@ -32,6 +34,7 @@ public class UnitModelList {
 	private Model batteringRam;
 	private Model heavyBatteringRam;
 	private BuildingModel flag;
+	private Model[] unitModels;
 	
 	private float HEIGHT_CONST;
 	private float WIDTH_CONST;
@@ -66,6 +69,9 @@ public class UnitModelList {
 		batteringRam.setSize(0.1f, 0.1f, 0.2f);
 		heavyBatteringRam = new Model(Names.HEAVYBATTERINGRAM,"Models",3,0);
 		heavyBatteringRam.setSize(0.1f, 0.2f, 0.2f);
+		
+		unitModels = new Model[]{servant,slave,axeman,swordsman,spearman,fishingBoat,warship
+				,flagship,lightChariot,heavyChariot,archer,heavyarcher,batteringRam,heavyBatteringRam};
 	}
 	
 	public void drawUnit(GL2 draw, Unit unit,int frameX,int frameY){
@@ -131,14 +137,28 @@ public class UnitModelList {
 	public void drawModel(Model model, GL2 draw, Unit unit,float width, float height
 			,int frameX, int frameY){
 		
+		drawModel(model,draw,unit,width,height,frameX,frameY,-35.0f,1.0f);
+	}
+	
+	//used for drawing the unit models for adding units to a buidling's unit queue 
+	public void drawModel(Model model, GL2 draw, Unit unit,
+			float z){
+		
+		drawModel(model,draw,unit,0,0,0,0,z,0.5f);
+	}
+	
+	public void drawModel(Model model, GL2 draw, Unit unit,float width, float height
+			,int frameX, int frameY,float z,float extraScalefactor){
+		
 		Face next;
 
 		draw.glLoadIdentity();
 
 		//move the unit in relation to the width and height of the map, and the frame position
-		draw.glTranslatef(unit.getX()-width-frameX, unit.getY()-height-frameY, -35); //-35
+		draw.glTranslatef(unit.getX()-width-frameX, unit.getY()-height-frameY, z); //-35
 		//scales the model's size
-		draw.glScalef(model.sizeX()*scaleFactor, model.sizeY()*scaleFactor, model.sizeZ()*scaleFactor);
+		draw.glScalef(model.sizeX()*scaleFactor*extraScalefactor, model.sizeY()*scaleFactor*extraScalefactor,
+				model.sizeZ()*scaleFactor*extraScalefactor);
 		draw.glRotatef(45, 1, 0, 0);
 		draw.glRotatef((float) unit.getAngle(), 0, 1, 0);
 		
@@ -185,6 +205,37 @@ public class UnitModelList {
 	public void drawFlag(GL2 draw,Unit flagUn,int frameX,int frameY){
 		
 		drawModel(flag,draw,flagUn,WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
+	}
+	
+	public void drawBuildingUnitIcons(float x, float y,float z
+			,GL2 draw,int playerNumber,Building SelectedBuilding){
+		
+		UnitCreator type = (UnitCreator) Building.GetBuildingClass(SelectedBuilding.getName());
+		
+		String unitsPossible = type.unitcreated();
+		
+		float offsetX = 1.75f;
+		float offsetY = 2.7f;
+		
+		for(int u = 0; u < unitModels.length; u++){
+			
+			if(offsetX > 4.0f){
+				
+				offsetX = 1.5f;
+				offsetY = 2.5f;
+			}
+			
+			if(unitsPossible.contains(unitModels[u].getName())){
+				
+				Unit unit = new Unit((float)x + offsetX,(float)y + offsetY,unitModels[u].getName(),
+						playerNumber,0);
+				drawModel(unitModels[u],draw,unit,z);
+				
+				offsetX += 1.0f;
+				offsetY -= 1.5f;
+			}
+		}
+		
 	}
 	
 }

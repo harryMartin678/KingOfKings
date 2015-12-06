@@ -7,6 +7,8 @@ public interface IUnitList{
 	
 	public int getUnitListSize();
 	public boolean checkInUnit(int x, int y, int unitNo);
+	public void begin();
+	public void end();
 	
 
 }

@@ -15,4 +15,9 @@ public interface IComBuildingListMouseKeyboard extends IComBuildingList {
 //	}
 	public void moveGhostBuilding(int[] square);
 	public void setGhostBuilding(Building building);
+	public void endGhostBuildingSession();
+	public boolean setSelectedBuilding(int clickX, int clickY, int playerNumber);
+	public void clearSelectedBuilding();
+	public boolean isBuildingSelected();
+	public void unitIconSelected(int selected);
 }

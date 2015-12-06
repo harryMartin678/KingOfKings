@@ -16,6 +16,7 @@ public class Model {
 	protected float sizeY;
 	protected float sizeZ;
 	protected float angle;
+	protected String name;
 	
 	public Model(String filename, String folder, int noOfFrames, int modelType) throws IOException{
 		
@@ -25,6 +26,7 @@ public class Model {
 		shapeNo = 0;
 		currentIndex = -1;
 		moving = false;
+		name = filename;
 		
 		sizeX = 0.2f;
 		sizeY = 0.2f;
@@ -56,6 +58,11 @@ public class Model {
 				deathFrames.add(new Frame(filename+new Integer(f).toString()+"d",folder));
 			}
 		}
+	}
+	
+	public String getName(){
+		
+		return name;
 	}
 	
 	public void setSize(float sizeX, float sizeY, float sizeZ){

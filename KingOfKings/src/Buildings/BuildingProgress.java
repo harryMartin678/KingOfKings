@@ -14,9 +14,9 @@ public class BuildingProgress {
 		sites = new ArrayList<BuildingSite>();
 	}
 	
-	public void addSite(Building building, Worker creator){
+	public void addSite(Building building, ArrayList<Worker> creators){
 		
-		sites.add(new BuildingSite(building, creator));
+		sites.add(new BuildingSite(building, creators));
 	}
 	
 	public void addWorker(Worker creator){
@@ -36,10 +36,24 @@ public class BuildingProgress {
 			
 			if(!sites.get(i).progress()){
 				
-				System.out.println("yes");
 				buildings.addBuilding(sites.get(i).getBuilding());
 				sites.remove(i);
 			}
 		}
+	}
+	
+	public String getSiteInfo(int index){
+		
+		return sites.get(index).toString();
+	}
+	
+	public boolean isOnMap(int map,int index){
+		
+		return sites.get(index).getBuilding().getMap() == map;
+	}
+	
+	public int size(){
+		
+		return sites.size();
 	}
 }

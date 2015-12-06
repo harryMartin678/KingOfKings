@@ -334,6 +334,18 @@ public class UnitList implements Cloneable,IUnitList {
 		// TODO Auto-generated method stub
 		return units.get(unitNo).getMoving();
 	}
+
+	@Override
+	public void begin() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void end() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	///public int[] getNextNode(int unitNo){
 		

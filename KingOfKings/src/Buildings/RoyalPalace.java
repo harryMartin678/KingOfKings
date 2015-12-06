@@ -1,6 +1,6 @@
 package Buildings;
 
-public class RoyalPalace extends Building {
+public class RoyalPalace extends UnitCreator {
 	
 	 public RoyalPalace(int buildingNo) {
 		super(buildingNo);
@@ -11,6 +11,12 @@ public class RoyalPalace extends Building {
 	public String getType() {
 		// TODO Auto-generated method stub
 		return "royalpalace";
+	}
+	 
+	 @Override
+	public String unitcreated() {
+		// TODO Auto-generated method stub
+		return super.unitcreated() + Names.SLAVE;
 	}
 
 	@Override

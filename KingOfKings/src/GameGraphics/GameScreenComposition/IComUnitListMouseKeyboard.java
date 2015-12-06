@@ -65,4 +65,5 @@ public interface IComUnitListMouseKeyboard extends IComUnitList {
 //		return units;
 //	}
 	public String getUnitsSelectedString();
+	public boolean isWorkerSelected();
 }

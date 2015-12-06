@@ -91,8 +91,6 @@ public class BuildingList implements IBuildingList {
 	
 	public void addBuilding(int player, int map, int x, int y, int type){
 		
-		System.out.println(type + " type");
-		
 		int buildingNo = 0;
 		
 		if(buildings.size() != 0){

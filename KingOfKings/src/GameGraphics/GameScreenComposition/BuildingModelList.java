@@ -29,6 +29,7 @@ public class BuildingModelList {
 	private BuildingModel stockpile;
 	private BuildingModel wall;
 	private BuildingModel mine;
+	private BuildingModel site;
 	
 	private BuildingModel tree;
 	private BuildingModel gold;
@@ -45,6 +46,7 @@ public class BuildingModelList {
 		this.WIDTH_CONST = WIDTH_CONST;
 		this.scaleFactor = scaleFactor;
 		
+		site = new BuildingModel(Names.SITE,"Models",1);
 		archeryTower = new BuildingModel(Names.ARCHERYTOWER,"Models",1);
 		archeryTower.setSize(0.25f, 0.25f, 0.25f);
 		ballisticTower = new BuildingModel(Names.BALLISTICTOWER,"Models",1);
@@ -78,68 +80,84 @@ public class BuildingModelList {
 		
 	}
 	
-	public void drawBuilding(GL2 draw,Building building,int frameX, int frameY){
+	public BuildingModel getBuildingModel(String name,Building building){
 		
 		if(building.getName().equals(Names.ARCHERYTOWER)){
     		
-    		drawBuildingModel(archeryTower,draw,building,
-    				WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
+    		return archeryTower;
     		
     	}else if(building.getName().equals(Names.BALLISTICTOWER)){
     		
-    		drawBuildingModel(ballisticTower,draw,building,
-    				WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
+    		return ballisticTower;
     		
     	}else if(building.getName().equals(Names.BARRACK)){
     		
-    		drawBuildingModel(barrack,draw,building,
-    				WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
+    		return barrack;
     		
     	}else if(building.getName().equals(Names.CASTLE)){
     		
-    		drawBuildingModel(castle,draw,building,
-    				WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
+    		return castle;
     		
     	}else if(building.getName().equals(Names.DOCK)){
     		
-    		drawBuildingModel(dock,draw,building,
-    				WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
+    		return dock;
     		
     	}else if(building.getName().equals(Names.FARM)){
     		
-    		drawBuildingModel(farm,draw,building,
-    				WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
+    		return farm;
     		
     	}else if(building.getName().equals(Names.FORT)){
     		
-    		drawBuildingModel(fort,draw,building,
-    				WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
+    		return fort;
     		
     	}else if(building.getName().equals(Names.ROYALPALACE)){
     		
-    		drawBuildingModel(royalPalace,draw,building,
-    				WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
+    		return royalPalace;
     		
     	}else if(building.getName().equals(Names.STABLE)){
     		
-    		drawBuildingModel(stable,draw,building,
-    				WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
+    		return stable;
     		
     	}else if(building.getName().equals(Names.STOCKPILE)){
     		
-    		drawBuildingModel(stockpile,draw,building,
-    				WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
+    		return stockpile;
     		
     	}else if(building.getName().equals(Names.WALL)){
     		
-    		drawBuildingModel(wall,draw,building,
-    				WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
+    		return wall;
     		
     	}else if(building.getName().equals(Names.MINE)){
     		
-    		drawBuildingModel(mine,draw,building,
-    				WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
+    		return mine;
     	}
+		
+		return null;
+	}
+	
+	public void drawBuilding(GL2 draw,Building building,int frameX, int frameY){
+		
+		
+		BuildingModel model = getBuildingModel(building.getName(),building);
+		if(building.isSite()){
+			
+			drawBuildingModel(site,draw,building,
+					WIDTH_CONST,HEIGHT_CONST,frameX,frameY,
+					model.sizeX(),model.sizeY(),model.sizeZ());
+			
+		}else{
+			
+			drawBuildingModel(model,draw,building,
+					WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
+		}
+	}
+	
+	public void drawBuildingModel(BuildingModel model, GL2 draw, Building building
+			,float width, float height,int frameX,int frameY,float siteSizeX,float siteSizeY,
+			float siteSizeZ){
+		
+		site.setSize(siteSizeX, siteSizeY, siteSizeZ);
+		drawBuildingModel(site,draw,building,
+				WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
 	}
 	
 	public void drawBuildingModel(BuildingModel model, GL2 draw, Building building
@@ -246,51 +264,51 @@ public class BuildingModelList {
 	
 	public void drawBuildingIcon(GL2 draw,float x, float y,float z,int frameX,int frameY){
 		
-		Building archTower = new Building(x+2.0f, y - 1.0f, Names.ARCHERYTOWER,-1);
+		Building archTower = new Building(x+2.0f, y - 1.0f, Names.ARCHERYTOWER,-1,0);
 		drawBuildingModel(archeryTower, draw,archTower,
 				WIDTH_CONST,HEIGHT_CONST,z,false,0.3f,frameX,frameY);
 		
-		Building ballisTower = new Building(x + 3.0f, y - 1.0f, Names.BALLISTICTOWER,-1);
+		Building ballisTower = new Building(x + 3.0f, y - 1.0f, Names.BALLISTICTOWER,-1,0);
 		drawBuildingModel(ballisticTower, draw,ballisTower,
 				WIDTH_CONST,HEIGHT_CONST,z,false,0.3f,frameX,frameY);
 		
-		Building barr = new Building(x + 4.0f, y - 1.0f, Names.BARRACK,-1);
+		Building barr = new Building(x + 4.0f, y - 1.0f, Names.BARRACK,-1,0);
 		drawBuildingModel(barrack, draw,barr,
 				WIDTH_CONST,HEIGHT_CONST,z,false,0.3f,frameX,frameY);
 		
-		Building cast = new Building(x + 2.0f, y + 0.5f, Names.CASTLE,-1);
+		Building cast = new Building(x + 2.0f, y + 0.5f, Names.CASTLE,-1,0);
 		drawBuildingModel(castle, draw,cast,
 				WIDTH_CONST,HEIGHT_CONST,z,false,0.3f,frameX,frameY);
 		
-		Building doc = new Building(x + 3.0f, y + 0.30f, Names.DOCK,-1);
+		Building doc = new Building(x + 3.0f, y + 0.30f, Names.DOCK,-1,0);
 		drawBuildingModel(dock, draw,doc,
 				WIDTH_CONST,HEIGHT_CONST,z,false,0.3f,frameX,frameY);
 		
-		Building far = new Building(x + 4.0f, y + 0.5f, Names.FARM,-1);
+		Building far = new Building(x + 4.0f, y + 0.5f, Names.FARM,-1,0);
 		drawBuildingModel(farm, draw,far,
 				WIDTH_CONST,HEIGHT_CONST,z,false,0.3f,frameX,frameY);
 		
-		Building fortb = new Building(x + 1.5f, y + 1.5f, Names.FORT,-1);
+		Building fortb = new Building(x + 1.5f, y + 1.5f, Names.FORT,-1,0);
 		drawBuildingModel(fort, draw,fortb,
 				WIDTH_CONST,HEIGHT_CONST,z,false,0.2f,frameX,frameY);
 		
-		Building royalPala = new Building(x + 3.0f, y + 1.75f, Names.ROYALPALACE,-1);
+		Building royalPala = new Building(x + 3.0f, y + 1.75f, Names.ROYALPALACE,-1,0);
 		drawBuildingModel(royalPalace, draw,royalPala,
 				WIDTH_CONST,HEIGHT_CONST,z,false,0.15f,frameX,frameY);
 		
-		Building stab = new Building(x + 4.0f, y + 1.5f, Names.STABLE,-1);
+		Building stab = new Building(x + 4.0f, y + 1.5f, Names.STABLE,-1,0);
 		drawBuildingModel(stable, draw,stab,
 				WIDTH_CONST,HEIGHT_CONST,z,false,0.3f,frameX,frameY);
 		
-		Building stock = new Building(x + 2.0f, y + 3.0f, Names.STOCKPILE,-1);
+		Building stock = new Building(x + 2.0f, y + 3.0f, Names.STOCKPILE,-1,0);
 		drawBuildingModel(stockpile, draw,stock,
 				WIDTH_CONST,HEIGHT_CONST,z,false,0.3f,frameX,frameY);
 		
-		Building wal = new Building(x + 3.0f, y + 3.0f, Names.WALL,-1);
+		Building wal = new Building(x + 3.0f, y + 3.0f, Names.WALL,-1,0);
 		drawBuildingModel(wall, draw,wal,
 				WIDTH_CONST,HEIGHT_CONST,z,false,0.4f,frameX,frameY);
 		
-		Building min = new Building(x + 4.0f, y + 3.0f, Names.MINE,-1);
+		Building min = new Building(x + 4.0f, y + 3.0f, Names.MINE,-1,0);
 		drawBuildingModel(mine, draw,min,
 				WIDTH_CONST,HEIGHT_CONST,z,false,0.4f,frameX,frameY);
 	}

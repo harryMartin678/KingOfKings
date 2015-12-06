@@ -458,14 +458,36 @@ public class GameEngine implements Commands {
 	}
 
 	@Override
-	public void buildBuilding(int x, int y,int player,int map, String buildingType) {
+	public void buildBuilding(int x, int y,int map,int player, String buildingType,int[] unitNos) {
 		// TODO Auto-generated method stub
-		Building newBuilding = GameGraphics.Building.GetBuildingClass(buildingType);
+		Building newBuilding = GameGraphics.Building.GetBuildingClass(buildingType,
+				buildings.getBuildingsSize());
+
 		newBuilding.setPlayer(player);
 		newBuilding.setMap(map);
-		newBuilding.SetBuildingNo(buildings.getBuildingsSize());
-		buildings.addBuilding(newBuilding);
+		newBuilding.setPos(x, y);
 		
+		ArrayList<Worker> workers = new ArrayList<Worker>();
+		
+		for(int u = 0; u < unitNos.length; u++){
+			
+			workers.add((Worker)units.getUnits(unitNos[u]));
+		}
+		
+		sites.addSite(newBuilding,workers);
+		
+		ArrayList<int[]> unitTargets = new ArrayList<int[]>();
+		
+		for(int u = 0; u < unitNos.length; u++){
+			unitTargets.add(newBuilding.getFreeSpace(new CollisionMap(buildings,
+					units,maps.getMap(newBuilding.getMap())),(int) units.getUnitX(unitNos[u]), 
+							(int) units.getUnitY(unitNos[u]),unitTargets));
+			this.moveUnit(unitNos[u], unitTargets.get(unitTargets.size()-1)[0],
+					unitTargets.get(unitTargets.size()-1)[1], newBuilding.getMap());
+			
+			((Worker) units.getUnits(unitNos[u])).build(newBuilding.getBuildingNo());
+			
+		} 
 	}
 
 	@Override
@@ -654,9 +676,22 @@ public class GameEngine implements Commands {
 				
 				info += b + " " + buildings.getBuildingType(b) + " " 
 						+ buildings.getBuildingX(b) + " " +
-						buildings.getBuildingY(b) + "\n";
+						buildings.getBuildingY(b) +  " " +
+						buildings.getBuildingPlayer(b) + "\n";
 			}
 		}
+		
+		info += "sites\n";
+		
+		for(int s = 0; s < sites.size(); s++){
+			
+			if(sites.isOnMap(map, s)){
+				
+				info += sites.getSiteInfo(s);
+			}
+		}
+		
+		System.out.println(info);
 		
 		return info;
 	}
@@ -795,15 +830,22 @@ public class GameEngine implements Commands {
 		ArrayList<String> numbers = text.getNumbers();
 		String name = text.getUnitName();
 		
-		System.out.println(name);
+		int[] unitNos = new int[numbers.size()-2];
 		
-		for(int n = 0; n < numbers.size(); n++){
+		for(int i = 0; i < numbers.size(); i++){
 			
-			System.out.println(numbers.get(n));
+			System.out.println(numbers.get(i));
+		}
+		
+		for(int n = 3; n < numbers.size(); n++){
+			
+			if(numbers.get(n).length() > 0){
+				unitNos[n-3] = new Integer(numbers.get(n)).intValue();
+			}
 		}
 		
 		this.buildBuilding(new Float(numbers.get(0)).intValue(), new Float(numbers.get(1)).intValue(),
-				new Float(numbers.get(2)).intValue(),player,name);
+				new Float(numbers.get(2)).intValue(),player,name,unitNos);
 		
 		
 	}

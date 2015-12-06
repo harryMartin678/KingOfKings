@@ -91,6 +91,8 @@ public class CollisionMap {
 				}
 				
 				
+				units.begin();
+				
 				for(int u = 0; u < units.getUnitListSize(); u++){
 				
 					
@@ -104,7 +106,10 @@ public class CollisionMap {
 						collisionMap[y][x] = 8;
 						break;
 					}
+					
 				}
+				
+				units.end();
 				
 				if(collisionMap[y][x] == 8){
 					
@@ -119,6 +124,8 @@ public class CollisionMap {
 						break;
 					}
 				}
+				
+				
 			}
 		}
 	}

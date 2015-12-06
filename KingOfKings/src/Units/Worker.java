@@ -1,5 +1,7 @@
 package Units;
 
+import Buildings.Building;
+
 public class Worker extends Unit {
 	
 	private int buildingNo;
@@ -37,6 +39,12 @@ public class Worker extends Unit {
 	public int isCreating(){
 		
 		return buildingNo;
+	}
+	
+	public boolean nearBuilding(Building building){
+		
+		return Math.abs(this.getX() - building.getX()) <= building.getSizeX() &&
+				Math.abs(this.getY() - building.getY()) <= building.getSizeY();
 	}
 	
 	public void build(int buildingNo){

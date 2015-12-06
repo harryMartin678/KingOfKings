@@ -2,6 +2,7 @@ package GameGraphics;
 
 import java.util.ArrayList;
 
+import Buildings.UnitCreator;
 import GameGraphics.GameScreenComposition.IComBuildingListDisplay;
 import GameGraphics.GameScreenComposition.IComBuildingListFrameProcess;
 import GameGraphics.GameScreenComposition.IComBuildingListMouseKeyboard;
@@ -13,6 +14,7 @@ IComBuildingListFrameProcess {
 	private ArrayList<Building> buildings;
 	private boolean used;
 	private Building ghostBuilding;
+	private Building SelectedBuilding;
 	
 	public BuildingList(){
 		
@@ -103,6 +105,7 @@ IComBuildingListFrameProcess {
 		if(isBuildingGhost()){
 			buildings.remove(ghostBuilding);
 		}
+		
 	}
 
 	@Override
@@ -152,6 +155,71 @@ IComBuildingListFrameProcess {
 	public void setGhostBuilding(Building building) {
 		// TODO Auto-generated method stub
 		ghostBuilding = building;
+	}
+
+	@Override
+	public void endGhostBuildingSession() {
+		// TODO Auto-generated method stub
+		ghostBuilding = null;
+	}
+	
+	public boolean setSelectedBuilding(int clickX, int clickY, int playerNumber){
+		
+		for(int b = 0; b < buildings.size(); b++){
+			
+			Buildings.Building type = Building.GetBuildingClass(buildings.get(b).getName());
+			
+			if(clickX <= buildings.get(b).getX() + type.getSizeX()
+			   && clickX >= buildings.get(b).getX() - type.getSizeX()
+			   && clickY <= buildings.get(b).getY() + type.getSizeY()
+			   && clickY >= buildings.get(b).getY() - type.getSizeY()
+			   && buildings.get(b).getPlayer() == playerNumber){
+				
+				SelectedBuilding = buildings.get(b);
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+	@Override
+	public boolean isSelectedBuilding(Building building) {
+		// TODO Auto-generated method stub
+		return SelectedBuilding != null && SelectedBuilding.getBuildingNo() == building.getBuildingNo();
+	}
+
+	@Override
+	public void clearSelectedBuilding() {
+		// TODO Auto-generated method stub
+		SelectedBuilding = null;
+	}
+
+	@Override
+	public Building getSelectedBuilding() {
+		// TODO Auto-generated method stub
+		return SelectedBuilding;
+	}
+
+	@Override
+	public boolean isBuildingSelected() {
+		// TODO Auto-generated method stub
+		return SelectedBuilding != null;
+	}
+
+	//handle the selection of units to be added to the queue
+	@Override
+	public void unitIconSelected(int selected) {
+		// TODO Auto-generated method stub
+		UnitCreator type = (UnitCreator) Building.GetBuildingClass(SelectedBuilding.getName());
+		String[] listOfUnits = type.unitcreated().split(":");
+		
+		if(selected < listOfUnits.length){
+			
+			System.out.println(listOfUnits[selected] + " selected");
+		}
+		
+		
 	}
 
 }

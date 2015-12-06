@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.media.opengl.GL2;
 
 import Buildings.Names;
+import Buildings.UnitCreator;
 import GameGraphics.Building;
 import GameGraphics.Face;
 import GameGraphics.TextModel;
@@ -20,7 +21,9 @@ public class DisplayMenus {
 	private IComUnitListDisplay units;
 	private IComBuildingListDisplay buildings;
 	private BuildingModelList buildingModels;
+	private UnitModelList unitModels;
 	private IComMapDisplay map;
+	private int playerNumber;
 	
 	private int FRAME_X_SIZE;
 	private int FRAME_Y_SIZE;
@@ -28,8 +31,9 @@ public class DisplayMenus {
 	private TextModel[] symbols;
 	
 	public DisplayMenus(float HEIGHT_CONST,float WIDTH_CONST,float scaleFactor,IComUnitListDisplay units,
-			IComBuildingListDisplay buildings,BuildingModelList buildingModels,IComMapDisplay map,
-			int FRAME_X_SIZE,int FRAME_Y_SIZE) throws IOException{
+			IComBuildingListDisplay buildings,BuildingModelList buildingModels,UnitModelList unitModels,
+			IComMapDisplay map,int FRAME_X_SIZE,int FRAME_Y_SIZE
+			,int playerNumber) throws IOException{
 		
 		this.HEIGHT_CONST = HEIGHT_CONST;
 		this.WIDTH_CONST = WIDTH_CONST;
@@ -37,7 +41,9 @@ public class DisplayMenus {
 		this.units = units;
 		this.buildings = buildings;
 		this.buildingModels = buildingModels;
+		this.unitModels = unitModels;
 		symbols = new TextModel[37];
+		this.playerNumber = playerNumber;
 		
 		this.map = map;
 		
@@ -72,6 +78,8 @@ public class DisplayMenus {
 		drawMenuQuad(draw,-15.25f,4.0f, -19.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 3.0f);
 		
 		drawBuildingIcons(-15.25f,-4.5f,-18.0f,draw,frameX,frameY);
+		drawUnitIcons(-15.25f,-4.5f,-18.0f,draw,playerNumber,
+				buildings.getSelectedBuilding());
 		//bottom panel
 		drawMenuQuad(draw,-15.25f,-4.5f, -19.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 3.0f);
 		
@@ -290,5 +298,18 @@ public class DisplayMenus {
 			}
 		}
 	
+		
+		public void drawUnitIcons(float x, float y,float z, GL2 draw,
+				int playerNumber,Building SelectedBuilding){
+			
+				if(SelectedBuilding != null && Building.GetBuildingClass(SelectedBuilding.getName())
+						instanceof UnitCreator){
+					
+					drawMenuQuad(draw,-13.52f,-5.2f, -18.0f,0.5f, 0.0f, 0.5f,1.75f,1.5f, 1.5f);
+					unitModels.drawBuildingUnitIcons(x, y, z, draw, 
+							playerNumber, SelectedBuilding);
+					drawMenuQuad(draw,-13.52f,-2.85f, -18.0f,1.0f, 0.84f, 0.0f,1.75f,1.5f, 1.5f);
+				}
+		}
 
 }
