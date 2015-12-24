@@ -50,13 +50,7 @@ public class ServerMessages {
 								
 								if(inpt.substring(0, 4).equals("utat")){
 									
-									System.out.println(inpt);
-									ArrayList<String> numbers = 
-											new ParseText(inpt.substring(5)).getNumbers();
-									engine.moveUnit(new Integer(numbers.get(0)).intValue(),
-											new Integer(numbers.get(1)).intValue(),
-											new Integer(numbers.get(2)).intValue(),
-											new Integer(numbers.get(3)).intValue());
+									engine.parseMoveUnit(inpt.substring(5));
 								
 								}else if(inpt.equals("SEND_FRAME")){
 									
@@ -64,7 +58,7 @@ public class ServerMessages {
 								
 								}else if(inpt.substring(0,4).equals("vwmp")){
 									
-									engine.newViewMap(new Integer(inpt.substring(5)).intValue()
+									engine.setNewViewMap(new Integer(inpt.substring(5)).intValue()
 											,p);
 								
 								}else if(inpt.substring(0,4).equals("utwp")){
@@ -98,6 +92,10 @@ public class ServerMessages {
 								}else if(inpt.substring(0, 2).equals("bb")){
 									
 									engine.parseBuildings(inpt.substring(2),p);
+								
+								}else if(inpt.substring(0,3).equals("auq")){
+									
+									engine.parseAddUnitToQueue(inpt.substring(3),p);
 								}
 								
 							}
@@ -178,6 +176,8 @@ public class ServerMessages {
 		output += engine.getUnitsOnMap(viewedMap);
 		output += "buildinglist\n";
 		output += engine.getBuildingOnMap(viewedMap);
+		output += "buildingqueue\n";
+		output += engine.getUnitQueues(player);
 		output += "END_FRAME\n";
 		addMessage(player,output);
 		
@@ -207,6 +207,7 @@ public class ServerMessages {
 			output += engine.getUnitsOnMap(map);
 			output += "buildinglist\n";
 			output += engine.getBuildingOnMap(map);
+			output += "buildingqueue\n";
 			output += "END_LOAD\n";
 			
 			addMessage(p,output);

@@ -89,13 +89,26 @@ public class Building {
 	
 	public String getUnitQueue(){
 		
-		String list = "";
+		String list;
+		
+		if(unitQueue.size() > 0){
+			list = new Integer(unitQueue.get(0).getProgress()).toString() + " ";
+		}else{
+			list = "";
+		}
 		
 		for(int i = 0; i < unitQueue.size(); i++){
 			
-			list += unitQueue.get(i) + ";";
+			list += unitQueue.get(i).getType() + " ";
 		}
 		
+		if(list != ""){
+			
+			list += "\n";
+		}
+		
+		
+		System.out.println("building queue list " + list);
 		return list;
 	}
 	
@@ -108,13 +121,16 @@ public class Building {
 		
 		unitQueue.get(0).progress();
 		
+		System.out.println(unitQueue.get(0).getProgress());
+		
 		return unitQueue.get(0).finished();
+		
 	}
 	
 	public String removeUnit(){
 		
-		String lastUnit = unitQueue.get(unitQueue.size()-1).getType();
-		unitQueue.remove(unitQueue.size()-1);
+		String lastUnit = unitQueue.get(0).getType();
+		unitQueue.remove(0);
 		
 		return lastUnit;	
 	}

@@ -44,6 +44,11 @@ public class BuildingList implements IBuildingList {
 		return buildings.get(buildingNo).getUnitQueueItem(index);
 	}
 	
+	public Building getBuilding(int index){
+		
+		return buildings.get(index);
+	}
+	
 	public int getUnitQueueSize(int buildingNo){
 		
 		return buildings.get(buildingNo).getUnitQueueSize();
@@ -89,6 +94,16 @@ public class BuildingList implements IBuildingList {
 		return buildings.get(buildingNo).inBuilding(x, y);
 	}
 	
+	public void addUnitToBuildingQueue(int buildingNo, String unitType){
+		
+		buildings.get(buildingNo).addToUnitQueue(unitType);
+	}
+	
+	public String getBuildingQueue(int buildingNo){
+		
+		return buildings.get(buildingNo).getUnitQueue();
+	}
+	
 	public void addBuilding(int player, int map, int x, int y, int type){
 		
 		int buildingNo = 0;
@@ -120,6 +135,11 @@ public class BuildingList implements IBuildingList {
 		
 		System.out.println("addBuilding");
 		buildings.add(building);
+	}
+
+	public int getBuildingQueueSize(int index) {
+		// TODO Auto-generated method stub
+		return buildings.get(index).getUnitQueueSize();
 	}
 
 }

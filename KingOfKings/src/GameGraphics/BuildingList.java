@@ -3,6 +3,7 @@ package GameGraphics;
 import java.util.ArrayList;
 
 import Buildings.UnitCreator;
+import GameClient.ClientMessages;
 import GameGraphics.GameScreenComposition.IComBuildingListDisplay;
 import GameGraphics.GameScreenComposition.IComBuildingListFrameProcess;
 import GameGraphics.GameScreenComposition.IComBuildingListMouseKeyboard;
@@ -15,11 +16,17 @@ IComBuildingListFrameProcess {
 	private boolean used;
 	private Building ghostBuilding;
 	private Building SelectedBuilding;
+	private ClientMessages cmsgs;
 	
 	public BuildingList(){
 		
 		buildings = new ArrayList<Building>();
 		used = false;
+	}
+	
+	public void setClientMessager(ClientMessages cmsgs){
+		
+		this.cmsgs = cmsgs;
 	}
 	
 	public void begin(){
@@ -57,9 +64,28 @@ IComBuildingListFrameProcess {
 		return buildings.get(index);
 	}
 	
+	public void addUnitToBuildingQueue(int building,String unit){
+		
+		System.out.println("add selected unit " + building + " " + unit);
+		Building toAdd = this.getBuildingByBuildingNo(building);
+		toAdd.addUnitQueue(unit);
+		
+		if(SelectedBuilding.getBuildingNo() == building){
+			
+			SelectedBuilding.addUnitQueue(unit);
+		}
+	}
+	
 	public void clear(){
 		
 		buildings.clear();
+	}
+	
+	public void clearSelectedBuildingQueue(int buildingNo){
+		
+		if(SelectedBuilding != null && SelectedBuilding.getBuildingNo() == buildingNo){
+			SelectedBuilding.clearUnitQueue();
+		}
 	}
 	
 	public void end(){
@@ -216,10 +242,25 @@ IComBuildingListFrameProcess {
 		
 		if(selected < listOfUnits.length){
 			
-			System.out.println(listOfUnits[selected] + " selected");
+			cmsgs.addMessage("auq " + SelectedBuilding.getBuildingNo() + " " + listOfUnits[selected]);
 		}
 		
 		
+	}
+
+	@Override
+	public GameGraphics.Building getBuildingByBuildingNo(int buildingNo) {
+		// TODO Auto-generated method stub
+		
+		for(int b = 0; b < buildings.size(); b++){
+			
+			if(buildings.get(b).getBuildingNo() == buildingNo){
+				
+				return buildings.get(b);
+			}
+		}
+		
+		return null;
 	}
 
 }

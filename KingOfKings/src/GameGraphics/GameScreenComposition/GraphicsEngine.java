@@ -40,6 +40,7 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 		mouseKeyboard = new MouseKeyboard();
 		units = new UnitList(myPlayerNumber);
 		buildings = new BuildingList();
+		buildings.setClientMessager(cmsg);
 		
 		display.setUpDisplay((IComUnitListDisplay) units, (IComBuildingListDisplay) buildings,
 				(IComMouseKeyboard) mouseKeyboard, map,myPlayerNumber);

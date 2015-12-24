@@ -2,6 +2,7 @@ package Units;
 
 import java.util.ArrayList;
 
+import Buildings.Names;
 import GameGraphics.IUnitList;
 
 public class UnitList implements Cloneable,IUnitList {
@@ -82,16 +83,15 @@ public class UnitList implements Cloneable,IUnitList {
 	}
 	
 	public void addUnit(String unitType,int map, float x, float y, int player){
-	
 		
-		if(unitType.equals("archer")){
+		if(unitType.equals(Names.ARCHER)){
 			
 			units.add(new Archer());
 			units.get(units.size()-1).setPlayer(player);
 			units.get(units.size()-1).setPos(x, y);
 			units.get(units.size()-1).setMap(map);
 				
-		}else if(unitType.equals("axeman")){
+		}else if(unitType.equals(Names.AXEMAN)){
 			
 			units.add(new Axeman());
 			units.get(units.size()-1).setPlayer(player);
@@ -99,49 +99,49 @@ public class UnitList implements Cloneable,IUnitList {
 			units.get(units.size()-1).setMap(map);
 			
 			
-		}else if(unitType.equals("batteringram")){
+		}else if(unitType.equals(Names.BATTERINGRAM)){
 			
 			units.add(new BatteringRam());
 			units.get(units.size()-1).setPlayer(player);
 			units.get(units.size()-1).setPos(x, y);
 			units.get(units.size()-1).setMap(map);
 		
-		}else if(unitType.equals("lightchariot")){
+		}else if(unitType.equals(Names.LIGHTCHARIOT)){
 			
 			units.add(new LightChariot());
 			units.get(units.size()-1).setPlayer(player);
 			units.get(units.size()-1).setPos(x, y);
 			units.get(units.size()-1).setMap(map);
 			
-		}else if(unitType.equals("heavychariot")){
+		}else if(unitType.equals(Names.HEAVYCHARIOT)){
 			
 			units.add(new HeavyChariot());
 			units.get(units.size()-1).setPlayer(player);
 			units.get(units.size()-1).setPos(x, y);
 			units.get(units.size()-1).setMap(map);
 			
-		}else if(unitType.equals("heavyarcher")){
+		}else if(unitType.equals(Names.HEAVYARCHER)){
 			
 			units.add(new HeavyArcher());
 			units.get(units.size()-1).setPlayer(player);
 			units.get(units.size()-1).setPos(x, y);
 			units.get(units.size()-1).setMap(map);
 			
-		}else if(unitType.equals("heavybatteringram")){
+		}else if(unitType.equals(Names.HEAVYBATTERINGRAM)){
 			
 			units.add(new HeavyBatteringRam());
 			units.get(units.size()-1).setPlayer(player);
 			units.get(units.size()-1).setPos(x, y);
 			units.get(units.size()-1).setMap(map);
 			
-		}else if(unitType.equals("servant")){
+		}else if(unitType.equals(Names.SERVANT)){
 			
 			units.add(new Servant());
 			units.get(units.size()-1).setPlayer(player);
 			units.get(units.size()-1).setPos(x, y);
 			units.get(units.size()-1).setMap(map);
 			
-		}else if(unitType.equals("slave")){
+		}else if(unitType.equals(Names.SLAVE)){
 			
 			System.out.println("add slave");
 			units.add(new Slave());
@@ -149,14 +149,14 @@ public class UnitList implements Cloneable,IUnitList {
 			units.get(units.size()-1).setPos(x, y);
 			units.get(units.size()-1).setMap(map);
 			
-		}else if(unitType.equals("spearman")){
+		}else if(unitType.equals(Names.SPEARMAN)){
 			
 			units.add(new Spearman());
 			units.get(units.size()-1).setPlayer(player);
 			units.get(units.size()-1).setPos(x, y);
 			units.get(units.size()-1).setMap(map);
 			
-		}else if(unitType.equals("swordsman")){
+		}else if(unitType.equals(Names.SWORDSMAN)){
 			
 			units.add(new Swordsman());
 			units.get(units.size()-1).setPlayer(player);
@@ -164,7 +164,10 @@ public class UnitList implements Cloneable,IUnitList {
 			units.get(units.size()-1).setMap(map);
 		}
 		
-		units.get(units.size()-1).setUnit(units.size()-1);
+		if(units.size() > 0){
+		
+			units.get(units.size()-1).setUnit(units.size()-1);
+		}
 	}
 	
 

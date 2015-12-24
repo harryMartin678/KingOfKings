@@ -24,21 +24,56 @@ public class Building {
 	private boolean cantBuild;
 	private boolean site;
 	private int player;
+	private int progress;
+	
+	private ArrayList<String> unitQueue;
 	
 	public Building(String name){
 		
 		this.name = name;
 		cantBuild = false;
+		unitQueue = new ArrayList<String>();
 	}
-	
+
 	public Building(float x, float y, String name,int buildingNo,int player){
 		
 		this.x = x;
 		this.y = y;
 		this.buildingNo = buildingNo;
 		this.player = player;
+		unitQueue = new ArrayList<String>();
 		
 		this.name = name;
+	}
+	
+	public void setProgress(int progress){
+		
+		this.progress = progress;
+	}
+	
+	public int getSize(){
+		
+		if(unitQueue == null){
+			
+			return 0;
+		}
+		
+		return unitQueue.size();
+	}
+	
+	public String getUnitFromQueue(int no){
+		
+		return unitQueue.get(no);
+	}
+	
+	public void addUnitQueue(String unit){
+		
+		unitQueue.add(unit);
+	}
+	
+	public void clearUnitQueue(){
+		
+		unitQueue.clear();
 	}
 	
 	public int getBuildingNo(){

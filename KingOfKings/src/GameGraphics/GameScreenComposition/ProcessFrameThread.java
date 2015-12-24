@@ -131,10 +131,10 @@ public class ProcessFrameThread {
 		
 		String msg;
 		
-		//for(int i = 0; i < msgs.size(); i++){
-			
-			//System.out.println(msgs.get(i));
-		//}
+//		for(int i = 0; i < msgs.size(); i++){
+//			
+//			System.out.println(msgs.get(i));
+//		}
 		
 		if(msgs.get(0).equals("START_FRAME")){
 			
@@ -278,14 +278,16 @@ public class ProcessFrameThread {
 			m++;
 		}
 		
-		for(int b = m; b < msgs.size(); b++){
+		while(!msgs.get(m).equals("buildingqueue")){
+		//for(int b = m; b < msgs.size(); b++){
 
-			if(msgs.get(b).equals("sites")){
+			if(msgs.get(m).equals("sites")){
 				
+				m++;
 				continue;
 			}
 			
-			ParseText parsed = new ParseText(msgs.get(b));
+			ParseText parsed = new ParseText(msgs.get(m));
 			ArrayList<String> numbers = parsed.getNumbers();
 			String building = parsed.getUnitName();
 			
@@ -293,6 +295,44 @@ public class ProcessFrameThread {
 					new Float(numbers.get(2)).intValue(),building,new Float(numbers.get(0)).intValue(),
 					new Integer(numbers.get(3)).intValue()));
 			buildings.get(buildings.size()-1).SetSite(true);
+			
+			m++;
+		}
+		
+		m++;
+		
+		while(m < msgs.size()){
+			
+			if(msgs.get(m).equals("buildingqueue") || msgs.get(m).equals("")){
+				
+				m++;
+				continue;
+			}
+			
+			//System.out.println(msgs.get(m) + "|||| building Queue");
+			String[] queueInfo = msgs.get(m).split(" ");
+		
+			Building building = buildings.getBuildingByBuildingNo(new Integer(queueInfo[0]).intValue());
+			
+			if(building != null){
+				building.clearUnitQueue();
+				
+				buildings.clearSelectedBuildingQueue(new Integer(queueInfo[0]).intValue());
+				
+				building.setProgress(new Integer(queueInfo[1]).intValue());
+				
+				//System.out.println(building.getSize() + " before");
+				for(int u = 2; u < queueInfo.length; u++){
+					
+					//System.out.println(queueInfo.length + " queueInfo");
+					buildings.addUnitToBuildingQueue(new Integer(queueInfo[0]).intValue(), queueInfo[u]);
+					//buildings.get(new Integer(queueInfo[0]).intValue()).addUnitQueue(queueInfo[u]);
+				}
+				//System.out.println(building.getSize() + " after");
+			}
+			
+			m++;
+			
 		}
 		
 //		for(int b = 0; b < buildings.size(); b++){
@@ -303,6 +343,7 @@ public class ProcessFrameThread {
 
 		buildings.end();
 	}
+	
 	
 	public void start(ArrayList<String> load){
 		

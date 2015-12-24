@@ -304,11 +304,13 @@ public class DisplayMenus {
 			
 				if(SelectedBuilding != null && Building.GetBuildingClass(SelectedBuilding.getName())
 						instanceof UnitCreator){
-					
+//					float offsetX = 1.75f;
+//					float offsetY = 2.7f;
 					drawMenuQuad(draw,-13.52f,-5.2f, -18.0f,0.5f, 0.0f, 0.5f,1.75f,1.5f, 1.5f);
 					unitModels.drawBuildingUnitIcons(x, y, z, draw, 
 							playerNumber, SelectedBuilding);
 					drawMenuQuad(draw,-13.52f,-2.85f, -18.0f,1.0f, 0.84f, 0.0f,1.75f,1.5f, 1.5f);
+					unitModels.drawBuildingQueue(x + 2.0f,y,z,draw,SelectedBuilding,playerNumber);
 				}
 		}
 

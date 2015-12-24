@@ -238,4 +238,32 @@ public class UnitModelList {
 		
 	}
 	
+	public Model getUnitModel(String name){
+		
+		for(int u = 0; u < unitModels.length; u++){
+			
+			if(unitModels[u].getName().equals(name)){
+				
+				return unitModels[u];
+			}
+		}
+		
+		return null;
+	}
+	
+
+	public void drawBuildingQueue(float x, float y, float z, GL2 draw,
+			Building selectedBuilding,int playerNumber) {
+		// TODO Auto-generated method stub
+
+		System.out.println("building queue " + selectedBuilding.getSize());
+		for(int u = 0; u < selectedBuilding.getSize(); u++){
+			
+			Model model = getUnitModel(selectedBuilding.getUnitFromQueue(u));
+			Unit unit = new Unit((float) x + (u*0.5f),(float) y, model.getName(),
+								playerNumber,0);
+			drawModel(model,draw,unit,z);
+		}
+	}
+	
 }
