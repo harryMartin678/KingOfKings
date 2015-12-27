@@ -8,6 +8,7 @@ import javax.media.opengl.awt.GLJPanel;
 import javax.swing.JFrame;
 
 import GameClient.ClientMessages;
+import GameLobbyGUI.LobbyGUI;
 
 import com.jogamp.opengl.util.FPSAnimator;
 
@@ -15,18 +16,31 @@ import com.jogamp.opengl.util.FPSAnimator;
 public class Graphics{
 	
 	private ClientMessages cmsg;
+	private JFrame window;
+	private Container pane;
 	
 
 	public Graphics(){
 
-		
-		JFrame window = new JFrame();
+		window = new JFrame();
 		window.setSize(500,500);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		window.setTitle("King of Kings");
 		
+		pane = window.getContentPane();
+		
+		pane.add(new LobbyGUI(this));
+		
+		window.setVisible(true);
+	}
+	
+	public void connect(){
+		
 		cmsg = new ClientMessages();
+	}
+	
+	public void startGame(){
 		
 		final GLProfile profile = GLProfile.get(GLProfile.GL2);
 	    GLCapabilities capabilities = new GLCapabilities(profile);
@@ -52,8 +66,7 @@ public class Graphics{
 		mb.setOpaque(false);
 		mb.setBackground(new Color(1,1,1,0));*/
 		
-		Container pane = window.getContentPane();
-		 
+		
 		/*JPanel main = new JPanel();
 		main.setLayout(new OverlayLayout(main));
 		main.add(mb);
@@ -71,7 +84,7 @@ public class Graphics{
 		
 		//pane.add(main);
 		
-		window.setVisible(true);
+		
 	}
 	
 	public static void main(String[] args) {

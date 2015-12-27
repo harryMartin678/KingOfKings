@@ -26,6 +26,12 @@ public class ClientMessages{
 			e.printStackTrace();
 		}
 		
+		startGame();
+		
+	}
+	
+	public void startGame(){
+		
 		Thread handleInput = new Thread(new Runnable(){
 
 			@Override
@@ -55,7 +61,6 @@ public class ClientMessages{
 		});
 		
 		handleInput.start();
-		
 	}
 	
 	public void addMessage(String message){
