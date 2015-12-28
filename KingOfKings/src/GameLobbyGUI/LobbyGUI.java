@@ -24,12 +24,11 @@ public class LobbyGUI extends JPanel implements MouseListener {
 	private ArrayList<String> players;
 	private boolean killLookForPlayers;
 	private boolean writePlayerName; 
-	private GameGraphics.Graphics parent;
 	private TextField text;
 	
-	public LobbyGUI(GameGraphics.Graphics parent){
+	public LobbyGUI(ClientMessages cmsg){
 		
-		this.parent = parent;
+		this.cmsg = cmsg;
 		readyBtn = new ImageIcon(filepath + "ReadyButton.png");
 		background = new ImageIcon(filepath + "Background.png");
 		go = new ImageIcon(filepath + "Go.png");
@@ -38,15 +37,13 @@ public class LobbyGUI extends JPanel implements MouseListener {
 		writePlayerName = true;
 		this.addMouseListener(this);
 		
+		startGetPlayers();
+		
 		this.setLayout(null);
 		
 		text = new TextField();
 		this.add(text);
-		
-		
-		
-		
-		
+				
 	}
 	
 	public void setClMsg(ClientMessages cmsg){
@@ -170,10 +167,27 @@ public class LobbyGUI extends JPanel implements MouseListener {
 	
 	private void mousePlayerName(double x, double y){
 		
+		//go button
 		if(inRect(0.40043923865300146,0.649645390070922,0.5988286969253295,
-				0.8439716312056738,x,y)){
+				0.8439716312056738,x,y) && text.getText().length() > 0){
 			
-			System.out.println("Go!");
+			cmsg.addMessage("name " + text.getText());
+			writePlayerName = false;
+			text.setVisible(false);
+			
+		}
+	}
+	
+	private void mouseGameLobby(double x, double y) {
+		// TODO Auto-generated method stub
+		//System.out.println(x + " " + y);
+//		0.1493411420204978 0.3971631205673759
+//		0.34773060029282576 0.5971631205673759
+		
+		if(inRect(0.1493411420204978,0.3971631205673759,0.34773060029282576,
+				0.5971631205673759,x,y)){
+			
+			cmsg.addMessage("ENTERGAME");
 		}
 	}
 	
@@ -193,6 +207,10 @@ public class LobbyGUI extends JPanel implements MouseListener {
 		if(writePlayerName){
 			
 			mousePlayerName(x,y);
+		
+		}else{
+			
+			mouseGameLobby(x,y);
 		}
 	}
 

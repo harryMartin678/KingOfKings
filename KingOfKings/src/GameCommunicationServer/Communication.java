@@ -10,6 +10,7 @@ public class Communication {
 	private Server server;
 	private boolean enterGame;
 	private ArrayList<Integer> players;
+	private ArrayList<String> playerNames;
 	private int playersEntered;
 	private boolean playerLobbyPhase;
 	
@@ -17,10 +18,81 @@ public class Communication {
 		
 		server = new Server();
 		players = new ArrayList<Integer>();
+		playerNames= new ArrayList<String>();
 		playerLobbyPhase = false;
+		waitForPlayerNames();
 		acceptPlayer();
 		enterGame();
 		
+	}
+	
+	public void waitForPlayerNames(){
+		
+		new Thread(new Runnable(){
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				
+				while(true){
+					
+					for(int p = 0; p < players.size(); p++){
+						
+						try{
+							if(server.messageReady(players.get(p))){
+								String msg;
+							
+								msg = server.getMessage(players.get(p));
+								
+								if(msg.substring(0, 4).equals("name")){
+									
+									playerNames.add(msg.substring(5));
+									
+									String playerList = "";
+									
+									for(int s = 0; s < players.size(); s++){
+										
+										playerList += playerNames.get(s) + " ";
+									}
+									
+									for(int pn = 0; pn < players.size(); pn++){
+										server.sendMessage(players.get(pn), playerList);
+									}
+									
+								}else if(msg.equals("ENTERGAME")){
+									
+									playersEntered++;
+									
+									if(playersEntered == players.size() && playersEntered != 0){
+										
+										System.out.println("ENTER GAME");
+										break;
+									}
+								
+								}
+								
+							}
+							
+							
+								
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+							
+					}
+					
+					try {
+						Thread.sleep(25);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+			
+			
+		}).start();
 	}
 	
 	
@@ -40,35 +112,10 @@ public class Communication {
 //				
 				players.add(player);
 				
-				String playerList = "";
 				
-				for(int s = 0; s < players.size(); s++){
-					
-					playerList += players.get(s) + " ";
-				}
-				
-				for(int p = 0; p < players.size(); p++){
-					server.sendMessage(p, playerList);
-				}
 			}
 			
-			for(int p = 0; p < players.size(); p++){
-				
-				if(server.messageReady(p)){
-					
-					String msg = server.getMessage(p);
-					
-					if(msg.equals("ENTERGAME")){
-						playersEntered++;
-					}
-					
-					if(playersEntered == players.size() && playersEntered != 0){
-						
-						break;
-					}
-				}
-				
-			}
+			
 			
 			try {
 				Thread.sleep(25);

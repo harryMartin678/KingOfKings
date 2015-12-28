@@ -29,16 +29,12 @@ public class Graphics{
 		window.setTitle("King of Kings");
 		
 		pane = window.getContentPane();
-		
-		pane.add(new LobbyGUI(this));
+		cmsg = new ClientMessages();
+		pane.add(new LobbyGUI(cmsg));
 		
 		window.setVisible(true);
 	}
 	
-	public void connect(){
-		
-		cmsg = new ClientMessages();
-	}
 	
 	public void startGame(){
 		
