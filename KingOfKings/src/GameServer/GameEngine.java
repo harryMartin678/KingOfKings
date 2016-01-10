@@ -34,13 +34,16 @@ public class GameEngine{
 	private int beat;
 	private UserCommandList commands;
 	private int communicationTurn;
+	private IGotToTurn beacon;
 	
-	public GameEngine(String mapEntry,int playerNo){
+	public GameEngine(String mapEntry,int playerNo,IGotToTurn beacon){
 		
 		context = new GameEngineContext();
 		commands = new UserCommandList(context);
 		
 		communicationTurn = 0;
+		
+		this.beacon = beacon;
 		
 		context.maps = new MapList(mapEntry);
 		context.gameName = mapEntry;
@@ -96,10 +99,17 @@ public class GameEngine{
 				
 				while(true){
 					
+					long time = System.currentTimeMillis();
 					doOnFrame();
 					
+					long waitTime = 200 - time;
+					
+					if(waitTime < 10){
+						
+						waitTime = 10;
+					}
 					try {
-						Thread.sleep(100);
+						Thread.sleep(waitTime);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -120,126 +130,148 @@ public class GameEngine{
 	private void CommunicationTurn(){
 		
 		commands.callMethods(communicationTurn);
+		beacon.ready();
+		
+		while(true){
+			
+			if(beacon.isEveryoneReady()){
+				
+				break;
+			}
+			
+			try {
+				Thread.sleep(5);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 		
 		communicationTurn++;
 	}
 	
 	public void doOnFrame(){
-		
-		if(beat == 5 || beat == 10){
-			
-			CommunicationTurn();
-		}
-		//move units
-		context.units.moveUnits();
-		
-		//System.out.println(units.getUnitX(5) + " " + units.getUnitY(5) + " " 
-	///	+ units.getUnitMap(5));
-		
-		//reveal map 
-		//revealMap();
-		//progress unit fights
-		context.battles.simulateHit();
-		
-		//progress unit to tower fights
-		context.battles.simulateTowerHit();
-		
-		//increment building unit queues progress
-		for(int b = 0; b < context.buildings.getBuildingsSize(); b++){
-			
-			if(!context.buildings.empty(b) && context.buildings.nextUnit(b)){
-				
-				addUnit(context.buildings.getFinishedUnit(b),context.buildings.getBuilding(b));
-			}
-		}
-		
-		ArrayList<int[]> unitsToRecalculate = context.units.getRecalculated();
-		
-		for(int r = 0; r < unitsToRecalculate.size(); r++){
 
-			if(unitsToRecalculate.get(r)[1] == 1){
+		if(beacon.gameStarted()){
+		
+			if(beat == 5 || beat == 10){
 				
-				MethodParameter parameters = new MethodParameter();
-				parameters.SetMoveUnit(unitsToRecalculate.get(r)[0], unitsToRecalculate.get(r)[2],
-						unitsToRecalculate.get(r)[3], unitsToRecalculate.get(r)[4]);
-				
-				commands.add(MethodCallup.MOVEUNIT,parameters, communicationTurn);
-//				this.moveUnit(unitsToRecalculate.get(r)[0], unitsToRecalculate.get(r)[2],
-//						unitsToRecalculate.get(r)[3], unitsToRecalculate.get(r)[4]);
-			}else{
-				
-				MethodParameter parameters = new MethodParameter();
-				parameters.SetMoveUnit(unitsToRecalculate.get(r)[0], unitsToRecalculate.get(r)[2],
-						unitsToRecalculate.get(r)[3], unitsToRecalculate.get(r)[4],
-						unitsToRecalculate.get(r)[5]);
-				
-				commands.add(MethodCallup.MOVEUNIT,parameters, communicationTurn);
-//				this.moveUnit(unitsToRecalculate.get(r)[0], unitsToRecalculate.get(r)[2],
-//						unitsToRecalculate.get(r)[3], unitsToRecalculate.get(r)[4],
-//						unitsToRecalculate.get(r)[5]);
+				CommunicationTurn();
 			}
-		}
-		
-		int[] com;
-		
-		while((com = context.battles.getUnitsToFollow()) != null){
 			
-			MethodParameter parameters = new MethodParameter();
-			parameters.setUnitFollow(com[0], com[1]);
-			commands.add(MethodCallup.FOLLOWUNIT, parameters, communicationTurn);
-			//this.followUnit(com[0], com[1]);
-		}
-		
-		//add resources from farms and mines 
-		if(beat == 10){
 			
-			beat = 0;
+			//move units
+			context.units.moveUnits();
 			
-			int[] playersGold = new int[context.players.getSize()];
-			int[] playersFood = new int[context.players.getSize()];
+			//System.out.println(units.getUnitX(5) + " " + units.getUnitY(5) + " " 
+		///	+ units.getUnitMap(5));
 			
+			//reveal map 
+			//revealMap();
+			//progress unit fights
+			context.battles.simulateHit();
+			
+			//progress unit to tower fights
+			context.battles.simulateTowerHit();
+			
+			//increment building unit queues progress
 			for(int b = 0; b < context.buildings.getBuildingsSize(); b++){
-
-				if(context.buildings.getBuildingType(b).equals("mine")){
-					
-					playersGold[context.buildings.getBuildingPlayer(b)]++;
 				
-				}else if(context.buildings.getBuildingType(b).equals("farm")){
+				if(!context.buildings.empty(b) && context.buildings.nextUnit(b)){
 					
-					playersFood[context.buildings.getBuildingPlayer(b)]++;
+					addUnit(context.buildings.getFinishedUnit(b),context.buildings.getBuilding(b));
 				}
 			}
 			
+			ArrayList<int[]> unitsToRecalculate = context.units.getRecalculated();
 			
-			for(int p = 0; p < playersFood.length; p++){
-				
-				context.players.addPlayerResource(playersFood[p], playersGold[p], p);
+			for(int r = 0; r < unitsToRecalculate.size(); r++){
+	
+				if(unitsToRecalculate.get(r)[1] == 1){
+					
+					MethodParameter parameters = new MethodParameter();
+					parameters.SetMoveUnit(unitsToRecalculate.get(r)[0], unitsToRecalculate.get(r)[2],
+							unitsToRecalculate.get(r)[3], unitsToRecalculate.get(r)[4]);
+					
+					commands.add(MethodCallup.MOVEUNIT,parameters, communicationTurn);
+	//				this.moveUnit(unitsToRecalculate.get(r)[0], unitsToRecalculate.get(r)[2],
+	//						unitsToRecalculate.get(r)[3], unitsToRecalculate.get(r)[4]);
+				}else{
+					
+					MethodParameter parameters = new MethodParameter();
+					parameters.SetMoveUnit(unitsToRecalculate.get(r)[0], unitsToRecalculate.get(r)[2],
+							unitsToRecalculate.get(r)[3], unitsToRecalculate.get(r)[4],
+							unitsToRecalculate.get(r)[5]);
+					
+					commands.add(MethodCallup.MOVEUNIT,parameters, communicationTurn);
+	//				this.moveUnit(unitsToRecalculate.get(r)[0], unitsToRecalculate.get(r)[2],
+	//						unitsToRecalculate.get(r)[3], unitsToRecalculate.get(r)[4],
+	//						unitsToRecalculate.get(r)[5]);
+				}
 			}
 			
-			for(int f = 0; f < context.units.getUnitListSize(); f++){
+			int[] com;
+			
+			while((com = context.battles.getUnitsToFollow()) != null){
 				
-				if(context.units.getFollow(f) != -1){
-					
-					int unitFollow = context.units.getFollow(f);
-					
-					if(context.units.getMoving(unitFollow)){
+				MethodParameter parameters = new MethodParameter();
+				parameters.setUnitFollow(com[0], com[1]);
+				commands.add(MethodCallup.FOLLOWUNIT, parameters, communicationTurn);
+				//this.followUnit(com[0], com[1]);
+			}
+			
+			//add resources from farms and mines 
+			if(beat == 10){
+				
+				beat = 0;
+				
+				int[] playersGold = new int[context.players.getSize()];
+				int[] playersFood = new int[context.players.getSize()];
+				
+				for(int b = 0; b < context.buildings.getBuildingsSize(); b++){
+	
+					if(context.buildings.getBuildingType(b).equals("mine")){
 						
-						MethodParameter parameters = new MethodParameter();
-						parameters.SetMoveUnit(f, (int) context.units.getUnitX(unitFollow),
-								(int) context.units.getUnitY(unitFollow), context.units.getUnitMap(unitFollow),
-								unitFollow);
-						commands.add(MethodCallup.FOLLOWUNIT, parameters, communicationTurn);
-//						this.moveUnit(f, (int) context.units.getUnitX(unitFollow), (int) context.units.getUnitY(unitFollow),
-//								context.units.getUnitMap(unitFollow),unitFollow);
+						playersGold[context.buildings.getBuildingPlayer(b)]++;
+					
+					}else if(context.buildings.getBuildingType(b).equals("farm")){
 						
+						playersFood[context.buildings.getBuildingPlayer(b)]++;
+					}
+				}
+				
+				
+				for(int p = 0; p < playersFood.length; p++){
+					
+					context.players.addPlayerResource(playersFood[p], playersGold[p], p);
+				}
+				
+				for(int f = 0; f < context.units.getUnitListSize(); f++){
+					
+					if(context.units.getFollow(f) != -1){
+						
+						int unitFollow = context.units.getFollow(f);
+						
+						if(context.units.getMoving(unitFollow)){
+							
+							MethodParameter parameters = new MethodParameter();
+							parameters.SetMoveUnit(f, (int) context.units.getUnitX(unitFollow),
+									(int) context.units.getUnitY(unitFollow), context.units.getUnitMap(unitFollow),
+									unitFollow);
+							commands.add(MethodCallup.FOLLOWUNIT, parameters, communicationTurn);
+	//						this.moveUnit(f, (int) context.units.getUnitX(unitFollow), (int) context.units.getUnitY(unitFollow),
+	//								context.units.getUnitMap(unitFollow),unitFollow);
+							
+						}
 					}
 				}
 			}
+			//increment building build progress 
+			context.sites.checkSites(context.buildings);
+			
+			beat++;
 		}
-		//increment building build progress 
-		context.sites.checkSites(context.buildings);
-		
-		beat++;
 
 	}
 	
@@ -448,7 +480,7 @@ public class GameEngine{
 		return context.players.getPlayerViewedMap(player);
 	}
 	
-	public void parseWayPoints(String input, int player){
+	public void parseWayPoints(String input, int player,int passedCommunicationTurn){
 		
 		int unitNo = new Integer(input.charAt(0)).intValue() - 48;
 		
@@ -472,11 +504,15 @@ public class GameEngine{
 		MethodParameter parameters = new MethodParameter();
 		parameters.setUnitWayPoints(unitNo, targetX, targetX, targetMap);
 		
-		commands.add(MethodCallup.SETWAYPOINTS, parameters, communicationTurn);
+		if(passedCommunicationTurn != -1){
+			commands.add(MethodCallup.SETWAYPOINTS, parameters, communicationTurn);
+		}else{
+			commands.add(MethodCallup.SETWAYPOINTS, parameters, passedCommunicationTurn);
+		}
 		//this.setWayPoints(unitNo,targetX, targetY, targetMap);
 	}
 	
-	public void parseGroupMovement(String inpt){
+	public void parseGroupMovement(String inpt,int passedCommunicationTurn){
 		
 		ArrayList<String> numbers = new ParseText(inpt).getNumbers();
 		int[] unitNos = new int[numbers.size()-3];
@@ -492,13 +528,16 @@ public class GameEngine{
 		
 		MethodParameter parameters = new MethodParameter();
 		parameters.setGroupMovement(unitNos, targetX, targetY, targetMap);
-		
-		commands.add(MethodCallup.GROUPMOVEMENT, parameters, communicationTurn);
+		if(passedCommunicationTurn != -1){
+			commands.add(MethodCallup.GROUPMOVEMENT, parameters, communicationTurn);
+		}else{
+			commands.add(MethodCallup.GROUPMOVEMENT, parameters, passedCommunicationTurn);
+		}
 		//this.groupMovement(unitNos, targetX, targetY, targetMap);
 		
 	}
 	
-	public void parseGroupWayMovement(String inpt){
+	public void parseGroupWayMovement(String inpt, int passedCommunicationTurn){
 		
 		ArrayList<String> numbers = new ParseText(inpt).getNumbers();
 		ArrayList<Integer> unitNos = new ArrayList<Integer>();
@@ -527,13 +566,17 @@ public class GameEngine{
 		MethodParameter parameters = new MethodParameter();
 		parameters.setGroupWayPoints(ParseText.toIntArray(unitNos),
 				ParseText.toIntArray(targetX), ParseText.toIntArray(targetY), ParseText.toIntArray(targetMap));
-		commands.add(MethodCallup.GROUPWAYPOINTSMOVEMENT, parameters, communicationTurn);
+		if(passedCommunicationTurn != -1){
+			commands.add(MethodCallup.GROUPWAYPOINTSMOVEMENT, parameters, communicationTurn);
+		}else{
+			commands.add(MethodCallup.GROUPWAYPOINTSMOVEMENT, parameters, passedCommunicationTurn);
+		}
 //		this.groupWayPointsMovement(ParseText.toIntArray(unitNos),
 //				ParseText.toIntArray(targetX), ParseText.toIntArray(targetY), ParseText.toIntArray(targetMap));
 		
 	}
 	
-	public void parseFollowMovement(String inpt){
+	public void parseFollowMovement(String inpt,int passedCommunicationTurn){
 		
 		ArrayList<String> numbers = new ParseText(inpt).getNumbers();
 		
@@ -542,12 +585,15 @@ public class GameEngine{
 		
 		MethodParameter parameters = new MethodParameter();
 		parameters.setUnitFollow(unitNo, unitFollow);
-		
-		commands.add(MethodCallup.FOLLOWUNIT, parameters, communicationTurn);
+		if(passedCommunicationTurn != -1){
+			commands.add(MethodCallup.FOLLOWUNIT, parameters, communicationTurn);
+		}else{
+			commands.add(MethodCallup.FOLLOWUNIT, parameters, passedCommunicationTurn);
+		}
 		//this.followUnit(unitNo, unitFollow);
 	}
 	
-	public void parseGroupFollowMovement(String inpt){
+	public void parseGroupFollowMovement(String inpt,int passedCommunicationTurn){
 		
 		ArrayList<Integer> unitNos = getUnitNos(inpt.substring(0, inpt.length()-1));
 		
@@ -555,21 +601,28 @@ public class GameEngine{
 		parameters.setGroupFollow(ParseText.toIntArray(unitNos.subList(0, unitNos.size()-1)),
 				unitNos.get(unitNos.size()-1));
 		
-		commands.add(MethodCallup.GROUPFOLLOW, parameters, communicationTurn);
+		if(passedCommunicationTurn != -1){
+			commands.add(MethodCallup.GROUPFOLLOW, parameters, communicationTurn);
+		}else{
+			commands.add(MethodCallup.GROUPFOLLOW, parameters, passedCommunicationTurn);
+		}
 		
 //		this.groupFollow(ParseText.toIntArray(unitNos.subList(0, unitNos.size()-1))
 //				,unitNos.get(unitNos.size()-1));
 	}
 	
-	public void parseGroupAttack(String inpt){
+	public void parseGroupAttack(String inpt,int passedCommunicationTurn){
 		
 		ArrayList<Integer> unitNos = getUnitNos(inpt);
 		
 		MethodParameter parameters = new MethodParameter();
 		parameters.setAttackGroup(ParseText.toIntArray(unitNos.subList(0, unitNos.size()-1)),
 				unitNos.get(unitNos.size()-1));
-		
-		commands.add(MethodCallup.ATTACKGROUP, parameters, communicationTurn);
+		if(passedCommunicationTurn != -1){
+			commands.add(MethodCallup.ATTACKGROUP, parameters, communicationTurn);
+		}else{
+			commands.add(MethodCallup.ATTACKGROUP, parameters, passedCommunicationTurn);
+		}
 //		this.attackGroup(ParseText.toIntArray(unitNos.subList(0, unitNos.size()-1)),
 //				unitNos.get(unitNos.size()-1));
 	}
@@ -587,7 +640,7 @@ public class GameEngine{
 		return unitNos;
 	}
 	
-	public void parseAttack(String inpt){
+	public void parseAttack(String inpt,int passedCommunicationTurn){
 		
 		ArrayList<String> numbers = new ParseText(inpt).getNumbers();
 		int unitNo = new Integer(numbers.get(0)).intValue();
@@ -596,11 +649,15 @@ public class GameEngine{
 		MethodParameter parameters = new MethodParameter();
 		parameters.setUnitAttack(unitNo, unitAttack);
 		
-		commands.add(MethodCallup.ATTACKUNIT, parameters, communicationTurn);
+		if(passedCommunicationTurn != -1){
+			commands.add(MethodCallup.ATTACKUNIT, parameters, communicationTurn);
+		}else{
+			commands.add(MethodCallup.ATTACKUNIT, parameters, passedCommunicationTurn);
+		}
 		//this.attackUnit(unitNo, unitAttack);
 	}
 	
-	public void parseBuildings(String inpt, int player){
+	public void parseBuildings(String inpt, int player,int passedCommunicationTurn){
 		
 		ParseText text = new ParseText(inpt);
 		ArrayList<String> numbers = text.getNumbers();
@@ -624,14 +681,18 @@ public class GameEngine{
 		parameters.setBuildBuilding(new Float(numbers.get(0)).intValue(), new Float(numbers.get(1)).intValue(),
 				new Float(numbers.get(2)).intValue(),player,name,unitNos);
 		
-		commands.add(MethodCallup.BUILDBUILDING, parameters, communicationTurn);
+		if(passedCommunicationTurn != -1){
+			commands.add(MethodCallup.BUILDBUILDING, parameters, communicationTurn);
+		}else{
+			commands.add(MethodCallup.BUILDBUILDING, parameters, passedCommunicationTurn);
+		}
 //		this.buildBuilding(new Float(numbers.get(0)).intValue(), new Float(numbers.get(1)).intValue(),
 //				new Float(numbers.get(2)).intValue(),player,name,unitNos);
 //		
 		
 	}
 
-	public void parseAddUnitToQueue(String inpt, int p) {
+	public void parseAddUnitToQueue(String inpt, int p,int passedCommunicationTurn) {
 		// TODO Auto-generated method stub
 		ParseText text = new ParseText(inpt);
 		ArrayList<String> numbers = text.getNumbers();
@@ -642,20 +703,27 @@ public class GameEngine{
 		MethodParameter parameters = new MethodParameter();
 		parameters.setAddUnitToBuildQueue(new Integer(numbers.get(0)).intValue(), unitType);
 		
-		commands.add(MethodCallup.ADDUNITTOBUILDINGQUEUE, parameters, communicationTurn);
+		if(passedCommunicationTurn != -1){
+			commands.add(MethodCallup.ADDUNITTOBUILDINGQUEUE, parameters, communicationTurn);
+		}else{
+			commands.add(MethodCallup.ADDUNITTOBUILDINGQUEUE, parameters, passedCommunicationTurn);
+		}
 		//this.addUnitToBuildingQueue(new Integer(numbers.get(0)).intValue(), unitType);
 		
 	}
 
-	public void setNewViewMap(int mapNo, int player) {
+	public void setNewViewMap(int mapNo, int player,int passedCommunicationTurn) {
 		// TODO Auto-generated method stub
 		MethodParameter parameters = new MethodParameter();
 		parameters.setNewViewMap(mapNo, player);
-		
-		commands.add(MethodCallup.NEWVIEWMAP, parameters, communicationTurn);
+		if(passedCommunicationTurn != -1){
+			commands.add(MethodCallup.NEWVIEWMAP, parameters, communicationTurn);
+		}else{
+			commands.add(MethodCallup.NEWVIEWMAP, parameters, passedCommunicationTurn);
+		}
 	}
 	
-	public void parseMoveUnit(String inpt){
+	public void parseMoveUnit(String inpt,int passedCommunicationTurn){
 		
 		ArrayList<String> numbers = 
 				new ParseText(inpt).getNumbers();
@@ -668,7 +736,16 @@ public class GameEngine{
 				new Integer(numbers.get(2)).intValue(),
 				new Integer(numbers.get(3)).intValue());
 		
-		commands.add(MethodCallup.MOVEUNIT, parameters, communicationTurn);
+		if(passedCommunicationTurn != -1){
+			commands.add(MethodCallup.MOVEUNIT, parameters, communicationTurn);
+		}else{
+			commands.add(MethodCallup.MOVEUNIT, parameters, passedCommunicationTurn);
+		}
+	}
+
+	public int getCommunicationTurnNo() {
+		// TODO Auto-generated method stub
+		return communicationTurn;
 	}
 
 

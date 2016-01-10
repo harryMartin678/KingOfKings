@@ -2,17 +2,22 @@ package GameLobbyGUI;
 
 import java.awt.Graphics;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.TextField;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
+import javax.media.opengl.GLCapabilities;
+import javax.media.opengl.GLProfile;
+import javax.media.opengl.awt.GLJPanel;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
+import com.jogamp.opengl.util.FPSAnimator;
+
 import GameClient.ClientMessages;
-import GameClient.ParseText;
 
 public class LobbyGUI extends JPanel implements MouseListener {
 
@@ -20,22 +25,37 @@ public class LobbyGUI extends JPanel implements MouseListener {
 	private ImageIcon readyBtn;
 	private ImageIcon background;
 	private ImageIcon go;
+	private ImageIcon loadingScreen;
 	private final String filepath = "ImageBank/GameLobby/";
 	private ArrayList<String> players;
 	private boolean killLookForPlayers;
+	private boolean enterGame;
 	private boolean writePlayerName; 
 	private TextField text;
+	private int thisPlayer;
+	private GameGraphics.GameScreenComposition.GameScreen gs;
+	private boolean loading;
+	
+	private int bsyIdtX;
+	private int bsyIdtY;
+	private double angle;
 	
 	public LobbyGUI(ClientMessages cmsg){
 		
 		this.cmsg = cmsg;
 		readyBtn = new ImageIcon(filepath + "ReadyButton.png");
 		background = new ImageIcon(filepath + "Background.png");
+		loadingScreen = new ImageIcon(filepath + "LoadingScreen.png");
 		go = new ImageIcon(filepath + "Go.png");
 		players = new ArrayList<String>();
 		killLookForPlayers = false;
 		writePlayerName = true;
+		enterGame = false;
+		loading = false;
+		thisPlayer = -1;
 		this.addMouseListener(this);
+		
+		angle = 0;
 		
 		startGetPlayers();
 		
@@ -50,6 +70,69 @@ public class LobbyGUI extends JPanel implements MouseListener {
 		
 		this.cmsg = cmsg;
 		startGetPlayers();
+	}
+	
+	
+	
+
+	public void startGame(){
+		
+		System.out.println("Start Game");
+		
+		bsyIdtX = (3*this.getWidth())/4;
+		bsyIdtY = this.getHeight()/2;
+		
+		final GLProfile profile = GLProfile.get(GLProfile.GL2);
+	    GLCapabilities capabilities = new GLCapabilities(profile);
+		final GLJPanel canvas = new GLJPanel(capabilities);
+		
+		FPSAnimator animator = new FPSAnimator(canvas,10);
+		animator.start();
+		
+		 gs = new GameGraphics.GameScreenComposition.GameScreen(cmsg,thisPlayer
+					,players.size());
+
+		canvas.addMouseListener(gs.getMouseListener());
+		canvas.addMouseMotionListener(gs.getMouseMotionListener());
+		canvas.addKeyListener(gs.getKeyboardListener());
+
+		canvas.addGLEventListener(gs);
+		
+		new Thread(new Runnable(){
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				while(!gs.getStart()){
+					
+					try {
+						Thread.sleep(25);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				System.out.println("change screen");
+				loading = false;
+				setScreenToGame(canvas);
+			}
+			
+			
+			
+		}).start();
+		
+		
+		
+	}
+	
+	public void setScreenToGame(GLJPanel canvas){
+		
+		this.setLayout(new GridLayout(1,1));
+		this.removeAll();
+		//text.setVisible(false);
+		this.add(canvas);
+		this.revalidate();
+		this.repaint();
 	}
 	
 	public void startGetPlayers(){
@@ -70,12 +153,30 @@ public class LobbyGUI extends JPanel implements MouseListener {
 					
 					if(message != "null"){
 						
-						players.clear();
-						String[] playersStr = message.split(" ");
-						
-						for(int p = 0; p < playersStr.length; p++){
+						if(message.equals("StartGame")){
+
+							enterGame = true;
+							killLookForPlayers = true;
+							loading = true;
 							
-							players.add(playersStr[p]);
+							startGame();
+							
+							
+						}else{
+						
+						
+							players.clear();
+							String[] playersStr = message.split(" ");
+							
+							for(int p = 0; p < playersStr.length; p++){
+								
+								players.add(playersStr[p]);
+							}
+							
+							if(thisPlayer == -1){
+								
+								thisPlayer = players.size()-1;
+							}
 						}
 						
 					}
@@ -99,22 +200,60 @@ public class LobbyGUI extends JPanel implements MouseListener {
 	@Override
 	protected void paintComponent(Graphics g) {
 		// TODO Auto-generated method stub
-		super.paintComponent(g);
+		if(!enterGame){
+			//System.out.println("enter game");
+			super.paintComponent(g);
+			
+			g.drawImage(background.getImage(), 0, 0,this.getWidth(),this.getHeight(), null);
+			
+			
+			 if(writePlayerName){
+				
+				drawPlayerName(g);
+				
+			}else{
+				
+				drawLobby(g);
+			}
+			
+
+			repaint();
 		
-		g.drawImage(background.getImage(), 0, 0,this.getWidth(),this.getHeight(), null);
-		
-		if(writePlayerName){
+		}else if(loading){
 			
-			drawPlayerName(g);
+			drawLoadingScreen(g);	
 			
-		}else{
+			try {
+				Thread.sleep(175);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			repaint();
 			
-			drawLobby(g);
 		}
 		
-		repaint();
+		
 	}
 	
+	private void drawLoadingScreen(Graphics g) {
+		// TODO Auto-generated method stub
+		g.drawImage(loadingScreen.getImage(), 0, 0, this.getWidth(),this.getHeight(),null);
+		drawBusyIndicator(g);
+	}
+	
+	private void drawBusyIndicator(Graphics g){
+		
+		int radius = (5*this.getWidth())/100;
+		
+		g.fillOval(bsyIdtX, bsyIdtY, radius,radius);
+		
+		bsyIdtX = (int) (bsyIdtX + Math.sin(angle)*radius);
+		bsyIdtY = (int) (bsyIdtY + Math.cos(angle)*radius);
+		
+		angle+=45;
+	}
+
 	private void drawPlayerName(Graphics g){
 		
 		text.setSize(this.getWidth()/3,this.getHeight()/25);

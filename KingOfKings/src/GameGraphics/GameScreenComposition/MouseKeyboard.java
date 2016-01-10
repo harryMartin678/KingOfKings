@@ -25,7 +25,7 @@ public class MouseKeyboard implements IComMouseKeyboard {
 	private IComDisplayMouseKeyboard display;
 	private IComMapMouseKeyboard map;
 	private int playerNumber;
-	private ClientMessages cmsg;
+	private ClientWrapper cmsg;
 	private MoveUnit move;
 	
 	public MouseKeyboard(){
@@ -35,7 +35,7 @@ public class MouseKeyboard implements IComMouseKeyboard {
 	
 	public void setUpMouseKeyboard(IComUnitListMouseKeyboard units,
 			IComBuildingListMouseKeyboard buildings, IComDisplayMouseKeyboard display,
-			IComMapMouseKeyboard map,int playerNumber,ClientMessages cmsg){
+			IComMapMouseKeyboard map,int playerNumber,ClientWrapper cmsg){
 		
 
 		

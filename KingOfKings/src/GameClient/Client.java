@@ -43,7 +43,16 @@ public class Client {
 
 	public String getMessage() throws IOException {
 		// TODO Auto-generated method stub
-		return in.readLine();
+		
+		if(in.ready()){
+			
+			return in.readLine();
+		}else{
+			
+			return null;
+		}
+		
+		
 	}
 	
 	public void sendMessage(String msg) throws IOException{

@@ -22,7 +22,7 @@ public class Unit {
 	private boolean stop;
 	private int recalculate;
 	
-	public static float SPEED_CONSTANT = 50.0f;
+	public static float SPEED_CONSTANT = 100.0f;
 	
 	public Unit(){
 		

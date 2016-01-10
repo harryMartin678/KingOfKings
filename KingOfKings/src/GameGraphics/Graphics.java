@@ -1,16 +1,11 @@
 package GameGraphics;
+import java.awt.CardLayout;
 import java.awt.Container;
-import java.awt.GridLayout;
 
-import javax.media.opengl.GLCapabilities;
-import javax.media.opengl.GLProfile;
-import javax.media.opengl.awt.GLJPanel;
 import javax.swing.JFrame;
 
 import GameClient.ClientMessages;
 import GameLobbyGUI.LobbyGUI;
-
-import com.jogamp.opengl.util.FPSAnimator;
 
 
 public class Graphics{
@@ -18,6 +13,7 @@ public class Graphics{
 	private ClientMessages cmsg;
 	private JFrame window;
 	private Container pane;
+	private LobbyGUI lobby;
 	
 
 	public Graphics(){
@@ -29,49 +25,54 @@ public class Graphics{
 		window.setTitle("King of Kings");
 		
 		pane = window.getContentPane();
+		pane.setLayout(new CardLayout(2,1));
 		cmsg = new ClientMessages();
-		pane.add(new LobbyGUI(cmsg));
+		lobby = new LobbyGUI(cmsg);
+		pane.add(lobby);
 		
 		window.setVisible(true);
 	}
 	
 	
-	public void startGame(){
+	//public void startGame(){
 		
-		final GLProfile profile = GLProfile.get(GLProfile.GL2);
-	    GLCapabilities capabilities = new GLCapabilities(profile);
-		GLJPanel canvas = new GLJPanel(capabilities);
-		
-		FPSAnimator animator = new FPSAnimator(canvas,10);
-		animator.start();
-		
-		
-		GameGraphics.GameScreenComposition.GameScreen gs = 
-				new GameGraphics.GameScreenComposition.GameScreen(cmsg);
-		
-		canvas.addMouseListener(gs.getMouseListener());
-		canvas.addMouseMotionListener(gs.getMouseMotionListener());
-		canvas.addKeyListener(gs.getKeyboardListener());
-		//JButton button = new JButton("test");
-		//canvas.add(button);
-		
-		canvas.addGLEventListener(gs);
-		//canvas.setBackground(new Color(1,1,1,0));
-		
-		/*MouseButtons mb = new MouseButtons();
-		mb.setOpaque(false);
-		mb.setBackground(new Color(1,1,1,0));*/
-		
-		
-		/*JPanel main = new JPanel();
-		main.setLayout(new OverlayLayout(main));
-		main.add(mb);
-		main.add(canvas);
-		main.revalidate();
-		main.repaint();*/
-		
-		pane.setLayout(new GridLayout(1,1));
-		pane.add(canvas);
+//		final GLProfile profile = GLProfile.get(GLProfile.GL2);
+//	    GLCapabilities capabilities = new GLCapabilities(profile);
+//		GLJPanel canvas = new GLJPanel(capabilities);
+//		
+//		FPSAnimator animator = new FPSAnimator(canvas,10);
+//		animator.start();
+//		
+//		
+//		GameGraphics.GameScreenComposition.GameScreen gs = 
+//				new GameGraphics.GameScreenComposition.GameScreen(cmsg);
+//		
+//		canvas.addMouseListener(gs.getMouseListener());
+//		canvas.addMouseMotionListener(gs.getMouseMotionListener());
+//		canvas.addKeyListener(gs.getKeyboardListener());
+//		//JButton button = new JButton("test");
+//		//canvas.add(button);
+//		
+//		canvas.addGLEventListener(gs);
+//		//canvas.setBackground(new Color(1,1,1,0));
+//		
+//		/*MouseButtons mb = new MouseButtons();
+//		mb.setOpaque(false);
+//		mb.setBackground(new Color(1,1,1,0));*/
+//		
+//		
+//		/*JPanel main = new JPanel();
+//		main.setLayout(new OverlayLayout(main));
+//		main.add(mb);
+//		main.add(canvas);
+//		main.revalidate();
+//		main.repaint();*/
+//		
+//		pane.add(canvas);
+//		pane.revalidate();
+//		pane.repaint();
+//		
+//		window.revalidate();
 		
 	
 		//JLayeredPane main = window.getLayeredPane();
@@ -81,7 +82,7 @@ public class Graphics{
 		//pane.add(main);
 		
 		
-	}
+	//}
 	
 	public static void main(String[] args) {
 		

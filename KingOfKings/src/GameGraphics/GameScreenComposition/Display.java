@@ -62,7 +62,7 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 		
 		menus = new DisplayMenus(FRAME_X_SIZE/HEIGHT_CONST,FRAME_Y_SIZE/WIDTH_CONST,scaleFactor,
 				units,buildings,buildingModels,unitModels,map,FRAME_X_SIZE,FRAME_Y_SIZE,playerNumber);
-		
+		System.out.println("loaded graphics");
 		
 	}
 	

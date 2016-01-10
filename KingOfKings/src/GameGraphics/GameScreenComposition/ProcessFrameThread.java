@@ -10,14 +10,14 @@ import GameGraphics.Unit;
 
 public class ProcessFrameThread {
 	
-	private ClientMessages cmsg;
+	private ClientWrapper cmsg;
 	private IComFrameProcessMap map;
 	private IComFrameProcessDisplay display;
 	private IComGameEngineFrameProcess engine;
 	private IComUnitListFrameProcess units;
 	private IComBuildingListFrameProcess buildings;
 	
-	public ProcessFrameThread(ClientMessages cmsg,IComFrameProcessMap map,
+	public ProcessFrameThread(ClientWrapper cmsg,IComFrameProcessMap map,
 			IComFrameProcessDisplay display,IComGameEngineFrameProcess engine,
 			IComUnitListFrameProcess units,IComBuildingListFrameProcess buildings){
 		
@@ -37,13 +37,13 @@ public class ProcessFrameThread {
 		public void run() {
 			// TODO Auto-generated method stub
 			
-			cmsg.addMessage("SEND_FRAME");
+			//cmsg.addMessage("SEND_FRAME");
 			
 			while(true){
 
 				
 				long time = System.currentTimeMillis();
-				
+				cmsg.requestFrame();
 				/*try {
 					Thread.sleep(2);
 				} catch (InterruptedException e1) {
@@ -53,7 +53,7 @@ public class ProcessFrameThread {
 				
 				//System.out.println("DO FRAME");
 				
-				if(cmsg.getMessage().equals("START_FRAME")){
+				if(cmsg.getFrameMessage().equals("START_FRAME")){
 					
 					ArrayList<String> msgs = new ArrayList<String>();
 					
@@ -61,7 +61,7 @@ public class ProcessFrameThread {
 						
 						String msg = "";
 						
-						if((msg = cmsg.getMessage()) != null && !msg.equals("null")){
+						if((msg = cmsg.getFrameMessage()) != "null" && !msg.equals("null")){
 							
 							if(msg.equals("END_FRAME")){
 								
@@ -92,7 +92,7 @@ public class ProcessFrameThread {
 									}
 								}
 								
-								cmsg.addMessage("SEND_FRAME");
+								//cmsg.addMessage("SEND_FRAME");
 								break;
 							}
 								
@@ -345,12 +345,17 @@ public class ProcessFrameThread {
 	}
 	
 	
-	public void start(ArrayList<String> load){
+	public void load(ArrayList<String> load){
 		
 		
 		processFrame(load,1);
-		getFrame.start();
+		//getFrame.start();
 		
+	}
+	
+	public void start(){
+		
+		getFrame.start();
 	}
 
 }

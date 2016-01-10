@@ -22,15 +22,67 @@ public class GameScreen implements GLEventListener  {
 	private GLU glu;
 	private GLUT glut;
 	private GraphicsEngine engine;
+	private ClientMessages cmsg;
+	private ClientWrapper wrapper;
 	
-	public GameScreen(ClientMessages cmsg){
+	public GameScreen(ClientMessages cmsg,int thisPlayer,int noOfPlayer){
+		
+		wrapper = new ClientWrapper(cmsg,thisPlayer,noOfPlayer);
+		this.cmsg = cmsg;
+		
+		System.out.println("start");
+		waitForReady.start();
+		System.out.println("finish");
 		
 		try {
-			engine = new GraphicsEngine(cmsg);
+			System.out.println("engine start");
+			engine = new GraphicsEngine(wrapper);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+	}
+	
+	Thread waitForReady = new Thread(new Runnable(){
+		
+
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			while(true){
+				
+				String message;
+				if((message = cmsg.getMessage()) != "null"){
+					
+					
+					if(message.equals("ALLREADY")){
+						
+						System.out.println(message + " message");
+						wrapper.GameStarted();
+						Start();
+						break;
+					}else{
+						
+						cmsg.putBackMessage(message);
+					}
+					
+				}
+				
+				try {
+					Thread.sleep(25);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	});
+	
+	public void Start(){
+		
+		System.out.println((engine != null) + " null");
+		engine.Start();
 	}
 	
 	@Override
@@ -112,6 +164,11 @@ public class GameScreen implements GLEventListener  {
 	public KeyListener getKeyboardListener(){
 		
 		return engine.getKeyboardListener();
+	}
+
+	public boolean getStart() {
+		// TODO Auto-generated method stub
+		return engine.getStart();
 	}
 
 }

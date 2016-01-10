@@ -24,37 +24,87 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 	private MouseKeyboard mouseKeyboard;
 	private UnitList units;
 	private BuildingList buildings;
-	private ClientMessages cmsg;
+	private ClientWrapper cmsg;
 	private int myPlayerNumber;
 	private ProcessFrameThread processFrame;
+	
+	private boolean start;
 
 	
-	public GraphicsEngine(ClientMessages cmsg) throws IOException{
+	public GraphicsEngine(final ClientWrapper cmsg) throws IOException{
 		
 		this.cmsg = cmsg;
-		
-		ArrayList<String> load = Load();
+		start = false;
+
+		final ArrayList<String> load = Load();
 		map = new MapComp(load.get(0));
 		
 		display = new Display();
 		mouseKeyboard = new MouseKeyboard();
 		units = new UnitList(myPlayerNumber);
 		buildings = new BuildingList();
+		
 		buildings.setClientMessager(cmsg);
-		
-		display.setUpDisplay((IComUnitListDisplay) units, (IComBuildingListDisplay) buildings,
-				(IComMouseKeyboard) mouseKeyboard, map,myPlayerNumber);
-		
-		mouseKeyboard.setUpMouseKeyboard((IComUnitListMouseKeyboard)units,
-				(IComBuildingListMouseKeyboard)buildings,(IComDisplayMouseKeyboard) display, 
-				map, myPlayerNumber, cmsg);
-		
+
 		processFrame = new ProcessFrameThread(cmsg,(IComFrameProcessMap) map,
 				(IComFrameProcessDisplay) display,(IComGameEngineFrameProcess) this,
 				(IComUnitListFrameProcess) units,(IComBuildingListFrameProcess) buildings);
-		processFrame.start(load);
-		animation.start();
 		
+
+		display.setUpDisplay((IComUnitListDisplay) units, (IComBuildingListDisplay) buildings,
+				(IComMouseKeyboard) mouseKeyboard, map,myPlayerNumber);
+
+		mouseKeyboard.setUpMouseKeyboard((IComUnitListMouseKeyboard)units,
+				(IComBuildingListMouseKeyboard)buildings,(IComDisplayMouseKeyboard) display, 
+				map, myPlayerNumber, cmsg);
+
+		
+		
+		
+		new Thread(new Runnable(){
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				processFrame.load(load);
+				cmsg.addMessage("READY");
+				
+				while(!start){
+					
+					try {
+						Thread.sleep(25);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
+				System.out.println("entered game");
+				//System.exit(0);
+				try {
+					AllReadyStart();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+			
+
+		}).start();
+
+			
+	}
+	
+	public void AllReadyStart() throws IOException{
+		
+		processFrame.start();
+		animation.start();
+	}
+	
+	public void Start(){
+		
+		start = true;
 	}
 	
 	public void display(GLAutoDrawable drawable,GLU glu, GLUT glut){
@@ -77,13 +127,14 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 	
 	private ArrayList<String> Load(){
 		
+		cmsg.requestFrame();
 		ArrayList<String> load = new ArrayList<String>();
 		
 		while(true){
 			
 			String msg;
 			
-			if((msg = cmsg.getMessage()) != null){
+			if((msg = cmsg.getFrameMessage()) != "null"){
 				
 				if(msg.equals("END_LOAD")){
 					
@@ -131,7 +182,7 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 					if(i >= units.getUnitListSize()){
 						
 						try {
-							Thread.sleep(2);
+							Thread.sleep(1);
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -267,6 +318,11 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 	public int getPlayerNumber() {
 		// TODO Auto-generated method stub
 		return this.myPlayerNumber;
+	}
+
+	public boolean getStart() {
+		// TODO Auto-generated method stub
+		return start;
 	}	
 	
 	

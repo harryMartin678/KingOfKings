@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import Buildings.UnitCreator;
 import GameClient.ClientMessages;
+import GameGraphics.GameScreenComposition.ClientWrapper;
 import GameGraphics.GameScreenComposition.IComBuildingListDisplay;
 import GameGraphics.GameScreenComposition.IComBuildingListFrameProcess;
 import GameGraphics.GameScreenComposition.IComBuildingListMouseKeyboard;
@@ -16,7 +17,7 @@ IComBuildingListFrameProcess {
 	private boolean used;
 	private Building ghostBuilding;
 	private Building SelectedBuilding;
-	private ClientMessages cmsgs;
+	private ClientWrapper cmsgs;
 	
 	public BuildingList(){
 		
@@ -24,7 +25,7 @@ IComBuildingListFrameProcess {
 		used = false;
 	}
 	
-	public void setClientMessager(ClientMessages cmsgs){
+	public void setClientMessager(ClientWrapper cmsgs){
 		
 		this.cmsgs = cmsgs;
 	}

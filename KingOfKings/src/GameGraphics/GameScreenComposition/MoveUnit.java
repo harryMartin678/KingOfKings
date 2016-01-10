@@ -6,10 +6,10 @@ public class MoveUnit {
 	
 	private IComUnitListMouseKeyboard units;
 	private IComMapMouseKeyboard map;
-	private ClientMessages cmsg;
+	private ClientWrapper cmsg;
 	
 	public MoveUnit(IComUnitListMouseKeyboard units,IComMapMouseKeyboard map,
-			ClientMessages cmsg){
+			ClientWrapper cmsg){
 		
 		this.units = units;
 		this.map = map;

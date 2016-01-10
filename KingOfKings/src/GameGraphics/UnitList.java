@@ -309,7 +309,7 @@ public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,I
 		
 		for(int u = 0; u < selectedUnits.size(); u++){
 		
-			units += selectedUnits.get(u) + " ";
+			units += selectedUnits.get(u).unitNo + " ";
 		}
 		
 		
