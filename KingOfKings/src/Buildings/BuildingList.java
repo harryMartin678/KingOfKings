@@ -56,7 +56,9 @@ public class BuildingList implements IBuildingList {
 	
 	public boolean nextUnit(int buildingNo){
 		
-		return buildings.get(buildingNo).progressUnitQueue();
+		boolean ret = buildings.get(buildingNo).progressUnitQueue();
+		//System.out.println(ret + " nextUnit building list");
+		return ret;
 	}
 	
 	public boolean empty(int buildingNo){
@@ -133,13 +135,18 @@ public class BuildingList implements IBuildingList {
 	
 	public void addBuilding(Building building){
 		
-		System.out.println("addBuilding");
+		//System.out.println("addBuilding");
 		buildings.add(building);
 	}
 
 	public int getBuildingQueueSize(int index) {
 		// TODO Auto-generated method stub
 		return buildings.get(index).getUnitQueueSize();
+	}
+	
+	public boolean isBuildingDestroyed(int index){
+		
+		return buildings.get(index).destroyed();
 	}
 
 }

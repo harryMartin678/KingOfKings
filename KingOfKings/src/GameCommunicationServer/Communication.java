@@ -116,7 +116,7 @@ public class Communication {
 			
 			if(player != -1){
 				
-				System.out.println(player);
+				//System.out.println(player);
 //				for(int p = 0; p < players.size(); p++){
 //					server.sendMessage(players.get(p), "plet " + player);
 //				}
@@ -160,7 +160,7 @@ public class Communication {
 								
 								if(msg.equals("READY")){
 									
-									System.out.println("ready player com");
+									//System.out.println("ready player com");
 									syncUser++;
 									
 									if(syncUser == players.size()){
@@ -243,7 +243,7 @@ public class Communication {
 						for(int p = 0; p < players.size(); p++){
 							
 							try {
-								System.out.println(players.get(p) + " players");
+								//System.out.println(players.get(p) + " players");
 								server.sendMessage(p, "ALLREADY");
 							} catch (IOException e) {
 								// TODO Auto-generated catch block

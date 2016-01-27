@@ -1,11 +1,13 @@
 package Units;
 
+import Buildings.Names;
+
 public class Axeman extends Swordsman {
 	
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
-		return super.getName() + ":Axeman";
+		return super.getName() + ":" + Names.AXEMAN;
 	}
 	
 	@Override

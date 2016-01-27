@@ -13,7 +13,7 @@ public interface Commands {
 	public void attackGroup(int[] unitNo,int targetUnit);
 	public void followUnit(int unitNo, int unitFollow);
 	public void attackUnit(int unitNo, int targetNo);
-	public void attackBuilding(int unitNo, int buildingNo);
+	public void attackBuilding(int[] unitNos, int buildingNo);
 	
 	public void buildBuilding(int x, int y,int player,int map, String buildingType,int unitNo[]);
 	public void destroyBuilding(int buildingNo);

@@ -1,5 +1,6 @@
 package GameServer;
 
+import Buildings.BuildingAttackList;
 import Buildings.BuildingList;
 import Buildings.BuildingProgress;
 import IntermediateAI.Pathfinder;
@@ -21,5 +22,6 @@ public class GameEngineContext {
 	public UnitBattleList battles;
 	public SavedGame saveGame;
 	public String gameName;
+	public BuildingAttackList buildingAttackList;
 
 }

@@ -256,13 +256,27 @@ public class UnitModelList {
 			Building selectedBuilding,int playerNumber) {
 		// TODO Auto-generated method stub
 
-		System.out.println("building queue " + selectedBuilding.getSize());
-		for(int u = 0; u < selectedBuilding.getSize(); u++){
-			
-			Model model = getUnitModel(selectedBuilding.getUnitFromQueue(u));
-			Unit unit = new Unit((float) x + (u*0.5f),(float) y, model.getName(),
-								playerNumber,0);
-			drawModel(model,draw,unit,z);
+		///System.out.println("building queue " + selectedBuilding.getSize()/3
+			//	+ " " + selectedBuilding.getSize()%3);
+		
+		int queueNo = 0;
+	
+		outerLoop:
+		for(int uy = 0; uy < 4; uy++){
+			for(int ux = 0; ux < 5; ux++){
+				
+				if(queueNo >= selectedBuilding.getSize()-1){
+					
+					break outerLoop;
+				}
+				
+				Model model = getUnitModel(selectedBuilding.getUnitFromQueue(queueNo));
+				Unit unit = new Unit((float) x + (ux*0.5f),(float) y + (-uy*0.5f), model.getName(),
+									playerNumber,0);
+				drawModel(model,draw,unit,z);
+				
+				queueNo++;
+			}
 		}
 	}
 	

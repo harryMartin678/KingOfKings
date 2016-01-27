@@ -78,7 +78,7 @@ public class DisplayMenus {
 		drawMenuQuad(draw,-15.25f,4.0f, -19.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 3.0f);
 		
 		drawBuildingIcons(-15.25f,-4.5f,-18.0f,draw,frameX,frameY);
-		drawUnitIcons(-15.25f,-4.5f,-18.0f,draw,playerNumber,
+		drawUnitIcons(-15.45f,-4.5f,-18.0f,draw,playerNumber,
 				buildings.getSelectedBuilding());
 		//bottom panel
 		drawMenuQuad(draw,-15.25f,-4.5f, -19.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 3.0f);
@@ -139,6 +139,7 @@ public class DisplayMenus {
 			draw.glVertex3f(1.0f, -1.0f, -1.0f);
 		draw.glEnd();
 		
+		units.begin();
 		//draw units 
 		for(int u = 0; u < units.size(); u++){
 			
@@ -153,6 +154,9 @@ public class DisplayMenus {
 					,30.0f/(2*map.getHeight()), 30.0f/(2*map.getHeight()));
 		}
 		
+		units.end();
+		
+		buildings.begin();
 		//draw buildings 
 		for(int b = 0; b < buildings.size(); b++){
 			
@@ -176,6 +180,8 @@ public class DisplayMenus {
 						30.0f/(2*map.getHeight()));
 			}
 		}
+		
+		buildings.end();
 		
 		//draw the gold on the mini map
 		for(float xs = 0; xs < map.getWidth(); xs++){
@@ -310,7 +316,9 @@ public class DisplayMenus {
 					unitModels.drawBuildingUnitIcons(x, y, z, draw, 
 							playerNumber, SelectedBuilding);
 					drawMenuQuad(draw,-13.52f,-2.85f, -18.0f,1.0f, 0.84f, 0.0f,1.75f,1.5f, 1.5f);
+					buildings.begin();
 					unitModels.drawBuildingQueue(x + 2.0f,y,z,draw,SelectedBuilding,playerNumber);
+					buildings.end();
 				}
 		}
 

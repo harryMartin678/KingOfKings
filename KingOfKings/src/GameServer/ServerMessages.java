@@ -181,8 +181,8 @@ public class ServerMessages {
 		if(inpt.charAt(0) == 'c'){
 			
 			String[] message = inpt.substring(2).split(Pattern.quote("|"));
-			System.out.println(message.length + " message length");
-			System.out.println(message[0] + " from " + inpt.substring(2) + " msg2 " + message[1] );
+//			System.out.println(message.length + " message length");
+//			System.out.println(message[0] + " from " + inpt.substring(2) + " msg2 " + message[1] );
 			inpt = message[1];
 			
 			communicationTurn = new Integer(message[0]).intValue();
@@ -238,6 +238,10 @@ public class ServerMessages {
 		}else if(inpt.substring(0,3).equals("auq")){
 			
 			engine.parseAddUnitToQueue(inpt.substring(3),thisPlayer,communicationTurn);
+		
+		}else if(inpt.substring(0,4).equals("atbl")){
+			
+			engine.parseAttackBuilding(inpt.substring(5), communicationTurn);
 		}
 	}
 	

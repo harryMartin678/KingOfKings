@@ -17,6 +17,7 @@ IComBuildingListFrameProcess {
 	private boolean used;
 	private Building ghostBuilding;
 	private Building SelectedBuilding;
+	private Building AttackBuilding;
 	private ClientWrapper cmsgs;
 	
 	public BuildingList(){
@@ -67,11 +68,11 @@ IComBuildingListFrameProcess {
 	
 	public void addUnitToBuildingQueue(int building,String unit){
 		
-		System.out.println("add selected unit " + building + " " + unit);
+		//System.out.println("add selected unit " + building + " " + unit);
 		Building toAdd = this.getBuildingByBuildingNo(building);
 		toAdd.addUnitQueue(unit);
 		
-		if(SelectedBuilding.getBuildingNo() == building){
+		if(SelectedBuilding != null && SelectedBuilding.getBuildingNo() == building){
 			
 			SelectedBuilding.addUnitQueue(unit);
 		}
@@ -190,8 +191,9 @@ IComBuildingListFrameProcess {
 		ghostBuilding = null;
 	}
 	
-	public boolean setSelectedBuilding(int clickX, int clickY, int playerNumber){
+	public int setSelectedBuilding(int clickX, int clickY, int playerNumber){
 		
+		this.begin();
 		for(int b = 0; b < buildings.size(); b++){
 			
 			Buildings.Building type = Building.GetBuildingClass(buildings.get(b).getName());
@@ -200,14 +202,24 @@ IComBuildingListFrameProcess {
 			   && clickX >= buildings.get(b).getX() - type.getSizeX()
 			   && clickY <= buildings.get(b).getY() + type.getSizeY()
 			   && clickY >= buildings.get(b).getY() - type.getSizeY()
-			   && buildings.get(b).getPlayer() == playerNumber){
+			   ){
 				
-				SelectedBuilding = buildings.get(b);
-				return true;
+				
+				if(buildings.get(b).getPlayer() == playerNumber){
+					SelectedBuilding = buildings.get(b);
+					this.end();
+					return 2;
+				}else{
+					AttackBuilding = buildings.get(b);
+					this.end();
+					return 1;
+					
+				}
+				
 			}
 		}
-		
-		return false;
+		this.end();
+		return 0;
 	}
 
 	@Override
@@ -263,5 +275,19 @@ IComBuildingListFrameProcess {
 		
 		return null;
 	}
+
+	@Override
+	public int getGhostBuildingSelected() {
+		// TODO Auto-generated method stub
+		return SelectedBuilding.getBuildingNo();
+	}
+
+	@Override
+	public int getAttackBuildingNo() {
+		// TODO Auto-generated method stub
+		return AttackBuilding.getBuildingNo();
+	}
+
+
 
 }

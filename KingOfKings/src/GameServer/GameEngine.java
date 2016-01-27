@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import Buildings.Building;
+import Buildings.BuildingAttackList;
 import Buildings.BuildingList;
 import Buildings.BuildingProgress;
 import Buildings.Castle;
@@ -36,6 +37,7 @@ public class GameEngine{
 	private int communicationTurn;
 	private IGotToTurn beacon;
 	
+	
 	public GameEngine(String mapEntry,int playerNo,IGotToTurn beacon){
 		
 		context = new GameEngineContext();
@@ -53,6 +55,7 @@ public class GameEngine{
 		context.dip = new Diplomacy(playerNo);
 		context.sites = new BuildingProgress();
 		context.battles = new UnitBattleList(context.units);
+		context.buildingAttackList = new BuildingAttackList();
 		
 		try {
 			context.saveGame = new SavedGame("SavedGames/game1");
@@ -83,10 +86,11 @@ public class GameEngine{
 					context.maps.getMapWidth(i)/2, context.maps.getMapHeight(i)/2, 0);
 			context.buildings.addBuilding(context.maps.getPlayer(i), i, 
 					(context.maps.getMapWidth(i)/2)+4, (context.maps.getMapHeight(i)/2)+4, 1);
+			context.buildings.addBuilding(3,i,3,3,1);
 			
-			context.units.addUnit(Names.SLAVE, i, (context.maps.getMapWidth(i)/2)-4, (context.maps.getMapHeight(i)/2)-4, context.maps.getPlayer(i));
+			context.units.addUnit(Names.AXEMAN, i, (context.maps.getMapWidth(i)/2)-4, (context.maps.getMapHeight(i)/2)-4, context.maps.getPlayer(i));
 			context.units.addUnit(Names.SLAVE, i, (context.maps.getMapWidth(i)/2)-3, (context.maps.getMapHeight(i)/2)-3, context.maps.getPlayer(i));
-			context.units.addUnit(Names.SLAVE, i, (context.maps.getMapWidth(i)/2)+5, (context.maps.getMapHeight(i)/2)+5, 2);
+			context.units.addUnit(Names.AXEMAN, i, (context.maps.getMapWidth(i)/2)+5, (context.maps.getMapHeight(i)/2)+5, 2);
 			context.units.addUnit(Names.SLAVE, i, (context.maps.getMapWidth(i)/2)-4, (context.maps.getMapHeight(i)/2)-2, context.maps.getPlayer(i));
 		}
 
@@ -174,6 +178,8 @@ public class GameEngine{
 			
 			//progress unit to tower fights
 			context.battles.simulateTowerHit();
+			
+			context.buildingAttackList.simulateDestruction();
 			
 			//increment building unit queues progress
 			for(int b = 0; b < context.buildings.getBuildingsSize(); b++){
@@ -275,17 +281,9 @@ public class GameEngine{
 
 	}
 	
-	
 	private void addUnit(String unit, Building building){
 		
-		int[] pos = building.getFreeSpace(new CollisionMap(context.buildings,context.units,
-				context.maps.getMap(building.getMap())), building.getX() + building.getSizeX()+1, 
-					building.getY() + building.getSizeY() + 1, new ArrayList<int[]>());
-		
-		System.out.println(unit + " " + pos[0] + " " + pos[1]);
-		//add check for no space for unit 
-		
-		context.units.addUnit(unit, building.getMap(), pos[0],pos[1], building.getPlayer());
+		building.addUnit(unit,context);
 	}
 	
 //	private int[] findSpace(int x, int y, int sizeX, int sizeY, int map){
@@ -433,7 +431,7 @@ public class GameEngine{
 		
 		for(int b = 0; b < context.buildings.getBuildingsSize(); b++){
 			
-			if(context.buildings.getBuildingMap(b) == map){
+			if(context.buildings.getBuildingMap(b) == map && !context.buildings.isBuildingDestroyed(b)){
 				
 				info += b + " " + context.buildings.getBuildingType(b) + " " 
 						+ context.buildings.getBuildingX(b) + " " +
@@ -549,7 +547,7 @@ public class GameEngine{
 		
 		while(new Integer(numbers.get(n)).intValue() != -1){
 			
-			System.out.println(new Integer(numbers.get(n)).intValue());
+			//System.out.println(new Integer(numbers.get(n)).intValue());
 			unitNos.add(new Integer(numbers.get(n)));
 			n++;
 		}
@@ -698,7 +696,7 @@ public class GameEngine{
 		ArrayList<String> numbers = text.getNumbers();
 		String unitType = text.getUnitName();
 		
-		System.out.println("enter add unit to queue " + unitType);
+		//System.out.println("enter add unit to queue " + unitType);
 		
 		MethodParameter parameters = new MethodParameter();
 		parameters.setAddUnitToBuildQueue(new Integer(numbers.get(0)).intValue(), unitType);
@@ -723,12 +721,37 @@ public class GameEngine{
 		}
 	}
 	
+	public void parseAttackBuilding(String inpt,int passedCommunicationTurn){
+		
+		String[] numbers = inpt.split(" ");
+		int[] unitNos = new int[numbers.length-1];
+		
+		for(int u = 0; u < unitNos.length; u++){
+			
+			unitNos[u] = new Integer(numbers[u]).intValue();
+		}
+		
+		int buildingNo = new Integer(numbers[numbers.length-1]).intValue();
+		
+		MethodParameter parameters = new MethodParameter();
+		parameters.unitNos = unitNos;
+		parameters.buildingNo = buildingNo;
+		
+		if(passedCommunicationTurn != -1){
+			
+			commands.add(MethodCallup.ATTACKBUILDING, parameters, communicationTurn);
+		}else{
+			
+			commands.add(MethodCallup.ATTACKBUILDING,parameters,passedCommunicationTurn);
+		}
+	}
+	
 	public void parseMoveUnit(String inpt,int passedCommunicationTurn){
 		
 		ArrayList<String> numbers = 
 				new ParseText(inpt).getNumbers();
 		
-		System.out.println(numbers.get(0));
+		//System.out.println(numbers.get(0));
 		
 		MethodParameter parameters = new MethodParameter();
 		parameters.SetMoveUnit(new Integer(numbers.get(0)).intValue(),

@@ -112,7 +112,7 @@ public class MethodCallup implements Commands {
 			
 		}else if(methodName.equals(ATTACKBUILDING)){
 			
-			this.attackBuilding(parameters.unitNo, parameters.buildingNo);
+			this.attackBuilding(parameters.unitNos, parameters.buildingNo);
 			
 		}else if(methodName.equals(BUILDBUILDING)){
 			
@@ -223,9 +223,6 @@ public class MethodCallup implements Commands {
 		
 	}
 	
-	
-	
-
 	@Override
 	public void unitInBoat(int unitNo, int boatNo) {
 		// TODO Auto-generated method stub
@@ -360,9 +357,23 @@ public class MethodCallup implements Commands {
 	}
 
 	@Override
-	public void attackBuilding(int unitNo, int buildingNo) {
+	public void attackBuilding(int[] unitNos, int buildingNo) {
 		// TODO Auto-generated method stub
+		Building toAttack = context.buildings.getBuilding(buildingNo);
 		
+		ArrayList<int[]> taken = new ArrayList<int[]>();
+		CollisionMap map = new CollisionMap(context.buildings,context.units,
+				context.maps.getMap(toAttack.getMap()));
+		for(int u = 0; u < unitNos.length; u++){
+			
+			int[] pos = toAttack.getFreeSpace(map,(int)context.units.getUnitX(unitNos[u]),
+					(int)context.units.getUnitY(unitNos[u]), taken);
+			
+			taken.add(pos);
+			
+			this.moveUnit(unitNos[u],pos[0] , pos[1], toAttack.getMap());
+			context.buildingAttackList.add(context.units.getUnits(unitNos[u]), toAttack);
+		}
 		
 	}
 

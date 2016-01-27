@@ -25,6 +25,7 @@ public class Building {
 	private boolean site;
 	private int player;
 	private int progress;
+	private boolean dead;
 	
 	private ArrayList<String> unitQueue;
 	
@@ -51,6 +52,11 @@ public class Building {
 		this.progress = progress;
 	}
 	
+	public void setDead(boolean dead){
+		
+		this.dead = dead;
+	}
+	
 	public int getSize(){
 		
 		if(unitQueue == null){
@@ -60,7 +66,7 @@ public class Building {
 		
 		return unitQueue.size();
 	}
-	
+
 	public String getUnitFromQueue(int no){
 		
 		return unitQueue.get(no);

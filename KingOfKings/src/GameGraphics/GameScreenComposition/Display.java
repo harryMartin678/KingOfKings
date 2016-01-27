@@ -153,7 +153,7 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 		    		
 		    		continue;
 		    	}
-		    	
+		    	//System.out.println(units.get(u).getUnitType() + " in draw");
 		    	unitModels.drawUnit(draw, units.get(u), frameX, frameY);
 		    	
 		    	if(u < units.size() && units.isUnitSelected(units.get(u).getUnitNo())){

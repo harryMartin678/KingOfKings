@@ -176,7 +176,7 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 				//deal with mouse input 
 				mouseKeyboard.regulateMouse(display.getFrameX(), display.getFrameY(),
 						display.getFrameXSize(), display.getFrameYSize(), map.getViewedMap());
-				
+				units.begin();
 				for(int i = 0; i < units.getUnitListSize(); i++){
 					
 					if(i >= units.getUnitListSize()){
@@ -191,6 +191,7 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 					
 					units.changeCurrentFrame(i);
 				}
+				units.end();
 
 				/*
 				treeTime ++;

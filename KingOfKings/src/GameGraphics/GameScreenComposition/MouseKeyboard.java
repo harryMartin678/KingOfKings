@@ -3,6 +3,7 @@ package GameGraphics.GameScreenComposition;
 import java.awt.MouseInfo;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 import Buildings.Names;
 import GameClient.ClientMessages;
@@ -36,8 +37,6 @@ public class MouseKeyboard implements IComMouseKeyboard {
 	public void setUpMouseKeyboard(IComUnitListMouseKeyboard units,
 			IComBuildingListMouseKeyboard buildings, IComDisplayMouseKeyboard display,
 			IComMapMouseKeyboard map,int playerNumber,ClientWrapper cmsg){
-		
-
 		
 		this.units = units;
 		this.buildings = buildings;
@@ -82,10 +81,23 @@ public class MouseKeyboard implements IComMouseKeyboard {
 		    	  
 		    	  if(units.getSelectedUnitsSize() > 0 && !buildings.isBuildingGhost()){
 		    	
-		    		  if(!buildings.setSelectedBuilding(click[0], click[1],this.playerNumber)){
+		    		  int outcome;
+		    		  if((outcome = buildings.setSelectedBuilding(click[0], click[1],this.playerNumber)) == 0){
 		    			  
 		    		  	move.moveUnit(click[0],click[1],fDown,shiftDown);
 		    		  	buildings.clearSelectedBuilding();
+		    		  
+		    		  }else if(outcome == 1){
+		    		
+		    			  	units.clearNonAttackSelectedUnits();
+		    			  	
+		    			  	if(units.getSelectedUnitsSize() > 0){
+		    			  		
+		    			  		//String msg = "atbl " + units.getUnitsSelectedString();
+		    			  		
+		    			  		cmsg.addMessage("atbl " + units.getUnitsSelectedString() + 
+		    			  				buildings.getAttackBuildingNo());
+		    			  	}
 		    		  
 		    		  }else{
 		    			  
@@ -103,7 +115,7 @@ public class MouseKeyboard implements IComMouseKeyboard {
 		    	  
 		    	  }else{
 		    	  
-		    		  if(!buildings.setSelectedBuilding(click[0], click[1], this.playerNumber)){
+		    		  if(buildings.setSelectedBuilding(click[0], click[1], this.playerNumber) == 0){
 		    			 
 		    			 units.addSelectedUnit(click);
 		    			 buildings.clearSelectedBuilding();

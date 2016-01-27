@@ -1,11 +1,12 @@
 package Units;
+import Buildings.Names;
 
 public class Slave extends Worker {
 	
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
-		return super.getName() + ":Slave";
+		return super.getName() + ":" + Names.SLAVE;
 	}
 	
 	@Override

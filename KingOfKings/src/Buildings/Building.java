@@ -3,6 +3,8 @@ package Buildings;
 import java.util.ArrayList;
 
 import GameGraphics.UnitList;
+import GameServer.AddUnitModule;
+import GameServer.GameEngineContext;
 import Map.CollisionMap;
 import Map.Map;
 
@@ -16,6 +18,7 @@ public class Building {
 	private ArrayList<QueueItem> unitQueue;
 	private int buildingNo;
 	private boolean justBuilt;
+	private AddUnitModule addUnit;
 	
 	
 	public Building(int buildingNo){
@@ -23,6 +26,7 @@ public class Building {
 		hitpoints = this.getMaxHitpoint();
 		unitQueue = new ArrayList<QueueItem>();
 		this.buildingNo = buildingNo;
+		addUnit = new AddUnitModule();
 		
 		justBuilt = true;
 	}
@@ -41,11 +45,33 @@ public class Building {
 		
 		private String type;
 		private int progress;
+		private boolean delayed;
 		
 		public QueueItem(String type){
 			
 			this.type = type;
 			progress = 0;
+			delayed = false;
+		}
+		
+		public QueueItem(String type, int progress){
+			
+			this.type = type;
+			this.progress = progress;
+			delayed = true;
+		}
+		
+		public boolean isDelayed(){
+			
+			if(delayed){
+				
+				delayed = false;
+				return true;
+				
+			}else{
+				
+				return false;
+			}
 		}
 		
 		public void progress(){
@@ -87,6 +113,11 @@ public class Building {
 		return temp;
 	}
 	
+	public int[] getFreeSpace(CollisionMap map,int unitX, int unitY,ArrayList<int[]> taken){
+		
+		return addUnit.getFreeSpace(map, unitX, unitY,taken);
+	}
+	
 	public String getUnitQueue(){
 		
 		String list;
@@ -108,20 +139,27 @@ public class Building {
 		}
 		
 		
-		System.out.println("building queue list " + list);
+		//System.out.println("building queue list " + list);
 		return list;
 	}
 	
 	public boolean emptyUnitQueue(){
 		
-		return (unitQueue.size() == 0);
+		 if(unitQueue.size() == 0){
+			 
+			 return true;
+			 
+		 }else{
+			 
+			 return unitQueue.get(unitQueue.size()-1).isDelayed();
+		 }
 	}
 	
 	public boolean progressUnitQueue(){
 		
 		unitQueue.get(0).progress();
 		
-		System.out.println(unitQueue.get(0).getProgress());
+		//System.out.println(unitQueue.get(0).getProgress());
 		
 		return unitQueue.get(0).finished();
 		
@@ -185,7 +223,10 @@ public class Building {
 		hitpoints -= amount;
 	}
 	
-	
+	public void addUnit(String unit,GameEngineContext context){
+		
+		addUnit.AddUnit(unit, this, context);
+	}
 	
 	public int getSizeX(){
 		
@@ -230,82 +271,58 @@ public class Building {
 	}
 	
 	
-	public int[] getFreeSpace(CollisionMap map,int unitX, int unitY,ArrayList<int[]> taken){
-		
-		//the corners of the building 
-		int[] corners = new int[]{x - this.getSizeX(), y - this.getSizeY(),
-				x + this.getSizeX(),y - this.getSizeY()
-				,x + this.getSizeX(),y + this.getSizeY(),
-				x - this.getSizeX(),y + this.getSizeY()};
-		
-		//the directions between the corners 
-		int[] directions = new int[]{1,0,0,1,-1,0,0,-1};
-		
-		
-		int closestDistance = Integer.MAX_VALUE;
-		int[] closestPos = new int[]{-1,-1};
-		
-		int[][] mapArray = map.getCollisionMap();
-		
-		//go though each corner
-		for(int c = 0; c < corners.length; c+=2){
-			
-			//Abs(directions[c] + direction[c+1]) <= 1 
-			//travel between corners checking for the closet free square as you go 
-			for(int l = 0; l < (directions[c] * this.getSizeX()) 
-					+ (directions[c+1] * this.getSizeY())+1; l+= directions[c] + directions[c+1]){
-				
-				//calculates the currently checked square 
-				int cx = corners[c] + (directions[c] * l);
-				int cy = corners[c+1] + (directions[c+1] * l);
-				
-				//if this square is free and on the map
-				if(cx >= 0 && cy >= 0 && cx < mapArray.length && cy < mapArray[0].length &&
-						mapArray[cx][cy] == 0 ){
-					
-					int distance = Math.abs(cx - unitX) + Math.abs(cy - unitY);
-
-					//if it is the closest so far seen then set it as the current closet point
-					if(distance < closestDistance && !OnTakenList(taken,new int[]{cx,cy})){
-						
-						closestDistance = distance;
-						closestPos[0] = cx;
-						closestPos[1] = cy;
-					}
-				}
-			}
-		}
-		
-		return closestPos;
-	}
-	
-	public static boolean OnTakenList(ArrayList<int[]> list,int[] obj){
-		
-		for(int p = 0; p < list.size(); p++){
-			
-			if(obj[0] == list.get(p)[0] && obj[1] == list.get(p)[1]){
-				
-				return true;
-			}
-		}
-		
-		return false;
-	}
 	
 	public static void main(String[] args) {
 		
-//		RoyalPalace building = new RoyalPalace(0);
+//		Stockpile building = new Stockpile(0);
 //		
-//		building.setPos(2, 2);
+//		building.setPos(5, 5);
 //		
 //		BuildingList buildings = new BuildingList();
 //		
-//		int[] pos = building.getFreeSpace(new CollisionMap(new BuildingList(),new UnitList(0),new Map(10,10)),
-//				7, 7);
+//		ArrayList<int[]> taken = new ArrayList<int[]>();
 //		
+//		//for(int i = 0; i < 10; i++){
+//			taken.add(building.getFreeSpace(new CollisionMap(new BuildingList(),
+//					new UnitList(0),new Map(10,10)),0, 0,taken));
+//		//}
 //		
-//		System.out.println(pos[0] + " " + pos[1] + " closestPos");
+//		int[][] map = new int[10][10];
+//		
+//		for(int x = 0; x < map.length; x++){
+//			for(int y = 0; y < map[0].length; y++){
+//				
+//				if(building.inBuilding(x, y)){
+//					
+//					map[x][y] = 2;
+//					
+//				}else if(Building.OnTakenList(taken,new int[]{x,y})){
+//					
+//					map[x][y] = 1;
+//					
+//				}else{
+//					
+//					map[x][y] = 0;
+//				}
+//			}
+//		}
+//		
+//		for(int y = 0; y < map.length; y++){
+//			for(int x = 0; x < map[0].length; x++){
+//				
+//				System.out.print(map[y][x]);
+//			}
+//			
+//			System.out.println();
+//		}
 		
+		//System.out.println(pos[0] + " " + pos[1] + " closestPos");
+		
+	}
+
+	public void putBackOnUnitQueue(String unit) {
+		// TODO Auto-generated method stub
+		unitQueue.add(0,new QueueItem(unit,75));
 	}
 	
 	

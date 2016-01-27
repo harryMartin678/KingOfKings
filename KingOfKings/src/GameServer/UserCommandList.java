@@ -40,7 +40,7 @@ public class UserCommandList {
 //		
 		while(userCommands.size() > 0 &&
 				userCommands.get(0).getCommunicationTurnNo() != communicationTurn){
-			System.out.println("user command " + userCommands.get(0).getMethodCallup());
+			//System.out.println("user command " + userCommands.get(0).getMethodCallup());
 			userCommands.get(0).call();
 			userCommands.remove(0);
 		}

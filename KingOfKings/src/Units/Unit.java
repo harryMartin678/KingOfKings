@@ -22,7 +22,7 @@ public class Unit {
 	private boolean stop;
 	private int recalculate;
 	
-	public static float SPEED_CONSTANT = 100.0f;
+	public static float SPEED_CONSTANT = 200.0f;
 	
 	public Unit(){
 		
@@ -235,35 +235,70 @@ public class Unit {
 	//change the orientation of the unit
 	private void setOrientation(float x, float y, float targetX, float targetY){
 		
-		if(targetX - x == 1 && targetY - y == 0){
+//		if(targetX - x == 1 && targetY - y == 0){
+//			
+//			angle = 90;
+//			
+//		}else if(targetX - x == -1 && targetY - y == 0){
+//			
+//			angle = 270;
+//		
+//		}else if(targetX - x == 0 && targetY - y == 1){
+//			
+//			angle = 180;
+//		
+//		}else if(targetX - x == 0 && targetY - y == -1){
+//			
+//			angle = 0;
+//		
+//		}else if(targetX - x == 1 && targetY - y == -1){
+//			
+//			angle = 45;
+//		
+//		}else if(targetX - x == 1 && targetY - y == 1){
+//			
+//			angle = 315;
+//		
+//		}else if(targetX - x == -1 && targetY - y == 1){
+//			
+//			angle = 225;
+//		
+//		}else if(targetX - x == -1 && targetY - y == -1){
+//			
+//			angle = 135;
+//		}
+		
+		//System.out.println((targetX - x ) + " " + (targetY - y) +  " in unit");
+		
+		if(targetX - x > 0 && targetY - y == 0){
 			
 			angle = 90;
 			
-		}else if(targetX - x == -1 && targetY - y == 0){
+		}else if(targetX - x < 0 && targetY - y == 0){
 			
 			angle = 270;
 		
-		}else if(targetX - x == 0 && targetY - y == 1){
+		}else if(targetX - x == 0 && targetY - y > 0){
 			
 			angle = 180;
 		
-		}else if(targetX - x == 0 && targetY - y == -1){
+		}else if(targetX - x == 0 && targetY - y < 0){
 			
 			angle = 0;
 		
-		}else if(targetX - x == 1 && targetY - y == -1){
+		}else if(targetX - x > 0 && targetY - y < 0){
 			
 			angle = 45;
 		
-		}else if(targetX - x == 1 && targetY - y == 1){
+		}else if(targetX - x > 0 && targetY - y > 0){
 			
 			angle = 315;
 		
-		}else if(targetX - x == -1 && targetY - y == 1){
+		}else if(targetX - x < 0 && targetY - y > 0){
 			
 			angle = 225;
 		
-		}else if(targetX - x == -1 && targetY - y == -1){
+		}else if(targetX - x < 0 && targetY - y < 0){
 			
 			angle = 135;
 		}

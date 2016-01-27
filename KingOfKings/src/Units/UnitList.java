@@ -143,7 +143,7 @@ public class UnitList implements Cloneable,IUnitList {
 			
 		}else if(unitType.equals(Names.SLAVE)){
 			
-			System.out.println("add slave");
+			//System.out.println("add slave");
 			units.add(new Slave());
 			units.get(units.size()-1).setPlayer(player);
 			units.get(units.size()-1).setPos(x, y);
@@ -336,6 +336,17 @@ public class UnitList implements Cloneable,IUnitList {
 	public boolean getUnitMoving(int unitNo) {
 		// TODO Auto-generated method stub
 		return units.get(unitNo).getMoving();
+	}
+	
+	public void printUnits(int map){
+		
+		for(int u = 0; u < units.size(); u++){
+			
+			if(units.get(u).getMap() == map){
+				System.out.println(units.get(u).getUnitNo() + " " + units.get(u).getX() + " " 
+								+ units.get(u).getY() + " " + units.get(u).getName());
+			}
+		}
 	}
 
 	@Override

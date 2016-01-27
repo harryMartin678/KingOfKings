@@ -19,7 +19,7 @@ public class CollisionMap {
 		this.units = units;
 		ignoreUnit = -1;
 		
-		collisionMap = map.toArray();
+		SetCollisionMapToArray(map.toArray());
 		createCollisionMap();
 		
 	}
@@ -31,11 +31,23 @@ public class CollisionMap {
 		this.units = units;
 		this.ignoreUnit = ignoreUnit;
 		
-		System.out.println("ignore Unit " + ignoreUnit);
+		//System.out.println("ignore Unit " + ignoreUnit);
 		
-		collisionMap = map.toArray().clone();
+		SetCollisionMapToArray(map.toArray());
 		createCollisionMap();
 		
+	}
+	
+	private void SetCollisionMapToArray(int[][] array){
+		
+		collisionMap = new int[array.length][array[0].length];
+		
+		for(int y = 0; y < collisionMap.length; y++){
+			for(int x = 0; x < collisionMap[0].length; x++){
+				
+				collisionMap[y][x] = array[y][x];
+			}
+		}
 	}
 	
 	public void printCollisionMap(int mx, int my){
@@ -80,8 +92,7 @@ public class CollisionMap {
 	private void createCollisionMap(){
 		
 		//collisionMap[buildings.getBuildingY(0)][buildings.getBuildingX(0)] = 2;
-		System.out.println(buildings.getBuildingsSize());
-		
+		//System.out.println(buildings.getBuildingsSize());
 		for(int y = 0; y < collisionMap.length; y++){
 			for(int x = 0; x < collisionMap[y].length; x++){
 				
