@@ -266,6 +266,8 @@ public class ServerMessages {
 		output += engine.getBuildingOnMap(viewedMap);
 		output += "buildingqueue\n";
 		output += engine.getUnitQueues(thisPlayer);
+		output += "resource\n";
+		output += engine.getPlayerResource(thisPlayer);
 		output += "END_FRAME\n";
 		//addMessage(player,output);
 		

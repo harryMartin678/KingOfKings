@@ -288,6 +288,14 @@ IComBuildingListFrameProcess {
 		return AttackBuilding.getBuildingNo();
 	}
 
+	@Override
+	public void canBuildThere(CollisionMap collMap) {
+		// TODO Auto-generated method stub
+		if(isBuildingGhost()){
+			ghostBuilding.CanBuildThere(collMap);
+		}
+	}
+
 
 
 }

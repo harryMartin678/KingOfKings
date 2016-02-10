@@ -53,6 +53,11 @@ public class UnitList implements Cloneable,IUnitList {
 		units.get(unitNo).stopAttack();
 	}
 	
+	public void stopRetreat(int unitNo){
+		
+		units.get(unitNo).setRetreat(false);
+	}
+	
 	public boolean isAttacking(int unitNo){
 		
 		return units.get(unitNo).isAttacking();
@@ -257,7 +262,7 @@ public class UnitList implements Cloneable,IUnitList {
 	
 	public boolean collision(int one, int two){
 		
-		return generalCollision(one,two,1.0f);
+		return generalCollision(one,two,Math.max(units.get(one).getRange(), units.get(two).getRange()));
 
 		
 	}
@@ -360,6 +365,7 @@ public class UnitList implements Cloneable,IUnitList {
 		// TODO Auto-generated method stub
 		
 	}
+
 	
 	///public int[] getNextNode(int unitNo){
 		

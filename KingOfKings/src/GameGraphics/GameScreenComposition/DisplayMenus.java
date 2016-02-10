@@ -61,15 +61,15 @@ public class DisplayMenus {
 	}
 	
 	
-	public void drawMenus(GL2 draw,int frameX,int frameY){
+	public void drawMenus(GL2 draw,int frameX,int frameY,int food,int gold){
 		
-		drawLeftPanel(draw,frameX,frameY);
+		drawLeftPanel(draw,frameX,frameY,food,gold);
 		drawRightPanel(draw,frameX,frameY);
-		drawTopPanel(draw);
+		drawTopPanel(draw,food,gold);
 		drawBottomFill(draw);
 	}
 	
-	private void drawLeftPanel(GL2 draw,int frameX,int frameY){
+	private void drawLeftPanel(GL2 draw,int frameX,int frameY,int food,int gold){
 		
 		//back panel
 		drawMenuQuad(draw,-16.0f,0.0f,-20.0f,0.65f,0.5f,0.39f,2.7f,3.0f,10.0f);
@@ -77,7 +77,7 @@ public class DisplayMenus {
 		//top panel
 		drawMenuQuad(draw,-15.25f,4.0f, -19.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 3.0f);
 		
-		drawBuildingIcons(-15.25f,-4.5f,-18.0f,draw,frameX,frameY);
+		drawBuildingIcons(-15.25f,-4.5f,-18.0f,draw,frameX,frameY,food,gold);
 		drawUnitIcons(-15.45f,-4.5f,-18.0f,draw,playerNumber,
 				buildings.getSelectedBuilding());
 		//bottom panel
@@ -87,11 +87,11 @@ public class DisplayMenus {
 	}
 	
 	private void drawBuildingIcons(float x, float y,float z, GL2 draw,
-			int frameX,int frameY){
+			int frameX,int frameY,int food,int gold){
 		
 		if(units.workSelected()){
 			
-			buildingModels.drawBuildingIcon(draw, x, y, z, frameX, frameY);
+			buildingModels.drawBuildingIcon(draw, x, y, z, frameX, frameY,food,gold);
 		}
 	}
 	
@@ -204,7 +204,7 @@ public class DisplayMenus {
 		}
 	}
 	
-	private void drawTopPanel(GL2 draw){
+	private void drawTopPanel(GL2 draw,int food,int gold){
 
 		//top panel
 		drawMenuQuad(draw,0.0f,8.5f, -20.0f,0.65f, 0.5f, 0.39f,15.0f, 3.0f, 1.15f);
@@ -213,9 +213,17 @@ public class DisplayMenus {
 		//pause game button
 		drawMenuQuad(draw,0.0f,8.5f, -20.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 0.75f);
 		
+		drawString(draw,-6.5f,7.75f,-21.0f,0.0f,0.0f,0.0f,0.75f,new Integer(food).toString());
+		//food panel
+		drawMenuQuad(draw,-6.0f,8.5f, -20.0f,0.45f, 0.15f, 0.0f,2.0f, 3.0f, 0.75f);
+		
 		drawString(draw,-11.25f,7.75f, -21.0f,0.0f,0.0f,0.0f,0.75f,"save");
 		//save game button
 		drawMenuQuad(draw,-11.0f,8.5f, -20.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 0.75f);
+		
+		drawString(draw,4.0f,7.75f,-21.0f,0.0f,0.0f,0.0f,0.75f,new Integer(gold).toString());
+		//gold panel
+		drawMenuQuad(draw,5.5f,8.5f, -20.0f,0.45f, 0.15f, 0.0f,2.0f, 3.0f, 0.75f);
 		
 		drawString(draw,8.0f,7.75f, -21.0f,0.0f,0.0f,0.0f,0.75f,"quit");
 		//quit game button

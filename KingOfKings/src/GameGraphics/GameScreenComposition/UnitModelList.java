@@ -2,6 +2,7 @@ package GameGraphics.GameScreenComposition;
 
 import java.io.IOException;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 
 import javax.media.opengl.GL2;
 
@@ -33,12 +34,15 @@ public class UnitModelList {
 	private Model heavyarcher;
 	private Model batteringRam;
 	private Model heavyBatteringRam;
+	private Model arrow;
 	private BuildingModel flag;
 	private Model[] unitModels;
 	
 	private float HEIGHT_CONST;
 	private float WIDTH_CONST;
 	private float scaleFactor;
+	
+	private ArrayList<ArrowAnimation> arrowAnim; 
 	
 	
 	public UnitModelList(float HEIGHT_CONST, float WIDTH_CONST,float scaleFactor)
@@ -47,6 +51,8 @@ public class UnitModelList {
 		this.HEIGHT_CONST = HEIGHT_CONST;
 		this.WIDTH_CONST = WIDTH_CONST;
 		this.scaleFactor = scaleFactor;
+		
+		arrowAnim = new ArrayList<ArrowAnimation>();
 		
 		servant = new Model(Names.SERVANT,"Models",3,0);
 		slave = new Model(Names.SLAVE,"Models",3,0);
@@ -69,13 +75,61 @@ public class UnitModelList {
 		batteringRam.setSize(0.1f, 0.1f, 0.2f);
 		heavyBatteringRam = new Model(Names.HEAVYBATTERINGRAM,"Models",3,0);
 		heavyBatteringRam.setSize(0.1f, 0.2f, 0.2f);
+		arrow = new Model(Names.ARROW,"Models",1,0);
+		arrow.setSize(0.075f, 0.075f, 0.075f);
+		
+		flag = new BuildingModel("flag","Models",1);
+		flag.setSize(0.3f,0.3f, 0.3f);
+		
 		
 		unitModels = new Model[]{servant,slave,axeman,swordsman,spearman,fishingBoat,warship
 				,flagship,lightChariot,heavyChariot,archer,heavyarcher,batteringRam,heavyBatteringRam};
 	}
 	
-	public void drawUnit(GL2 draw, Unit unit,int frameX,int frameY){
+	public void addArrow(float startX,float startY,float targetX, float targetY,int unitNo){
 		
+		arrowAnim.add(new ArrowAnimation(startX, startY, targetX, targetY,unitNo));
+	}
+	
+//	private boolean onArrowList(int unitNo){
+//		
+//		for(int u = 0; u < arrowAnim.size(); u++){
+//			
+//			if(arrowAnim.get(u).isUnitsArrow(unitNo)){
+//				
+//				return true;
+//			}
+//		}
+//		
+//		return false;
+//	}
+	
+	public void progressArrowAnim(){
+		
+		for(int r = 0; r < arrowAnim.size(); r++){
+			arrowAnim.get(r).progress();
+			
+			if(arrowAnim.get(r).finished()){
+				
+				arrowAnim.remove(r);
+				r--;
+			}
+		}
+	}
+	
+	public void drawArrows(GL2 draw,int frameX, int frameY){
+		
+		for(int a = 0; a < arrowAnim.size(); a++){
+			Unit info = new Unit(arrowAnim.get(a).getArrowX(),arrowAnim.get(a).getArrowY(),"Arrow",
+					1,0);
+			info.setAngle(arrowAnim.get(a).getAngle());
+			drawModel(arrow,draw,info,WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
+		}
+	}
+	
+	public void drawUnit(GL2 draw, Unit unit,int frameX,int frameY,Unit attack){
+		
+		//System.out.println(unit.getUnitType() + " unitModeList");
 		if(unit.getUnitType().equals(Names.SERVANT)){
     		
     		drawModel(servant,draw,unit,WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
@@ -132,6 +186,13 @@ public class UnitModelList {
     		
     		drawModel(flagship,draw,unit,WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
     	}
+		
+		if(attack != null){ //&& !onArrowList(unit.getUnitNo())){
+			
+			addArrow(unit.getX(), unit.getY(),attack.getX(), attack.getY(), unit.getUnitNo());
+		
+		}
+
 	}
 	
 	public void drawModel(Model model, GL2 draw, Unit unit,float width, float height

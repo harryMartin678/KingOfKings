@@ -1,11 +1,13 @@
 package Units;
 
+import Buildings.Names;
+
 public class Archer extends Unit {
 	
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
-		return super.getName() + ":Archer";
+		return super.getName() + ":" + Names.ARCHER;
 	}
 	@Override
 	public int getRange() {
@@ -16,7 +18,7 @@ public class Archer extends Unit {
 	@Override
 	public int getMaxHealth() {
 		// TODO Auto-generated method stub
-		return super.getMaxHealth() + 100;
+		return super.getMaxHealth() + 500;
 	}
 	
 	@Override

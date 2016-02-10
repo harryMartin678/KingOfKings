@@ -1,10 +1,16 @@
 package GameLobbyGUI;
 
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.TextField;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.ContainerListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -55,6 +61,37 @@ public class LobbyGUI extends JPanel implements MouseListener {
 		thisPlayer = -1;
 		this.addMouseListener(this);
 		
+		this.addComponentListener(new ComponentListener(){
+
+			@Override
+			public void componentHidden(ComponentEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void componentMoved(ComponentEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void componentResized(ComponentEvent e) {
+				// TODO Auto-generated method stub
+				JPanel panel = (JPanel) e.getComponent();
+				bsyIdtX = (3*panel.getWidth())/4;
+				bsyIdtY = panel.getHeight()/2;
+			}
+
+			@Override
+			public void componentShown(ComponentEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			
+		});
+		
 		angle = 0;
 		
 		startGetPlayers();
@@ -71,9 +108,7 @@ public class LobbyGUI extends JPanel implements MouseListener {
 		this.cmsg = cmsg;
 		startGetPlayers();
 	}
-	
-	
-	
+
 
 	public void startGame(){
 		
@@ -95,6 +130,9 @@ public class LobbyGUI extends JPanel implements MouseListener {
 		canvas.addMouseListener(gs.getMouseListener());
 		canvas.addMouseMotionListener(gs.getMouseMotionListener());
 		canvas.addKeyListener(gs.getKeyboardListener());
+		
+		canvas.setFocusable(true);
+		
 
 		canvas.addGLEventListener(gs);
 		

@@ -27,6 +27,7 @@ public class Building {
 		unitQueue = new ArrayList<QueueItem>();
 		this.buildingNo = buildingNo;
 		addUnit = new AddUnitModule();
+		addUnit.setBuilding(this);
 		
 		justBuilt = true;
 	}
@@ -268,6 +269,16 @@ public class Building {
 	public String unitcreated(){
 		
 		return "";
+	}
+	
+	public int GoldNeeded(){
+		
+		return 0;
+	}
+	
+	public int FoodNeeded(){
+		
+		return 0;
 	}
 	
 	

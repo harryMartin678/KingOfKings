@@ -217,7 +217,8 @@ public class MethodCallup implements Commands {
 		// TODO Auto-generated method stub
 		
 		context.units.setFollow(unitNo,unitFollow);
-		
+		System.out.println(unitFollow +" "+ (int) context.units.getUnitX(unitFollow) + " " + (int) context.units.getUnitY(unitFollow)
+				+ " " +context.units.getUnitMap(unitFollow) + " inMethodCallup FollowUnit");
 		this.moveUnit(unitNo, (int) context.units.getUnitX(unitFollow), (int) context.units.getUnitY(unitFollow),
 				context.units.getUnitMap(unitFollow),unitFollow);
 		
@@ -380,12 +381,15 @@ public class MethodCallup implements Commands {
 	@Override
 	public void buildBuilding(int x, int y,int map,int player, String buildingType,int[] unitNos) {
 		// TODO Auto-generated method stub
+		System.out.println(buildingType + " methodCallup bb");
 		Building newBuilding = GameGraphics.Building.GetBuildingClass(buildingType,
 				context.buildings.getBuildingsSize());
 
 		newBuilding.setPlayer(player);
 		newBuilding.setMap(map);
 		newBuilding.setPos(x, y);
+		
+		context.players.addPlayerResource(-newBuilding.FoodNeeded(), -newBuilding.GoldNeeded(), player);
 		
 		ArrayList<Worker> workers = new ArrayList<Worker>();
 		

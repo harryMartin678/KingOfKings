@@ -18,7 +18,6 @@ public class CollisionMap {
 		this.buildings = buildings;
 		this.units = units;
 		ignoreUnit = -1;
-		
 		SetCollisionMapToArray(map.toArray());
 		createCollisionMap();
 		
@@ -45,7 +44,7 @@ public class CollisionMap {
 		for(int y = 0; y < collisionMap.length; y++){
 			for(int x = 0; x < collisionMap[0].length; x++){
 				
-				collisionMap[y][x] = array[y][x];
+				collisionMap[y][x] = array[x][y];
 			}
 		}
 	}

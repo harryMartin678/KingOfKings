@@ -33,5 +33,7 @@ public class Names {
 	public static final String FISHINGBOAT = "fishingboat";
 	public static final String WARSHIP = "warship";
 	public static final String FLAGSHIP = "flagship";
+	
+	public static final String ARROW = "arrow";
 
 }

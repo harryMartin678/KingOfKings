@@ -71,13 +71,13 @@ public class GameEngine{
 		
 		for(int i = 0; i < playerNo; i++){
 			
-			context.maps.getMap(i).setPlayer(i+1);
+			context.maps.getMap(i).setPlayer(i);
 			context.players.setPlayerViewedMap(i,i);
 		}
 		
 		//stub
-		context.maps.getMap(1).setPlayer(0);
-		context.players.setPlayerViewedMap(0, 1);
+		//context.maps.getMap(1).setPlayer(0);
+		//context.players.setPlayerViewedMap(0, 1);
 		
 		
 		for(int i = 0; i < context.maps.getSize(); i++){
@@ -88,9 +88,9 @@ public class GameEngine{
 					(context.maps.getMapWidth(i)/2)+4, (context.maps.getMapHeight(i)/2)+4, 1);
 			context.buildings.addBuilding(3,i,3,3,1);
 			
-			context.units.addUnit(Names.AXEMAN, i, (context.maps.getMapWidth(i)/2)-4, (context.maps.getMapHeight(i)/2)-4, context.maps.getPlayer(i));
+			context.units.addUnit(Names.ARCHER, i, (context.maps.getMapWidth(i)/2)-4, (context.maps.getMapHeight(i)/2)-4, context.maps.getPlayer(i));
 			context.units.addUnit(Names.SLAVE, i, (context.maps.getMapWidth(i)/2)-3, (context.maps.getMapHeight(i)/2)-3, context.maps.getPlayer(i));
-			context.units.addUnit(Names.AXEMAN, i, (context.maps.getMapWidth(i)/2)+5, (context.maps.getMapHeight(i)/2)+5, 2);
+			context.units.addUnit(Names.AXEMAN, i, (context.maps.getMapWidth(i)/2)+7, (context.maps.getMapHeight(i)/2)+7, 2);
 			context.units.addUnit(Names.SLAVE, i, (context.maps.getMapWidth(i)/2)-4, (context.maps.getMapHeight(i)/2)-2, context.maps.getPlayer(i));
 		}
 
@@ -174,7 +174,7 @@ public class GameEngine{
 			//reveal map 
 			//revealMap();
 			//progress unit fights
-			context.battles.simulateHit();
+			context.battles.simulateHit(context.buildings,context.maps);
 			
 			//progress unit to tower fights
 			context.battles.simulateTowerHit();
@@ -193,6 +193,11 @@ public class GameEngine{
 			ArrayList<int[]> unitsToRecalculate = context.units.getRecalculated();
 			
 			for(int r = 0; r < unitsToRecalculate.size(); r++){
+				
+				if(context.units.getUnits(unitsToRecalculate.get(r)[0]).getRetreat()){
+					
+					continue;
+				}
 	
 				if(unitsToRecalculate.get(r)[1] == 1){
 					
@@ -223,6 +228,7 @@ public class GameEngine{
 				
 				MethodParameter parameters = new MethodParameter();
 				parameters.setUnitFollow(com[0], com[1]);
+				System.out.println(parameters.unitNo + "  " + parameters.unitFollow);
 				commands.add(MethodCallup.FOLLOWUNIT, parameters, communicationTurn);
 				//this.followUnit(com[0], com[1]);
 			}
@@ -261,10 +267,12 @@ public class GameEngine{
 						
 						if(context.units.getMoving(unitFollow)){
 							
+							System.out.println("RE Follow " + unitFollow);
 							MethodParameter parameters = new MethodParameter();
-							parameters.SetMoveUnit(f, (int) context.units.getUnitX(unitFollow),
-									(int) context.units.getUnitY(unitFollow), context.units.getUnitMap(unitFollow),
-									unitFollow);
+//							parameters.SetMoveUnit(f, (int) context.units.getUnitX(unitFollow),
+//									(int) context.units.getUnitY(unitFollow), context.units.getUnitMap(unitFollow),
+//									unitFollow);
+							parameters.setUnitFollow(f, unitFollow);
 							commands.add(MethodCallup.FOLLOWUNIT, parameters, communicationTurn);
 	//						this.moveUnit(f, (int) context.units.getUnitX(unitFollow), (int) context.units.getUnitY(unitFollow),
 	//								context.units.getUnitMap(unitFollow),unitFollow);
@@ -411,8 +419,8 @@ public class GameEngine{
 					
 					info += u + " " + context.units.getUnitName(u) + " " + context.units.getUnitX(u) +
 							" " + context.units.getUnitY(u) + " " + context.units.getUnitPlayer(u) + 
-							" " + moving + " " + context.units.getOrientation(u) + " " +
-							 attacking + "\n";
+							" " + moving + " " + context.units.getOrientation(u) + " " 
+							+ attacking + " " + context.units.getFollow(u) + "\n";
 					
 					
 				}else{
@@ -423,6 +431,12 @@ public class GameEngine{
 		}
 		
 		return info;
+	}
+	
+	public String getPlayerResource(int player){
+		
+		return player + " " + context.players.getPlayersFood(player) + " "
+					+ context.players.getPlayersGold(player) + "\n";
 	}
 	
 	public String getBuildingOnMap(int map){
@@ -660,13 +674,16 @@ public class GameEngine{
 		ParseText text = new ParseText(inpt);
 		ArrayList<String> numbers = text.getNumbers();
 		String name = text.getUnitName();
+		numbers.remove(numbers.size()-1);
 		
-		int[] unitNos = new int[numbers.size()-2];
+		int[] unitNos = new int[numbers.size()-3];
 		
+//		System.out.println("GAMEENGINE BB");
 //		for(int i = 0; i < numbers.size(); i++){
 //			
 //			System.out.println(numbers.get(i));
 //		}
+//		System.out.println("GAMEENGINE BB");
 		
 		for(int n = 3; n < numbers.size(); n++){
 			
@@ -675,6 +692,13 @@ public class GameEngine{
 			}
 		}
 		
+//		System.out.println("GAMEENGINE BB UNITNOS");
+//		for(int i = 0; i < unitNos.length; i++){
+//			
+//			System.out.println(unitNos[i]);
+//		}
+//		System.out.println("GAMEENGINE BB UNITNOS");
+//		
 		MethodParameter parameters = new MethodParameter();
 		parameters.setBuildBuilding(new Float(numbers.get(0)).intValue(), new Float(numbers.get(1)).intValue(),
 				new Float(numbers.get(2)).intValue(),player,name,unitNos);

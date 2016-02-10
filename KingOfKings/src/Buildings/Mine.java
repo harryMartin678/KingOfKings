@@ -23,4 +23,28 @@ public class Mine extends Resource {
 		// TODO Auto-generated method stub
 		return super.getBuildTime()+15;
 	}
+	
+	@Override
+	public int getSizeX() {
+		// TODO Auto-generated method stub
+		return super.getSizeX() + 1;
+	}
+	
+	@Override
+	public int getSizeY() {
+		// TODO Auto-generated method stub
+		return super.getSizeY() + 1;
+	}
+	
+	@Override
+	public int GoldNeeded() {
+		// TODO Auto-generated method stub
+		return super.GoldNeeded() + 100;
+	}
+	
+	@Override
+	public int FoodNeeded() {
+		// TODO Auto-generated method stub
+		return super.FoodNeeded() + 100;
+	}
 }

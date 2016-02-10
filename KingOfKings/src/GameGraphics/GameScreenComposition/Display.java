@@ -45,6 +45,9 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	private BuildingModelList buildingModels;
 	private UnitModelList unitModels;
 	
+	private int food;
+	private int gold;
+	
 	public Display(){
 		
 	}
@@ -154,7 +157,9 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 		    		continue;
 		    	}
 		    	//System.out.println(units.get(u).getUnitType() + " in draw");
-		    	unitModels.drawUnit(draw, units.get(u), frameX, frameY);
+		    	unitModels.drawUnit(draw, units.get(u),frameX, frameY,
+		    			units.getUnitByUnitNo(units.get(u).getAttacking()));
+		    	unitModels.drawArrows(draw, frameX, frameY);
 		    	
 		    	if(u < units.size() && units.isUnitSelected(units.get(u).getUnitNo())){
 		    		
@@ -173,7 +178,7 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 		    		draw.glEnd();
 		    	}
 		    }
-		    
+		    unitModels.progressArrowAnim();
 		    units.end();
 	}
 	
@@ -186,6 +191,7 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    if(buildings.isBuildingGhost()){
 	    	CollisionMap collMap = new CollisionMap(buildings,units,map.getMap());
 	    	//map.printCollisionMap((int)buildingSelection.getX(),(int)buildingSelection.getY());
+	    	buildings.canBuildThere(collMap);
 	    	buildings.canBuildGhost(collMap);
 	    	//System.out.println(buildingSelection.cantBuild());
 	    	buildings.drawGhostBuilding();
@@ -249,7 +255,8 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	   
 	    draw.glDisable(draw.GL_LIGHTING);
 	    //draw menus 
-	    menus.drawMenus(draw, frameX, frameY);
+	   // System.out.println(food + " " + gold + " display");
+	    menus.drawMenus(draw, frameX, frameY,food,gold);
 	    draw.glEnable(draw.GL_LIGHTING);
 
 	    drawable.swapBuffers();
@@ -291,29 +298,29 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	
 	public static FloatBuffer getPlayerColour(int player){
 		
-		if(player == 1){
+		if(player == 0){
 			
 			return FloatBuffer.wrap(new float[]{0.0f,0.0f,1.0f});
 		
-		}else if(player == 2){
+		}else if(player == 1){
 			
 			return FloatBuffer.wrap(new float[]{1.0f,0.0f,0.0f});
 		
-		}else if(player == 3){
+		}else if(player == 2){
 			
 			return FloatBuffer.wrap(new float[]{0.0f,1.0f,0.0f});
-		}else if(player == 4){
+		}else if(player == 3){
 			
 			return FloatBuffer.wrap(new float[]{1.0f,1.0f,1.0f});
 		
-		}else if(player == 5){
+		}else if(player == 4){
 			
 			return FloatBuffer.wrap(new float[]{1.0f,1.0f,0.0f});
 		
-		}else if(player == 6){
+		}else if(player == 5){
 			
 			return FloatBuffer.wrap(new float[]{0.0f,1.0f,1.0f});
-		}else if(player == 7){
+		}else if(player == 6){
 			
 			return FloatBuffer.wrap(new float[]{1.0f,0.0f,1.0f});
 		
@@ -480,6 +487,13 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 			frameX = squareX;
 			frameY = squareY;
 		}
+	}
+
+	@Override
+	public void setResources(int food, int gold) {
+		// TODO Auto-generated method stub
+		this.food = food;
+		this.gold = gold;
 	}
 	
 	

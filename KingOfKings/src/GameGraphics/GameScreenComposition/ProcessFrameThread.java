@@ -16,10 +16,12 @@ public class ProcessFrameThread {
 	private IComGameEngineFrameProcess engine;
 	private IComUnitListFrameProcess units;
 	private IComBuildingListFrameProcess buildings;
+	private IComMouseFrameProcess mouse;
 	
 	public ProcessFrameThread(ClientWrapper cmsg,IComFrameProcessMap map,
 			IComFrameProcessDisplay display,IComGameEngineFrameProcess engine,
-			IComUnitListFrameProcess units,IComBuildingListFrameProcess buildings){
+			IComUnitListFrameProcess units,IComBuildingListFrameProcess buildings,
+			IComMouseFrameProcess mouse){
 		
 		this.cmsg = cmsg;
 		this.map = map;
@@ -27,6 +29,7 @@ public class ProcessFrameThread {
 		this.engine = engine;
 		this.units = units;
 		this.buildings = buildings;
+		this.mouse = mouse;
 	}
 	
 
@@ -228,9 +231,11 @@ public class ProcessFrameThread {
 					unit.moving();
 				
 				}
+				
 				if(new Integer(numbers.get(6)).intValue() == 1){
 					
 					unit.setFiring();
+					unit.setAttack(new Integer(numbers.get(7)).intValue());
 					
 				}
 				
@@ -301,7 +306,7 @@ public class ProcessFrameThread {
 		
 		m++;
 		
-		while(m < msgs.size()){
+		while(!(m >= msgs.size() || msgs.get(m).equals("resource"))){
 			
 			if(msgs.get(m).equals("buildingqueue") || msgs.get(m).equals("")){
 				
@@ -333,6 +338,16 @@ public class ProcessFrameThread {
 			
 			m++;
 			
+		}
+		
+		m++;
+		
+		if(m < msgs.size()){
+			
+			String[] resource = msgs.get(m).split(" ");
+			display.setResources(new Integer(resource[1]).intValue(), new Integer(resource[2]).intValue());
+			mouse.setResources(new Integer(resource[1]).intValue(), new Integer(resource[2]).intValue());
+
 		}
 		
 //		for(int b = 0; b < buildings.size(); b++){

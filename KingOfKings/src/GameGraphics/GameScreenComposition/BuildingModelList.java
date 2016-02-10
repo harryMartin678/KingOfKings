@@ -136,7 +136,7 @@ public class BuildingModelList {
 	
 	public void drawBuilding(GL2 draw,Building building,int frameX, int frameY){
 		
-		
+		//System.out.println((building == null) + " " + (building.getName() == null) + " buildingModel");
 		BuildingModel model = getBuildingModel(building.getName(),building);
 		if(building.isSite()){
 			
@@ -183,7 +183,6 @@ public class BuildingModelList {
 		draw.glRotatef(model.getAngle(), 0, 1, 0);
 
 		while((next = model.popFace(0,0)) != null){
-			
 			
 			if(building.cantBuild()) 
 				draw.glColor3f(1.0f, 0.0f, 0.0f);
@@ -262,55 +261,113 @@ public class BuildingModelList {
 		
 	}
 	
-	public void drawBuildingIcon(GL2 draw,float x, float y,float z,int frameX,int frameY){
+	public void drawBuildingIcon(GL2 draw,float x, float y,float z,int frameX,int frameY,
+			int food, int gold){
+		
+		//System.out.println(food + " " + gold + " BuildingModelList drawBuildingIcon");
 		
 		Building archTower = new Building(x+2.0f, y - 1.0f, Names.ARCHERYTOWER,-1,0);
+		
+		
+		SetEnoughRes(archTower, gold, food);
+		
 		drawBuildingModel(archeryTower, draw,archTower,
 				WIDTH_CONST,HEIGHT_CONST,z,false,0.3f,frameX,frameY);
 		
 		Building ballisTower = new Building(x + 3.0f, y - 1.0f, Names.BALLISTICTOWER,-1,0);
+		
+		
+		SetEnoughRes(ballisTower, gold, food);
+		
 		drawBuildingModel(ballisticTower, draw,ballisTower,
 				WIDTH_CONST,HEIGHT_CONST,z,false,0.3f,frameX,frameY);
 		
 		Building barr = new Building(x + 4.0f, y - 1.0f, Names.BARRACK,-1,0);
+		
+		
+		SetEnoughRes(barr, gold, food);
+		
 		drawBuildingModel(barrack, draw,barr,
 				WIDTH_CONST,HEIGHT_CONST,z,false,0.3f,frameX,frameY);
 		
 		Building cast = new Building(x + 2.0f, y + 0.5f, Names.CASTLE,-1,0);
+		
+		
+		SetEnoughRes(cast, gold, food);
+		
+		//System.out.println(castBuild.FoodNeeded() + " " + castBuild.GoldNeeded() + " BuildingModelList drawBuildingIcon");
+		
 		drawBuildingModel(castle, draw,cast,
 				WIDTH_CONST,HEIGHT_CONST,z,false,0.3f,frameX,frameY);
 		
 		Building doc = new Building(x + 3.0f, y + 0.30f, Names.DOCK,-1,0);
+		
+		
+		SetEnoughRes(doc, gold, food);
+		
 		drawBuildingModel(dock, draw,doc,
 				WIDTH_CONST,HEIGHT_CONST,z,false,0.3f,frameX,frameY);
 		
 		Building far = new Building(x + 4.0f, y + 0.5f, Names.FARM,-1,0);
+		
+		
+		SetEnoughRes(far, gold, food);
+		
 		drawBuildingModel(farm, draw,far,
 				WIDTH_CONST,HEIGHT_CONST,z,false,0.3f,frameX,frameY);
 		
 		Building fortb = new Building(x + 1.5f, y + 1.5f, Names.FORT,-1,0);
+		
+		SetEnoughRes(fortb, gold, food);
+		
 		drawBuildingModel(fort, draw,fortb,
 				WIDTH_CONST,HEIGHT_CONST,z,false,0.2f,frameX,frameY);
 		
 		Building royalPala = new Building(x + 3.0f, y + 1.75f, Names.ROYALPALACE,-1,0);
+		
+		SetEnoughRes(royalPala, gold, food);
+		
 		drawBuildingModel(royalPalace, draw,royalPala,
 				WIDTH_CONST,HEIGHT_CONST,z,false,0.15f,frameX,frameY);
 		
 		Building stab = new Building(x + 4.0f, y + 1.5f, Names.STABLE,-1,0);
+		
+		SetEnoughRes(stab, gold, food);
+		
 		drawBuildingModel(stable, draw,stab,
 				WIDTH_CONST,HEIGHT_CONST,z,false,0.3f,frameX,frameY);
 		
 		Building stock = new Building(x + 2.0f, y + 3.0f, Names.STOCKPILE,-1,0);
+		
+		SetEnoughRes(stock, gold, food);
+		
 		drawBuildingModel(stockpile, draw,stock,
 				WIDTH_CONST,HEIGHT_CONST,z,false,0.3f,frameX,frameY);
 		
 		Building wal = new Building(x + 3.0f, y + 3.0f, Names.WALL,-1,0);
+		
+		SetEnoughRes(wal, gold, food);
+		
 		drawBuildingModel(wall, draw,wal,
 				WIDTH_CONST,HEIGHT_CONST,z,false,0.4f,frameX,frameY);
 		
 		Building min = new Building(x + 4.0f, y + 3.0f, Names.MINE,-1,0);
+		
+		SetEnoughRes(min, gold, food);
+		
 		drawBuildingModel(mine, draw,min,
 				WIDTH_CONST,HEIGHT_CONST,z,false,0.4f,frameX,frameY);
+	}
+	
+	public static boolean SetEnoughRes(Building building,int gold,int food){
+		
+		Buildings.Building buildingModel = Building.GetBuildingClass(building.getName());
+		if(buildingModel.GoldNeeded() > gold || buildingModel.FoodNeeded() > food){
+			building.NotEnoughResourcesToBuilding();
+			return true;
+		}
+		
+		return false;
 	}
 
 

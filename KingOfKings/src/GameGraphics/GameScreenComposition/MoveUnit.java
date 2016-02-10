@@ -19,20 +19,22 @@ public class MoveUnit {
 	private void singleFollow(int tx,int ty){
 		
 		units.addSelectedUnit(new int[]{tx,ty});
+		
+		//System.out.println(units.getSelectedUnitsSize() + " singleFollow");
 		  
-		  if(units.getSelectedUnitsSize()  == 1){
-			  
-			  units.clearSelectedUnits();
+		if(units.getSelectedUnitsSize()  == 1){
+		  
+			units.clearSelectedUnits();
 
-		  }else{
-			  
-			  int unitFollow = units.getFollowUnit();
-			  int unitNo = units.getFollowUnit();
-			  
-			  units.clearSelectedUnits();
-			  
-			  cmsg.addMessage("utfl " + unitNo + " " + unitFollow);
-		  }
+		}else{
+		  
+			int unitFollow = units.getFollowUnit();
+		  	int unitNo = units.getBaseSelectedUnit();
+		  
+		  	units.clearSelectedUnits();
+		  
+		  	cmsg.addMessage("utfl " + unitNo + " " + unitFollow);
+		}
 	}
 	
 	private void singleAttack(int tx, int ty){
@@ -130,13 +132,15 @@ public class MoveUnit {
 	
 	public void moveUnit(int tx, int ty,boolean fDown,boolean shiftDown){
 
-		
+		//System.out.println(tx + " " + ty + " " + fDown + " " + shiftDown + " "
+			//	+ units.areWayPointSetting() + " moveUnit ");
 		if(units.getSelectedUnitsSize() == 1){
 			
 			if(!units.areWayPointSetting()){
 				
 				if(fDown){
 					 
+					System.out.println("FOLLOW");
 					singleFollow(tx,ty);
 					  
 				  }else{
@@ -156,7 +160,6 @@ public class MoveUnit {
 			if(!units.areWayPointSetting()){
 				
 				if(fDown){
-					 
 					  groupFollow(tx,ty);
 					  
 				  }else{

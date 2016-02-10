@@ -6,4 +6,6 @@ public interface IComFrameProcessDisplay extends IComDisplay {
 	public int getFrameY();
 	public void setFrameX(int frameX);
 	public void setFrameY(int frameY);
+	
+	public void setResources(int food,int gold);
 }

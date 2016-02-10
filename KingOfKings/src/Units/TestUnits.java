@@ -26,19 +26,19 @@ public class TestUnits {
 		rc.setPos(0,100);
 		battle = new Battle(br,rc);
 		
-		//System.out.println(cp.getHealth() + " " + rc.getHealth());
-		battle.similuateHit();
-		//System.out.println(cp.getHealth() + " " + rc.getHealth());
-		battle.similuateHit();
-		//System.out.println(cp.getHealth() + " " + rc.getHealth());
-		battle.similuateHit();
-		//System.out.println(cp.getHealth() + " " + rc.getHealth());
-		battle.similuateHit();
-		//System.out.println(cp.getHealth() + " " + rc.getHealth());
-		battle.similuateHit();
-		//System.out.println(cp.getHealth() + " " + rc.getHealth());
-		battle.similuateHit();
-		//System.out.println(cp.getHealth() + " " + rc.getHealth());
+//		//System.out.println(cp.getHealth() + " " + rc.getHealth());
+//		battle.similuateHit();
+//		//System.out.println(cp.getHealth() + " " + rc.getHealth());
+//		battle.similuateHit();
+//		//System.out.println(cp.getHealth() + " " + rc.getHealth());
+//		battle.similuateHit();
+//		//System.out.println(cp.getHealth() + " " + rc.getHealth());
+//		battle.similuateHit();
+//		//System.out.println(cp.getHealth() + " " + rc.getHealth());
+//		battle.similuateHit();
+//		//System.out.println(cp.getHealth() + " " + rc.getHealth());
+//		battle.similuateHit();
+//		//System.out.println(cp.getHealth() + " " + rc.getHealth());
 		
 		testStatsLc();
 		testStatsRc();

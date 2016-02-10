@@ -1,6 +1,7 @@
 package GameGraphics.GameScreenComposition;
 
 import Buildings.Names;
+import GameGraphics.Unit;
 
 public interface IComUnitListDisplay extends IComUnitList {
 
@@ -18,4 +19,5 @@ public interface IComUnitListDisplay extends IComUnitList {
 //			 	|| units.getUnitByUnitNo(selectedUnits.get(0)).getUnitType().equals(Names.SERVANT))
 	public boolean workSelected();
 	public int getSelectedUnitSize();
+	public Unit getUnitByUnitNo(int unitNo);
 }

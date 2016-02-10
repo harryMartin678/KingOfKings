@@ -1,5 +1,7 @@
 package GameGraphics;
 
+import Buildings.Names;
+
 public class Unit {
 	
 	private float x;
@@ -12,6 +14,7 @@ public class Unit {
 	private int player;
 	private int unitNo;
 	private int angle;
+	private int attackingUnit;
 	
 	public Unit(float x, float y,String unitType, int player, int unitNo){
 		
@@ -24,6 +27,11 @@ public class Unit {
 		this.player = player;
 		this.unitNo = unitNo;
 
+	}
+	
+	public boolean fireArrow(){
+		
+		return (state == 1 && (unitType.equals(Names.ARCHER) || unitType.equals(Names.HEAVYARCHER)));
 	}
 	
 	public void setAngle(int angle){
@@ -86,6 +94,16 @@ public class Unit {
 		moving = false;
 	}
 	
+	public void setAttack(int unitToAttack){
+		
+		this.attackingUnit = unitToAttack;
+	}
+	
+	public int getAttacking(){
+		
+		return this.attackingUnit;
+	}
+	
 	public boolean inUnit(int x, int y){
 		
 		return (((int)this.x) - x) == 0 && (((int)this.y) - y) == 0; 
@@ -111,8 +129,6 @@ public class Unit {
 			else {
 				currentFrame--;
 			}
-			
-		
 			
 		}
 	}

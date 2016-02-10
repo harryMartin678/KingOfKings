@@ -39,6 +39,11 @@ public class AddUnitModule {
 		}
 	}
 	
+	public void setBuilding(Building building){
+		
+		this.building = building;
+	}
+	
 	//not working needs debugging, only shows two sides of a building
 	public int[] getFreeSpace(CollisionMap map,int unitX, int unitY,ArrayList<int[]> taken){
 		

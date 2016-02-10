@@ -78,8 +78,6 @@ public class Communication {
 								}
 								
 							}
-							
-							
 								
 						} catch (IOException e) {
 							// TODO Auto-generated catch block

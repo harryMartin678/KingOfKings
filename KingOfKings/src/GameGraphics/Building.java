@@ -9,6 +9,7 @@ import Buildings.Castle;
 import Buildings.Dock;
 import Buildings.Farm;
 import Buildings.Fort;
+import Buildings.Mine;
 import Buildings.Names;
 import Buildings.RoyalPalace;
 import Buildings.Stable;
@@ -128,15 +129,25 @@ public class Building {
 		
 		Buildings.Building check = GetBuildingClass(getName());
 		
-		int sizeX = check.getSizeX();
-		int sizeY = check.getSizeY();
-		
-		cantBuild = !map.inArea((int)this.x,(int)this.y,sizeX,sizeY);
+		if(!name.equals(Names.MINE)){
+			int sizeX = check.getSizeX();
+			int sizeY = check.getSizeY();
+			
+			cantBuild = !map.inArea((int)this.x,(int)this.y,sizeX,sizeY);
+		}else{
+			//System.out.println(map.getCollisionMap()[(int)this.x][(int)this.y] + " building");
+			cantBuild = !(map.getCollisionMap()[(int)this.x][(int)this.y] == 3);
+		}
 	}
 	
 	public boolean cantBuild(){
 		
 		return this.cantBuild;
+	}
+	
+	public void NotEnoughResourcesToBuilding(){
+		
+		this.cantBuild = true;
 	}
 	
 	public static Buildings.Building GetBuildingClass(String name){
@@ -146,6 +157,7 @@ public class Building {
 	
 	public static Buildings.Building GetBuildingClass(String name,int buildingNo){
 		
+		//System.out.println(name + " Building");
 		Buildings.Building check = null;
 		
 		if(name.equals(Names.ARCHERYTOWER)){
@@ -191,6 +203,10 @@ public class Building {
 		}else if(name.equals(Names.FARM)){
 			
 			check = new Farm(buildingNo);
+		
+		}else if(name.equals(Names.MINE)){
+			
+			check = new Mine(buildingNo);
 		
 		}else if(name.equals(Names.ARCHERYTOWER)){
 			

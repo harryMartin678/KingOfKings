@@ -41,4 +41,16 @@ public class Stockpile extends Resource {
 		// TODO Auto-generated method stub
 		return super.getSizeY()+1;
 	}
+	
+	@Override
+	public int GoldNeeded() {
+		// TODO Auto-generated method stub
+		return super.GoldNeeded() + 600;
+	}
+	
+	@Override
+	public int FoodNeeded() {
+		// TODO Auto-generated method stub
+		return super.FoodNeeded() + 600;
+	}
 }

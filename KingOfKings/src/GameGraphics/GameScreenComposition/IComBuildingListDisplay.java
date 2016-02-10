@@ -11,4 +11,5 @@ public interface IComBuildingListDisplay extends IComBuildingList {
 	public boolean inFrame(int buildingNo,int frameX,int frameY,int FRAME_X_SIZE,int FRAME_Y_SIZE);
 	public boolean isSelectedBuilding(Building building);
 	public Building getSelectedBuilding();
+	public void canBuildThere(CollisionMap collMap);
 }

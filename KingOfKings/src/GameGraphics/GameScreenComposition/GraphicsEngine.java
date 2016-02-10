@@ -48,7 +48,8 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 
 		processFrame = new ProcessFrameThread(cmsg,(IComFrameProcessMap) map,
 				(IComFrameProcessDisplay) display,(IComGameEngineFrameProcess) this,
-				(IComUnitListFrameProcess) units,(IComBuildingListFrameProcess) buildings);
+				(IComUnitListFrameProcess) units,(IComBuildingListFrameProcess) buildings,
+				(IComMouseFrameProcess) mouseKeyboard);
 		
 
 		display.setUpDisplay((IComUnitListDisplay) units, (IComBuildingListDisplay) buildings,
@@ -255,7 +256,6 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				// TODO Auto-generated method stub
-
 				mouseKeyboard.handleMouseClicked(e);
 			}
 
@@ -294,7 +294,6 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				// TODO Auto-generated method stub
-				
 				mouseKeyboard.handleKeyboardPressed(e);
 			}
 
@@ -308,7 +307,6 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
-				
 			}
 			
 			

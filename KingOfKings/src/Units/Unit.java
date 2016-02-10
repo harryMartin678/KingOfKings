@@ -3,6 +3,7 @@ package Units;
 import java.util.ArrayList;
 
 import GameClient.ParseText;
+import Map.CollisionMap;
 
 public class Unit {
 	
@@ -22,6 +23,8 @@ public class Unit {
 	private boolean stop;
 	private int recalculate;
 	
+	private boolean retreat;
+	
 	public static float SPEED_CONSTANT = 200.0f;
 	
 	public Unit(){
@@ -32,6 +35,7 @@ public class Unit {
 		groupSpeed = -1;
 		stop = false;
 		isAttack = false;
+		retreat = false;
 	}
 	
 	public void attack(int ax, int ay){
@@ -53,6 +57,16 @@ public class Unit {
 	public int getUnitNo(){
 		
 		return unitNo;
+	}
+	
+	public void setRetreat(boolean retreat){
+		
+		this.retreat = retreat;
+	}
+	
+	public boolean getRetreat(){
+		
+		return retreat;
 	}
 	
 	public void setUnit(int unitNo){
@@ -197,6 +211,7 @@ public class Unit {
 	
 	public void removeHealth(int hit){
 		
+		//System.out.println(unitNo + " unitNo " + health + " remove health");
 		if(health > hit){
 			health -= hit;
 		}else{
@@ -272,34 +287,42 @@ public class Unit {
 		
 		if(targetX - x > 0 && targetY - y == 0){
 			
+			//System.out.println("90 unit");
 			angle = 90;
 			
 		}else if(targetX - x < 0 && targetY - y == 0){
 			
+			//System.out.println("270 unit");
 			angle = 270;
 		
 		}else if(targetX - x == 0 && targetY - y > 0){
 			
+			//System.out.println("180 unit");
 			angle = 180;
 		
 		}else if(targetX - x == 0 && targetY - y < 0){
 			
+			//System.out.println("0 unit");
 			angle = 0;
 		
 		}else if(targetX - x > 0 && targetY - y < 0){
 			
+			//System.out.println("45 unit");
 			angle = 45;
 		
 		}else if(targetX - x > 0 && targetY - y > 0){
 			
-			angle = 315;
+			//System.out.println("315 unit");
+			angle = 135;
 		
 		}else if(targetX - x < 0 && targetY - y > 0){
 			
+			//System.out.println("225 unit");
 			angle = 225;
 		
 		}else if(targetX - x < 0 && targetY - y < 0){
 			
+			//System.out.println("135 unit");
 			angle = 135;
 		}
 	}
@@ -367,130 +390,165 @@ public class Unit {
 	//gets a unit to follow an path 
 	public void followPath(ArrayList<Unit> units, int ownNo){
 		
-		//if the unit has moved to the final node then stop
-		if(path.size() < 2){
-
-			moving = false;
-			//end of group movement if this is a group movement
-			groupSpeed = -1;
-			
-		}else{
-
-			stop = false;
-			
-			//if there is a unit in front of this unit
-			for(int u = 0; u < units.size(); u++){
+		if(!retreat){
+			//if the unit has moved to the final node then stop
+			if(path.size() < 2){
+	
+				moving = false;
+				//end of group movement if this is a group movement
+				groupSpeed = -1;
 				
-				//ignore itself
-				if(u == ownNo){
-					
-					continue;
-				}
+			}else{
+	
+				stop = false;
 				
-				//don't worry if it's the destination
-				if(path.size() == 0){
+				//if there is a unit in front of this unit
+				for(int u = 0; u < units.size(); u++){
 					
-					moving = false;
-					break;
+					//ignore itself
+					if(u == ownNo){
+						
+						continue;
+					}
 					
-				}
-			
-				//if there is a unit in front of it
-				if(!units.get(u).dead() && path.get(1)[0] ==  ParseText.round(units.get(u).getX())
-						&& path.get(1)[1] == ParseText.round(units.get(u).getY())){
-					
-					if(units.get(u).getMoving()){
+					//don't worry if it's the destination
+					if(path.size() == 0){
 						
-						stop = true;
-						
-					}else{
-						
-						//if it's close to the destination then stop
-						//if(path.size() == 2){
-							
-							//path.clear();
-							//moving = false;
-							
-						//else find another route 
-						//}else{
-							
-							if(u == follow){
-								recalculate = 2;
-							}else{
-								recalculate = 1;
-							}
-						//}
-						
+						moving = false;
+						break;
 						
 					}
-				}
-			}
-			
-			//if the unit hasn't stopped then keep going 
-			if(!stop){
-			
-				//move in the direction of the next node
-				float vectorX = path.get(1)[0] - path.get(0)[0];
-				float vectorY = path.get(1)[1] - path.get(0)[1];
-				
-				float speed;
-				
-				if(groupSpeed == -1){
 					
-					speed = ((float) this.getSpeed()/SPEED_CONSTANT);
-					
-				}else{
-					speed = groupSpeed/SPEED_CONSTANT;
-				}
-				
-				float tempX = x + vectorX * speed;
-				float tempY = y + vectorY * speed;
-				
-				//if the unit is passed the node in either the x or y direction
-				if(Math.abs(tempX-path.get(0)[0]) > Math.abs(path.get(1)[0]-path.get(0)[0])
-						|| Math.abs(tempY-path.get(0)[1]) > 
-								Math.abs(path.get(1)[1]-path.get(0)[1])){
-					
-					//then go to the next node 
-					x = path.get(1)[0];
-					y = path.get(1)[1];
-						
-					//remove the last node to repeat the process
-					path.remove(0);
-					
-					//change the orientation
-					if(path.size() > 1){
-						setOrientation(path.get(0)[0],path.get(0)[1],
-						path.get(1)[0],path.get(1)[1]);
-						
-						//if it's a transtion to another map
-						if(path.get(1)[0] == -1){
+					//if there is a unit in front of it
+					if(!units.get(u).dead() && path.get(1)[0] ==  ParseText.round(units.get(u).getX())
+							&& path.get(1)[1] == ParseText.round(units.get(u).getY())){
+						System.out.println("unit stop " + this.getUnitNo());
+						if(units.get(u).getMoving()){
 							
-							this.map = path.get(1)[1];
+							stop = true;
 							
-							path.remove(1);
-							path.remove(0);
+						}else{
 							
-							x = path.get(0)[0];
-							y = path.get(0)[1];
+							//if it's close to the destination then stop
+							//if(path.size() == 2){
+								
+								//path.clear();
+								//moving = false;
+								
+							//else find another route 
+							//}else{
+								
+								if(u == follow){
+									recalculate = 2;
+								}else{
+									recalculate = 1;
+								}
+							//}
+							
 							
 						}
 					}
-
-				}else{
-	
-					//else just move the unit according to velocity
-					x = tempX;
-					y = tempY;
+				}
+				
+				//if the unit hasn't stopped then keep going 
+				if(!stop){
+				
+					//move in the direction of the next node
+					float vectorX = path.get(1)[0] - path.get(0)[0];
+					float vectorY = path.get(1)[1] - path.get(0)[1];
 					
-					//change the orientation
-					if(path.size() > 1){
-						setOrientation(path.get(0)[0],path.get(0)[1],
-								path.get(1)[0],path.get(1)[1]);
+					float speed;
+					
+					if(groupSpeed == -1){
+						
+						speed = ((float) this.getSpeed()/SPEED_CONSTANT);
+						
+					}else{
+						speed = groupSpeed/SPEED_CONSTANT;
+					}
+					
+					float tempX = x + vectorX * speed;
+					float tempY = y + vectorY * speed;
+					
+					//if the unit is passed the node in either the x or y direction
+					if(Math.abs(tempX-path.get(0)[0]) > Math.abs(path.get(1)[0]-path.get(0)[0])
+							|| Math.abs(tempY-path.get(0)[1]) > 
+									Math.abs(path.get(1)[1]-path.get(0)[1])){
+						
+						//then go to the next node 
+						x = path.get(1)[0];
+						y = path.get(1)[1];
+							
+						//remove the last node to repeat the process
+						path.remove(0);
+						
+						//change the orientation
+						if(path.size() > 1){
+							setOrientation(path.get(0)[0],path.get(0)[1],
+							path.get(1)[0],path.get(1)[1]);
+							
+							//if it's a transtion to another map
+							if(path.get(1)[0] == -1){
+								
+								this.map = path.get(1)[1];
+								
+								path.remove(1);
+								path.remove(0);
+								
+								x = path.get(0)[0];
+								y = path.get(0)[1];
+								
+							}
+						}
+	
+					}else{
+		
+						//else just move the unit according to velocity
+						x = tempX;
+						y = tempY;
+						
+						//change the orientation
+						if(path.size() > 1){
+							setOrientation(path.get(0)[0],path.get(0)[1],
+									path.get(1)[0],path.get(1)[1]);
+						}
 					}
 				}
+	
 			}
-
+		}
+	}
+	
+	public void Retreat(CollisionMap map,float rx,float ry){
+		
+		
+		int[][] areaCanWalk = map.getCollisionMap();
+		float[] directions = new float[]{0,1,0,-1,1,0,-1,0,-1,-1,1,-1,-1,1,1,1};
+		
+		int directionIndex = -1;
+		float distance = Float.MIN_VALUE;
+		
+		for(int d = 0; d < directions.length; d+=2){
+			
+			float tempDist = (float) Math.sqrt(Math.abs(((int)this.getX() + (int)directions[d])-rx)
+					 + Math.abs(((int)this.getY() + (int)directions[d+1]) - ry));
+			
+			if(areaCanWalk[(int)this.getX() + (int)directions[d]][(int)this.getY() + (int)directions[d+1]] == 0
+					&& tempDist > distance){
+				
+				distance = tempDist;
+				directionIndex = d;
+				
+			}
+		}
+		
+		if(directionIndex != -1){
+			float speed = ((float) this.getSpeed()/SPEED_CONSTANT);
+			
+			x = x + directions[directionIndex] * speed;
+			y = y + directions[directionIndex+1] * speed;
+			
+			retreat = true;
 		}
 	}
 
