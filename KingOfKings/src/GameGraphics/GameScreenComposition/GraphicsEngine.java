@@ -44,6 +44,9 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 		units = new UnitList(myPlayerNumber);
 		buildings = new BuildingList();
 		
+		map.SetDisplay((IComMapUpdateDisplayFrame)display);
+		
+		
 		buildings.setClientMessager(cmsg);
 
 		processFrame = new ProcessFrameThread(cmsg,(IComFrameProcessMap) map,
@@ -174,21 +177,23 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 				
 				long startTime = System.currentTimeMillis();
 				
+				units.begin();
+			    //buildings.begin();
 				//deal with mouse input 
 				mouseKeyboard.regulateMouse(display.getFrameX(), display.getFrameY(),
 						display.getFrameXSize(), display.getFrameYSize(), map.getViewedMap());
-				units.begin();
+				//buildings.end();
 				for(int i = 0; i < units.getUnitListSize(); i++){
 					
-					if(i >= units.getUnitListSize()){
-						
-						try {
-							Thread.sleep(1);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
+//					if(i >= units.getUnitListSize()){
+//						
+//						try {
+//							Thread.sleep(1);
+//						} catch (InterruptedException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+//					}
 					
 					units.changeCurrentFrame(i);
 				}

@@ -136,10 +136,11 @@ public class MethodParameter {
 		this.unitNos = unitNos;
 	}
 	
-	public void setAddUnitToBuildQueue(int buildingNo, String unitType){
+	public void setAddUnitToBuildQueue(int buildingNo, String unitType,int player){
 		
 		this.buildingNo = buildingNo;
 		this.unitType = unitType;
+		this.player = player;
 	}
 	
 	public void setNewViewMap(int mapNo,int player){

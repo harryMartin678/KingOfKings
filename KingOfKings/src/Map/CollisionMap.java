@@ -126,6 +126,7 @@ public class CollisionMap {
 					continue;
 				}
 				
+				
 				for(int b = 0; b < buildings.getBuildingsSize(); b++){
 					
 					if(buildings.inBuilding(x, y, b)){

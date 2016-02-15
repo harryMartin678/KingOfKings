@@ -22,7 +22,7 @@ import Map.CollisionMap;
 import Map.Map;
 import Map.MapList;
 
-public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard {
+public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard,IComMapUpdateDisplayFrame {
 
 	private IComUnitListDisplay units;
 	private IComBuildingListDisplay buildings;
@@ -65,7 +65,6 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 		
 		menus = new DisplayMenus(FRAME_X_SIZE/HEIGHT_CONST,FRAME_Y_SIZE/WIDTH_CONST,scaleFactor,
 				units,buildings,buildingModels,unitModels,map,FRAME_X_SIZE,FRAME_Y_SIZE,playerNumber);
-		System.out.println("loaded graphics");
 		
 	}
 	
@@ -189,7 +188,9 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    
 	    
 	    if(buildings.isBuildingGhost()){
+	    	//System.out.println(buildings.isBuildingGhost() + " before coll map display");
 	    	CollisionMap collMap = new CollisionMap(buildings,units,map.getMap());
+	    	//System.out.println(buildings.isBuildingGhost() + " after coll map display");
 	    	//map.printCollisionMap((int)buildingSelection.getX(),(int)buildingSelection.getY());
 	    	buildings.canBuildThere(collMap);
 	    	buildings.canBuildGhost(collMap);
@@ -494,6 +495,33 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 		// TODO Auto-generated method stub
 		this.food = food;
 		this.gold = gold;
+	}
+
+	@Override
+	public void setFrameXAdjusted(int x) {
+		// TODO Auto-generated method stub
+		if(x - FRAME_X_SIZE > 0){
+			
+			this.frameX = x - FRAME_X_SIZE/2;
+			
+		}else{
+			
+			this.frameX = 0;
+		}
+		
+	}
+
+	@Override
+	public void setFrameYAdjusted(int y) {
+		// TODO Auto-generated method stub
+		if(y - FRAME_Y_SIZE > 0){
+			
+			this.frameY = y - FRAME_Y_SIZE/2;
+			
+		}else{
+			
+			this.frameY = 0;
+		}
 	}
 	
 	

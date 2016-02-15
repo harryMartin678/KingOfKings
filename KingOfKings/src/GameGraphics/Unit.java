@@ -26,6 +26,7 @@ public class Unit {
 		this.unitType = unitType;
 		this.player = player;
 		this.unitNo = unitNo;
+		this.attackingUnit = -1;
 
 	}
 	

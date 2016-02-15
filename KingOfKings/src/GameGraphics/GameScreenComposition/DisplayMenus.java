@@ -79,7 +79,7 @@ public class DisplayMenus {
 		
 		drawBuildingIcons(-15.25f,-4.5f,-18.0f,draw,frameX,frameY,food,gold);
 		drawUnitIcons(-15.45f,-4.5f,-18.0f,draw,playerNumber,
-				buildings.getSelectedBuilding());
+				buildings.getSelectedBuilding(),food,gold);
 		//bottom panel
 		drawMenuQuad(draw,-15.25f,-4.5f, -19.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 3.0f);
 		
@@ -89,10 +89,14 @@ public class DisplayMenus {
 	private void drawBuildingIcons(float x, float y,float z, GL2 draw,
 			int frameX,int frameY,int food,int gold){
 		
+		units.begin();
+		buildings.begin();
 		if(units.workSelected()){
 			
 			buildingModels.drawBuildingIcon(draw, x, y, z, frameX, frameY,food,gold);
 		}
+		units.end();
+		buildings.end();
 	}
 	
 	private void drawRightPanel(GL2 draw,int frameX, int frameY){
@@ -314,15 +318,18 @@ public class DisplayMenus {
 	
 		
 		public void drawUnitIcons(float x, float y,float z, GL2 draw,
-				int playerNumber,Building SelectedBuilding){
+				int playerNumber,Building SelectedBuilding,int food,int gold){
 			
+				
 				if(SelectedBuilding != null && Building.GetBuildingClass(SelectedBuilding.getName())
 						instanceof UnitCreator){
 //					float offsetX = 1.75f;
 //					float offsetY = 2.7f;
 					drawMenuQuad(draw,-13.52f,-5.2f, -18.0f,0.5f, 0.0f, 0.5f,1.75f,1.5f, 1.5f);
+					units.begin();
 					unitModels.drawBuildingUnitIcons(x, y, z, draw, 
-							playerNumber, SelectedBuilding);
+							playerNumber, SelectedBuilding,food,gold);
+					units.end();
 					drawMenuQuad(draw,-13.52f,-2.85f, -18.0f,1.0f, 0.84f, 0.0f,1.75f,1.5f, 1.5f);
 					buildings.begin();
 					unitModels.drawBuildingQueue(x + 2.0f,y,z,draw,SelectedBuilding,playerNumber);

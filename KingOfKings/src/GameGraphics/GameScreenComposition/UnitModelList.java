@@ -88,6 +88,7 @@ public class UnitModelList {
 	
 	public void addArrow(float startX,float startY,float targetX, float targetY,int unitNo){
 		
+		System.out.println(unitNo + " UnitModeList");
 		arrowAnim.add(new ArrowAnimation(startX, startY, targetX, targetY,unitNo));
 	}
 	
@@ -119,11 +120,14 @@ public class UnitModelList {
 	
 	public void drawArrows(GL2 draw,int frameX, int frameY){
 		
+		//(Model model, GL2 draw, Unit unit,float width, float height
+				//,int frameX, int frameY,float z,float extraScalefactor,boolean cantAfford)
+		//System.out.println("arrow  ArrowAnimation");
 		for(int a = 0; a < arrowAnim.size(); a++){
 			Unit info = new Unit(arrowAnim.get(a).getArrowX(),arrowAnim.get(a).getArrowY(),"Arrow",
 					1,0);
 			info.setAngle(arrowAnim.get(a).getAngle());
-			drawModel(arrow,draw,info,WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
+			drawModel(arrow,draw,info,WIDTH_CONST,HEIGHT_CONST,frameX,frameY,-33.0f,0.5f,false);
 		}
 	}
 	
@@ -198,18 +202,24 @@ public class UnitModelList {
 	public void drawModel(Model model, GL2 draw, Unit unit,float width, float height
 			,int frameX, int frameY){
 		
-		drawModel(model,draw,unit,width,height,frameX,frameY,-35.0f,1.0f);
+		drawModel(model,draw,unit,width,height,frameX,frameY,-35.0f,1.0f,false);
 	}
 	
 	//used for drawing the unit models for adding units to a buidling's unit queue 
 	public void drawModel(Model model, GL2 draw, Unit unit,
 			float z){
 		
-		drawModel(model,draw,unit,0,0,0,0,z,0.5f);
+		drawModel(model,draw,unit,0,0,0,0,z,0.5f,false);
+	}
+	
+	public void drawModel(Model model, GL2 draw, Unit unit,
+			float z,boolean cantAfford){
+		
+		drawModel(model,draw,unit,0,0,0,0,z,0.5f,cantAfford);
 	}
 	
 	public void drawModel(Model model, GL2 draw, Unit unit,float width, float height
-			,int frameX, int frameY,float z,float extraScalefactor){
+			,int frameX, int frameY,float z,float extraScalefactor,boolean cantAfford){
 		
 		Face next;
 
@@ -234,7 +244,11 @@ public class UnitModelList {
 			
 			float[] check = colour.getDiffuse();
 			//if a indicate colour is since then substitute the player's colour 
-			if(check[0] == 0.098400f && check[1] == 0.098400f && check[2] == 0.098400f){
+			if(cantAfford){
+				
+				draw.glColor3fv(FloatBuffer.wrap(new float[]{1.0f,0.0f,0.0f}));
+				
+			}else if(check[0] == 0.098400f && check[1] == 0.098400f && check[2] == 0.098400f){
 				
 				draw.glColor3fv(Display.getPlayerColour(unit.getPlayer()));
 				
@@ -269,7 +283,7 @@ public class UnitModelList {
 	}
 	
 	public void drawBuildingUnitIcons(float x, float y,float z
-			,GL2 draw,int playerNumber,Building SelectedBuilding){
+			,GL2 draw,int playerNumber,Building SelectedBuilding,int food,int gold){
 		
 		UnitCreator type = (UnitCreator) Building.GetBuildingClass(SelectedBuilding.getName());
 		
@@ -290,7 +304,15 @@ public class UnitModelList {
 				
 				Unit unit = new Unit((float)x + offsetX,(float)y + offsetY,unitModels[u].getName(),
 						playerNumber,0);
-				drawModel(unitModels[u],draw,unit,z);
+				Units.Unit unitDes = Units.Unit.GetUnit(unitModels[u].getName());
+				boolean cantAfford = false;
+				
+				if(unitDes.goldNeeded() > gold && unitDes.foodNeeded() > food){
+					
+					cantAfford = true;
+				}
+				
+				drawModel(unitModels[u],draw,unit,z,cantAfford);
 				
 				offsetX += 1.0f;
 				offsetY -= 1.5f;
@@ -326,7 +348,7 @@ public class UnitModelList {
 		for(int uy = 0; uy < 4; uy++){
 			for(int ux = 0; ux < 5; ux++){
 				
-				if(queueNo >= selectedBuilding.getSize()-1){
+				if(queueNo >= selectedBuilding.getSize()){
 					
 					break outerLoop;
 				}

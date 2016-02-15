@@ -30,5 +30,17 @@ public class BallistaTower extends Tower {
 		// TODO Auto-generated method stub
 		return super.getBuildTime()+30;
 	}
+	
+	@Override
+	public int getSizeX() {
+		// TODO Auto-generated method stub
+		return super.getSizeX()+1;
+	}
+	
+	@Override
+	public int getSizeY() {
+		// TODO Auto-generated method stub
+		return super.getSizeY()+1;
+	}
 
 }

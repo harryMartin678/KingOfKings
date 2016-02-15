@@ -24,4 +24,16 @@ public class Farm extends Resource {
 		// TODO Auto-generated method stub
 		return super.getBuildTime()+10;
 	}
+	
+	@Override
+	public int getSizeX() {
+		// TODO Auto-generated method stub
+		return super.getSizeX() + 2;
+	}
+	
+	@Override
+	public int getSizeY() {
+		// TODO Auto-generated method stub
+		return super.getSizeY() + 2;
+	}
 }

@@ -109,13 +109,16 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 		    		  
 		    	  }else if(buildings.isBuildingGhost() && buildings.canBuildGhostBuilding()){
 		    		  
+		    		  //buildings.begin();
 		    		  System.out.println(units.getUnitsSelectedString() + " MouseKeyboard");
 		    		  cmsg.addMessage("bb " + buildings.getGhostBuildingX() + " " + buildings.getGhostBuildingY()
 		    				   + " " + viewedMap + " " + units.getUnitsSelectedString() 
 		    				   + buildings.getGhostBuildingName() );
 		    		  
+		    		  
 		    		  buildings.removeGhostBuilding();
 		    		  buildings.endGhostBuildingSession();
+		    		 // buildings.end();
 		    	  
 		    	  }else{
 		    	  
@@ -190,7 +193,7 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 			
 			}else if(buildings.isBuildingSelected()){
 				
-				selectUnitIcons(x,y);
+				selectUnitIcons(x,y,food,gold);
 			}
 			return true;
 		}
@@ -226,7 +229,7 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 		
 	}
 	
-	private void selectUnitIcons(double x, double y){
+	private void selectUnitIcons(double x, double y,int food, int gold){
 //		0.012445095168374817 0.5843971631205673
 //		0.05197657393850659 0.6425531914893617
 		
@@ -239,7 +242,7 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 						0.05197657393850659 + (0.0395314787701317*xs),
 						0.6425531914893617 + (0.0581560283687944*ys),x,y)){
 					
-					buildings.unitIconSelected(xs + (ys*3));
+					buildings.unitIconSelected(xs + (ys*3),food,gold);
 				}
 			}
 		}

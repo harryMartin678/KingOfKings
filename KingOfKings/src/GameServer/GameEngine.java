@@ -228,7 +228,7 @@ public class GameEngine{
 				
 				MethodParameter parameters = new MethodParameter();
 				parameters.setUnitFollow(com[0], com[1]);
-				System.out.println(parameters.unitNo + "  " + parameters.unitFollow);
+				//System.out.println(parameters.unitNo + "  " + parameters.unitFollow);
 				commands.add(MethodCallup.FOLLOWUNIT, parameters, communicationTurn);
 				//this.followUnit(com[0], com[1]);
 			}
@@ -267,7 +267,7 @@ public class GameEngine{
 						
 						if(context.units.getMoving(unitFollow)){
 							
-							System.out.println("RE Follow " + unitFollow);
+							//System.out.println("RE Follow " + unitFollow);
 							MethodParameter parameters = new MethodParameter();
 //							parameters.SetMoveUnit(f, (int) context.units.getUnitX(unitFollow),
 //									(int) context.units.getUnitY(unitFollow), context.units.getUnitMap(unitFollow),
@@ -714,7 +714,7 @@ public class GameEngine{
 		
 	}
 
-	public void parseAddUnitToQueue(String inpt, int p,int passedCommunicationTurn) {
+	public void parseAddUnitToQueue(String inpt, int player,int passedCommunicationTurn) {
 		// TODO Auto-generated method stub
 		ParseText text = new ParseText(inpt);
 		ArrayList<String> numbers = text.getNumbers();
@@ -723,7 +723,7 @@ public class GameEngine{
 		//System.out.println("enter add unit to queue " + unitType);
 		
 		MethodParameter parameters = new MethodParameter();
-		parameters.setAddUnitToBuildQueue(new Integer(numbers.get(0)).intValue(), unitType);
+		parameters.setAddUnitToBuildQueue(new Integer(numbers.get(0)).intValue(), unitType,player);
 		
 		if(passedCommunicationTurn != -1){
 			commands.add(MethodCallup.ADDUNITTOBUILDINGQUEUE, parameters, communicationTurn);

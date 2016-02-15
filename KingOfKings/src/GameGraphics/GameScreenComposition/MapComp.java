@@ -9,18 +9,30 @@ public class MapComp implements IComMapMouseKeyboard, IComMapDisplay, IComFrameP
 	private int viewedMap;
 	private MapList maps;
 	private int[][] lastMapFrames;
+	private boolean firstTimeViewedMapSet;
+	private IComMapUpdateDisplayFrame display;
 	
 	//load.get(0)
 	public MapComp(String loadMapList){
 		
 		maps = new MapList(loadMapList);
 		
-		lastMapFrames = new int[maps.getSize()][3];
+		firstTimeViewedMapSet = true;
 		
+		lastMapFrames = new int[maps.getSize()][3];
+
 		for(int m = 0; m < lastMapFrames.length; m++){
 			
 			lastMapFrames[m][0] = m;
+			lastMapFrames[m][1] = maps.getMapWidth(m)/2;
+			lastMapFrames[m][2] = maps.getMapHeight(m)/2;
+			//System.out.println(m + " " + lastMapFrames[m][0] + " mapComp");
 		}
+	}
+	
+	public void SetDisplay(IComMapUpdateDisplayFrame display){
+		
+		this.display = display;
 	}
 
 	@Override
@@ -89,8 +101,19 @@ public class MapComp implements IComMapMouseKeyboard, IComMapDisplay, IComFrameP
 	@Override
 	public void setViewedMap(int viewedMap) {
 		// TODO Auto-generated method stub
+		
+		//System.out.println("Set ViewedMap MapComp " + viewedMap);
+		
 		this.viewedMap = viewedMap;
 		map = maps.getMap(viewedMap);
+		
+		if(firstTimeViewedMapSet){
+			
+			display.setFrameXAdjusted(map.getWidth()/2);
+			display.setFrameYAdjusted(map.getHeight()/2);
+			
+			firstTimeViewedMapSet = false;
+		}
 	}
 
 	@Override

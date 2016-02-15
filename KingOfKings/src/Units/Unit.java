@@ -2,6 +2,7 @@ package Units;
 
 import java.util.ArrayList;
 
+import Buildings.Names;
 import GameClient.ParseText;
 import Map.CollisionMap;
 
@@ -551,11 +552,84 @@ public class Unit {
 			retreat = true;
 		}
 	}
+	
+	public int goldNeeded(){
+		
+		return 0;
+	}
+	
+	public int foodNeeded(){
+		
+		return 0;
+	}
 
 
 	public boolean getStop() {
 		// TODO Auto-generated method stub
 		return stop;
+	}
+	
+	public static Unit GetUnit(String name){
+		
+		if(Names.ARCHER.equals(name)){
+			
+			return new Archer();
+			
+		}else if(Names.AXEMAN.equals(name)){
+			
+			return new Axeman();
+			
+		}else if(Names.FISHINGBOAT.equals(name)){
+			
+			return new FishingBoat();
+			
+		}else if(Names.FLAGSHIP.equals(name)){
+			
+			return new Flagship();
+			
+		}else if(Names.HEAVYARCHER.equals(name)){
+			
+			return new HeavyArcher();
+			
+		}else if(Names.BATTERINGRAM.equals(name)){
+		
+			return new BatteringRam();
+			
+		}else if(Names.HEAVYBATTERINGRAM.equals(name)){
+			
+			return new HeavyBatteringRam();
+			
+		}else if(Names.HEAVYCHARIOT.equals(name)){
+			
+			return new HeavyChariot();
+			
+		}else if(Names.LIGHTCHARIOT.equals(name)){
+			
+			return new LightChariot();
+			
+		}else if(Names.SERVANT.equals(name)){
+			
+			return new Servant();
+			
+		}else if(Names.SLAVE.equals(name)){
+			
+			return new Slave();
+			
+		}else if(Names.SPEARMAN.equals(name)){
+			
+			return new Spearman();
+			
+		}else if(Names.SWORDSMAN.equals(name)){
+			
+			return new Swordsman();
+			
+		}else if(Names.WARSHIP.equals(name)){
+			
+			return new Warship();
+			
+		}
+		
+		return new Unit();
 	}
 	
 

@@ -116,7 +116,7 @@ IComBuildingListFrameProcess {
 	@Override
 	public boolean canBuildGhost(CollisionMap map) {
 		// TODO Auto-generated method stub
-		return !ghostBuilding.cantBuild();
+		return (ghostBuilding != null && !ghostBuilding.cantBuild());
 	}
 
 	@Override
@@ -193,7 +193,7 @@ IComBuildingListFrameProcess {
 	
 	public int setSelectedBuilding(int clickX, int clickY, int playerNumber){
 		
-		this.begin();
+		//this.begin();
 		for(int b = 0; b < buildings.size(); b++){
 			
 			Buildings.Building type = Building.GetBuildingClass(buildings.get(b).getName());
@@ -218,7 +218,7 @@ IComBuildingListFrameProcess {
 				
 			}
 		}
-		this.end();
+		//this.end();
 		return 0;
 	}
 
@@ -248,12 +248,14 @@ IComBuildingListFrameProcess {
 
 	//handle the selection of units to be added to the queue
 	@Override
-	public void unitIconSelected(int selected) {
+	public void unitIconSelected(int selected,int food,int gold) {
 		// TODO Auto-generated method stub
 		UnitCreator type = (UnitCreator) Building.GetBuildingClass(SelectedBuilding.getName());
 		String[] listOfUnits = type.unitcreated().split(":");
 		
-		if(selected < listOfUnits.length){
+		Units.Unit unitDes = Units.Unit.GetUnit(listOfUnits[selected]);
+		
+		if(selected < listOfUnits.length && unitDes.goldNeeded() <= gold && unitDes.foodNeeded() <= food){
 			
 			cmsgs.addMessage("auq " + SelectedBuilding.getBuildingNo() + " " + listOfUnits[selected]);
 		}
@@ -293,6 +295,9 @@ IComBuildingListFrameProcess {
 		// TODO Auto-generated method stub
 		if(isBuildingGhost()){
 			ghostBuilding.CanBuildThere(collMap);
+		}else{
+			
+			System.out.println("NULL GHOSTBUILDING buildingList");
 		}
 	}
 

@@ -24,4 +24,16 @@ public class Dock extends Naval{
 		// TODO Auto-generated method stub
 		return super.getBuildTime()+30;
 	}
+	
+	@Override
+	public int getSizeX() {
+		// TODO Auto-generated method stub
+		return super.getSizeX()+2;
+	}
+	
+	@Override
+	public int getSizeY() {
+		// TODO Auto-generated method stub
+		return super.getSizeY()+2;
+	}
 }

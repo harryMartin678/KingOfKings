@@ -31,7 +31,8 @@ public class ArrowAnimation {
 	
 	public boolean finished(){
 		
-		return (arrowX >= targetX && arrowY >= targetY);
+		return (arrowX > targetX - 0.1 && arrowX < targetX + 0.1 && 
+					arrowY > targetY - 0.1 && arrowY < targetY + 0.1);
 	}
 	
 	public boolean isUnitsArrow(int unitNo){
@@ -44,6 +45,8 @@ public class ArrowAnimation {
 		
 		arrowX += speed;
 		arrowY += speed;
+		
+		//System.out.println(targetX + " " + targetY + " " + arrowX + " " + arrowY + " AnimationArrow");
 		
 		if(targetX - arrowX < speed || targetY - arrowY < speed){
 			
@@ -72,31 +75,31 @@ public class ArrowAnimation {
 			
 		}else if(targetX - startX < 0 && targetY - startY == 0){
 			
-			angle = 270;
+			angle = 180;
 		
 		}else if(targetX - startX == 0 && targetY - startY > 0){
 			
-			angle = 180;
+			angle = 90;
 		
 		}else if(targetX - startX == 0 && targetY - startY < 0){
 			
-			angle = 0;
+			angle = 270;
 		
 		}else if(targetX - startX > 0 && targetY - startY < 0){
 			
-			angle = 45;
+			angle = 315;
 		
 		}else if(targetX - startX > 0 && targetY - startY > 0){
 			
-			angle = 315;
+			angle = 45;
 		
 		}else if(targetX - startX < 0 && targetY - startY > 0){
 			
-			angle = 225;
+			angle = 135;
 		
 		}else if(targetX - startX < 0 && targetY - startY < 0){
 			
-			angle = 135;
+			angle = 225;
 		}
 		
 		return angle;

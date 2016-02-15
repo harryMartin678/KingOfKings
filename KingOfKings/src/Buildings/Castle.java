@@ -36,5 +36,17 @@ public class Castle extends Fort {
 		// TODO Auto-generated method stub
 		return super.unitcreated() + "batteringram;heavybatteringram";
 	}
+	
+	@Override
+	public int getSizeX() {
+		// TODO Auto-generated method stub
+		return super.getSizeX()+3;
+	}
+	
+	@Override
+	public int getSizeY() {
+		// TODO Auto-generated method stub
+		return super.getSizeY()+3;
+	}
 
 }

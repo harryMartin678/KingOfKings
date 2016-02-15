@@ -16,6 +16,8 @@ public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,I
 	private int myPlayerNumber;
 	private boolean wayPointSetting;
 	
+	//private Thread currentThread;
+	
 	public UnitList(int myPlayerNumber){
 		
 		units = new ArrayList<Unit>();
@@ -34,7 +36,8 @@ public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,I
 	
 	public void begin(){
 		
-		while(used){
+		//boolean alreadyHaveUnits = Thread.currentThread() == currentThread;
+		while(used){ //&& !alreadyHaveUnits){
 			
 			try {
 				Thread.sleep(2);
@@ -43,6 +46,8 @@ public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,I
 				e.printStackTrace();
 			}
 		}
+		
+		//currentThread = Thread.currentThread();
 		
 		used = true;
 	}
@@ -101,6 +106,7 @@ public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,I
 	public void end(){
 		
 		used = false;
+		//currentThread = null;
 	}
 
 	@Override
@@ -112,7 +118,24 @@ public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,I
 	@Override
 	public boolean checkInUnit(int x, int y,int unitNo) {
 		// TODO Auto-generated method stub
-		return units.get(unitNo).inUnit(x,y);
+		//System.out.println(units + " UnitList");
+		//System.out.println(units.get(unitNo) + " UnitList");
+		
+//		if(units.get(unitNo) == null){
+//			
+//			System.out.println("units.get(unitNos) is null unitlist graphics");
+//		}
+		
+//		try {
+//			Thread.sleep(2);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+		//hack to solve a thread currency issue
+		if(units.get(unitNo) != null){
+			return units.get(unitNo).inUnit(x,y);
+		}
+		return true;
 	}
 
 	@Override

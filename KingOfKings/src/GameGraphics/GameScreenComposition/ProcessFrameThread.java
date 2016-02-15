@@ -148,16 +148,21 @@ public class ProcessFrameThread {
 		if(msgs.get(index).length() < 3){
 			//bug here
 			viewedMap = new Integer(msgs.get(index)).intValue();
-	
+			int lastViewedMap = map.getViewedMap();
 			
-			if(map.getViewedMap() != viewedMap){
+			if(lastViewedMap != viewedMap){
 				
 				map.setLastMapFrames(display.getFrameX(),display.getFrameY());
+			}
+			
+			map.setViewedMap(viewedMap);
+			
+			if(lastViewedMap != viewedMap){
+				
 				display.setFrameX(map.getLastMapFramesX());
 				display.setFrameY(map.getLastMapFrameY());
 			}
 			
-			map.setViewedMap(viewedMap);
 			index++;
 		}else{
 			

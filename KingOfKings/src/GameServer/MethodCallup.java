@@ -121,7 +121,7 @@ public class MethodCallup implements Commands {
 			
 		}else if(methodName.equals(ADDUNITTOBUILDINGQUEUE)){
 			
-			this.addUnitToBuildingQueue(parameters.buildingNo,parameters.unitType);
+			this.addUnitToBuildingQueue(parameters.buildingNo,parameters.unitType,parameters.player);
 			
 		}else if(methodName.equals(REMOVEUNITFROMBUIDLINGQUEUE)){
 			
@@ -415,8 +415,11 @@ public class MethodCallup implements Commands {
 	}
 
 	@Override
-	public void addUnitToBuildingQueue(int buildingNo, String unitType) {
+	public void addUnitToBuildingQueue(int buildingNo, String unitType,int player) {
 		// TODO Auto-generated method stub
+		Units.Unit unitDes = Units.Unit.GetUnit(unitType);
+		//System.out.println("AddUnitToBuildingQueue");
+		context.players.addPlayerResource(-unitDes.foodNeeded(), -unitDes.goldNeeded(), player);
 		context.buildings.addUnitToBuildingQueue(buildingNo, unitType);
 	}
 

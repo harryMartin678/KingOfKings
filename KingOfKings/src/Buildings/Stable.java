@@ -30,4 +30,16 @@ public class Stable extends Army {
 		// TODO Auto-generated method stub
 		return super.unitcreated() + "lightchariot;heavychariot";
 	}
+	
+	@Override
+	public int getSizeX() {
+		// TODO Auto-generated method stub
+		return super.getSizeX()+2;
+	}
+	
+	@Override
+	public int getSizeY() {
+		// TODO Auto-generated method stub
+		return super.getSizeY()+2;
+	}
 }
