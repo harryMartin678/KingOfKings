@@ -118,8 +118,7 @@ public class Building {
 		
 		
 		Buildings.Building check = GetBuildingClass(getName());
-		
-		check.setPos((int) this.x, (int) this.y);
+		check.setPos(Math.round(this.x), Math.round(this.y));
 		
 		return check.inBuilding(x, y);
 		

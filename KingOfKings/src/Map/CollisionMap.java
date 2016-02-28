@@ -44,7 +44,7 @@ public class CollisionMap {
 		for(int y = 0; y < collisionMap.length; y++){
 			for(int x = 0; x < collisionMap[0].length; x++){
 				
-				collisionMap[y][x] = array[x][y];
+				collisionMap[x][y] = array[x][y];
 			}
 		}
 	}

@@ -86,7 +86,7 @@ public class MapComp implements IComMapMouseKeyboard, IComMapDisplay, IComFrameP
 			return -1;
 		}
 		
-		return map.getTile(x, y);
+		return map.getTile(x,y);
 	}
 
 	@Override

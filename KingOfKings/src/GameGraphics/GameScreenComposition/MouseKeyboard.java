@@ -86,7 +86,7 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 		    		  int outcome;
 		    		  if((outcome = buildings.setSelectedBuilding(click[0], click[1],this.playerNumber)) == 0){
 		    			  
-		    			System.out.println(units.getSelectedUnitsSize() + " regulateMouse");
+		    			//System.out.println(units.getSelectedUnitsSize() + " regulateMouse");
 		    		  	move.moveUnit(click[0],click[1],fDown,shiftDown);
 		    		  	buildings.clearSelectedBuilding();
 		    		  
@@ -110,7 +110,7 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 		    	  }else if(buildings.isBuildingGhost() && buildings.canBuildGhostBuilding()){
 		    		  
 		    		  //buildings.begin();
-		    		  System.out.println(units.getUnitsSelectedString() + " MouseKeyboard");
+		    		 // System.out.println(units.getUnitsSelectedString() + " MouseKeyboard");
 		    		  cmsg.addMessage("bb " + buildings.getGhostBuildingX() + " " + buildings.getGhostBuildingY()
 		    				   + " " + viewedMap + " " + units.getUnitsSelectedString() 
 		    				   + buildings.getGhostBuildingName() );

@@ -11,11 +11,12 @@ public class Model {
 	protected ArrayList<Frame> deathFrames;
 	protected int shapeNo;
 	protected int currentIndex;
-	private boolean moving;
 	protected float sizeX;
 	protected float sizeY;
 	protected float sizeZ;
 	protected float angle;
+	protected float transX;
+	protected float transY;
 	protected String name;
 	
 	public Model(String filename, String folder, int noOfFrames, int modelType) throws IOException{
@@ -25,13 +26,15 @@ public class Model {
 		deathFrames = new ArrayList<Frame>();
 		shapeNo = 0;
 		currentIndex = -1;
-		moving = false;
 		name = filename;
 		
 		sizeX = 0.2f;
 		sizeY = 0.2f;
 		sizeZ = 0.2f;
 		angle = 0.0f;
+		
+		transX = 0.0f;
+		transY = 0.0f;
 		
 		if(modelType == 0 || modelType == 1){
 			//load all of the model's moving frames 
@@ -65,6 +68,12 @@ public class Model {
 		return name;
 	}
 	
+	public void setTrans(float x,float y){
+		
+		this.transX = x;
+		this.transY = y;
+	}
+	
 	public void setSize(float sizeX, float sizeY, float sizeZ){
 		
 		this.sizeX = sizeX;
@@ -85,6 +94,16 @@ public class Model {
 	public float sizeZ(){
 		
 		return sizeZ;
+	}
+	
+	public float getTransX(){
+		
+		return transX;
+	}
+	
+	public float getTransY(){
+		
+		return transY;
 	}
 	
 	public void setAngle(float angle){

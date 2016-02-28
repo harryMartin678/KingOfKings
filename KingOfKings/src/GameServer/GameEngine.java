@@ -83,15 +83,17 @@ public class GameEngine{
 		for(int i = 0; i < context.maps.getSize(); i++){
 			
 			context.buildings.addBuilding(context.maps.getPlayer(i), i, 
-					context.maps.getMapWidth(i)/2, context.maps.getMapHeight(i)/2, 0);
+					context.maps.getMapWidth(i)/2, context.maps.getMapHeight(i)/2, Names.ROYALPALACE);
 			context.buildings.addBuilding(context.maps.getPlayer(i), i, 
-					(context.maps.getMapWidth(i)/2)+4, (context.maps.getMapHeight(i)/2)+4, 1);
-			context.buildings.addBuilding(3,i,3,3,1);
+					(context.maps.getMapWidth(i)/2)+6, (context.maps.getMapHeight(i)/2)+6, Names.STOCKPILE);
+			context.buildings.addBuilding(1,i,3,3,Names.STOCKPILE);
+//			context.buildings.addBuilding(1,i,(context.maps.getMapWidth(i)/2),
+//					(context.maps.getMapHeight(i)/2),Names.MINE);
 			
-			context.units.addUnit(Names.ARCHER, i, (context.maps.getMapWidth(i)/2)-4, (context.maps.getMapHeight(i)/2)-4, context.maps.getPlayer(i));
-			context.units.addUnit(Names.SLAVE, i, (context.maps.getMapWidth(i)/2)-3, (context.maps.getMapHeight(i)/2)-3, context.maps.getPlayer(i));
-			context.units.addUnit(Names.AXEMAN, i, (context.maps.getMapWidth(i)/2)+7, (context.maps.getMapHeight(i)/2)+7, 2);
-			context.units.addUnit(Names.SLAVE, i, (context.maps.getMapWidth(i)/2)-4, (context.maps.getMapHeight(i)/2)-2, context.maps.getPlayer(i));
+			context.units.addUnit(Names.ARCHER, i, (context.maps.getMapWidth(i)/2)-6, (context.maps.getMapHeight(i)/2)-4, context.maps.getPlayer(i));
+			context.units.addUnit(Names.SLAVE, i, (context.maps.getMapWidth(i)/2)-5, (context.maps.getMapHeight(i)/2)-3, context.maps.getPlayer(i));
+			context.units.addUnit(Names.AXEMAN, i, (context.maps.getMapWidth(i)/2)+9, (context.maps.getMapHeight(i)/2)+7, 2);
+			context.units.addUnit(Names.SLAVE, i, (context.maps.getMapWidth(i)/2)-6, (context.maps.getMapHeight(i)/2)-2, context.maps.getPlayer(i));
 		}
 
 		
@@ -243,12 +245,12 @@ public class GameEngine{
 				
 				for(int b = 0; b < context.buildings.getBuildingsSize(); b++){
 	
-					if(context.buildings.getBuildingType(b).equals("mine")){
+					if(context.buildings.getBuildingType(b).equals(Names.MINE)){
 						
 						playersGold[context.buildings.getBuildingPlayer(b)]++;
 					
-					}else if(context.buildings.getBuildingType(b).equals("farm")){
-						
+					}else if(context.buildings.getBuildingType(b).equals(Names.FARM)){
+
 						playersFood[context.buildings.getBuildingPlayer(b)]++;
 					}
 				}
@@ -512,9 +514,16 @@ public class GameEngine{
 			targetY[t/3] = new Integer(numbers.get(t+1)).intValue();
 			targetMap[t/3] = new Integer(numbers.get(t+2)).intValue();
 		}
+		
+//		System.out.println("Parse single way points");
+//		for(int t = 0; t < targetMap.length; t++){
+//			
+//			System.out.println(targetX[t] + " " + targetY[t] + " " + targetMap[t]);
+//		}
+//		System.out.println("Parse single way points");
 	
 		MethodParameter parameters = new MethodParameter();
-		parameters.setUnitWayPoints(unitNo, targetX, targetX, targetMap);
+		parameters.setUnitWayPoints(unitNo, targetX, targetY, targetMap);
 		
 		if(passedCommunicationTurn != -1){
 			commands.add(MethodCallup.SETWAYPOINTS, parameters, communicationTurn);
@@ -776,6 +785,7 @@ public class GameEngine{
 				new ParseText(inpt).getNumbers();
 		
 		//System.out.println(numbers.get(0));
+		System.out.println("parseMoveUnit GameEngine");
 		
 		MethodParameter parameters = new MethodParameter();
 		parameters.SetMoveUnit(new Integer(numbers.get(0)).intValue(),

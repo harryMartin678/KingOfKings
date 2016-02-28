@@ -423,7 +423,7 @@ public class Unit {
 					//if there is a unit in front of it
 					if(!units.get(u).dead() && path.get(1)[0] ==  ParseText.round(units.get(u).getX())
 							&& path.get(1)[1] == ParseText.round(units.get(u).getY())){
-						System.out.println("unit stop " + this.getUnitNo());
+						System.out.println("unit stop " + this.getUnitNo() + " unit");
 						if(units.get(u).getMoving()){
 							
 							stop = true;
@@ -495,6 +495,7 @@ public class Unit {
 								
 								path.remove(1);
 								path.remove(0);
+								
 								
 								x = path.get(0)[0];
 								y = path.get(0)[1];

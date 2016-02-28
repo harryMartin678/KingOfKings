@@ -190,12 +190,12 @@ public class MethodCallup implements Commands {
 	
 	public void moveUnit(int unitNo, int targetX, int targetY, int targetMap,int ignoreUnit){
 		// TODO Auto-generated method stub
-		
 		//add a path to move to the unit 
 		context.units.addPathToUnit(unitNo, 
 				new MapRouteFinder(context.units, context.buildings, context.maps,ignoreUnit
 				).getPath((int) context.units.getMoveUnitX(unitNo),(int) context.units.getMoveUnitY(unitNo)
 						,targetX, targetY,context.units.getUnitMap(unitNo),targetMap));
+		
 
 	}
 	
@@ -234,6 +234,7 @@ public class MethodCallup implements Commands {
 	public void setWayPoints(int unitNo, int[] targetX, int[] targetY, int[] targetMap) {
 		// TODO Auto-generated method stub
 		
+		System.out.println("Set Way points MethodCallup");
 		ArrayList<int[]> totalPath = new ArrayList<int[]>();
 		
 		//get the x points in the way points path in an array
@@ -266,7 +267,7 @@ public class MethodCallup implements Commands {
 			mapsNo[i] = targetMap[i-1];
 		}
 
-		
+		System.out.println("mapsNos " + mapsNo.length + " setWayPoint MethodCallup");
 		//combine paths for each path
 		for(int t = 0; t < mapsNo.length-1; t++){
 		
@@ -281,11 +282,12 @@ public class MethodCallup implements Commands {
 		}
 		
 		
-		
+		//System.out.println("setWayPoints Methodcallup before");
 		for(int p = 0; p < pointsX.length; p++){
 			
 			System.out.println(pointsX[p] + " " + pointsY[p] + " " + mapsNo[p]);
 		}
+		//System.out.println("setWayPoints Methodcallup after");
 		
 		//add the path to the unit 
 		context.units.addPathToUnit(unitNo, totalPath);

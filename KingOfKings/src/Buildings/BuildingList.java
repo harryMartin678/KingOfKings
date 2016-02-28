@@ -106,7 +106,7 @@ public class BuildingList implements IBuildingList {
 		return buildings.get(buildingNo).getUnitQueue();
 	}
 	
-	public void addBuilding(int player, int map, int x, int y, int type){
+	public void addBuilding(int player, int map, int x, int y, String type){
 		
 		int buildingNo = 0;
 		
@@ -115,21 +115,13 @@ public class BuildingList implements IBuildingList {
 			buildingNo = buildings.get(buildings.size()-1).getBuildingNo()+1;
 		}
 		
-		if(type == 0){
-			
-			buildings.add(new RoyalPalace(buildingNo));
-			buildings.get(buildings.size()-1).setMap(map);
-			buildings.get(buildings.size()-1).setPos(x, y);
-			buildings.get(buildings.size()-1).setPlayer(player);
-			
-		}else if(type == 1){
-			
-			buildings.add(new Stockpile(buildingNo));
-			buildings.get(buildings.size()-1).setMap(map);
-			buildings.get(buildings.size()-1).setPos(x, y);
-			buildings.get(buildings.size()-1).setPlayer(player);
-			
-		}
+		Building building = GameGraphics.Building.GetBuildingClass(type);
+		buildings.add(building);
+		buildings.get(buildings.size()-1).setMap(map);
+		buildings.get(buildings.size()-1).setPos(x, y);
+		buildings.get(buildings.size()-1).setPlayer(player);
+		buildings.get(buildings.size()-1).SetBuildingNo(buildingNo);
+		
 		
 	}
 	

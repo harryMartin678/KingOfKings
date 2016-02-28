@@ -10,7 +10,7 @@ public class BallistaTower extends Tower {
 	@Override
 	public String getType() {
 		// TODO Auto-generated method stub
-		return "ballistatower";
+		return Names.BALLISTICTOWER;
 	}
 
 	@Override

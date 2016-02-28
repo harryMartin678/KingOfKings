@@ -19,8 +19,6 @@ public class Pathfinder {
 		openList = new ArrayList<Node>();
 		path = new ArrayList<Node>();
 		this.map = map;
-		
-		
 	}
 	
 	/*
@@ -175,8 +173,18 @@ public class Pathfinder {
 	 */
 	public ArrayList<int[]> getPath(int startX, int startY, int targetX, int targetY){
 		
-		
-		if(startX == targetX && startY == targetY){
+//		System.out.println("start pathfinder");
+//		for(int y = 0; y < map.length; y++){
+//			for(int x = 0; x < map[y].length; x++){
+//				
+//				System.out.print(map[y][x]);
+//			}
+//			
+//			System.out.println();
+//		}
+//		System.out.println("end pathfinder");
+		if((startX == targetX && startY == targetY)
+				|| map[targetY][targetX] != 0){
 		
 			ArrayList<int[]> ret = new ArrayList<int[]>();
 			ret.add(new int[]{startX,startY});
@@ -204,9 +212,9 @@ public class Pathfinder {
 
 		while(true){
 			
+			//System.out.println("looping list Pathfinder");
 			//adds the nodes around the current node to openlist 
 			addNodes(node);
-			
 			//adds current node to the openlist 
 			openList.remove(node);
 			//gets the node with the smallest F score 

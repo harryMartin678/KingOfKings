@@ -83,7 +83,7 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	private void drawTiles(GL2 draw){
 		
 		
-		//boolean checked = true;
+		boolean checked = true;
 		 //draw tiles for landscape
 	    for(int y = frameY; y < frameY+FRAME_Y_SIZE; y++){
 	    	for(int x = frameX; x < frameX+FRAME_X_SIZE; x++){
@@ -106,18 +106,25 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 		    		drawTile(draw,(float) x,(float) y
 		    			,0.93f,0.68f,0.79f,FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 //	    			
-//	    			if(checked){
-//		    			drawTile(draw,(float) x,(float) y
-//				    			,0.0f,0.0f,0.0f,FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
+//	    			if(x == map.getWidth()/2 && y == map.getHeight()/2){
+//	    				
+//	    				drawTile(draw,(float)x,(float)y
+//	    						,1.0f,0.0f,0.0f,FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 //	    			}else{
-//		    					
-//		    			drawTile(draw,(float) x,(float) y
-//		    					,1.0f,1.0f,1.0f,FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
+//	    			
+//		    			if(checked){
+//			    			drawTile(draw,(float) x,(float) y
+//					    			,0.0f,0.0f,0.0f,FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
+//		    			}else{
+//			    					
+//			    			drawTile(draw,(float) x,(float) y
+//			    					,1.0f,1.0f,1.0f,FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
+//		    			}
 //	    			}
 		    			
 	    		}
 	    			
-	    			//checked =! checked;
+	    			checked =! checked;
 	    		}
 	    	}
 	    	
@@ -253,6 +260,22 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    
 	    drawUnits(draw);
 	    drawBuildings(draw);
+	    
+	    buildings.begin();
+	    //shows collision map on the map
+//	    int[][] coll = new CollisionMap(buildings,units,map.getMap()).getCollisionMap();
+//	    
+//	    for(int y = 0; y < coll.length; y++){
+//	    	for(int x = 0; x < coll[y].length; x++){
+//	    		
+//	    		if(coll[y][x] <=3 && coll[y][x] >=1){
+//		    		drawTile(draw,x,y,0.0f,1.0f,0.0f,
+//		    				FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
+//	    		}
+//	    	}
+//	    }
+	    
+	    buildings.end();
 	   
 	    draw.glDisable(draw.GL_LIGHTING);
 	    //draw menus 

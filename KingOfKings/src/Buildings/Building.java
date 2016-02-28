@@ -241,7 +241,7 @@ public class Building {
 	
 	public boolean inBuilding(int cx, int cy){
 		
-		return (Math.abs(x-cx) <= this.getSizeX()/2 && Math.abs(y-cy) <= this.getSizeY()/2);
+		return (Math.abs(x-cx) < this.getSizeX() && Math.abs(y-cy) < this.getSizeY());
 	}
 	
 	public void setPos(int x, int y){

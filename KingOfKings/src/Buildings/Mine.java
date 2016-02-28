@@ -10,7 +10,7 @@ public class Mine extends Resource {
 	@Override
 	public String getType() {
 		// TODO Auto-generated method stub
-		return "mine";
+		return Names.MINE;
 	}
 
 	public int getMaxHitpoint() {

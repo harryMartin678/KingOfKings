@@ -230,7 +230,7 @@ public class UnitModelList {
 		//scales the model's size
 		draw.glScalef(model.sizeX()*scaleFactor*extraScalefactor, model.sizeY()*scaleFactor*extraScalefactor,
 				model.sizeZ()*scaleFactor*extraScalefactor);
-		draw.glRotatef(45, 1, 0, 0);
+		draw.glRotatef(90, 1, 0, 0);
 		draw.glRotatef((float) unit.getAngle(), 0, 1, 0);
 		
 		//gets the frame and state of a unit 

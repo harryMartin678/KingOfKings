@@ -198,10 +198,10 @@ IComBuildingListFrameProcess {
 			
 			Buildings.Building type = Building.GetBuildingClass(buildings.get(b).getName());
 			
-			if(clickX <= buildings.get(b).getX() + type.getSizeX()
-			   && clickX >= buildings.get(b).getX() - type.getSizeX()
-			   && clickY <= buildings.get(b).getY() + type.getSizeY()
-			   && clickY >= buildings.get(b).getY() - type.getSizeY()
+			if(clickX < buildings.get(b).getX() + type.getSizeX()
+			   && clickX > buildings.get(b).getX() - type.getSizeX()
+			   && clickY < buildings.get(b).getY() + type.getSizeY()
+			   && clickY > buildings.get(b).getY() - type.getSizeY()
 			   ){
 				
 				

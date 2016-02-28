@@ -10,7 +10,7 @@ public class Wall extends Defence {
 	@Override
 	public String getType() {
 		// TODO Auto-generated method stub
-		return "wall";
+		return Names.WALL;
 	}
 
 	@Override

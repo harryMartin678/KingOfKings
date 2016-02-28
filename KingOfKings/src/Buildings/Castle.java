@@ -10,7 +10,7 @@ public class Castle extends Fort {
 	@Override
 	public String getType() {
 		// TODO Auto-generated method stub
-		return "castle";
+		return Names.CASTLE;
 	}
 
 	@Override

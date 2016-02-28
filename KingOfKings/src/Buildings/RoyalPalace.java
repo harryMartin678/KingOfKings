@@ -28,13 +28,13 @@ public class RoyalPalace extends UnitCreator {
 	@Override
 	public int getSizeX() {
 		// TODO Auto-generated method stub
-		return super.getSizeX() + 3;
+		return super.getSizeX() + 4;
 	}
 	
 	@Override
 	public int getSizeY() {
 		// TODO Auto-generated method stub
-		return super.getSizeY() + 3;
+		return super.getSizeY() + 4;
 	}
 
 

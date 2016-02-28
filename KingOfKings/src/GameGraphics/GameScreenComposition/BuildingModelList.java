@@ -49,26 +49,40 @@ public class BuildingModelList {
 		site = new BuildingModel(Names.SITE,"Models",1);
 		archeryTower = new BuildingModel(Names.ARCHERYTOWER,"Models",1);
 		archeryTower.setSize(0.25f, 0.25f, 0.25f);
+		archeryTower.setTrans(0.1f, 0.1f);
 		ballisticTower = new BuildingModel(Names.BALLISTICTOWER,"Models",1);
 		ballisticTower.setSize(0.25f, 0.25f, 0.25f);
+		ballisticTower.setTrans(0.2f, 0.2f);
 		barrack = new BuildingModel(Names.BARRACK,"Models",1); //2 2
-		barrack.setSize(0.15f, 0.15f, 0.15f);
+		barrack.setSize(0.25f, 0.25f, 0.25f);
+		barrack.setTrans(0.1f, -0.175f);
 		castle = new BuildingModel(Names.CASTLE,"Models",1);//3 3
-		castle.setSize(0.05f, 0.05f, 0.1f);
+		castle.setSize(0.095f, 0.12f, 0.1f);
+		castle.setTrans(0.25f, 0.65f);
 		dock = new BuildingModel(Names.DOCK,"Models",1);//2 2
 		dock.setSize(0.075f, 0.075f, 0.075f);
 		farm = new BuildingModel(Names.FARM,"Models",1);//2 2
-		farm.setSize(0.15f, 0.15f, 0.15f);
+		farm.setSize(0.25f, 0.24f, 0.24f);
+		farm.setTrans(0.18f, 0.05f);
 		fort = new BuildingModel(Names.FORT,"Models",1);//3 3
-		fort.setSize(0.2f, 0.2f, 0.25f);
-		royalPalace = new BuildingModel(Names.ROYALPALACE,"Models",1);//4 4 
+		fort.setSize(0.35f, 0.37f, 0.35f);
+		fort.setTrans(-1.7f, -1.6f);
+		royalPalace = new BuildingModel(Names.ROYALPALACE,"Models",1);//4 4
+		royalPalace.setSize(0.38f, 0.4f, 0.38f);
+		royalPalace.setTrans(0.5f, 0.55f);
 		stable = new BuildingModel(Names.STABLE,"Models",1); //2 2
+		stable.setTrans(0.2f, -1.0f);
+		stable.setSize(0.32f, 0.32f, 0.32f);
 		stockpile = new BuildingModel(Names.STOCKPILE,"Models",1);//2 2
+		stockpile.setTrans(0.15f, 0.05f);
+		stockpile.setSize(0.32f, 0.32f, 0.32f);
 		wall = new BuildingModel(Names.WALL,"Models",1);//1 1
 		wall.setSize(0.15f, 0.15f, 0.1f);
-		wall.setAngle(90.0f);
+		//wall.setTrans(-5.0f, -5.0f);
+		//wall.setAngle(90.0f);
 		mine = new BuildingModel(Names.MINE,"Models",1);//1 1
 		mine.setSize(0.15f, 0.15f, 0.15f);
+		mine.setTrans(0.1f, 0.0f);
 		
 		tree = new BuildingModel("tree1","Models",3);
 		gold = new BuildingModel("gold","Models",1);
@@ -175,8 +189,9 @@ public class BuildingModelList {
 
 		draw.glLoadIdentity();
 
-		if(onMap) draw.glTranslatef(building.getX()-width-frameX, building.getY()-height-frameY, z);
-		else draw.glTranslatef(building.getX(), building.getY(), z);
+		if(onMap) draw.glTranslatef(building.getX()-width-frameX + model.getTransX(),
+				building.getY()-height-frameY + model.getTransY(), z);
+		else draw.glTranslatef(building.getX() ,building.getY(), z);
 		draw.glScalef(model.sizeX()*scaleFactor*extraScalefactor,
 				model.sizeY()*scaleFactor*extraScalefactor,model.sizeZ()*scaleFactor*extraScalefactor);
 		draw.glRotatef(90.0f, 1, 0, 0);
@@ -231,6 +246,8 @@ public class BuildingModelList {
 		}else if(map.getTile(x,y) == 4){
 			
 			//transition node
+			drawTile(draw,(float) x,(float) y
+					,0.0f,1.0f,0.0f,WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
 		
 		}else if(map.getTile(x, y) == 5){
 			
@@ -268,11 +285,10 @@ public class BuildingModelList {
 		
 		Building archTower = new Building(x+2.0f, y - 1.0f, Names.ARCHERYTOWER,-1,0);
 		
-		
 		SetEnoughRes(archTower, gold, food);
 		
 		drawBuildingModel(archeryTower, draw,archTower,
-				WIDTH_CONST,HEIGHT_CONST,z,false,0.3f,frameX,frameY);
+				WIDTH_CONST,HEIGHT_CONST,z,false,0.2f,frameX,frameY);
 		
 		Building ballisTower = new Building(x + 3.0f, y - 1.0f, Names.BALLISTICTOWER,-1,0);
 		
@@ -280,7 +296,7 @@ public class BuildingModelList {
 		SetEnoughRes(ballisTower, gold, food);
 		
 		drawBuildingModel(ballisticTower, draw,ballisTower,
-				WIDTH_CONST,HEIGHT_CONST,z,false,0.3f,frameX,frameY);
+				WIDTH_CONST,HEIGHT_CONST,z,false,0.2f,frameX,frameY);
 		
 		Building barr = new Building(x + 4.0f, y - 1.0f, Names.BARRACK,-1,0);
 		
@@ -288,7 +304,7 @@ public class BuildingModelList {
 		SetEnoughRes(barr, gold, food);
 		
 		drawBuildingModel(barrack, draw,barr,
-				WIDTH_CONST,HEIGHT_CONST,z,false,0.3f,frameX,frameY);
+				WIDTH_CONST,HEIGHT_CONST,z,false,0.2f,frameX,frameY);
 		
 		Building cast = new Building(x + 2.0f, y + 0.5f, Names.CASTLE,-1,0);
 		
@@ -298,7 +314,7 @@ public class BuildingModelList {
 		//System.out.println(castBuild.FoodNeeded() + " " + castBuild.GoldNeeded() + " BuildingModelList drawBuildingIcon");
 		
 		drawBuildingModel(castle, draw,cast,
-				WIDTH_CONST,HEIGHT_CONST,z,false,0.3f,frameX,frameY);
+				WIDTH_CONST,HEIGHT_CONST,z,false,0.2f,frameX,frameY);
 		
 		Building doc = new Building(x + 3.0f, y + 0.30f, Names.DOCK,-1,0);
 		
@@ -306,7 +322,7 @@ public class BuildingModelList {
 		SetEnoughRes(doc, gold, food);
 		
 		drawBuildingModel(dock, draw,doc,
-				WIDTH_CONST,HEIGHT_CONST,z,false,0.3f,frameX,frameY);
+				WIDTH_CONST,HEIGHT_CONST,z,false,0.2f,frameX,frameY);
 		
 		Building far = new Building(x + 4.0f, y + 0.5f, Names.FARM,-1,0);
 		
@@ -314,49 +330,49 @@ public class BuildingModelList {
 		SetEnoughRes(far, gold, food);
 		
 		drawBuildingModel(farm, draw,far,
-				WIDTH_CONST,HEIGHT_CONST,z,false,0.3f,frameX,frameY);
+				WIDTH_CONST,HEIGHT_CONST,z,false,0.2f,frameX,frameY);
 		
 		Building fortb = new Building(x + 1.5f, y + 1.5f, Names.FORT,-1,0);
 		
 		SetEnoughRes(fortb, gold, food);
 		
 		drawBuildingModel(fort, draw,fortb,
-				WIDTH_CONST,HEIGHT_CONST,z,false,0.2f,frameX,frameY);
+				WIDTH_CONST,HEIGHT_CONST,z,false,0.133f,frameX,frameY);
 		
 		Building royalPala = new Building(x + 3.0f, y + 1.75f, Names.ROYALPALACE,-1,0);
 		
 		SetEnoughRes(royalPala, gold, food);
 		
 		drawBuildingModel(royalPalace, draw,royalPala,
-				WIDTH_CONST,HEIGHT_CONST,z,false,0.15f,frameX,frameY);
+				WIDTH_CONST,HEIGHT_CONST,z,false,0.1f,frameX,frameY);
 		
 		Building stab = new Building(x + 4.0f, y + 1.5f, Names.STABLE,-1,0);
 		
 		SetEnoughRes(stab, gold, food);
 		
 		drawBuildingModel(stable, draw,stab,
-				WIDTH_CONST,HEIGHT_CONST,z,false,0.3f,frameX,frameY);
+				WIDTH_CONST,HEIGHT_CONST,z,false,0.2f,frameX,frameY);
 		
 		Building stock = new Building(x + 2.0f, y + 3.0f, Names.STOCKPILE,-1,0);
 		
 		SetEnoughRes(stock, gold, food);
 		
 		drawBuildingModel(stockpile, draw,stock,
-				WIDTH_CONST,HEIGHT_CONST,z,false,0.3f,frameX,frameY);
+				WIDTH_CONST,HEIGHT_CONST,z,false,0.2f,frameX,frameY);
 		
 		Building wal = new Building(x + 3.0f, y + 3.0f, Names.WALL,-1,0);
 		
 		SetEnoughRes(wal, gold, food);
 		
 		drawBuildingModel(wall, draw,wal,
-				WIDTH_CONST,HEIGHT_CONST,z,false,0.4f,frameX,frameY);
+				WIDTH_CONST,HEIGHT_CONST,z,false,0.3f,frameX,frameY);
 		
 		Building min = new Building(x + 4.0f, y + 3.0f, Names.MINE,-1,0);
 		
 		SetEnoughRes(min, gold, food);
 		
 		drawBuildingModel(mine, draw,min,
-				WIDTH_CONST,HEIGHT_CONST,z,false,0.4f,frameX,frameY);
+				WIDTH_CONST,HEIGHT_CONST,z,false,0.3f,frameX,frameY);
 	}
 	
 	public static boolean SetEnoughRes(Building building,int gold,int food){

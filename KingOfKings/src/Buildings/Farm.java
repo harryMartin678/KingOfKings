@@ -10,7 +10,7 @@ public class Farm extends Resource {
 	@Override
 	public String getType() {
 		// TODO Auto-generated method stub
-		return "farm";
+		return Names.FARM;
 	}
 
 	@Override

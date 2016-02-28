@@ -46,14 +46,18 @@ public class MapRouteFinder {
 		//base case - if this map is the target map
 		if(currentMap == targetMap){
 			
+			
 			ArrayList<int[]> path = new ArrayList<int[]>();
 			
 			if(ignoreUnit == -1){
 
+				//System.out.println(startX + " " + startY + " " + targetX + " " + targetY + " MapRouteFinder");
+				//System.out.println("Pre PathFinder MapRouteFinder");
 				//find a path to the target node from the transition point 
 				path.addAll(reverseList(new Pathfinder(new CollisionMap(buildings,units
 						,maps.getMap(currentMap)).getCollisionMap()
 						).getPath(startX, startY, targetX, targetY)));
+				//System.out.println("Post PathFinder MapRouteFinder");
 			}else{
 				
 				//find a path to the target node from the transition point 
