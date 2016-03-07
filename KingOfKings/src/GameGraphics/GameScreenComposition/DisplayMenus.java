@@ -164,7 +164,8 @@ public class DisplayMenus {
 		//draw buildings 
 		for(int b = 0; b < buildings.size(); b++){
 			
-			if(map.getTile((int) buildings.get(b).getX(), (int) buildings.get(b).getY()) == -1){
+			if(map.getTile((int) buildings.get(b).getX(), (int) buildings.get(b).getY()) == -1
+					&& b < buildings.size()){
 				
 				continue;
 			}

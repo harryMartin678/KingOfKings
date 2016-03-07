@@ -10,6 +10,7 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.glu.GLU;
+import javax.swing.JFrame;
 
 import com.jogamp.opengl.util.gl2.GLUT;
 
@@ -24,11 +25,13 @@ public class GameScreen implements GLEventListener  {
 	private GraphicsEngine engine;
 	private ClientMessages cmsg;
 	private ClientWrapper wrapper;
+	private JFrame frame;
 	
-	public GameScreen(ClientMessages cmsg,int thisPlayer,int noOfPlayer){
+	public GameScreen(ClientMessages cmsg,int thisPlayer,int noOfPlayer,JFrame frame){
 		
 		wrapper = new ClientWrapper(cmsg,thisPlayer,noOfPlayer);
 		this.cmsg = cmsg;
+		this.frame = frame;
 		
 		System.out.println("start");
 		waitForReady.start();
@@ -114,6 +117,7 @@ public class GameScreen implements GLEventListener  {
 	public void display(GLAutoDrawable drawable) {
 		// TODO Auto-generated method stub
 		engine.display(drawable, glu, glut);
+		frame.revalidate();
 	}
 
 	@Override

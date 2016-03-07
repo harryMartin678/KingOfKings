@@ -8,6 +8,7 @@ public class Map {
 	private int player;
 	private ArrayList<int[]> transitionPoints;
 	private String name;
+	private int mapNo;
 	
 	public Map(int x, int y){
 		

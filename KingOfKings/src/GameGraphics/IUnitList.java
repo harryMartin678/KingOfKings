@@ -9,6 +9,8 @@ public interface IUnitList{
 	public boolean checkInUnit(int x, int y, int unitNo);
 	public void begin();
 	public void end();
-	
+	public float getUnitX(int unitNo);
+	public float getUnitY(int unitNo);
+	public int getUnitMap(int unitNo);
 
 }

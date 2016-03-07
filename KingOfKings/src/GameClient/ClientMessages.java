@@ -89,13 +89,15 @@ public class ClientMessages implements IGotToTurn{
 	
 	public String getFrameMessage(){
 		
+		client.start();
 		if(frame.size() == 0){
-			
+			client.end();
 			return "null";
 		}else{
 			
 			String in = frame.get(0);
 			frame.remove(0);
+			client.end();
 			return in;
 		}
 	}

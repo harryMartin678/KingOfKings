@@ -140,7 +140,7 @@ public class MoveUnit {
 				
 				if(fDown){
 					 
-					System.out.println("FOLLOW");
+					//System.out.println("FOLLOW");
 					singleFollow(tx,ty);
 					  
 				  }else{

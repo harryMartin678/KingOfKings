@@ -264,6 +264,7 @@ public class ProcessFrameThread {
 
 		buildings.begin();
 		
+		//System.out.println("CLEAR PROCESSFRAMETHREAD");
 		buildings.clear();
 		
 		while(!(msg = msgs.get(m)).equals("sites")){
@@ -360,7 +361,7 @@ public class ProcessFrameThread {
 //			System.out.println(buildings.get(b).getBuildingNo() + " " 
 //					+ buildings.get(b).getName() + " " + buildings.get(b).isSite());
 //		}
-
+		//System.out.println("FULL PROCESSFRAMETHREAD");
 		buildings.end();
 	}
 	

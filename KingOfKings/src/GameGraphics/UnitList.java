@@ -1,6 +1,7 @@
 package GameGraphics;
 
 import java.util.ArrayList;
+import java.util.concurrent.Semaphore;
 
 import Buildings.Names;
 import GameGraphics.GameScreenComposition.IComUnitListDisplay;
@@ -15,6 +16,7 @@ public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,I
 	private ArrayList<SelectedUnit> selectedUnits;
 	private int myPlayerNumber;
 	private boolean wayPointSetting;
+	private Semaphore lock;
 	
 	//private Thread currentThread;
 	
@@ -26,6 +28,7 @@ public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,I
 		wayPoints = new ArrayList<int[]>();
 		selectedUnits = new ArrayList<SelectedUnit>();
 		this.myPlayerNumber = myPlayerNumber;
+		lock = new Semaphore(1);
 	}
 	
 	public class SelectedUnit{
@@ -37,19 +40,25 @@ public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,I
 	public void begin(){
 		
 		//boolean alreadyHaveUnits = Thread.currentThread() == currentThread;
-		while(used){ //&& !alreadyHaveUnits){
-			
-			try {
-				Thread.sleep(2);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//		while(used){ //&& !alreadyHaveUnits){
+//			
+//			try {
+//				Thread.sleep(2);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
+//		
+//		//currentThread = Thread.currentThread();
+//		
+//		used = true;
+		try {
+			lock.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
-		//currentThread = Thread.currentThread();
-		
-		used = true;
 	}
 	
 	public Unit get(int index){
@@ -105,8 +114,9 @@ public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,I
 	
 	public void end(){
 		
-		used = false;
+		//used = false;
 		//currentThread = null;
+		lock.release();
 	}
 
 	@Override
@@ -380,5 +390,24 @@ public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,I
 		
 		//System.out.println(selectedUnits.size() + " unit size in unit list");
 	}
+
+	@Override
+	public float getUnitX(int unitNo) {
+		// TODO Auto-generated method stub
+		return units.get(unitNo).getX();
+	}
+
+	@Override
+	public float getUnitY(int unitNo) {
+		// TODO Auto-generated method stub
+		return units.get(unitNo).getY();
+	}
+
+	@Override
+	public int getUnitMap(int unitNo) {
+		// TODO Auto-generated method stub
+		return -1;
+	}
+
 
 }

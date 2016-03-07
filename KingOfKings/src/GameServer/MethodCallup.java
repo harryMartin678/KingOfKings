@@ -179,11 +179,13 @@ public class MethodCallup implements Commands {
 	public void moveUnit(int unitNo, int targetX, int targetY, int targetMap) {
 		// TODO Auto-generated method stub
 		//add a path to move to the unit 
-		context.units.unfollow(unitNo);
-		context.units.addPathToUnit(unitNo, 
-				new MapRouteFinder(context.units, context.buildings, context.maps
-				).getPath((int) context.units.getMoveUnitX(unitNo),(int) context.units.getMoveUnitY(unitNo)
-						,targetX, targetY,context.units.getUnitMap(unitNo),targetMap));
+		if(targetX >= 0 && targetY >= 0){
+			context.units.unfollow(unitNo);
+			context.units.addPathToUnit(unitNo, 
+					new MapRouteFinder(context.units, context.buildings, context.maps
+					,context.sites).getPath((int) context.units.getMoveUnitX(unitNo),(int) context.units.getMoveUnitY(unitNo)
+							,targetX, targetY,context.units.getUnitMap(unitNo),targetMap));
+		}
 
 	}
 	
@@ -271,7 +273,8 @@ public class MethodCallup implements Commands {
 		//combine paths for each path
 		for(int t = 0; t < mapsNo.length-1; t++){
 		
-			ArrayList<int[]> next = new MapRouteFinder(context.units,context.buildings,context.maps).getPath(
+			ArrayList<int[]> next = new MapRouteFinder(context.units,context.buildings,
+					context.maps,context.sites).getPath(
 					pointsX[t],pointsY[t],
 					pointsX[t+1],pointsY[t+1],mapsNo[t],mapsNo[t+1]);
 			
@@ -366,7 +369,7 @@ public class MethodCallup implements Commands {
 		
 		ArrayList<int[]> taken = new ArrayList<int[]>();
 		CollisionMap map = new CollisionMap(context.buildings,context.units,
-				context.maps.getMap(toAttack.getMap()));
+				context.maps.getMap(toAttack.getMap()),toAttack.getMap());
 		for(int u = 0; u < unitNos.length; u++){
 			
 			int[] pos = toAttack.getFreeSpace(map,(int)context.units.getUnitX(unitNos[u]),
@@ -406,7 +409,7 @@ public class MethodCallup implements Commands {
 		
 		for(int u = 0; u < unitNos.length; u++){
 			unitTargets.add(newBuilding.getFreeSpace(new CollisionMap(context.buildings,
-					context.units,context.maps.getMap(newBuilding.getMap())),(int) context.units.getUnitX(unitNos[u]), 
+					context.units,context.maps.getMap(newBuilding.getMap()),newBuilding.getMap()),(int) context.units.getUnitX(unitNos[u]), 
 							(int) context.units.getUnitY(unitNos[u]),unitTargets));
 			this.moveUnit(unitNos[u], unitTargets.get(unitTargets.size()-1)[0],
 					unitTargets.get(unitTargets.size()-1)[1], newBuilding.getMap());

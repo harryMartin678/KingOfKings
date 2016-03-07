@@ -284,8 +284,9 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 			}
 
 			@Override
-			public void mouseReleased(MouseEvent arg0) {
+			public void mouseReleased(MouseEvent e) {
 				// TODO Auto-generated method stub
+				mouseKeyboard.handleReleasedMouse(e);
 			}
 			
 			
@@ -293,7 +294,6 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 	}
 	
 	public KeyListener getKeyboardListener(){
-		
 		return new KeyListener(){
 
 			@Override

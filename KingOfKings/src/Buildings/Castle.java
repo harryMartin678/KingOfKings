@@ -40,13 +40,13 @@ public class Castle extends Fort {
 	@Override
 	public int getSizeX() {
 		// TODO Auto-generated method stub
-		return super.getSizeX()+3;
+		return super.getSizeX();
 	}
 	
 	@Override
 	public int getSizeY() {
 		// TODO Auto-generated method stub
-		return super.getSizeY()+3;
+		return super.getSizeY();
 	}
 
 }

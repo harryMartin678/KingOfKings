@@ -20,7 +20,7 @@ public class AddUnitModule {
 		
 		this.building = building;
 		CollisionMap map = new CollisionMap(context.buildings,context.units,
-				context.maps.getMap(building.getMap()));
+				context.maps.getMap(building.getMap()),building.getMap());
 		//map.printCollisionMap();
 		//context.units.printUnits(building.getMap());
 		int[] pos = getFreeSpace(map, building.getX() + building.getSizeX()+1, 
@@ -78,8 +78,8 @@ public class AddUnitModule {
 		for(int c = 0; c < corners.length; c+=2){
 			//Abs(directions[c] + direction[c+1]) <= 1 
 			//travel between corners checking for the closet free square as you go 
-			for(int l = 0; Math.abs(l) < Math.abs((directions[c] * building.getSizeX()))
-					+ Math.abs((directions[c+1] * building.getSizeY()))+1; l+= directions[c] + directions[c+1]){
+			for(int l = 0; Math.abs(l) < Math.abs((directions[c] * (building.getSizeX())))
+					+ Math.abs((directions[c+1] * (building.getSizeY()))); l+= directions[c] + directions[c+1]){
 				
 				//calculates the currently checked square 
 				int cx = corners[c] + (Math.abs(directions[c]) * l);

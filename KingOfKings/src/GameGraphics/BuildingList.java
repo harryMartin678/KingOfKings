@@ -1,6 +1,7 @@
 package GameGraphics;
 
 import java.util.ArrayList;
+import java.util.concurrent.Semaphore;
 
 import Buildings.UnitCreator;
 import GameClient.ClientMessages;
@@ -14,16 +15,18 @@ public class BuildingList implements IComBuildingListDisplay, IComBuildingListMo
 IComBuildingListFrameProcess {
 	
 	private ArrayList<Building> buildings;
-	private boolean used;
+	//private boolean used;
 	private Building ghostBuilding;
 	private Building SelectedBuilding;
 	private Building AttackBuilding;
 	private ClientWrapper cmsgs;
+	private Semaphore lock;
 	
 	public BuildingList(){
 		
 		buildings = new ArrayList<Building>();
-		used = false;
+		//used = false;
+		lock = new Semaphore(3);
 	}
 	
 	public void setClientMessager(ClientWrapper cmsgs){
@@ -33,17 +36,23 @@ IComBuildingListFrameProcess {
 	
 	public void begin(){
 		
-		while(used){
-			
-			try {
-				Thread.sleep(2);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//		while(used){
+//			
+//			try {
+//				Thread.sleep(2);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
+//		
+//		used = true;
+		try {
+			lock.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
-		used = true;
 	}
 	
 	public void add(Building building){
@@ -92,7 +101,8 @@ IComBuildingListFrameProcess {
 	
 	public void end(){
 		
-		used = false;
+		//used = false;
+		lock.release();
 	}
 
 	@Override
@@ -104,6 +114,11 @@ IComBuildingListFrameProcess {
 	@Override
 	public boolean inBuilding(int x, int y, int unitNo) {
 		// TODO Auto-generated method stub
+		if(buildings.get(unitNo) == null){
+			
+			return false;
+			
+		}
 		return buildings.get(unitNo).inBuilding(x,y);
 	}
 
@@ -299,6 +314,24 @@ IComBuildingListFrameProcess {
 			
 			System.out.println("NULL GHOSTBUILDING buildingList");
 		}
+	}
+
+	@Override
+	public int getBuildingMap(int buildingNo) {
+		// TODO Auto-generated method stub
+		return -1;
+	}
+
+	@Override
+	public float getBuildingX(int buildingNo) {
+		// TODO Auto-generated method stub
+		return buildings.get(buildingNo).getX();
+	}
+
+	@Override
+	public float getBuildingY(int buildingNo) {
+		// TODO Auto-generated method stub
+		return buildings.get(buildingNo).getY();
 	}
 
 

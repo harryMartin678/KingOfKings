@@ -13,7 +13,7 @@ public class Unit {
 	private int map;
 	private int health;
 	private int player;
-	private ArrayList<int[]> path;
+	private ArrayList<float[]> path;
 	private int angle;
 	private boolean moving;
 	private int follow;
@@ -31,6 +31,7 @@ public class Unit {
 	public Unit(){
 		
 		health = this.getMaxHealth();
+		path = new ArrayList<float[]>();
 		moving = false;
 		follow = -1;
 		groupSpeed = -1;
@@ -94,7 +95,7 @@ public class Unit {
 		
 		if(path != null && path.size() > 2 && path.get(1)[1] != -1){
 			
-			return (float) path.get(1)[0];
+			return path.get(1)[0];
 		}else{
 			
 			return x;
@@ -105,7 +106,7 @@ public class Unit {
 		
 		if(path != null && path.size() > 2 && path.get(1)[1] != -1){
 			
-			return (float) path.get(1)[1];
+			return path.get(1)[1];
 		}else{
 			
 			return y;
@@ -222,7 +223,12 @@ public class Unit {
 	
 	public void setPath(ArrayList<int[]> path){
 		
-		this.path = path;
+		this.path.clear();
+		this.path.add(new float[]{x,y});
+		for(int p = 1; p < path.size(); p++){
+			
+			this.path.add(new float[]{path.get(p)[0],path.get(p)[1]});
+		}
 		
 		groupSpeed = -1;
 		
@@ -231,7 +237,7 @@ public class Unit {
 		System.out.println("START////////");
 		for(int i = 0; i < path.size(); i++){
 			
-			System.out.println(path.get(i)[0] + " " + path.get(i)[1]);
+			System.out.println(this.path.get(i)[0] + " " + this.path.get(i)[1]);
 		}
 		System.out.println("END//////");
 		
@@ -324,7 +330,7 @@ public class Unit {
 		}else if(targetX - x < 0 && targetY - y < 0){
 			
 			//System.out.println("135 unit");
-			angle = 135;
+			angle = 315;
 		}
 	}
 	
@@ -350,7 +356,7 @@ public class Unit {
 	
 	public int[] getPath(int index){
 		
-		return path.get(index);
+		return new int[]{(int)path.get(index)[0],(int)path.get(index)[1]};
 	}
 	
 	public void setGroupSpeed(float groupSpeed){
@@ -375,7 +381,7 @@ public class Unit {
 				
 				recalculate = 0;
 			}
-			return new int[]{path.get(0)[0],path.get(0)[1],map};
+			return new int[]{(int)path.get(0)[0],(int)path.get(0)[1],map};
 		}
 	}
 	
@@ -423,7 +429,7 @@ public class Unit {
 					//if there is a unit in front of it
 					if(!units.get(u).dead() && path.get(1)[0] ==  ParseText.round(units.get(u).getX())
 							&& path.get(1)[1] == ParseText.round(units.get(u).getY())){
-						System.out.println("unit stop " + this.getUnitNo() + " unit");
+						//System.out.println("unit stop " + this.getUnitNo() + " unit");
 						if(units.get(u).getMoving()){
 							
 							stop = true;
@@ -458,6 +464,8 @@ public class Unit {
 					float vectorX = path.get(1)[0] - path.get(0)[0];
 					float vectorY = path.get(1)[1] - path.get(0)[1];
 					
+					//System.out.println(vectorX + " " + vectorY + " Unit");
+					
 					float speed;
 					
 					if(groupSpeed == -1){
@@ -491,7 +499,7 @@ public class Unit {
 							//if it's a transtion to another map
 							if(path.get(1)[0] == -1){
 								
-								this.map = path.get(1)[1];
+								this.map = (int)path.get(1)[1];
 								
 								path.remove(1);
 								path.remove(0);

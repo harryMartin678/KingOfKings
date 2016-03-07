@@ -1,6 +1,7 @@
 package GameLobbyGUI;
 
 import java.awt.Dimension;
+import javax.swing.JFrame;
 import java.awt.Graphics;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -46,7 +47,9 @@ public class LobbyGUI extends JPanel implements MouseListener {
 	private int bsyIdtY;
 	private double angle;
 	
-	public LobbyGUI(ClientMessages cmsg){
+	private JFrame frame;
+	
+	public LobbyGUI(ClientMessages cmsg,final JFrame frame){
 		
 		this.cmsg = cmsg;
 		readyBtn = new ImageIcon(filepath + "ReadyButton.png");
@@ -60,6 +63,8 @@ public class LobbyGUI extends JPanel implements MouseListener {
 		loading = false;
 		thisPlayer = -1;
 		this.addMouseListener(this);
+		
+		this.frame = frame;
 		
 		this.addComponentListener(new ComponentListener(){
 
@@ -124,17 +129,18 @@ public class LobbyGUI extends JPanel implements MouseListener {
 		FPSAnimator animator = new FPSAnimator(canvas,10);
 		animator.start();
 		
+		//canvas.setFocusable(true);
 		 gs = new GameGraphics.GameScreenComposition.GameScreen(cmsg,thisPlayer
-					,players.size());
+					,players.size(),frame);
 
 		canvas.addMouseListener(gs.getMouseListener());
 		canvas.addMouseMotionListener(gs.getMouseMotionListener());
 		canvas.addKeyListener(gs.getKeyboardListener());
-		
-		canvas.setFocusable(true);
-		
 
 		canvas.addGLEventListener(gs);
+		
+		canvas.setFocusable(true);
+		canvas.requestFocusInWindow();
 		
 		new Thread(new Runnable(){
 
@@ -150,7 +156,6 @@ public class LobbyGUI extends JPanel implements MouseListener {
 						e.printStackTrace();
 					}
 				}
-				System.out.println("change screen");
 				loading = false;
 				setScreenToGame(canvas);
 			}

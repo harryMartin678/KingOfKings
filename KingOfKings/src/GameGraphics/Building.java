@@ -131,11 +131,11 @@ public class Building {
 		if(!name.equals(Names.MINE)){
 			int sizeX = check.getSizeX();
 			int sizeY = check.getSizeY();
-			
+			//System.out.println(sizeX + " " + sizeY + " building CanBuildThere");
 			cantBuild = !map.inArea((int)this.x,(int)this.y,sizeX,sizeY);
 		}else{
 			//System.out.println(map.getCollisionMap()[(int)this.x][(int)this.y] + " building");
-			cantBuild = !(map.getCollisionMap()[(int)this.x][(int)this.y] == 3);
+			cantBuild = !(map.getCollisionMap()[(int)this.y][(int)this.x] == 3);
 		}
 	}
 	

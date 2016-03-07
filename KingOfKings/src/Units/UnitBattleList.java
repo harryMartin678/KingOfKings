@@ -99,7 +99,8 @@ public class UnitBattleList {
 					battles.get(u).getTwoID())){
 				
 				battles.get(u).similuateHit(new CollisionMap(buildings,units,
-						maps.getMap(units.getUnitMap(battles.get(u).getOneID()))));
+						maps.getMap(units.getUnitMap(battles.get(u).getOneID())),
+								units.getUnitMap(battles.get(u).getOneID())));
 				
 				if(!units.isAttacking(battles.get(u).getOneID())){
 					

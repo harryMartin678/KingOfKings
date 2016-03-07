@@ -196,7 +196,7 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    
 	    if(buildings.isBuildingGhost()){
 	    	//System.out.println(buildings.isBuildingGhost() + " before coll map display");
-	    	CollisionMap collMap = new CollisionMap(buildings,units,map.getMap());
+	    	CollisionMap collMap = new CollisionMap(buildings,units,map.getMap(),map.getViewedMap());
 	    	//System.out.println(buildings.isBuildingGhost() + " after coll map display");
 	    	//map.printCollisionMap((int)buildingSelection.getX(),(int)buildingSelection.getY());
 	    	buildings.canBuildThere(collMap);
@@ -209,7 +209,8 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    for(int b = 0; b < buildings.size(); b++){
 
 	    	if(buildings.inFrame(b, frameX, frameY, FRAME_X_SIZE, FRAME_Y_SIZE)
-	    			|| map.getTile((int) buildings.get(b).getX(),(int) buildings.get(b).getY()) == -1){
+	    			|| map.getTile((int) buildings.get(b).getX(),(int) buildings.get(b).getY()) == -1
+	    			|| b > buildings.size()){
 	    		
 	    		continue;
 	    	}
@@ -263,17 +264,17 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    
 	    buildings.begin();
 	    //shows collision map on the map
-//	    int[][] coll = new CollisionMap(buildings,units,map.getMap()).getCollisionMap();
-//	    
-//	    for(int y = 0; y < coll.length; y++){
-//	    	for(int x = 0; x < coll[y].length; x++){
-//	    		
-//	    		if(coll[y][x] <=3 && coll[y][x] >=1){
-//		    		drawTile(draw,x,y,0.0f,1.0f,0.0f,
-//		    				FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
-//	    		}
-//	    	}
-//	    }
+	    int[][] coll = new CollisionMap(buildings,units,map.getMap(),map.getViewedMap()).getCollisionMap();
+	    
+	    for(int y = 0; y < coll.length; y++){
+	    	for(int x = 0; x < coll[y].length; x++){
+	    		
+	    		if(coll[y][x] <=3 && coll[y][x] >=1){
+		    		drawTile(draw,x,y,0.0f,1.0f,0.0f,
+		    				FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
+	    		}
+	    	}
+	    }
 	    
 	    buildings.end();
 	   

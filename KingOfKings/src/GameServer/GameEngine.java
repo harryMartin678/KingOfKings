@@ -33,6 +33,7 @@ public class GameEngine{
 	
 	private GameEngineContext context;
 	private int beat;
+	private int resourceBeat;
 	private UserCommandList commands;
 	private int communicationTurn;
 	private IGotToTurn beacon;
@@ -44,6 +45,7 @@ public class GameEngine{
 		commands = new UserCommandList(context);
 		
 		communicationTurn = 0;
+		resourceBeat = 0;
 		
 		this.beacon = beacon;
 		
@@ -192,37 +194,9 @@ public class GameEngine{
 				}
 			}
 			
-			ArrayList<int[]> unitsToRecalculate = context.units.getRecalculated();
 			
-			for(int r = 0; r < unitsToRecalculate.size(); r++){
 				
-				if(context.units.getUnits(unitsToRecalculate.get(r)[0]).getRetreat()){
-					
-					continue;
-				}
-	
-				if(unitsToRecalculate.get(r)[1] == 1){
-					
-					MethodParameter parameters = new MethodParameter();
-					parameters.SetMoveUnit(unitsToRecalculate.get(r)[0], unitsToRecalculate.get(r)[2],
-							unitsToRecalculate.get(r)[3], unitsToRecalculate.get(r)[4]);
-					
-					commands.add(MethodCallup.MOVEUNIT,parameters, communicationTurn);
-	//				this.moveUnit(unitsToRecalculate.get(r)[0], unitsToRecalculate.get(r)[2],
-	//						unitsToRecalculate.get(r)[3], unitsToRecalculate.get(r)[4]);
-				}else{
-					
-					MethodParameter parameters = new MethodParameter();
-					parameters.SetMoveUnit(unitsToRecalculate.get(r)[0], unitsToRecalculate.get(r)[2],
-							unitsToRecalculate.get(r)[3], unitsToRecalculate.get(r)[4],
-							unitsToRecalculate.get(r)[5]);
-					
-					commands.add(MethodCallup.MOVEUNIT,parameters, communicationTurn);
-	//				this.moveUnit(unitsToRecalculate.get(r)[0], unitsToRecalculate.get(r)[2],
-	//						unitsToRecalculate.get(r)[3], unitsToRecalculate.get(r)[4],
-	//						unitsToRecalculate.get(r)[5]);
-				}
-			}
+			
 			
 			int[] com;
 			
@@ -240,25 +214,34 @@ public class GameEngine{
 				
 				beat = 0;
 				
-				int[] playersGold = new int[context.players.getSize()];
-				int[] playersFood = new int[context.players.getSize()];
+				resourceBeat ++;
 				
-				for(int b = 0; b < context.buildings.getBuildingsSize(); b++){
-	
-					if(context.buildings.getBuildingType(b).equals(Names.MINE)){
+				if(resourceBeat == 5 || resourceBeat == 10){
+					
+					int[] playersGold = new int[context.players.getSize()];
+					int[] playersFood = new int[context.players.getSize()];
+					
+					for(int b = 0; b < context.buildings.getBuildingsSize(); b++){
+		
+						if(context.buildings.getBuildingType(b).equals(Names.MINE)
+								&& resourceBeat == 10){
+							
+							playersGold[context.buildings.getBuildingPlayer(b)]++;
 						
-						playersGold[context.buildings.getBuildingPlayer(b)]++;
-					
-					}else if(context.buildings.getBuildingType(b).equals(Names.FARM)){
-
-						playersFood[context.buildings.getBuildingPlayer(b)]++;
+						}else if(context.buildings.getBuildingType(b).equals(Names.FARM)){
+	
+							playersFood[context.buildings.getBuildingPlayer(b)]++;
+						}
 					}
-				}
-				
-				
-				for(int p = 0; p < playersFood.length; p++){
 					
-					context.players.addPlayerResource(playersFood[p], playersGold[p], p);
+					for(int p = 0; p < playersFood.length; p++){
+						
+						context.players.addPlayerResource(playersFood[p], playersGold[p], p);
+					}
+					
+					if(resourceBeat == 10){
+						resourceBeat = 0;
+					}
 				}
 				
 				for(int f = 0; f < context.units.getUnitListSize(); f++){
@@ -280,6 +263,39 @@ public class GameEngine{
 	//								context.units.getUnitMap(unitFollow),unitFollow);
 							
 						}
+					}
+				}
+				
+				ArrayList<int[]> unitsToRecalculate = context.units.getRecalculated();
+				
+				for(int r = 0; r < unitsToRecalculate.size(); r++){
+					
+					if(context.units.getUnits(unitsToRecalculate.get(r)[0]).getRetreat()){
+						
+						continue;
+					}
+		
+					if(unitsToRecalculate.get(r)[1] == 1){
+						
+						MethodParameter parameters = new MethodParameter();
+						parameters.SetMoveUnit(unitsToRecalculate.get(r)[0], unitsToRecalculate.get(r)[2],
+								unitsToRecalculate.get(r)[3], unitsToRecalculate.get(r)[4]);
+						
+						commands.add(MethodCallup.MOVEUNIT,parameters, communicationTurn);
+		//				this.moveUnit(unitsToRecalculate.get(r)[0], unitsToRecalculate.get(r)[2],
+		//						unitsToRecalculate.get(r)[3], unitsToRecalculate.get(r)[4]);
+					}else{
+	//					u,units.get(u).getRecalculate(),target[0],
+	//					target[1],target[2],units.get(u).getFollow()
+						MethodParameter parameters = new MethodParameter();
+						parameters.SetMoveUnit(unitsToRecalculate.get(r)[0], unitsToRecalculate.get(r)[2],
+								unitsToRecalculate.get(r)[3], unitsToRecalculate.get(r)[4],
+								unitsToRecalculate.get(r)[5]);
+						
+						commands.add(MethodCallup.MOVEUNIT,parameters, communicationTurn);
+		//				this.moveUnit(unitsToRecalculate.get(r)[0], unitsToRecalculate.get(r)[2],
+		//						unitsToRecalculate.get(r)[3], unitsToRecalculate.get(r)[4],
+		//						unitsToRecalculate.get(r)[5]);
 					}
 				}
 			}
@@ -328,7 +344,7 @@ public class GameEngine{
 		for(int b = 0; b < context.buildings.getBuildingsSize(); b++){
 			
 			if(context.buildings.isBuildlingJustBuilt(b)){
-				context.players.revealMap(context.buildings.getBuildingX(b), context.buildings.getBuildingY(b),
+				context.players.revealMap((int)context.buildings.getBuildingX(b), (int)context.buildings.getBuildingY(b),
 						context.buildings.getBuildingMap(b), context.buildings.getBuildingPlayer(b),
 						context.buildings.getBuildingDiameterX(b));
 			}

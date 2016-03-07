@@ -56,4 +56,37 @@ public class BuildingProgress {
 		
 		return sites.size();
 	}
+
+	public boolean inSite(int x, int y) {
+		// TODO Auto-generated method stub
+		for(int s = 0; s < sites.size(); s++){
+			
+			if(sites.get(s).getBuilding().inBuilding(x, y)){
+				
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+	public int getSiteSize() {
+		// TODO Auto-generated method stub
+		return sites.size();
+	}
+
+	public int getSiteMap(int s) {
+		// TODO Auto-generated method stub
+		return sites.get(s).getBuilding().getMap();
+	}
+
+	public int getSiteX(int s) {
+		// TODO Auto-generated method stub
+		return sites.get(s).getBuilding().getX();
+	}
+
+	public int getSiteY(int s) {
+		// TODO Auto-generated method stub
+		return sites.get(s).getBuilding().getY();
+	}
 }

@@ -3,6 +3,8 @@ package IntermediateAI;
 import java.util.ArrayList;
 
 import Buildings.BuildingList;
+import Buildings.BuildingProgress;
+import Buildings.BuildingSite;
 import Map.CollisionMap;
 import Map.MapList;
 import Units.UnitList;
@@ -12,17 +14,20 @@ public class MapRouteFinder {
 	private UnitList units;
 	private BuildingList buildings;
 	private MapList maps;
+	private BuildingProgress sites;
 	private ArrayList<int[]> minPath;
 	private int ignoreUnit;
 	
 	/*
 	 * use units, buildings and maps to correctly navigate the map 
 	 */
-	public MapRouteFinder(UnitList units, BuildingList buildings, MapList maps){
+	public MapRouteFinder(UnitList units, BuildingList buildings, MapList maps,
+			BuildingProgress sites){
 		
 		this.units = units;
 		this.buildings = buildings;
 		this.maps = maps;
+		this.sites = sites;
 		minPath = new ArrayList<int[]>();
 		ignoreUnit = -1;
 	}
@@ -54,9 +59,16 @@ public class MapRouteFinder {
 				//System.out.println(startX + " " + startY + " " + targetX + " " + targetY + " MapRouteFinder");
 				//System.out.println("Pre PathFinder MapRouteFinder");
 				//find a path to the target node from the transition point 
-				path.addAll(reverseList(new Pathfinder(new CollisionMap(buildings,units
-						,maps.getMap(currentMap)).getCollisionMap()
-						).getPath(startX, startY, targetX, targetY)));
+				//if(sites == null){
+					path.addAll(reverseList(new Pathfinder(new CollisionMap(buildings,units
+							,maps.getMap(currentMap),currentMap).getCollisionMap()
+							).getPath(startX, startY, targetX, targetY)));
+//				}else{
+//					
+//					path.addAll(reverseList(new Pathfinder(new CollisionMap(buildings,units
+//							,maps.getMap(currentMap),sites).getCollisionMap()
+//							).getPath(startX, startY, targetX, targetY)));
+//				}
 				//System.out.println("Post PathFinder MapRouteFinder");
 			}else{
 				
@@ -100,7 +112,7 @@ public class MapRouteFinder {
 						//find a path from the start transition point to the transition point 
 						//of the next map
 						path.addAll(reverseList(new Pathfinder(new CollisionMap(buildings,units
-						,maps.getMap(currentMap)).getCollisionMap()
+						,maps.getMap(currentMap),currentMap).getCollisionMap()
 						).getPath(startX, startY, 
 								maps.getMap(currentMap).getTransitionPointByIndex(m)[0],
 								maps.getMap(currentMap).getTransitionPointByIndex(m)[1])));

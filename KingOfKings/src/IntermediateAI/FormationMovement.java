@@ -45,7 +45,7 @@ public class FormationMovement {
 			for(int j = posX; j >= 0; j--){
 				if(newPos >= maps.getMapWidth(map) 
 						|| new CollisionMap(buildings, units,
-								maps.getMap(map)).getCollisionMap()[orgPath.get(i)[1]]
+								maps.getMap(map),map).getCollisionMap()[orgPath.get(i)[1]]
 										[newPos] != 0){
 					
 					newPos --;
@@ -76,7 +76,7 @@ public class FormationMovement {
 				
 						ArrayList<int[]> newSection = 
 								new Pathfinder(new CollisionMap(buildings, units,
-										maps.getMap(map)).getCollisionMap()).getPath(orgPath.get(i)[0]
+										maps.getMap(map),map).getCollisionMap()).getPath(orgPath.get(i)[0]
 												, orgPath.get(i)[1],orgPath.get(i-1)[0]
 														, orgPath.get(i-1)[1]);
 						

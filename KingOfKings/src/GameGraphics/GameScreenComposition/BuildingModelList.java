@@ -47,6 +47,7 @@ public class BuildingModelList {
 		this.scaleFactor = scaleFactor;
 		
 		site = new BuildingModel(Names.SITE,"Models",1);
+		site.setSize(0.075f,0.025f, 0.075f);
 		archeryTower = new BuildingModel(Names.ARCHERYTOWER,"Models",1);
 		archeryTower.setSize(0.25f, 0.25f, 0.25f);
 		archeryTower.setTrans(0.1f, 0.1f);

@@ -159,9 +159,7 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 	    		startDB = selectMap(sx,sy);
 	    		lastDB = selectMap(lx,ly);
 	    		
-	    		
-	    		units.addSelectedUnits(startDB, lastDB);
-	    		
+    			units.addSelectedUnits(startDB, lastDB);
 	    	
 	    		drag = false;
 	    	}
@@ -455,6 +453,7 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 		//System.out.println(e.getX() + " " + e.getY());
 		mouse = e;
 		dragBox = false;
+		drag = false;
 		
 		//to remove a left over drag box 
 		startDB = null;
@@ -499,6 +498,7 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 		// TODO Auto-generated method stub
 		return (dragBox &&
 				lastDB != null && startDB != null 
+				&& lastDB[0] != -1 && startDB[0] != -1
 				&& y <= Math.max(lastDB[1],startDB[1]) 
 				&& y >= Math.min(lastDB[1],startDB[1])
 				&& x <= Math.max(lastDB[0],startDB[0]) 
@@ -510,6 +510,14 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 		// TODO Auto-generated method stub
 		this.food = food;
 		this.gold = gold;
+	}
+
+	public void handleReleasedMouse(MouseEvent e) {
+		// TODO Auto-generated method stub
+		lastDB = null;
+		startDB = null;
+		drag = false;
+		dragBox = false;
 	}
 	
 

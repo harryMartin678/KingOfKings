@@ -28,7 +28,7 @@ public class Graphics{
 		pane = window.getContentPane();
 		pane.setLayout(new CardLayout(2,1));
 		cmsg = new ClientMessages();
-		lobby = new LobbyGUI(cmsg);
+		lobby = new LobbyGUI(cmsg,window);
 		pane.add(lobby);
 		
 		window.setVisible(true);

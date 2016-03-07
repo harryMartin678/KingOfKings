@@ -19,12 +19,12 @@ public class BuildingList implements IBuildingList {
 		return buildings.size();
 	}
 	
-	public int getBuildingX(int buildingNo){
+	public float getBuildingX(int buildingNo){
 		
 		return buildings.get(buildingNo).getX();
 	}
 	
-	public int getBuildingY(int buildingNo){
+	public float getBuildingY(int buildingNo){
 		
 		return buildings.get(buildingNo).getY();
 	}
