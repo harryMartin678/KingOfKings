@@ -28,7 +28,7 @@ public class Fort extends Tower {
 	@Override
 	public int getBuildTime() {
 		// TODO Auto-generated method stub
-		return super.getBuildTime()+40;
+		return super.getBuildTime()+75;
 	}
 	
 	@Override
@@ -41,6 +41,18 @@ public class Fort extends Tower {
 	public int getSizeY() {
 		// TODO Auto-generated method stub
 		return super.getSizeY()+3;
+	}
+	
+	@Override
+	public int GoldNeeded() {
+		// TODO Auto-generated method stub
+		return super.GoldNeeded()+500;
+	}
+	
+	@Override
+	public int FoodNeeded() {
+		// TODO Auto-generated method stub
+		return super.FoodNeeded()+1000;
 	}
 
 }

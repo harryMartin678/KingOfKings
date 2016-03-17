@@ -3,23 +3,28 @@ u
 0 Unit:archer 244.0 246.0 0 0 false -1 -1
 1 Unit:Worker:Slave 245.0 247.0 0 0 false -1 -1
 2 Unit:Swordsman:axeman 259.0 257.0 2 0 false -1 -1
-3 Unit:Worker:Slave 244.0 248.0 0 0 false -1 -1
-4 Unit:archer 6.0 8.0 0 1 false -1 -1
-5 Unit:Worker:Slave 7.0 9.0 0 1 false -1 -1
-6 Unit:Swordsman:axeman 21.0 19.0 2 1 false -1 -1
-7 Unit:Worker:Slave 6.0 10.0 0 1 false -1 -1
-8 Unit:archer 6.0 8.0 0 2 false -1 -1
-9 Unit:Worker:Slave 7.0 9.0 0 2 false -1 -1
-10 Unit:Swordsman:axeman 21.0 19.0 2 2 false -1 -1
-11 Unit:Worker:Slave 6.0 10.0 0 2 false -1 -1
-12 Unit:archer 6.0 8.0 0 3 false -1 -1
-13 Unit:Worker:Slave 7.0 9.0 0 3 false -1 -1
-14 Unit:Swordsman:axeman 21.0 19.0 2 3 false -1 -1
-15 Unit:Worker:Slave 6.0 10.0 0 3 false -1 -1
-16 Unit:archer 6.0 8.0 0 4 false -1 -1
-17 Unit:Worker:Slave 7.0 9.0 0 4 false -1 -1
-18 Unit:Swordsman:axeman 21.0 19.0 2 4 false -1 -1
-19 Unit:Worker:Slave 6.0 10.0 0 4 false -1 -1
+3 Unit:Swordsman:axeman 241.0 243.0 0 0 false -1 -1
+4 Unit:Worker:Slave 244.0 248.0 0 0 false -1 -1
+5 Unit:archer 6.0 8.0 0 1 false -1 -1
+6 Unit:Worker:Slave 7.0 9.0 0 1 false -1 -1
+7 Unit:Swordsman:axeman 21.0 19.0 2 1 false -1 -1
+8 Unit:Swordsman:axeman 3.0 5.0 0 1 false -1 -1
+9 Unit:Worker:Slave 6.0 10.0 0 1 false -1 -1
+10 Unit:archer 6.0 8.0 0 2 false -1 -1
+11 Unit:Worker:Slave 7.0 9.0 0 2 false -1 -1
+12 Unit:Swordsman:axeman 21.0 19.0 2 2 false -1 -1
+13 Unit:Swordsman:axeman 3.0 5.0 0 2 false -1 -1
+14 Unit:Worker:Slave 6.0 10.0 0 2 false -1 -1
+15 Unit:archer 6.0 8.0 0 3 false -1 -1
+16 Unit:Worker:Slave 7.0 9.0 0 3 false -1 -1
+17 Unit:Swordsman:axeman 21.0 19.0 2 3 false -1 -1
+18 Unit:Swordsman:axeman 3.0 5.0 0 3 false -1 -1
+19 Unit:Worker:Slave 6.0 10.0 0 3 false -1 -1
+20 Unit:archer 6.0 8.0 0 4 false -1 -1
+21 Unit:Worker:Slave 7.0 9.0 0 4 false -1 -1
+22 Unit:Swordsman:axeman 21.0 19.0 2 4 false -1 -1
+23 Unit:Swordsman:axeman 3.0 5.0 0 4 false -1 -1
+24 Unit:Worker:Slave 6.0 10.0 0 4 false -1 -1
 b
 0 royalpalace 250.0 250.0 0
 1 stockpile 256.0 256.0 0

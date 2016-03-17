@@ -334,6 +334,33 @@ IComBuildingListFrameProcess {
 		return buildings.get(buildingNo).getY();
 	}
 
+	@Override
+	public int getBuildingDiameterX(int buildingNo) {
+		// TODO Auto-generated method stub
+		return Building.GetBuildingClass(buildings.get(buildingNo).getName()).getSizeX();
+	}
+
+	@Override
+	public int getBuildingDiameterY(int buildingNo) {
+		// TODO Auto-generated method stub
+		return Building.GetBuildingClass(buildings.get(buildingNo).getName()).getSizeY();
+	}
+
+	@Override
+	public void clearAllQueues() {
+		// TODO Auto-generated method stub
+		
+		for(int b = 0; b < buildings.size(); b++){
+			
+			buildings.get(b).clearUnitQueue();
+		}
+		
+		if(SelectedBuilding != null){
+			
+			SelectedBuilding.clearUnitQueue();
+		}
+	}
+
 
 
 }

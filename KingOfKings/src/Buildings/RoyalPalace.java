@@ -1,6 +1,6 @@
 package Buildings;
 
-public class RoyalPalace extends UnitCreator {
+public class RoyalPalace extends Building{
 	
 	 public RoyalPalace(int buildingNo) {
 		super(buildingNo);
@@ -13,11 +13,6 @@ public class RoyalPalace extends UnitCreator {
 		return "royalpalace";
 	}
 	 
-	 @Override
-	public String unitcreated() {
-		// TODO Auto-generated method stub
-		return super.unitcreated() + Names.SLAVE;
-	}
 
 	@Override
 	public int getMaxHitpoint() {

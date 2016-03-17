@@ -72,7 +72,6 @@ public class GameEngine{
 		
 		
 		for(int i = 0; i < playerNo; i++){
-			
 			context.maps.getMap(i).setPlayer(i);
 			context.players.setPlayerViewedMap(i,i);
 		}
@@ -95,6 +94,7 @@ public class GameEngine{
 			context.units.addUnit(Names.ARCHER, i, (context.maps.getMapWidth(i)/2)-6, (context.maps.getMapHeight(i)/2)-4, context.maps.getPlayer(i));
 			context.units.addUnit(Names.SLAVE, i, (context.maps.getMapWidth(i)/2)-5, (context.maps.getMapHeight(i)/2)-3, context.maps.getPlayer(i));
 			context.units.addUnit(Names.AXEMAN, i, (context.maps.getMapWidth(i)/2)+9, (context.maps.getMapHeight(i)/2)+7, 2);
+			context.units.addUnit(Names.AXEMAN, i, (context.maps.getMapWidth(i)/2)-9, (context.maps.getMapHeight(i)/2)-7, context.maps.getPlayer(i));
 			context.units.addUnit(Names.SLAVE, i, (context.maps.getMapWidth(i)/2)-6, (context.maps.getMapHeight(i)/2)-2, context.maps.getPlayer(i));
 		}
 
@@ -193,10 +193,6 @@ public class GameEngine{
 					addUnit(context.buildings.getFinishedUnit(b),context.buildings.getBuilding(b));
 				}
 			}
-			
-			
-				
-			
 			
 			int[] com;
 			

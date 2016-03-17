@@ -113,6 +113,11 @@ public class Server {
 	
 	public boolean messageReady(int player) throws IOException{
 		
+		if(player >= readers.size()){
+			
+			return false;
+		}
+		
 		return readers.get(player).ready();
 	}
 	

@@ -184,7 +184,7 @@ public class MethodCallup implements Commands {
 			context.units.addPathToUnit(unitNo, 
 					new MapRouteFinder(context.units, context.buildings, context.maps
 					,context.sites).getPath((int) context.units.getMoveUnitX(unitNo),(int) context.units.getMoveUnitY(unitNo)
-							,targetX, targetY,context.units.getUnitMap(unitNo),targetMap));
+							,targetX, targetY,context.units.getUnitMap(unitNo),targetMap),false);
 		}
 
 	}
@@ -196,7 +196,7 @@ public class MethodCallup implements Commands {
 		context.units.addPathToUnit(unitNo, 
 				new MapRouteFinder(context.units, context.buildings, context.maps,ignoreUnit
 				).getPath((int) context.units.getMoveUnitX(unitNo),(int) context.units.getMoveUnitY(unitNo)
-						,targetX, targetY,context.units.getUnitMap(unitNo),targetMap));
+						,targetX, targetY,context.units.getUnitMap(unitNo),targetMap),true);
 		
 
 	}
@@ -219,8 +219,8 @@ public class MethodCallup implements Commands {
 		// TODO Auto-generated method stub
 		
 		context.units.setFollow(unitNo,unitFollow);
-		System.out.println(unitFollow +" "+ (int) context.units.getUnitX(unitFollow) + " " + (int) context.units.getUnitY(unitFollow)
-				+ " " +context.units.getUnitMap(unitFollow) + " inMethodCallup FollowUnit");
+		//System.out.println(unitFollow +" "+ (int) context.units.getUnitX(unitFollow) + " " + (int) context.units.getUnitY(unitFollow)
+			//	+ " " +context.units.getUnitMap(unitFollow) + " inMethodCallup FollowUnit");
 		this.moveUnit(unitNo, (int) context.units.getUnitX(unitFollow), (int) context.units.getUnitY(unitFollow),
 				context.units.getUnitMap(unitFollow),unitFollow);
 		
@@ -293,7 +293,7 @@ public class MethodCallup implements Commands {
 		//System.out.println("setWayPoints Methodcallup after");
 		
 		//add the path to the unit 
-		context.units.addPathToUnit(unitNo, totalPath);
+		context.units.addPathToUnit(unitNo, totalPath,false);
 	}
 	
 	@Override

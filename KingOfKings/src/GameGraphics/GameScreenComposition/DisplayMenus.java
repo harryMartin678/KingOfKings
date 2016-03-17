@@ -321,7 +321,6 @@ public class DisplayMenus {
 		public void drawUnitIcons(float x, float y,float z, GL2 draw,
 				int playerNumber,Building SelectedBuilding,int food,int gold){
 			
-				
 				if(SelectedBuilding != null && Building.GetBuildingClass(SelectedBuilding.getName())
 						instanceof UnitCreator){
 //					float offsetX = 1.75f;

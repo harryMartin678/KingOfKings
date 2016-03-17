@@ -22,7 +22,7 @@ public class Wall extends Defence {
 	@Override
 	public int getBuildTime() {
 		// TODO Auto-generated method stub
-		return super.getBuildTime()+1;
+		return super.getBuildTime()+10;
 	}
 	
 	@Override
@@ -35,5 +35,11 @@ public class Wall extends Defence {
 	public int getSizeY() {
 		// TODO Auto-generated method stub
 		return super.getSizeY()+1;
+	}
+	
+	@Override
+	public int FoodNeeded() {
+		// TODO Auto-generated method stub
+		return super.FoodNeeded()+20;
 	}
 }

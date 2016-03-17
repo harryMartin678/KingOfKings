@@ -116,7 +116,7 @@ public class Battle {
 			
 			}else{
 				
-				two.setRetreat(false);
+				two.setRetreat(false,true);
 			}
 	
 		
@@ -137,12 +137,10 @@ public class Battle {
 			
 			}else{
 				
-				one.setRetreat(false);
+				one.setRetreat(false,true);
 			}
 
 		}
-		
-		
 		
 		if(!turn) count++;
 		//battle is turn based hits 

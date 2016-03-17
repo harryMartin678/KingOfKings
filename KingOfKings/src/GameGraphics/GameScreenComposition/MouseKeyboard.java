@@ -109,6 +109,8 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 		    		  
 		    	  }else if(buildings.isBuildingGhost() && buildings.canBuildGhostBuilding()){
 		    		  
+		    		  
+		    		  units.clearAttackSelectedUnits();
 		    		  //buildings.begin();
 		    		 // System.out.println(units.getUnitsSelectedString() + " MouseKeyboard");
 		    		  cmsg.addMessage("bb " + buildings.getGhostBuildingX() + " " + buildings.getGhostBuildingY()
@@ -281,7 +283,7 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 				,x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.ROYALPALACE), gold, food)){
 			
 			//System.out.println(2 + " " + 2);
-			buildings.setGhostBuilding(new Building(Names.ROYALPALACE));
+			//buildings.setGhostBuilding(new Building(Names.ROYALPALACE));
 		
 		//3 2
 		}else if(inRect(0.09297218173742294,0.6354609727859497,0.1229868233203888,0.7248227000236511,

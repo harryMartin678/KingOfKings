@@ -71,10 +71,9 @@ public class MapRouteFinder {
 //				}
 				//System.out.println("Post PathFinder MapRouteFinder");
 			}else{
-				
 				//find a path to the target node from the transition point 
 				path.addAll(reverseList(new Pathfinder(new CollisionMap(buildings,units
-						,maps.getMap(currentMap),ignoreUnit).getCollisionMap()
+						,maps.getMap(currentMap),ignoreUnit,currentMap).getCollisionMap()
 						).getPath(startX, startY, targetX, targetY)));
 				
 			}

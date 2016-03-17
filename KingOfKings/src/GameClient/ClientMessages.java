@@ -115,9 +115,15 @@ public class ClientMessages implements IGotToTurn{
 		
 		}else{
 			
-			String in = inputs.get(0);
-			inputs.remove(0);
-			return in;
+			try{
+				String in = inputs.get(0);
+				inputs.remove(0);
+				return in;
+			}catch(IndexOutOfBoundsException e){
+				
+				return "null";
+			}
+			
 		}
 		
 	}

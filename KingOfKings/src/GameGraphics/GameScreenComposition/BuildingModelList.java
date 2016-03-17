@@ -69,8 +69,8 @@ public class BuildingModelList {
 		fort.setSize(0.35f, 0.37f, 0.35f);
 		fort.setTrans(-1.7f, -1.6f);
 		royalPalace = new BuildingModel(Names.ROYALPALACE,"Models",1);//4 4
-		royalPalace.setSize(0.38f, 0.4f, 0.38f);
-		royalPalace.setTrans(0.5f, 0.55f);
+		royalPalace.setSize(0.45f, 0.4f, 0.38f);
+		royalPalace.setTrans(0.4f, 0.55f);
 		stable = new BuildingModel(Names.STABLE,"Models",1); //2 2
 		stable.setTrans(0.2f, -1.0f);
 		stable.setSize(0.32f, 0.32f, 0.32f);
@@ -264,7 +264,7 @@ public class BuildingModelList {
 		
 		draw.glLoadIdentity();
 		
-		draw.glTranslatef(x-width-frameX, y-height-frameY, -35f);
+		draw.glTranslatef(x-width-frameX, y-height-frameY, -33f);
 		draw.glScalef(0.5f, 0.5f, 0.5f);
 		draw.glRotatef(90.0f, 1, 0, 0);
 		draw.glColor3f(red, green, blue);
@@ -341,11 +341,11 @@ public class BuildingModelList {
 				WIDTH_CONST,HEIGHT_CONST,z,false,0.133f,frameX,frameY);
 		
 		Building royalPala = new Building(x + 3.0f, y + 1.75f, Names.ROYALPALACE,-1,0);
-		
-		SetEnoughRes(royalPala, gold, food);
-		
-		drawBuildingModel(royalPalace, draw,royalPala,
-				WIDTH_CONST,HEIGHT_CONST,z,false,0.1f,frameX,frameY);
+//		
+//		SetEnoughRes(royalPala, gold, food);
+//		
+//		drawBuildingModel(royalPalace, draw,royalPala,
+//				WIDTH_CONST,HEIGHT_CONST,z,false,0.1f,frameX,frameY);
 		
 		Building stab = new Building(x + 4.0f, y + 1.5f, Names.STABLE,-1,0);
 		

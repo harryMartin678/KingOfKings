@@ -9,5 +9,7 @@ public interface IBuildingList {
 	public int getBuildingMap(int buildingNo);
 	public float getBuildingX(int buildingNo);
 	public float getBuildingY(int buildingNo);
+	public int getBuildingDiameterX(int buildingNo);
+	public int getBuildingDiameterY(int buildingNo);
 
 }

@@ -82,6 +82,8 @@ public class UnitBattleList {
 		
 		for(int u = 0; u < battles.size(); u++){
 			
+			boolean simulateHit = false;
+			
 			if(battles.get(u).death()){
 						
 				units.begin();
@@ -90,32 +92,21 @@ public class UnitBattleList {
 				units.stopRetreat(battles.get(u).getOneID());
 				units.stopRetreat(battles.get(u).getTwoID());
 				removeBattle(u);
+				u--;
 				units.end();
 				
 				continue;
 			}
 		
 			if(units.collision(battles.get(u).getOneID(),
-					battles.get(u).getTwoID())){
-				
-				battles.get(u).similuateHit(new CollisionMap(buildings,units,
-						maps.getMap(units.getUnitMap(battles.get(u).getOneID())),
-								units.getUnitMap(battles.get(u).getOneID())));
+					battles.get(u).getTwoID(),
+					units.getUnits(battles.get(u).getOneID()).getRange())){
+				simulateHit = true;
 				
 				if(!units.isAttacking(battles.get(u).getOneID())){
 					
 					units.attack(battles.get(u).getOneID(),battles.get(u).getUnitPosTwo()[0],
 							battles.get(u).getUnitPosTwo()[1]);
-				
-				}else if(units.getUnitMoving(battles.get(u).getOneID())){
-					
-					units.stopAttack(battles.get(u).getOneID());
-				}
-				
-				if(!units.isAttacking(battles.get(u).getTwoID())){
-					
-					units.attack(battles.get(u).getTwoID(),battles.get(u).getUnitPosOne()[0],
-							battles.get(u).getUnitPosOne()[1]);
 					
 					if(!onUnitsToFollow(battles.get(u).getOneID(), battles.get(u).getTwoID())){
 						//System.out.println("Add To unit Follow: " + battles.get(u).getTwoID() + " "
@@ -123,37 +114,44 @@ public class UnitBattleList {
 						unitsToFollow.add(new int[]{battles.get(u).getTwoID(),battles.get(u).getOneID()});
 					}
 				
-				}else if(units.getUnitMoving(battles.get(u).getTwoID())){
+				}else if(units.getUnitMoving(battles.get(u).getOneID())){
 					
-					units.stopAttack(battles.get(u).getTwoID());
+					units.stopAttack(battles.get(u).getOneID(),true);
 				}
 				
-//				if(!battles.get(u).CanAttackOne()){
-//					
-//					units.stopAttack(battles.get(u).getOneID());
-//				
-//				}else if(!units.isAttacking(battles.get(u).getOneID())){
-//					
-//					units.attack(battles.get(u).getOneID(),battles.get(u).getUnitPosTwo()[0],
-//							battles.get(u).getUnitPosTwo()[1]);
-//				}
-//				
-//				if(!battles.get(u).CanAttackTwo()){
-//					
-//					units.stopAttack(battles.get(u).getTwoID());
-//				
-//				}else if(!units.isAttacking(battles.get(u).getTwoID())){
-//					
-//					units.attack(battles.get(u).getTwoID(),battles.get(u).getUnitPosOne()[0],
-//							battles.get(u).getUnitPosOne()[1]);
-//				}
-				
-				
-			
 			}else{
 				
-				units.stopAttack(battles.get(u).getOneID());
-				units.stopAttack(battles.get(u).getTwoID());
+				units.stopAttack(battles.get(u).getOneID(),true);
+				
+			}
+			
+			if(units.collision(battles.get(u).getOneID(),
+					battles.get(u).getTwoID(),
+					units.getUnits(battles.get(u).getTwoID()).getRange())){
+				
+				simulateHit = true;
+				
+				if(!units.isAttacking(battles.get(u).getTwoID())){
+					
+					units.attack(battles.get(u).getTwoID(),battles.get(u).getUnitPosOne()[0],
+							battles.get(u).getUnitPosOne()[1]);
+					
+					
+				
+				}else if(units.getUnitMoving(battles.get(u).getTwoID())){
+					
+					units.stopAttack(battles.get(u).getTwoID(),true);
+				}
+	
+			}else{
+				
+				units.stopAttack(battles.get(u).getTwoID(),true);
+			}
+			
+			if(simulateHit){
+				battles.get(u).similuateHit(new CollisionMap(buildings,units,
+						maps.getMap(units.getUnitMap(battles.get(u).getOneID())),
+								units.getUnitMap(battles.get(u).getOneID())));
 			}
 		}
 	}

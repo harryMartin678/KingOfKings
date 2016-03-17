@@ -24,7 +24,6 @@ public class Graphics{
 		
 		window.setTitle("King of Kings");
 		
-		
 		pane = window.getContentPane();
 		pane.setLayout(new CardLayout(2,1));
 		cmsg = new ClientMessages();

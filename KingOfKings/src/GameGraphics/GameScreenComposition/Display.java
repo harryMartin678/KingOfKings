@@ -128,7 +128,7 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    		}
 	    	}
 	    	
-	    	//checked =! checked;
+	    	checked =! checked;
 	    }
 	}
 	
@@ -216,14 +216,12 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    	}
 	    	
 	    	if(buildings.isSelectedBuilding(buildings.get(b))){
-	    		
 	    		Buildings.Building type = Building.GetBuildingClass(buildings.get(b).getName());
-	    		
 	    		draw.glLoadIdentity();
 	    		draw.glTranslatef(buildings.get(b).getX()-(FRAME_Y_SIZE/WIDTH_CONST)-frameX, 
-	    				buildings.get(b).getY()-(FRAME_X_SIZE/HEIGHT_CONST)-frameY, -34.0f);
+	    				buildings.get(b).getY()-(FRAME_X_SIZE/HEIGHT_CONST)-frameY, -33.0f);
 	    		draw.glColor3f(0.0f, 0.0f, 1.0f);
-	    		draw.glScalef(0.5f*type.getSizeX(), 0.5f*type.getSizeY(), 0.5f);
+	    		draw.glScalef(type.getSizeX(), type.getSizeY(), 1.0f);
 	    		
 	    		
 	    		draw.glBegin(draw.GL_LINE_LOOP);
@@ -262,21 +260,23 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    drawUnits(draw);
 	    drawBuildings(draw);
 	    
-	    buildings.begin();
-	    //shows collision map on the map
-	    int[][] coll = new CollisionMap(buildings,units,map.getMap(),map.getViewedMap()).getCollisionMap();
-	    
-	    for(int y = 0; y < coll.length; y++){
-	    	for(int x = 0; x < coll[y].length; x++){
-	    		
-	    		if(coll[y][x] <=3 && coll[y][x] >=1){
-		    		drawTile(draw,x,y,0.0f,1.0f,0.0f,
-		    				FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
-	    		}
-	    	}
-	    }
-	    
-	    buildings.end();
+//	    buildings.begin();
+//	    //shows collision map on the map
+//	    CollisionMap mapC = new CollisionMap(buildings,units,map.getMap(),map.getViewedMap());
+//	    mapC.setDebug();
+//	    int[][] coll = mapC.getCollisionMap();
+//	    
+//	    for(int y = 0; y < coll.length; y++){
+//	    	for(int x = 0; x < coll[y].length; x++){
+//	    		
+//	    		if(coll[y][x] > 0){
+//		    		drawTile(draw,x,y,0.0f,1.0f,0.0f,
+//		    				FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
+//	    		}
+//	    	}
+//	    }
+//	    
+//	    buildings.end();
 	   
 	    draw.glDisable(draw.GL_LIGHTING);
 	    //draw menus 
@@ -345,6 +345,7 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 		}else if(player == 5){
 			
 			return FloatBuffer.wrap(new float[]{0.0f,1.0f,1.0f});
+			
 		}else if(player == 6){
 			
 			return FloatBuffer.wrap(new float[]{1.0f,0.0f,1.0f});

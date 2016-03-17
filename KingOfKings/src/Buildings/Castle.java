@@ -28,14 +28,15 @@ public class Castle extends Fort {
 	@Override
 	public int getBuildTime() {
 		// TODO Auto-generated method stub
-		return super.getBuildTime()+60;
+		return super.getBuildTime()+100;
 	}
 	
 	@Override
 	public String unitcreated() {
 		// TODO Auto-generated method stub
-		return super.unitcreated() + "batteringram;heavybatteringram";
+		return super.unitcreated() + Names.BATTERINGRAM + ";" + Names.HEAVYARCHER;
 	}
+	
 	
 	@Override
 	public int getSizeX() {
@@ -47,6 +48,18 @@ public class Castle extends Fort {
 	public int getSizeY() {
 		// TODO Auto-generated method stub
 		return super.getSizeY();
+	}
+	
+	@Override
+	public int GoldNeeded() {
+		// TODO Auto-generated method stub
+		return super.GoldNeeded()+1000;
+	}
+	
+	@Override
+	public int FoodNeeded() {
+		// TODO Auto-generated method stub
+		return super.FoodNeeded()+2000;
 	}
 
 }

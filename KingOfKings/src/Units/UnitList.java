@@ -50,12 +50,22 @@ public class UnitList implements Cloneable,IUnitList {
 	
 	public void stopAttack(int unitNo){
 		
-		units.get(unitNo).stopAttack();
+		units.get(unitNo).stopAttack(false);
+	}
+	
+	public void stopAttack(int unitNo,boolean delay){
+		
+		units.get(unitNo).stopAttack(delay);
 	}
 	
 	public void stopRetreat(int unitNo){
 		
-		units.get(unitNo).setRetreat(false);
+		units.get(unitNo).setRetreat(false,false);
+	}
+	
+	public void stopRetreat(int unitNo,boolean delay){
+		
+		units.get(unitNo).setRetreat(false,delay);
 	}
 	
 	public boolean isAttacking(int unitNo){
@@ -198,7 +208,13 @@ public class UnitList implements Cloneable,IUnitList {
 	
 
 	
-	public void addPathToUnit(int unitNo,ArrayList<int[]> path){
+	public void addPathToUnit(int unitNo,ArrayList<int[]> path,boolean cutEndOff){
+		
+		
+		if(cutEndOff){
+			
+			path.remove(path.size()-1);
+		}
 		
 		units.get(unitNo).move();
 		units.get(unitNo).setPath(path);
@@ -260,9 +276,9 @@ public class UnitList implements Cloneable,IUnitList {
 		return smallestSpeed;
 	}
 	
-	public boolean collision(int one, int two){
+	public boolean collision(int one, int two,int range){
 		
-		return generalCollision(one,two,Math.max(units.get(one).getRange(), units.get(two).getRange()));
+		return generalCollision(one,two,range);
 
 		
 	}

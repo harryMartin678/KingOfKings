@@ -1,6 +1,6 @@
 package Buildings;
 
-public class Stockpile extends Resource {
+public class Stockpile extends UnitCreator {
 
 	public Stockpile(int buildingNo) {
 		super(buildingNo);
@@ -10,7 +10,7 @@ public class Stockpile extends Resource {
 	@Override
 	public String getType() {
 		// TODO Auto-generated method stub
-		return "stockpile";
+		return Names.STOCKPILE;
 	}
 
 	@Override
@@ -22,12 +22,18 @@ public class Stockpile extends Resource {
 	@Override
 	public int getBuildTime() {
 		// TODO Auto-generated method stub
-		return super.getBuildTime()+20;
+		return super.getBuildTime()+50;
 	}
 	
 	public String getUnitBuild(){
 		
-		return "slave;servant";
+		return Names.SLAVE + ";" + Names.SERVANT;
+	}
+	
+	@Override
+	public String unitcreated() {
+		// TODO Auto-generated method stub
+		return super.unitcreated() + Names.SLAVE + ":" + Names.SERVANT;
 	}
 	
 	@Override

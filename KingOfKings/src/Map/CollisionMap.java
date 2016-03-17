@@ -109,7 +109,6 @@ public class CollisionMap {
 		for(int u = 0; u < units.getUnitListSize(); u++){
 			
 			if(units.getUnitMap(u) == -1 || units.getUnitMap(u) == this.viewedMap){
-				
 				collisionMap[(int)units.getUnitY(u)][(int)units.getUnitX(u)] = 8;
 			}
 		}
@@ -117,11 +116,20 @@ public class CollisionMap {
 		
 		for(int b = 0; b < buildings.getBuildingsSize(); b++){
 			
+			//System.out.println((buildings.getBuildingMap(b) == this.viewedMap || 
+			//		buildings.getBuildingMap(b) == -1) + " CollisionMap");
 			if(buildings.getBuildingMap(b) == -1 || buildings.getBuildingMap(b) == this.viewedMap){
-				
-				collisionMap[(int)buildings.getBuildingX(b)][(int)buildings.getBuildingY(b)] = 9;
+				//collisionMap[(int)buildings.getBuildingY(b)][(int)buildings.getBuildingX(b)] = 9;
+				fillInBuilding((int)buildings.getBuildingX(b),(int)buildings.getBuildingY(b),
+						buildings.getBuildingDiameterX(b),buildings.getBuildingDiameterY(b));
 			}
 		}
+		
+		if(ignoreUnit != -1){
+			
+			collisionMap[(int)units.getUnitY(ignoreUnit)][(int)units.getUnitX(ignoreUnit)] = 0;
+		}
+		
 		
 //		for(int s = 0; s < sites.getSiteSize();s++){
 //			
@@ -130,6 +138,17 @@ public class CollisionMap {
 //				collisionMap[(int)sites.getSiteX(s)][(int)sites.getSiteY(s)] = 10;
 //			}
 //		}
+	}
+	
+	
+	private void fillInBuilding(int x, int y,int sizeX,int sizeY){
+		
+		for(int sy = y - (sizeY-1); sy < y + sizeY; sy++){
+			for(int sx = x - (sizeX-1); sx < x + sizeX; sx++){
+				
+				collisionMap[sy][sx] = 9;
+			}
+		}
 	}
 	
 //	private void createCollisionMap(){
@@ -215,6 +234,21 @@ public class CollisionMap {
 		
 		return true;
 	}
+	
+//	public static void main(String[] args){
+//		
+//		int[][]  map = new int[10][10];
+//		CollisionMap.fillInBuilding(5,5, 2, 2,map);
+//		
+//		for(int y = 0; y < map.length; y++){
+//			for(int x = 0; x < map[y].length; x++){
+//				
+//				System.out.print(map[y][x]);
+//			}
+//			
+//			System.out.println();
+//		}
+//	}
 	
 	
 //	public static void main(String[] args) {

@@ -15,7 +15,7 @@ public class BuildingDestruction {
 	
 	public void stopAttacking(){
 		
-		unit.stopAttack();
+		unit.stopAttack(false);
 	}
 	
 	public boolean buildingDestroyed(){
@@ -39,7 +39,7 @@ public class BuildingDestruction {
 			
 			if(unit.isAttacking()){
 				//System.out.println("UNIT STOP ATTACK in buildingdestruction");
-				unit.stopAttack();
+				unit.stopAttack(false);
 			}
 		}
 	}

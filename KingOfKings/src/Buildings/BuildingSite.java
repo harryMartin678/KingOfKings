@@ -52,7 +52,7 @@ public class BuildingSite {
 				tempProgress += (double) 1/ (double) (i+1);
 				
 			}else{
-				creators.get(i).stopAttack();
+				creators.get(i).stopAttack(false);
 			}
 		}
 		
@@ -66,7 +66,7 @@ public class BuildingSite {
 			
 			for(int c = 0; c < creators.size(); c++){
 				
-				creators.get(c).stopAttack();
+				creators.get(c).stopAttack(false);
 			}
 			
 			return false;

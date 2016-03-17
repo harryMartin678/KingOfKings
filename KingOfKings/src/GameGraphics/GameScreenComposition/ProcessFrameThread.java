@@ -134,6 +134,8 @@ public class ProcessFrameThread {
 		
 		String msg;
 		
+		buildings.clearAllQueues();
+		
 //		for(int i = 0; i < msgs.size(); i++){
 //			
 //			System.out.println(msgs.get(i));
@@ -312,6 +314,8 @@ public class ProcessFrameThread {
 		
 		m++;
 		
+		
+		
 		while(!(m >= msgs.size() || msgs.get(m).equals("resource"))){
 			
 			if(msgs.get(m).equals("buildingqueue") || msgs.get(m).equals("")){
@@ -319,7 +323,6 @@ public class ProcessFrameThread {
 				m++;
 				continue;
 			}
-			
 			//System.out.println(msgs.get(m) + "|||| building Queue");
 			String[] queueInfo = msgs.get(m).split(" ");
 		
@@ -334,7 +337,6 @@ public class ProcessFrameThread {
 				
 				//System.out.println(building.getSize() + " before");
 				for(int u = 2; u < queueInfo.length; u++){
-					
 					//System.out.println(queueInfo.length + " queueInfo");
 					buildings.addUnitToBuildingQueue(new Integer(queueInfo[0]).intValue(), queueInfo[u]);
 					//buildings.get(new Integer(queueInfo[0]).intValue()).addUnitQueue(queueInfo[u]);

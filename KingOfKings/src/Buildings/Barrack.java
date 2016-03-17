@@ -22,7 +22,7 @@ public class Barrack extends Army {
 	@Override
 	public int getBuildTime() {
 		// TODO Auto-generated method stub
-		return super.getBuildTime()+30;
+		return super.getBuildTime()+50;
 	}
 	
 	@Override
@@ -40,12 +40,27 @@ public class Barrack extends Army {
 	@Override
 	public String unitcreated() {
 		// TODO Auto-generated method stub
-		return super.unitcreated() +"archer;heavyarcher;axeman;spearman;swordsman";
+		return super.unitcreated() +Names.SPEARMAN + ";" + Names.AXEMAN + ";" + Names.SWORDSMAN + 
+					";" + Names.ARCHER + ";" + Names.HEAVYARCHER;
 	}
 	
 	public String getUnitBuild(){
 		
-		return "Spearman;Axeman;Swordsman;Archer;HeavyArcher";
+		
+		return Names.SPEARMAN + ";" + Names.AXEMAN + ";" + 
+				Names.SWORDSMAN + ";" + Names.ARCHER + ";" + Names.HEAVYARCHER;
+	}
+	
+	@Override
+	public int GoldNeeded() {
+		// TODO Auto-generated method stub
+		return super.GoldNeeded()+250;
+	}
+	
+	@Override
+	public int FoodNeeded() {
+		// TODO Auto-generated method stub
+		return super.FoodNeeded()+400;
 	}
 
 }

@@ -385,6 +385,7 @@ public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,I
 				
 				///System.out.println("Remove: " + selectedUnits.get(u).unitNo);
 				selectedUnits.remove(u);
+				u--;
 			}
 		}
 		
@@ -409,5 +410,17 @@ public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,I
 		return -1;
 	}
 
+	@Override
+	public void clearAttackSelectedUnits() {
+		// TODO Auto-generated method stub
+		for(int u = 0; u < selectedUnits.size(); u++){
+			
+			if(!selectedUnits.get(u).isWorker){
+				
+				selectedUnits.remove(u);
+				u--;
+			}
+		}
+	}
 
 }

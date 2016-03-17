@@ -19,6 +19,8 @@ public class Unit {
 	private int follow;
 	private int unitNo;
 	private boolean isAttack;
+	private int delayAttack;
+	private int delayRetreat;
 	
 	private float groupSpeed;
 	private boolean stop;
@@ -38,17 +40,30 @@ public class Unit {
 		stop = false;
 		isAttack = false;
 		retreat = false;
+		delayAttack = 0;
+		delayRetreat = 0;
 	}
 	
 	public void attack(int ax, int ay){
 		
-		this.setOrientation(this.x,this.y, ax, ay);
-		isAttack = true;
+		//if(delayAttack == 10){
+			//System.out.println(x + " " + y + " " + ax + " " + ay + " Unit");
+			this.setOrientation(this.x,this.y, ax, ay);
+			isAttack = true;
+		//	delayAttack = 0;
+		//}else{
+		//	delayAttack++;
+		//}
+		
 	}
 	
-	public void stopAttack(){
-		
-		isAttack = false;
+	public void stopAttack(boolean delay){
+		if(delayAttack == 5 || !delay){
+			isAttack = false;
+			delayAttack = 0;
+		}else{
+			delayAttack++;
+		}
 	}
 	
 	public boolean isAttacking(){
@@ -61,9 +76,13 @@ public class Unit {
 		return unitNo;
 	}
 	
-	public void setRetreat(boolean retreat){
-		
-		this.retreat = retreat;
+	public void setRetreat(boolean retreat,boolean delay){
+		if(delayRetreat == 5 || !delay){
+			this.retreat = retreat;
+			delayRetreat = 0;
+		}else{
+			delayRetreat ++;
+		}
 	}
 	
 	public boolean getRetreat(){
@@ -319,7 +338,7 @@ public class Unit {
 		
 		}else if(targetX - x > 0 && targetY - y > 0){
 			
-			//System.out.println("315 unit");
+			//System.out.println("135 unit");
 			angle = 135;
 		
 		}else if(targetX - x < 0 && targetY - y > 0){
@@ -543,7 +562,7 @@ public class Unit {
 			float tempDist = (float) Math.sqrt(Math.abs(((int)this.getX() + (int)directions[d])-rx)
 					 + Math.abs(((int)this.getY() + (int)directions[d+1]) - ry));
 			
-			if(areaCanWalk[(int)this.getX() + (int)directions[d]][(int)this.getY() + (int)directions[d+1]] == 0
+			if(areaCanWalk[(int)this.getY() + (int)directions[d]][(int)this.getX() + (int)directions[d+1]] == 0
 					&& tempDist > distance){
 				
 				distance = tempDist;

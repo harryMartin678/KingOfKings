@@ -285,7 +285,7 @@ public class UnitModelList {
 	public void drawBuildingUnitIcons(float x, float y,float z
 			,GL2 draw,int playerNumber,Building SelectedBuilding,int food,int gold){
 		
-		UnitCreator type = (UnitCreator) Building.GetBuildingClass(SelectedBuilding.getName());
+		UnitCreator type = (UnitCreator)Building.GetBuildingClass(SelectedBuilding.getName());
 		
 		String unitsPossible = type.unitcreated();
 		
@@ -323,6 +323,7 @@ public class UnitModelList {
 	
 	public Model getUnitModel(String name){
 		
+		//System.out.println(name + " UnitModeList getUnitModel");
 		for(int u = 0; u < unitModels.length; u++){
 			
 			if(unitModels[u].getName().equals(name)){
@@ -347,7 +348,7 @@ public class UnitModelList {
 		outerLoop:
 		for(int uy = 0; uy < 4; uy++){
 			for(int ux = 0; ux < 5; ux++){
-				
+				//System.out.println(selectedBuilding.getSize() + " building queue UnitModeList");
 				if(queueNo >= selectedBuilding.getSize()){
 					
 					break outerLoop;
