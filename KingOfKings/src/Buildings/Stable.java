@@ -10,7 +10,7 @@ public class Stable extends Army {
 	@Override
 	public String getType() {
 		// TODO Auto-generated method stub
-		return "stable";
+		return Names.STABLE;
 	}
 
 	@Override
@@ -22,7 +22,7 @@ public class Stable extends Army {
 	@Override
 	public int getBuildTime() {
 		// TODO Auto-generated method stub
-		return super.getBuildTime()+50;
+		return super.getBuildTime()+100;
 	}
 	
 	@Override
@@ -46,12 +46,12 @@ public class Stable extends Army {
 	@Override
 	public int GoldNeeded() {
 		// TODO Auto-generated method stub
-		return super.GoldNeeded()+200;
+		return super.GoldNeeded()+600;
 	}
 	
 	@Override
 	public int FoodNeeded() {
 		// TODO Auto-generated method stub
-		return super.FoodNeeded()+500;
+		return super.FoodNeeded()+750;
 	}
 }

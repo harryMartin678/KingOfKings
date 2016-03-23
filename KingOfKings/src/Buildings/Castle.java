@@ -28,7 +28,7 @@ public class Castle extends Fort {
 	@Override
 	public int getBuildTime() {
 		// TODO Auto-generated method stub
-		return super.getBuildTime()+100;
+		return super.getBuildTime()+200;
 	}
 	
 	@Override

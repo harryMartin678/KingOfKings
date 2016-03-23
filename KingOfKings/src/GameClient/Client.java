@@ -15,16 +15,46 @@ public class Client {
 	private BufferedWriter out;
 	private Semaphore lock;
 	
-	public Client() throws UnknownHostException, IOException{
+	public Client(String ip) throws UnknownHostException, IOException{
 		
-		Socket client = new Socket("127.0.0.1",9999);
-		
+		assert(ValidIP(ip));
+		Socket client = new Socket(ip,9999);
 		lock = new Semaphore(1);
 		
 		in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 		out = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
 		
 	}
+	
+	private boolean ValidIP(String ip){
+		
+		String[] parts = ip.split(".");
+		
+		if(parts.length != 4){
+			
+			return false;
+		}
+		
+		for(int p = 0; p < parts.length; p++){
+			
+			boolean isNumber = TryParseInt(parts[p]);
+			
+			if(!isNumber){
+				
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	public boolean TryParseInt(String someText) {
+		   try {
+		      return (Integer.parseInt(someText) >= 0 && Integer.parseInt(someText) <=255);
+		   } catch (NumberFormatException ex) {
+		      return false;
+		   }
+		}
 	
 	public void start(){
 		
@@ -50,7 +80,7 @@ public class Client {
 	public static void main(String[] args) {
 		
 		try {
-			new Client();
+			new Client("127.0.0.1");
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

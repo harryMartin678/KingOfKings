@@ -18,12 +18,6 @@ public class Slave extends Worker {
 	@Override
 	public int foodNeeded() {
 		// TODO Auto-generated method stub
-		return super.foodNeeded() + 400;
-	}
-	
-	@Override
-	public int goldNeeded() {
-		// TODO Auto-generated method stub
-		return super.goldNeeded() + 400;
+		return super.foodNeeded() + 50;
 	}
 }

@@ -102,9 +102,9 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
     						,0.0f,0.0f,1.0f,FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 	    			
 	    		}else{
-		    		
+		    		//0.93f,0.68f,0.79f
 		    		drawTile(draw,(float) x,(float) y
-		    			,0.93f,0.68f,0.79f,FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
+		    			,0.52f,0.45f,0.32f,FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
 //	    			
 //	    			if(x == map.getWidth()/2 && y == map.getHeight()/2){
 //	    				
@@ -208,9 +208,8 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    //draw buildings in view
 	    for(int b = 0; b < buildings.size(); b++){
 
-	    	if(buildings.inFrame(b, frameX, frameY, FRAME_X_SIZE, FRAME_Y_SIZE)
-	    			|| map.getTile((int) buildings.get(b).getX(),(int) buildings.get(b).getY()) == -1
-	    			|| b > buildings.size()){
+	    	if( b >= buildings.size() || buildings.inFrame(b, frameX, frameY, FRAME_X_SIZE, FRAME_Y_SIZE) 
+	    			|| map.getTile((int) buildings.get(b).getX(),(int) buildings.get(b).getY()) == -1){
 	    		
 	    		continue;
 	    	}

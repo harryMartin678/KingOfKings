@@ -17,23 +17,30 @@ public class ClientMessages implements IGotToTurn{
 	
 	public ClientMessages(){
 		
+		
+		
+	}
+	
+	public void startClient(String ip){
+		
 		inputs = new ArrayList<String>();
 		frame = new ArrayList<String>();
 		gameStarted = false;
 		try {
 		
-			client = new Client();
+			client = new Client(ip);
 		
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
+			System.err.println(e.getMessage() + " ClientMessage");
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			System.err.println(e.getMessage() + " ClientMessage");
 			e.printStackTrace();
 		}
 		
 		startGame();
-		
 	}
 	
 	public void startGame(){
@@ -103,8 +110,9 @@ public class ClientMessages implements IGotToTurn{
 	}
 	
 	public void putBackMessage(String msg){
-		
+		client.start();
 		inputs.add(msg);
+		client.end();
 	}
 	
 	public String getMessage(){

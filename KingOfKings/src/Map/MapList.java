@@ -7,7 +7,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class MapList {
+import Buildings.IComMapBATTList;
+
+public class MapList implements IComMapBATTList {
 	
 	private ArrayList<Map> maps;
 	
@@ -79,6 +81,27 @@ public class MapList {
 	public int getSize(){
 		
 		return maps.size();
+	}
+
+	@Override
+	public void changeMapPlayer(int unitPlayer,int mapNo) {
+		// TODO Auto-generated method stub
+		maps.get(mapNo).setPlayer(unitPlayer);
+	}
+
+	public boolean NoWinner() {
+		// TODO Auto-generated method stub
+		
+		return true;
+//		for(int w = 1; w < maps.size(); w++){
+//			
+//			if(maps.get(w).getPlayer() != maps.get(w-1).getPlayer()){
+//				
+//				return true;
+//			}
+//		}
+//		
+//		return false;
 	}
 	
 	

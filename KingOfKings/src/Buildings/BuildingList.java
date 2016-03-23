@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import GameGraphics.IBuildingList;
 
-public class BuildingList implements IBuildingList {
+public class BuildingList implements IBuildingList,IComBuildingBATTList {
 	
 	private ArrayList<Building> buildings;
 	
@@ -139,6 +139,18 @@ public class BuildingList implements IBuildingList {
 	public boolean isBuildingDestroyed(int index){
 		
 		return buildings.get(index).destroyed();
+	}
+
+	@Override
+	public void changeBuildingsPlayer(int unitPlayer, int map) {
+		// TODO Auto-generated method stub
+		for(int b = 0; b < buildings.size(); b++){
+			
+			if(buildings.get(b).getMap() == map){
+				
+				buildings.get(b).setPlayer(unitPlayer);
+			}
+		}
 	}
 
 }

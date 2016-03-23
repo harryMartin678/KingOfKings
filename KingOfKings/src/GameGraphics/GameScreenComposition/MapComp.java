@@ -81,7 +81,8 @@ public class MapComp implements IComMapMouseKeyboard, IComMapDisplay, IComFrameP
 	public int getTile(int x, int y) {
 		// TODO Auto-generated method stub
 		
-		if(x >= map.getWidth() || y >= map.getHeight()){
+		if(x >= map.getWidth() || y >= map.getHeight()
+				|| x < 0 || y < 0){
 			
 			return -1;
 		}

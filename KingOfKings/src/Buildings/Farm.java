@@ -22,7 +22,7 @@ public class Farm extends Resource {
 	@Override
 	public int getBuildTime() {
 		// TODO Auto-generated method stub
-		return super.getBuildTime()+30;
+		return super.getBuildTime()+60;
 	}
 	
 	@Override

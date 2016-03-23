@@ -49,11 +49,11 @@ public class AddUnitModule {
 		
 		
 		//the corners of the building 
-		int[] corners = new int[]{building.getX() - (building.getSizeX()/2)-1, building.getY()
-				- (building.getSizeY()/2)-1,
-				building.getX() + (building.getSizeX()/2)+1,building.getY() - (building.getSizeY()/2)-1
-				,building.getX() + (building.getSizeX()/2)+1,building.getY() + (building.getSizeY()/2)+1,
-				building.getX() - (building.getSizeX()/2)-1,building.getY() + (building.getSizeY()/2)+1};
+		int[] corners = new int[]{building.getX() - building.getSizeX(), building.getY()
+				- building.getSizeY(),
+				building.getX() + building.getSizeX(),building.getY() - building.getSizeY()
+				,building.getX() + building.getSizeX(),building.getY() + building.getSizeY(),
+				building.getX() - building.getSizeX(),building.getY() + building.getSizeY()};
 		
 		//the directions between the corners 
 		int[] directions = new int[]{1,0,0,1,-1,0,0,-1};
@@ -65,14 +65,7 @@ public class AddUnitModule {
 		int[][] mapArray = map.getCollisionMap();
 		ArrayList<int[]> onMap = new ArrayList<int[]>();
 		
-//		for(int y = 0; y < mapArray.length; y++){
-//			for(int x = 0; x < mapArray[0].length; x++){
-//				
-//				System.out.print(mapArray[y][x]);
-//			}
-//			
-//			System.out.println();
-//		}
+		
 		
 		//go though each corner
 		for(int c = 0; c < corners.length; c+=2){
@@ -85,6 +78,7 @@ public class AddUnitModule {
 				int cx = corners[c] + (Math.abs(directions[c]) * l);
 				int cy = corners[c+1] + (Math.abs(directions[c+1]) * l);
 				
+				//mapArray[cy][cx] = 3;
 				onMap.add(new int[]{cx,cy});
 				
 				//if this square is free and on the map
@@ -101,6 +95,17 @@ public class AddUnitModule {
 				}
 			}
 		}
+		
+//		System.out.println("ADDUNITMODULE START///////");
+//		for(int y = 0; y < mapArray.length; y++){
+//			for(int x = 0; x < mapArray[0].length; x++){
+//				
+//				System.out.print(mapArray[y][x]);
+//			}
+//			
+//			System.out.println();
+//		}
+//		System.out.println("ADDUNITMODULE END//////");
 		
 		return closestPos;
 	}

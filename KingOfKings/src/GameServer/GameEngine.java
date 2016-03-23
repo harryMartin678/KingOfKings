@@ -57,7 +57,7 @@ public class GameEngine{
 		context.dip = new Diplomacy(playerNo);
 		context.sites = new BuildingProgress();
 		context.battles = new UnitBattleList(context.units);
-		context.buildingAttackList = new BuildingAttackList();
+		context.buildingAttackList = new BuildingAttackList(context.maps,context.buildings);
 		
 		try {
 			context.saveGame = new SavedGame("SavedGames/game1");
@@ -83,7 +83,8 @@ public class GameEngine{
 		
 		for(int i = 0; i < context.maps.getSize(); i++){
 			
-			context.buildings.addBuilding(context.maps.getPlayer(i), i, 
+			//context.maps.getPlayer(i)
+			context.buildings.addBuilding(3, context.maps.getPlayer(i), 
 					context.maps.getMapWidth(i)/2, context.maps.getMapHeight(i)/2, Names.ROYALPALACE);
 			context.buildings.addBuilding(context.maps.getPlayer(i), i, 
 					(context.maps.getMapWidth(i)/2)+6, (context.maps.getMapHeight(i)/2)+6, Names.STOCKPILE);
@@ -161,7 +162,7 @@ public class GameEngine{
 	
 	public void doOnFrame(){
 
-		if(beacon.gameStarted()){
+		if(beacon.gameStarted() && context.maps.NoWinner()){
 		
 			if(beat == 5 || beat == 10){
 				

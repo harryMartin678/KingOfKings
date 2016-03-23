@@ -99,10 +99,10 @@ public class Server {
 	
 	public void sendMessage(int player, String msg) throws IOException{
 		
-		System.out.println(player + " " + msg + " start");
+		//System.out.println(player + " " + msg + " start");
 		writers.get(player).write(msg + "\n");
 		writers.get(player).flush();
-		System.out.println(player + " " + msg + " end");
+		//System.out.println(player + " " + msg + " end");
 		
 	}
 	

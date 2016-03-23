@@ -39,6 +39,7 @@ public class LobbyGUI extends JPanel implements MouseListener {
 	private boolean enterGame;
 	private boolean writePlayerName; 
 	private TextField text;
+	private TextField ipText;
 	private int thisPlayer;
 	private GameGraphics.GameScreenComposition.GameScreen gs;
 	private boolean loading;
@@ -99,12 +100,16 @@ public class LobbyGUI extends JPanel implements MouseListener {
 		
 		angle = 0;
 		
-		startGetPlayers();
+		
 		
 		this.setLayout(null);
 		
 		text = new TextField();
 		this.add(text);
+		
+		ipText = new TextField();
+		this.add(ipText);
+		ipText.setText("127.0.0.1");
 				
 	}
 	
@@ -300,7 +305,12 @@ public class LobbyGUI extends JPanel implements MouseListener {
 	private void drawPlayerName(Graphics g){
 		
 		text.setSize(this.getWidth()/3,this.getHeight()/25);
-		text.setLocation((this.getWidth()/2) - text.getWidth()/2, this.getHeight()/2);
+		text.setLocation((this.getWidth()/2) - text.getWidth()/2, 
+				(this.getHeight()/2) - (this.getHeight()/20));
+		
+		ipText.setSize(this.getWidth()/3, this.getHeight()/25);
+		ipText.setLocation(((this.getWidth()/2) - ipText.getWidth()/2), 
+				(this.getHeight()/2) + (this.getHeight()/20));
 		
 		double playerListWidth = (20*this.getWidth())/100;
 		double playerListHeight = (20 * this.getHeight())/100;
@@ -353,9 +363,12 @@ public class LobbyGUI extends JPanel implements MouseListener {
 		if(inRect(0.40043923865300146,0.649645390070922,0.5988286969253295,
 				0.8439716312056738,x,y) && text.getText().length() > 0){
 			
+			cmsg.startClient(ipText.getText());
+			startGetPlayers();
 			cmsg.addMessage("name " + text.getText());
 			writePlayerName = false;
 			text.setVisible(false);
+			ipText.setVisible(false);
 			
 		}
 	}

@@ -10,7 +10,7 @@ public class RoyalPalace extends Building{
 	 @Override
 	public String getType() {
 		// TODO Auto-generated method stub
-		return "royalpalace";
+		return Names.ROYALPALACE;
 	}
 	 
 

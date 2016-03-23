@@ -3,6 +3,9 @@ package GameGraphics;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.media.opengl.GL2;
+import javax.media.opengl.glu.GLU;
+
 //holds a model and all of it's animation frames 
 public class Model {
 	
@@ -73,6 +76,7 @@ public class Model {
 		this.transX = x;
 		this.transY = y;
 	}
+	
 	
 	public void setSize(float sizeX, float sizeY, float sizeZ){
 		

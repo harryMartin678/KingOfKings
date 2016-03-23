@@ -1,11 +1,13 @@
 package Units;
 
+import Buildings.Names;
+
 public class Swordsman extends Unit {
 
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
-		return super.getName() + ":Swordsman";
+		return super.getName() + ":" + Names.SWORDSMAN;
 	}
 	
 	@Override
@@ -42,5 +44,17 @@ public class Swordsman extends Unit {
 	public int getSpeed() {
 		// TODO Auto-generated method stub
 		return super.getSpeed() + 5;
+	}
+	
+	@Override
+	public int foodNeeded() {
+		// TODO Auto-generated method stub
+		return super.foodNeeded()+150;
+	}
+	
+	@Override
+	public int goldNeeded() {
+		// TODO Auto-generated method stub
+		return super.goldNeeded()+75;
 	}
 }

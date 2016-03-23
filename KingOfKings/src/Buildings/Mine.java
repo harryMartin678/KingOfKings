@@ -21,7 +21,7 @@ public class Mine extends Resource {
 	@Override
 	public int getBuildTime() {
 		// TODO Auto-generated method stub
-		return super.getBuildTime()+35;
+		return super.getBuildTime()+70;
 	}
 	
 	@Override

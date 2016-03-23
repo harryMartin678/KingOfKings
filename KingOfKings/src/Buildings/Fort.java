@@ -10,7 +10,7 @@ public class Fort extends Tower {
 	@Override
 	public String getType() {
 		// TODO Auto-generated method stub
-		return "fort";
+		return Names.FORT;
 	}
 
 	@Override
@@ -28,7 +28,7 @@ public class Fort extends Tower {
 	@Override
 	public int getBuildTime() {
 		// TODO Auto-generated method stub
-		return super.getBuildTime()+75;
+		return super.getBuildTime()+150;
 	}
 	
 	@Override

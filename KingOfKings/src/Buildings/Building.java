@@ -335,6 +335,11 @@ public class Building {
 		// TODO Auto-generated method stub
 		unitQueue.add(0,new QueueItem(unit,75));
 	}
+
+	public void regenerate() {
+		// TODO Auto-generated method stub
+		hitpoints = this.getMaxHitpoint();
+	}
 	
 	
 

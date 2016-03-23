@@ -1,11 +1,13 @@
 package Units;
 
+import Buildings.Names;
+
 public class Spearman extends Swordsman {
 	
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
-		return super.getName() + ":Swordsman";
+		return super.getName() + ":" + Names.SPEARMAN;
 	}
 	
 	@Override
@@ -42,6 +44,18 @@ public class Spearman extends Swordsman {
 	public int getDefence() {
 		// TODO Auto-generated method stub
 		return super.getDefence() + 2;
+	}
+	
+	@Override
+	public int foodNeeded() {
+		// TODO Auto-generated method stub
+		return super.foodNeeded()+150;
+	}
+	
+	@Override
+	public int goldNeeded() {
+		// TODO Auto-generated method stub
+		return super.goldNeeded()+50;
 	}
 
 }

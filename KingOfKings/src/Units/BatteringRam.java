@@ -1,11 +1,13 @@
 package Units;
 
+import Buildings.Names;
+
 public class BatteringRam extends SiegeWeapon{
 
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
-		return super.getName() + ":BatteringRam";
+		return super.getName() + ":" + Names.BATTERINGRAM;
 	}
 	
 	@Override
@@ -24,5 +26,17 @@ public class BatteringRam extends SiegeWeapon{
 	public int getDefence() {
 		// TODO Auto-generated method stub
 		return super.getDefence() + 1;
+	}
+	
+	@Override
+	public int goldNeeded() {
+		// TODO Auto-generated method stub
+		return super.goldNeeded()+200;
+	}
+	
+	@Override
+	public int foodNeeded() {
+		// TODO Auto-generated method stub
+		return super.foodNeeded()+100;
 	}
 }

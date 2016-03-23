@@ -374,7 +374,7 @@ public class MethodCallup implements Commands {
 			
 			int[] pos = toAttack.getFreeSpace(map,(int)context.units.getUnitX(unitNos[u]),
 					(int)context.units.getUnitY(unitNos[u]), taken);
-			
+
 			taken.add(pos);
 			
 			this.moveUnit(unitNos[u],pos[0] , pos[1], toAttack.getMap());

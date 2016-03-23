@@ -1,11 +1,13 @@
 package Units;
 
+import Buildings.Names;
+
 public class HeavyArcher extends Archer {
 	
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
-		return super.getName() + ":Crossbow";
+		return super.getName() + ":" + Names.HEAVYARCHER;
 	}
 	
 	@Override
@@ -30,6 +32,24 @@ public class HeavyArcher extends Archer {
 	public int getMaxHealth() {
 		// TODO Auto-generated method stub
 		return super.getMaxHealth() + 25;
+	}
+	
+	@Override
+	public int getDefence() {
+		// TODO Auto-generated method stub
+		return super.getDefence()+2;
+	}
+	
+	@Override
+	public int foodNeeded() {
+		// TODO Auto-generated method stub
+		return super.foodNeeded()+100;
+	}
+	
+	@Override
+	public int goldNeeded() {
+		// TODO Auto-generated method stub
+		return super.goldNeeded()+100;
 	}
 
 }

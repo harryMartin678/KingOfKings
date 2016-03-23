@@ -266,7 +266,7 @@ IComBuildingListFrameProcess {
 	public void unitIconSelected(int selected,int food,int gold) {
 		// TODO Auto-generated method stub
 		UnitCreator type = (UnitCreator) Building.GetBuildingClass(SelectedBuilding.getName());
-		String[] listOfUnits = type.unitcreated().split(":");
+		String[] listOfUnits = type.unitcreated().split(";");
 		
 		Units.Unit unitDes = Units.Unit.GetUnit(listOfUnits[selected]);
 		

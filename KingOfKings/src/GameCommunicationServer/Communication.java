@@ -1,6 +1,7 @@
 package GameCommunicationServer;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.ArrayList;
 
 import GameServer.Server;
@@ -23,6 +24,7 @@ public class Communication {
 		enterGame = false;
 		playersReady = 0;
 		syncUser = 0;
+		System.out.println("Server IP Address: " +InetAddress.getLocalHost().getHostAddress());
 		waitForPlayerNames();
 		acceptPlayer();
 		enterGame();

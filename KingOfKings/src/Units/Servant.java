@@ -1,11 +1,13 @@
 package Units;
 
+import Buildings.Names;
+
 public class Servant extends Worker {
 	
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
-		return super.getName() + ":Servant";
+		return super.getName() + ":" + Names.SERVANT;
 	}
 	
 	@Override
@@ -36,6 +38,18 @@ public class Servant extends Worker {
 	public int getSpeed() {
 		// TODO Auto-generated method stub
 		return super.getSpeed() + 3;
+	}
+	
+	@Override
+	public int foodNeeded() {
+		// TODO Auto-generated method stub
+		return super.foodNeeded()+100;
+	}
+	
+	@Override
+	public int goldNeeded() {
+		// TODO Auto-generated method stub
+		return super.goldNeeded()+25;
 	}
 
 }

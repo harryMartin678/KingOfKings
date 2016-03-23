@@ -139,8 +139,10 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 	     
 	      }else if(mouse.getButton() == MouseEvent.BUTTON3){
 	    		  
+	    	  buildings.clearSelectedBuilding();
 	    	  buildings.removeGhostBuilding();
 	    	  buildings.endGhostBuildingSession();
+	    	  units.clearSelectedUnits();
 	    	  mouse = null;
 	      }
 	      

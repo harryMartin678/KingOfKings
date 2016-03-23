@@ -28,7 +28,7 @@ public class BallistaTower extends Tower {
 	@Override
 	public int getBuildTime() {
 		// TODO Auto-generated method stub
-		return super.getBuildTime()+60;
+		return super.getBuildTime()+120;
 	}
 	
 	@Override

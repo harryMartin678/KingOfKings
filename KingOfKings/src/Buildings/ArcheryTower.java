@@ -5,7 +5,7 @@ public class ArcheryTower extends Tower {
 	@Override
 	public String getType() {
 		// TODO Auto-generated method stub
-		return "archerytower";
+		return Names.ARCHERYTOWER;
 	}
 	
 	public ArcheryTower(int buildingNo) {
@@ -28,7 +28,7 @@ public class ArcheryTower extends Tower {
 	@Override
 	public int getBuildTime() {
 		// TODO Auto-generated method stub
-		return super.getBuildTime()+50;
+		return super.getBuildTime()+100;
 	}
 	
 	@Override

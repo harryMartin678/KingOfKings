@@ -22,7 +22,7 @@ public class Barrack extends Army {
 	@Override
 	public int getBuildTime() {
 		// TODO Auto-generated method stub
-		return super.getBuildTime()+50;
+		return super.getBuildTime()+100;
 	}
 	
 	@Override

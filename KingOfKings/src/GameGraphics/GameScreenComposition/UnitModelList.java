@@ -3,8 +3,12 @@ package GameGraphics.GameScreenComposition;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
+import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
+import javax.media.opengl.glu.GLU;
 
 import Buildings.Names;
 import Buildings.UnitCreator;
@@ -36,7 +40,8 @@ public class UnitModelList {
 	private Model heavyBatteringRam;
 	private Model arrow;
 	private BuildingModel flag;
-	private Model[] unitModels;
+	//private Model[] unitModels;
+	private Hashtable<String,Model> models;
 	
 	private float HEIGHT_CONST;
 	private float WIDTH_CONST;
@@ -51,6 +56,8 @@ public class UnitModelList {
 		this.HEIGHT_CONST = HEIGHT_CONST;
 		this.WIDTH_CONST = WIDTH_CONST;
 		this.scaleFactor = scaleFactor;
+		
+		models = new Hashtable<String,Model>();
 		
 		arrowAnim = new ArrayList<ArrowAnimation>();
 		
@@ -81,14 +88,21 @@ public class UnitModelList {
 		flag = new BuildingModel("flag","Models",1);
 		flag.setSize(0.3f,0.3f, 0.3f);
 		
-		
-		unitModels = new Model[]{servant,slave,axeman,swordsman,spearman,fishingBoat,warship
-				,flagship,lightChariot,heavyChariot,archer,heavyarcher,batteringRam,heavyBatteringRam};
+		models.put(Names.ARCHER, archer);
+		models.put(Names.AXEMAN, axeman);
+		models.put(Names.BATTERINGRAM, batteringRam);
+		models.put(Names.HEAVYARCHER, heavyarcher);
+		models.put(Names.HEAVYBATTERINGRAM, heavyBatteringRam);
+		models.put(Names.SERVANT, servant);
+		models.put(Names.SLAVE, slave);
+		models.put(Names.SPEARMAN, spearman);
+		models.put(Names.SWORDSMAN, swordsman);
+		//unitModels = new Model[]{servant,slave,axeman,swordsman,spearman,fishingBoat,warship
+			//	,flagship,lightChariot,heavyChariot,archer,heavyarcher,batteringRam,heavyBatteringRam};
 	}
 	
 	public void addArrow(float startX,float startY,float targetX, float targetY,int unitNo){
 		
-		System.out.println(unitNo + " UnitModeList");
 		arrowAnim.add(new ArrowAnimation(startX, startY, targetX, targetY,unitNo));
 	}
 	
@@ -130,6 +144,8 @@ public class UnitModelList {
 			drawModel(arrow,draw,info,WIDTH_CONST,HEIGHT_CONST,frameX,frameY,-33.0f,0.5f,false);
 		}
 	}
+	
+	
 	
 	public void drawUnit(GL2 draw, Unit unit,int frameX,int frameY,Unit attack){
 		
@@ -275,7 +291,34 @@ public class UnitModelList {
 		
 	}
 	
-	
+//	private void startPicking(GL2 gl,GLU glu,int xCursor, int yCursor,
+//			float panelWidth,float panelHeight) 
+//	{ 
+//		
+//	  // initialize the selection buffer 
+//	  int selectBuf[] = new int[BUFSIZE]; 
+//	  selectBuffer = BufferUtil.newIntBuffer(BUFSIZE); 
+//	  gl.glSelectBuffer(BUFSIZE, selectBuffer); 
+//	  gl.glRenderMode(GL2.GL_SELECT);  // switch to selection mode 
+//	  gl.glInitNames();   // make an empty name stack 
+//	  // save the original projection matrix 
+//	  gl.glMatrixMode(GL2.GL_PROJECTION); 
+//	  gl.glPushMatrix(); 
+//	  gl.glLoadIdentity(); 
+//	  // get the current viewport 
+//	  int viewport[] = new int[4]; 
+//	  gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0); 
+//	  // create a 5x5 pixel picking volume near the cursor location 
+//	  glu.gluPickMatrix((double) xCursor, 
+//	                    (double) (viewport[3] - yCursor),  
+//	                    5.0, 5.0, viewport, 0); 
+//	  /* set projection (perspective or orthogonal) exactly as it is in  
+//	     normal rendering (i.e. duplicate the gluPerspective() call 
+//	     in resizeView()) */ 
+//	  glu.gluPerspective(45.0,  
+//	         (float)panelWidth/(float)panelHeight, 1, 100); 
+//	  gl.glMatrixMode(GL2.GL_MODELVIEW);   // restore model view 
+//	}  
 	
 	public void drawFlag(GL2 draw,Unit flagUn,int frameX,int frameY){
 		
@@ -289,51 +332,79 @@ public class UnitModelList {
 		
 		String unitsPossible = type.unitcreated();
 		
-		float offsetX = 1.75f;
-		float offsetY = 2.7f;
+		String[] unitTypes = unitsPossible.split(";");
 		
-		for(int u = 0; u < unitModels.length; u++){
+		for(int u = 0; u < unitTypes.length; u++){
 			
-			if(offsetX > 4.0f){
+			float ux = ((u % 4) * 0.75f) + x + 1.75f; 
+			float uy = ((u / 4) * -1.0f) + y + 2.5f;
+			
+			Model model = models.get(unitTypes[u]);
+			if(model == null){
 				
-				offsetX = 1.5f;
-				offsetY = 2.5f;
+				continue;
 			}
 			
-			if(unitsPossible.contains(unitModels[u].getName())){
+			Units.Unit unitDes = Units.Unit.GetUnit(model.getName());
+			
+			Unit unit = new Unit(ux,uy,model.getName(),playerNumber,0);
+			
+			boolean cantAfford = false;
+			if(unitDes.goldNeeded() > gold && unitDes.foodNeeded() > food){
 				
-				Unit unit = new Unit((float)x + offsetX,(float)y + offsetY,unitModels[u].getName(),
-						playerNumber,0);
-				Units.Unit unitDes = Units.Unit.GetUnit(unitModels[u].getName());
-				boolean cantAfford = false;
-				
-				if(unitDes.goldNeeded() > gold && unitDes.foodNeeded() > food){
-					
-					cantAfford = true;
-				}
-				
-				drawModel(unitModels[u],draw,unit,z,cantAfford);
-				
-				offsetX += 1.0f;
-				offsetY -= 1.5f;
+				cantAfford = true;
 			}
+			
+			drawModel(model,draw,unit,z,cantAfford);
 		}
+		
+//		
+//		float offsetX = 1.75f;
+//		float offsetY = 2.7f;
+//		
+//		for(int u = 0; u < unitModels.length; u++){
+//			
+//			if(offsetX > 4.0f){
+//				
+//				offsetX = 1.5f;
+//				offsetY = 2.5f;
+//			}
+//			
+//			if(unitsPossible.contains(unitModels[u].getName())){
+//				
+//				System.out.println(unitModels[u].getName() + " UnitModelList");
+//				Unit unit = new Unit((float)x + offsetX,(float)y + offsetY,unitModels[u].getName(),
+//						playerNumber,0);
+//				Units.Unit unitDes = Units.Unit.GetUnit(unitModels[u].getName());
+//				boolean cantAfford = false;
+//				
+//				if(unitDes.goldNeeded() > gold && unitDes.foodNeeded() > food){
+//					
+//					cantAfford = true;
+//				}
+//				
+//				drawModel(unitModels[u],draw,unit,z,cantAfford);
+//				
+//				offsetX += 1.0f;
+//				//offsetY -= 1.5f;
+//			}
+//		}
 		
 	}
 	
-	public Model getUnitModel(String name){
-		
-		//System.out.println(name + " UnitModeList getUnitModel");
-		for(int u = 0; u < unitModels.length; u++){
-			
-			if(unitModels[u].getName().equals(name)){
-				
-				return unitModels[u];
-			}
-		}
-		
-		return null;
-	}
+//	public Model getUnitModel(String name){
+//		
+//		//System.out.println(name + " UnitModeList getUnitModel");
+//		for(int u = 0; u < unitModels.length; u++){
+//			
+//			if(unitModels[u].getName().equals(name)){
+//				
+//				return unitModels[u];
+//			}
+//		}
+//		
+//		return null;
+//	}
 	
 
 	public void drawBuildingQueue(float x, float y, float z, GL2 draw,
@@ -349,14 +420,15 @@ public class UnitModelList {
 		for(int uy = 0; uy < 4; uy++){
 			for(int ux = 0; ux < 5; ux++){
 				//System.out.println(selectedBuilding.getSize() + " building queue UnitModeList");
-				if(queueNo >= selectedBuilding.getSize()){
+				if(selectedBuilding == null || queueNo >= selectedBuilding.getSize()){
 					
 					break outerLoop;
 				}
 				
-				Model model = getUnitModel(selectedBuilding.getUnitFromQueue(queueNo));
-				Unit unit = new Unit((float) x + (ux*0.5f),(float) y + (-uy*0.5f), model.getName(),
-									playerNumber,0);
+				Model model = models.get(selectedBuilding.getUnitFromQueue(queueNo));
+				//System.out.println(selectedBuilding.getUnitFromQueue(queueNo) + " UnitModelList");
+				Unit unit = new Unit((float) x + (ux*0.5f),(float) y + (-uy*0.5f),
+									model.getName(), playerNumber,0);
 				drawModel(model,draw,unit,z);
 				
 				queueNo++;

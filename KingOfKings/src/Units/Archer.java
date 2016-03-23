@@ -49,5 +49,17 @@ public class Archer extends Unit {
 		// TODO Auto-generated method stub
 		return super.getSpeed() + 3;
 	}
+	
+	@Override
+	public int goldNeeded() {
+		// TODO Auto-generated method stub
+		return super.goldNeeded() + 50;
+	}
+	
+	@Override
+	public int foodNeeded() {
+		// TODO Auto-generated method stub
+		return super.foodNeeded() + 100;
+	}
 
 }

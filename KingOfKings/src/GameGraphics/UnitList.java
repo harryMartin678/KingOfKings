@@ -35,6 +35,7 @@ public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,I
 		
 		public int unitNo;
 		public boolean isWorker;
+		public double distance;
 	}
 	
 	public void begin(){
@@ -245,17 +246,41 @@ public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,I
 		// TODO Auto-generated method stub
 		for(int u = 0; u < units.size(); u++){
 			  
-			  if(((int) units.get(u).getX()) == click[0] 
-					  && ((int) units.get(u).getY()) == click[1]
-							  && units.get(u).getPlayer() == this.myPlayerNumber){
+			  if(ClickInUnit(click,units.get(u)) && units.get(u).getPlayer() == this.myPlayerNumber){
 			  
 				  SelectedUnit su = new SelectedUnit();
 					su.unitNo = units.get(u).getUnitNo();
 					su.isWorker = units.get(u).getUnitType().equals(Names.SLAVE)
 							|| units.get(u).getUnitType().equals(Names.SERVANT);
+					su.distance = Math.abs(units.get(u).getX() - click[0]) 
+							+ Math.abs(units.get(u).getY() - click[1]);
 				  selectedUnits.add(su);
 			  	}
 		  }
+		
+		if(selectedUnits.size() > 0){
+			int selected = 0;
+			for(int s = 1; s < selectedUnits.size(); s++){
+				
+				if(selectedUnits.get(selected).distance > selectedUnits.get(s).distance){
+					
+					selected = s;
+				}
+			}
+		
+	
+			SelectedUnit select = selectedUnits.get(selected);
+			selectedUnits.clear();
+			selectedUnits.add(select);
+		}
+	}
+	
+	private boolean ClickInUnit(int[] click, Unit unit){
+		
+		return unit.getX() < click[0] + 1.5
+				&& unit.getX() > click[0] - 1.5
+				&& unit.getY() < click[1] + 1.5
+				&& unit.getY() > click[1] - 1.5;
 	}
 
 	@Override
