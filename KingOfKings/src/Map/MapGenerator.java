@@ -12,7 +12,7 @@ public class MapGenerator {
 		BufferedWriter writer = 
 				new BufferedWriter(new FileWriter("C:/Users/harry/Documents"
 						+ "/harry/Documents/backup/Program/java/KingOfKings"
-						+ "/Maps/map1.map"));
+						+ "/Maps/Cardiff.map"));
 		
 		Random gen = new Random();
 		
@@ -52,6 +52,6 @@ public class MapGenerator {
 	
 	public static void main(String[] args) throws IOException {
 		
-		new MapGenerator(500,500);
+		new MapGenerator(250,250);
 	}
 }

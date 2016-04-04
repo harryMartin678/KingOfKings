@@ -153,6 +153,7 @@ public class BuildingModelList {
 		
 		//System.out.println((building == null) + " " + (building.getName() == null) + " buildingModel");
 		BuildingModel model = getBuildingModel(building.getName(),building);
+		//System.out.println(model.getName() + " buildingModel");
 		if(building.isSite()){
 			
 			drawBuildingModel(site,draw,building,

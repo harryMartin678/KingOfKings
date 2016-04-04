@@ -22,7 +22,7 @@ public class ServerMessages {
 		this.thisPlayer = thisPlayer;
 		this.noOfPlayer = noOfPlayers;
 		start = true;
-		engine = new GameEngine("game1",noOfPlayer,beacon);
+		engine = new GameEngine("PlayTest1",noOfPlayer,beacon);
 		
 		
 //		try {
@@ -281,6 +281,7 @@ public class ServerMessages {
 		
 		int map = engine.getMapOwnedMap(thisPlayer);
 		
+		output += thisPlayer + "\n";
 		output += engine.getGameName() + "\n";
 		output += map + "\n";
 		output += engine.getWhoOwnsWhatMap() + "\n";

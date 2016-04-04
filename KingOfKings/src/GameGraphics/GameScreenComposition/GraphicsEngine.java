@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.media.opengl.GLAutoDrawable;
+import javax.media.opengl.GLException;
 import javax.media.opengl.glu.GLU;
 
 import com.jogamp.opengl.util.gl2.GLUT;
@@ -37,12 +38,14 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 		start = false;
 
 		final ArrayList<String> load = Load();
-		map = new MapComp(load.get(0));
+		map = new MapComp(load.get(1));
 		
 		display = new Display();
 		mouseKeyboard = new MouseKeyboard();
-		units = new UnitList(myPlayerNumber);
+		units = new UnitList();
 		buildings = new BuildingList();
+		
+		this.setMyPlayerNumber(new Integer(load.get(0)).intValue());
 		
 		map.SetDisplay((IComMapUpdateDisplayFrame)display);
 		
@@ -117,6 +120,16 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 
 	}
 	
+	public void init(GLAutoDrawable drawable,GLU glu){
+		
+		try {
+			display.init(drawable.getGL().getGL2(),glu);
+		} catch (GLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public void SetWidth(int width){
 		
 		mouseKeyboard.SetWidth(width);
@@ -164,6 +177,7 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 	public void setMyPlayerNumber(int playerNumber) {
 		// TODO Auto-generated method stub
 		this.myPlayerNumber = playerNumber;
+		units.setMyPlayerNumber(playerNumber);
 	}
 
 	//deals with animations 

@@ -39,6 +39,7 @@ public class Map {
 	public void addTransitionPoint(int x, int y, int mapNo){
 		
 		int[] pt = new int[]{x,y,mapNo};
+		map[y][x] = 4;
 		
 		transitionPoints.add(pt);
 	}

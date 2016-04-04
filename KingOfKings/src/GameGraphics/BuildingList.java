@@ -34,7 +34,7 @@ IComBuildingListFrameProcess {
 		this.cmsgs = cmsgs;
 	}
 	
-	public void begin(){
+	public synchronized void begin(){
 		
 //		while(used){
 //			
@@ -55,27 +55,27 @@ IComBuildingListFrameProcess {
 		}
 	}
 	
-	public void add(Building building){
+	public synchronized void add(Building building){
 		
 		buildings.add(building);
 	}
 	
-	public void remove(int index){
+	public synchronized void remove(int index){
 		
 		buildings.remove(index);
 	}
 	
-	public int size(){
+	public synchronized int size(){
 		
 		return buildings.size();
 	}
 	
-	public Building get(int index){
+	public synchronized Building get(int index){
 		
 		return buildings.get(index);
 	}
 	
-	public void addUnitToBuildingQueue(int building,String unit){
+	public synchronized void addUnitToBuildingQueue(int building,String unit){
 		
 		//System.out.println("add selected unit " + building + " " + unit);
 		Building toAdd = this.getBuildingByBuildingNo(building);
@@ -87,32 +87,32 @@ IComBuildingListFrameProcess {
 		}
 	}
 	
-	public void clear(){
+	public synchronized void clear(){
 		
 		buildings.clear();
 	}
 	
-	public void clearSelectedBuildingQueue(int buildingNo){
+	public synchronized void clearSelectedBuildingQueue(int buildingNo){
 		
 		if(SelectedBuilding != null && SelectedBuilding.getBuildingNo() == buildingNo){
 			SelectedBuilding.clearUnitQueue();
 		}
 	}
 	
-	public void end(){
+	public synchronized void end(){
 		
 		//used = false;
 		lock.release();
 	}
 
 	@Override
-	public int getBuildingsSize() {
+	public synchronized int getBuildingsSize() {
 		// TODO Auto-generated method stub
 		return size();
 	}
 
 	@Override
-	public boolean inBuilding(int x, int y, int unitNo) {
+	public synchronized boolean inBuilding(int x, int y, int unitNo) {
 		// TODO Auto-generated method stub
 		if(buildings.get(unitNo) == null){
 			
@@ -123,19 +123,19 @@ IComBuildingListFrameProcess {
 	}
 
 	@Override
-	public boolean isBuildingGhost() {
+	public synchronized boolean isBuildingGhost() {
 		// TODO Auto-generated method stub
 		return (ghostBuilding != null);
 	}
 
 	@Override
-	public boolean canBuildGhost(CollisionMap map) {
+	public synchronized boolean canBuildGhost(CollisionMap map) {
 		// TODO Auto-generated method stub
 		return (ghostBuilding != null && !ghostBuilding.cantBuild());
 	}
 
 	@Override
-	public void drawGhostBuilding() {
+	public synchronized void drawGhostBuilding() {
 		// TODO Auto-generated method stub
 		if(isBuildingGhost()){
 			buildings.add(ghostBuilding);
@@ -143,7 +143,7 @@ IComBuildingListFrameProcess {
 	}
 
 	@Override
-	public void removeGhostBuilding() {
+	public synchronized void removeGhostBuilding() {
 		// TODO Auto-generated method stub
 		if(isBuildingGhost()){
 			buildings.remove(ghostBuilding);
@@ -152,7 +152,7 @@ IComBuildingListFrameProcess {
 	}
 
 	@Override
-	public boolean inFrame(int buildingNo, int frameX, int frameY,
+	public synchronized boolean inFrame(int buildingNo, int frameX, int frameY,
 			int FRAME_X_SIZE, int FRAME_Y_SIZE) {
 		// TODO Auto-generated method stub
 		return !(buildings.get(buildingNo).getX() >= frameX 
@@ -162,31 +162,31 @@ IComBuildingListFrameProcess {
 	}
 
 	@Override
-	public boolean canBuildGhostBuilding() {
+	public synchronized boolean canBuildGhostBuilding() {
 		// TODO Auto-generated method stub
 		return !ghostBuilding.cantBuild();
 	}
 
 	@Override
-	public int getGhostBuildingX() {
+	public synchronized int getGhostBuildingX() {
 		// TODO Auto-generated method stub
 		return (int) ghostBuilding.getX();
 	}
 
 	@Override
-	public int getGhostBuildingY() {
+	public synchronized int getGhostBuildingY() {
 		// TODO Auto-generated method stub
 		return (int) ghostBuilding.getY();
 	}
 
 	@Override
-	public String getGhostBuildingName() {
+	public synchronized String getGhostBuildingName() {
 		// TODO Auto-generated method stub
 		return ghostBuilding.getName();
 	}
 
 	@Override
-	public void moveGhostBuilding(int[] square) {
+	public synchronized void moveGhostBuilding(int[] square) {
 		// TODO Auto-generated method stub
 		if(ghostBuilding != null && square[0] != -1 && square[1] != -1){
 		
@@ -195,18 +195,18 @@ IComBuildingListFrameProcess {
 	}
 
 	@Override
-	public void setGhostBuilding(Building building) {
+	public synchronized void setGhostBuilding(Building building) {
 		// TODO Auto-generated method stub
 		ghostBuilding = building;
 	}
 
 	@Override
-	public void endGhostBuildingSession() {
+	public synchronized void endGhostBuildingSession() {
 		// TODO Auto-generated method stub
 		ghostBuilding = null;
 	}
 	
-	public int setSelectedBuilding(int clickX, int clickY, int playerNumber){
+	public synchronized int setSelectedBuilding(int clickX, int clickY, int playerNumber){
 		
 		//this.begin();
 		for(int b = 0; b < buildings.size(); b++){
@@ -238,32 +238,32 @@ IComBuildingListFrameProcess {
 	}
 
 	@Override
-	public boolean isSelectedBuilding(Building building) {
+	public synchronized boolean isSelectedBuilding(Building building) {
 		// TODO Auto-generated method stub
 		return SelectedBuilding != null && SelectedBuilding.getBuildingNo() == building.getBuildingNo();
 	}
 
 	@Override
-	public void clearSelectedBuilding() {
+	public synchronized void clearSelectedBuilding() {
 		// TODO Auto-generated method stub
 		SelectedBuilding = null;
 	}
 
 	@Override
-	public Building getSelectedBuilding() {
+	public synchronized Building getSelectedBuilding() {
 		// TODO Auto-generated method stub
 		return SelectedBuilding;
 	}
 
 	@Override
-	public boolean isBuildingSelected() {
+	public synchronized boolean isBuildingSelected() {
 		// TODO Auto-generated method stub
 		return SelectedBuilding != null;
 	}
 
 	//handle the selection of units to be added to the queue
 	@Override
-	public void unitIconSelected(int selected,int food,int gold) {
+	public synchronized void unitIconSelected(int selected,int food,int gold) {
 		// TODO Auto-generated method stub
 		UnitCreator type = (UnitCreator) Building.GetBuildingClass(SelectedBuilding.getName());
 		String[] listOfUnits = type.unitcreated().split(";");
@@ -279,7 +279,7 @@ IComBuildingListFrameProcess {
 	}
 
 	@Override
-	public GameGraphics.Building getBuildingByBuildingNo(int buildingNo) {
+	public synchronized GameGraphics.Building getBuildingByBuildingNo(int buildingNo) {
 		// TODO Auto-generated method stub
 		
 		for(int b = 0; b < buildings.size(); b++){
@@ -294,19 +294,19 @@ IComBuildingListFrameProcess {
 	}
 
 	@Override
-	public int getGhostBuildingSelected() {
+	public synchronized int getGhostBuildingSelected() {
 		// TODO Auto-generated method stub
 		return SelectedBuilding.getBuildingNo();
 	}
 
 	@Override
-	public int getAttackBuildingNo() {
+	public synchronized int getAttackBuildingNo() {
 		// TODO Auto-generated method stub
 		return AttackBuilding.getBuildingNo();
 	}
 
 	@Override
-	public void canBuildThere(CollisionMap collMap) {
+	public synchronized void canBuildThere(CollisionMap collMap) {
 		// TODO Auto-generated method stub
 		if(isBuildingGhost()){
 			ghostBuilding.CanBuildThere(collMap);
@@ -317,37 +317,37 @@ IComBuildingListFrameProcess {
 	}
 
 	@Override
-	public int getBuildingMap(int buildingNo) {
+	public synchronized int getBuildingMap(int buildingNo) {
 		// TODO Auto-generated method stub
 		return -1;
 	}
 
 	@Override
-	public float getBuildingX(int buildingNo) {
+	public synchronized float getBuildingX(int buildingNo) {
 		// TODO Auto-generated method stub
 		return buildings.get(buildingNo).getX();
 	}
 
 	@Override
-	public float getBuildingY(int buildingNo) {
+	public synchronized float getBuildingY(int buildingNo) {
 		// TODO Auto-generated method stub
 		return buildings.get(buildingNo).getY();
 	}
 
 	@Override
-	public int getBuildingDiameterX(int buildingNo) {
+	public synchronized int getBuildingDiameterX(int buildingNo) {
 		// TODO Auto-generated method stub
 		return Building.GetBuildingClass(buildings.get(buildingNo).getName()).getSizeX();
 	}
 
 	@Override
-	public int getBuildingDiameterY(int buildingNo) {
+	public synchronized int getBuildingDiameterY(int buildingNo) {
 		// TODO Auto-generated method stub
 		return Building.GetBuildingClass(buildings.get(buildingNo).getName()).getSizeY();
 	}
 
 	@Override
-	public void clearAllQueues() {
+	public synchronized void clearAllQueues() {
 		// TODO Auto-generated method stub
 		
 		for(int b = 0; b < buildings.size(); b++){

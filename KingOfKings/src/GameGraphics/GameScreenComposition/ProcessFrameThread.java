@@ -181,10 +181,10 @@ public class ProcessFrameThread {
 			
 			for(int in = 0; in < mapInfo.size(); in+=2){
 				
-				if(new Integer(mapInfo.get(in)).intValue() == viewedMap){
-					
-					engine.setMyPlayerNumber(new Integer(mapInfo.get(in+1)).intValue());
-				}
+//				if(new Integer(mapInfo.get(in)).intValue() == viewedMap){
+//					
+//					engine.setMyPlayerNumber(new Integer(mapInfo.get(in+1)).intValue());
+//				}
 				
 				map.setMapPlayer(new Integer(mapInfo.get(in)).intValue(),
 						new Integer(mapInfo.get(in+1)).intValue());
@@ -371,7 +371,7 @@ public class ProcessFrameThread {
 	public void load(ArrayList<String> load){
 		
 		
-		processFrame(load,1);
+		processFrame(load,2);
 		//getFrame.start();
 		
 	}

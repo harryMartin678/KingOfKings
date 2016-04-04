@@ -62,9 +62,9 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 		this.width = width;
 	}
 	
-	public void moveUnit(int tx, int ty){
+	public void moveUnit(int tx, int ty,int difference){
 		
-		move.moveUnit(tx, ty, fDown, shiftDown);
+		move.moveUnit(tx, ty,difference, fDown, shiftDown);
 	}
 	
 	
@@ -87,7 +87,7 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 		    		  if((outcome = buildings.setSelectedBuilding(click[0], click[1],this.playerNumber)) == 0){
 		    			  
 		    			//System.out.println(units.getSelectedUnitsSize() + " regulateMouse");
-		    		  	move.moveUnit(click[0],click[1],fDown,shiftDown);
+		    		  	move.moveUnit(click[0],click[1],click[2],fDown,shiftDown);
 		    		  	buildings.clearSelectedBuilding();
 		    		  
 		    		  }else if(outcome == 1){
@@ -371,13 +371,16 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 						0.9702127575874329 - (y*(0.06950354576/2.0)),
 							mx,my)){
 					
-					return display.getFrameAdjustedPos(new int[]{x,y});
+					int difference = (int)(Math.abs((mx - 0.145 + (x*(0.03513909876/2.0)))) +
+							Math.abs((my - 0.955 + (y*(0.06950354576/2.0))))) * 1000;
+					
+					return display.getFrameAdjustedPos(new int[]{x,y,difference});
 					
 				}
 			}
 		}
 		
-		return new int[]{-1,-1};
+		return new int[]{-1,-1,-1};
 	}
 	
 	private void selectMiniMap(double x, double y){

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project KingOfKings with libraries in sub-folder">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <target name="create_run_jar">
+        <jar destfile="C:/Users/harry/Documents/harry/Documents/backup/Program/java/KingOfKings/KingOfKings.jar">
+            <manifest>
+                <attribute name="Main-Class" value="GameGraphics.Graphics"/>
+                <attribute name="Class-Path" value=". KingOfKings_lib/junit.jar KingOfKings_lib/org.hamcrest.core_1.3.0.v201303031735.jar KingOfKings_lib/gluegen-rt.jar KingOfKings_lib/jogl.all.jar KingOfKings_lib/nativewindow.all.jar KingOfKings_lib/newt.all.jar"/>
+            </manifest>
+            <fileset dir="C:/Users/harry/Documents/harry/Documents/backup/Program/java/KingOfKings/bin"/>
+        </jar>
+        <delete dir="C:/Users/harry/Documents/harry/Documents/backup/Program/java/KingOfKings/KingOfKings_lib"/>
+        <mkdir dir="C:/Users/harry/Documents/harry/Documents/backup/Program/java/KingOfKings/KingOfKings_lib"/>
+        <copy file="C:/Program Files/eclipse/plugins/org.junit_4.11.0.v201303080030/junit.jar" todir="C:/Users/harry/Documents/harry/Documents/backup/Program/java/KingOfKings/KingOfKings_lib"/>
+        <copy file="C:/Program Files/eclipse/plugins/org.hamcrest.core_1.3.0.v201303031735.jar" todir="C:/Users/harry/Documents/harry/Documents/backup/Program/java/KingOfKings/KingOfKings_lib"/>
+        <copy file="C:/Users/harry/Documents/harry/Documents/backup/Program/java/KingOfKings/jogl-2.0-b23-20110303-windows-amd64/jar/gluegen-rt.jar" todir="C:/Users/harry/Documents/harry/Documents/backup/Program/java/KingOfKings/KingOfKings_lib"/>
+        <copy file="C:/Users/harry/Documents/harry/Documents/backup/Program/java/KingOfKings/jogl-2.0-b23-20110303-windows-amd64/jar/jogl.all.jar" todir="C:/Users/harry/Documents/harry/Documents/backup/Program/java/KingOfKings/KingOfKings_lib"/>
+        <copy file="C:/Users/harry/Documents/harry/Documents/backup/Program/java/KingOfKings/jogl-2.0-b23-20110303-windows-amd64/jar/nativewindow.all.jar" todir="C:/Users/harry/Documents/harry/Documents/backup/Program/java/KingOfKings/KingOfKings_lib"/>
+        <copy file="C:/Users/harry/Documents/harry/Documents/backup/Program/java/KingOfKings/jogl-2.0-b23-20110303-windows-amd64/jar/newt.all.jar" todir="C:/Users/harry/Documents/harry/Documents/backup/Program/java/KingOfKings/KingOfKings_lib"/>
+    </target>
+</project>

@@ -18,6 +18,7 @@ public class Graphics{
 
 	public Graphics(){
 
+		//System.setProperty("java.library.path","/");
 		window = new JFrame();
 		window.setSize(500,500);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

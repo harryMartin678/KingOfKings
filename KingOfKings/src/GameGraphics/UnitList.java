@@ -20,15 +20,19 @@ public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,I
 	
 	//private Thread currentThread;
 	
-	public UnitList(int myPlayerNumber){
+	public UnitList(){
 		
 		units = new ArrayList<Unit>();
 		used = false;
 		
 		wayPoints = new ArrayList<int[]>();
 		selectedUnits = new ArrayList<SelectedUnit>();
-		this.myPlayerNumber = myPlayerNumber;
 		lock = new Semaphore(1);
+	}
+	
+	public void setMyPlayerNumber(int myPlayerNumber){
+	
+		this.myPlayerNumber = myPlayerNumber;
 	}
 	
 	public class SelectedUnit{
@@ -229,7 +233,7 @@ public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,I
 					&&units.get(u).getY() <= Math.max(startDB[1], lastDB[1])
 	    					&& units.get(u).getY() >= Math.min(startDB[1],lastDB[1])
 	    						&& units.get(u).getPlayer() == this.myPlayerNumber){
-				
+
 				SelectedUnit su = new SelectedUnit();
 				su.unitNo = units.get(u).getUnitNo();
 				su.isWorker = units.get(u).getUnitType().equals(Names.SLAVE)
@@ -247,13 +251,14 @@ public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,I
 		for(int u = 0; u < units.size(); u++){
 			  
 			  if(ClickInUnit(click,units.get(u)) && units.get(u).getPlayer() == this.myPlayerNumber){
-			  
+				
+				  
 				  SelectedUnit su = new SelectedUnit();
 					su.unitNo = units.get(u).getUnitNo();
 					su.isWorker = units.get(u).getUnitType().equals(Names.SLAVE)
 							|| units.get(u).getUnitType().equals(Names.SERVANT);
 					su.distance = Math.abs(units.get(u).getX() - click[0]) 
-							+ Math.abs(units.get(u).getY() - click[1]);
+							+ Math.abs(units.get(u).getY() - click[1]) + ((double)click[2]/1000.0);
 				  selectedUnits.add(su);
 			  	}
 		  }
@@ -277,10 +282,12 @@ public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,I
 	
 	private boolean ClickInUnit(int[] click, Unit unit){
 		
-		return unit.getX() < click[0] + 1.5
-				&& unit.getX() > click[0] - 1.5
-				&& unit.getY() < click[1] + 1.5
-				&& unit.getY() > click[1] - 1.5;
+		double SelectionSize = 1.75;
+		
+		return unit.getX() < click[0] + SelectionSize
+				&& unit.getX() > click[0] - SelectionSize
+				&& unit.getY() < click[1] + SelectionSize
+				&& unit.getY() > click[1] - SelectionSize;
 	}
 
 	@Override

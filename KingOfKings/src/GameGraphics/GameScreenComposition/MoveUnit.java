@@ -16,9 +16,9 @@ public class MoveUnit {
 		this.cmsg = cmsg;
 	}
 	
-	private void singleFollow(int tx,int ty){
+	private void singleFollow(int tx,int ty,int difference){
 		
-		units.addSelectedUnit(new int[]{tx,ty});
+		units.addSelectedUnit(new int[]{tx,ty,difference});
 		
 		//System.out.println(units.getSelectedUnitsSize() + " singleFollow");
 		  
@@ -73,11 +73,11 @@ public class MoveUnit {
 		  }
 	}
 	
-	private void groupFollow(int tx, int ty){
+	private void groupFollow(int tx, int ty,int difference){
 		
 		int oldSize = units.getSelectedUnitsSize();
 		
-		  units.addSelectedUnit(new int[]{tx,ty});
+		  units.addSelectedUnit(new int[]{tx,ty,difference});
 		  
 		  if(units.getSelectedUnitsSize() == oldSize){
 			  
@@ -130,7 +130,7 @@ public class MoveUnit {
 		}
 	}
 	
-	public void moveUnit(int tx, int ty,boolean fDown,boolean shiftDown){
+	public void moveUnit(int tx, int ty,int difference,boolean fDown,boolean shiftDown){
 
 		//System.out.println(tx + " " + ty + " " + fDown + " " + shiftDown + " "
 			//	+ units.areWayPointSetting() + " moveUnit ");
@@ -141,7 +141,7 @@ public class MoveUnit {
 				if(fDown){
 					 
 					//System.out.println("FOLLOW");
-					singleFollow(tx,ty);
+					singleFollow(tx,ty,difference);
 					  
 				  }else{
 					  
@@ -160,7 +160,7 @@ public class MoveUnit {
 			if(!units.areWayPointSetting()){
 				
 				if(fDown){
-					  groupFollow(tx,ty);
+					  groupFollow(tx,ty,difference);
 					  
 				  }else{
 					  

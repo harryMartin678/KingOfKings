@@ -60,7 +60,7 @@ public class GameEngine{
 		context.buildingAttackList = new BuildingAttackList(context.maps,context.buildings);
 		
 		try {
-			context.saveGame = new SavedGame("SavedGames/game1");
+			context.saveGame = new SavedGame("SavedGames/PlayTest1");
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -84,18 +84,18 @@ public class GameEngine{
 		for(int i = 0; i < context.maps.getSize(); i++){
 			
 			//context.maps.getPlayer(i)
-			context.buildings.addBuilding(3, context.maps.getPlayer(i), 
+			context.buildings.addBuilding(context.maps.getPlayer(i), i, 
 					context.maps.getMapWidth(i)/2, context.maps.getMapHeight(i)/2, Names.ROYALPALACE);
 			context.buildings.addBuilding(context.maps.getPlayer(i), i, 
 					(context.maps.getMapWidth(i)/2)+6, (context.maps.getMapHeight(i)/2)+6, Names.STOCKPILE);
-			context.buildings.addBuilding(1,i,3,3,Names.STOCKPILE);
+			//context.buildings.addBuilding(1,i,3,3,Names.STOCKPILE);
 //			context.buildings.addBuilding(1,i,(context.maps.getMapWidth(i)/2),
 //					(context.maps.getMapHeight(i)/2),Names.MINE);
 			
-			context.units.addUnit(Names.ARCHER, i, (context.maps.getMapWidth(i)/2)-6, (context.maps.getMapHeight(i)/2)-4, context.maps.getPlayer(i));
+			//context.units.addUnit(Names.ARCHER, i, (context.maps.getMapWidth(i)/2)-6, (context.maps.getMapHeight(i)/2)-4, context.maps.getPlayer(i));
 			context.units.addUnit(Names.SLAVE, i, (context.maps.getMapWidth(i)/2)-5, (context.maps.getMapHeight(i)/2)-3, context.maps.getPlayer(i));
-			context.units.addUnit(Names.AXEMAN, i, (context.maps.getMapWidth(i)/2)+9, (context.maps.getMapHeight(i)/2)+7, 2);
-			context.units.addUnit(Names.AXEMAN, i, (context.maps.getMapWidth(i)/2)-9, (context.maps.getMapHeight(i)/2)-7, context.maps.getPlayer(i));
+			//context.units.addUnit(Names.AXEMAN, i, (context.maps.getMapWidth(i)/2)+9, (context.maps.getMapHeight(i)/2)+7, 2);
+			//context.units.addUnit(Names.AXEMAN, i, (context.maps.getMapWidth(i)/2)-9, (context.maps.getMapHeight(i)/2)-7, context.maps.getPlayer(i));
 			context.units.addUnit(Names.SLAVE, i, (context.maps.getMapWidth(i)/2)-6, (context.maps.getMapHeight(i)/2)-2, context.maps.getPlayer(i));
 		}
 

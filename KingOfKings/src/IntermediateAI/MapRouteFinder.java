@@ -181,7 +181,9 @@ public class MapRouteFinder {
 		
 		getRoute(startX, startY,targetX, targetY, startMap
 				,targetMap,new ArrayList<Integer>(), new ArrayList<int[]>());
-		minPath.remove(minPath.size()-1);
+		if(minPath.size() > 0){
+			minPath.remove(minPath.size()-1);
+		}
 		return minPath;
 	}
 	
