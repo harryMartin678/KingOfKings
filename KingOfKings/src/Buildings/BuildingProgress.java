@@ -89,4 +89,22 @@ public class BuildingProgress {
 		// TODO Auto-generated method stub
 		return sites.get(s).getBuilding().getY();
 	}
+
+	public Building getBuilding(int buildingNo) {
+		// TODO Auto-generated method stub
+		for(int s = 0; s < sites.size(); s++){
+			
+			if(sites.get(s).getBuilding().getBuildingNo() == buildingNo){
+				
+				return sites.get(s).getBuilding();
+			}
+		}
+		
+		return null;
+	}
+
+	public BuildingSite getLastSite() {
+		// TODO Auto-generated method stub
+		return sites.get(sites.size()-1);
+	}
 }

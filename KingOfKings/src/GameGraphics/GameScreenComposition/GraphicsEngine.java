@@ -232,6 +232,7 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 					
 					if(sleepTime < 5){
 						
+						System.out.println("No Time Animation GraphicsEngine");
 						sleepTime = 5;
 					}
 					

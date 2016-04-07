@@ -110,18 +110,18 @@ public class AddUnitModule {
 		return closestPos;
 	}
 		
-		public static boolean OnTakenList(ArrayList<int[]> list,int[] obj){
+	public static boolean OnTakenList(ArrayList<int[]> list,int[] obj){
+		
+		for(int p = 0; p < list.size(); p++){
 			
-			for(int p = 0; p < list.size(); p++){
+			if(obj[0] == list.get(p)[0] && obj[1] == list.get(p)[1]){
 				
-				if(obj[0] == list.get(p)[0] && obj[1] == list.get(p)[1]){
-					
-					return true;
-				}
+				return true;
 			}
-			
-			return false;
 		}
+		
+		return false;
+	}
 	
 //	public int getBuildingNo(){
 //		

@@ -132,10 +132,12 @@ public class Building {
 			int sizeX = check.getSizeX();
 			int sizeY = check.getSizeY();
 			//System.out.println(sizeX + " " + sizeY + " building CanBuildThere");
-			cantBuild = !map.inArea((int)this.x,(int)this.y,sizeX,sizeY);
+			cantBuild = !map.inArea((int)this.x,(int)this.y,sizeX,sizeY) 
+						|| map.getPlayer() != this.getPlayer();
 		}else{
 			//System.out.println(map.getCollisionMap()[(int)this.x][(int)this.y] + " building");
-			cantBuild = !(map.getCollisionMap()[(int)this.y][(int)this.x] == 3);
+			cantBuild = !(map.getCollisionMap()[(int)this.y][(int)this.x] == 3)
+						|| map.getPlayer() != this.getPlayer();
 		}
 	}
 	

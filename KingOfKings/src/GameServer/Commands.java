@@ -16,6 +16,7 @@ public interface Commands {
 	public void attackBuilding(int[] unitNos, int buildingNo);
 	
 	public void buildBuilding(int x, int y,int player,int map, String buildingType,int unitNo[]);
+	public void addWorkerToSite(int buildingNo, int[] unitNo);
 	public void destroyBuilding(int buildingNo);
 	public void addUnitToBuildingQueue(int buildingNo, String unitType,int player);
 	public void removeUnitFromBuildingQueue(int buildingNo, int queueNo);

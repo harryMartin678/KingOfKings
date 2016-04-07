@@ -102,6 +102,14 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 		    			  				buildings.getAttackBuildingNo());
 		    			  	}
 		    		  
+		    		  }else if(outcome == 3){
+		    			  
+		    			  units.clearAttackSelectedUnits();
+		    			  if(units.getSelectedUnitsSize() > 0){
+			    			  cmsg.addMessage("wnbb " + units.getUnitsSelectedString() +
+			    					  buildings.getBuildBuildingBuildingNo());
+		    			  }
+		    			  
 		    		  }else{
 		    			  
 		    			  units.clearSelectedUnits();
@@ -164,6 +172,7 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 	    		lastDB = selectMap(lx,ly);
 	    		
     			units.addSelectedUnits(startDB, lastDB);
+    			buildings.clearSelectedBuilding();
 	    	
 	    		drag = false;
 	    	}

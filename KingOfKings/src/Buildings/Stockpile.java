@@ -33,7 +33,7 @@ public class Stockpile extends UnitCreator {
 	@Override
 	public String unitcreated() {
 		// TODO Auto-generated method stub
-		return super.unitcreated() + Names.SLAVE + ":" + Names.SERVANT;
+		return super.unitcreated() + Names.SLAVE + ";" + Names.SERVANT;
 	}
 	
 	@Override

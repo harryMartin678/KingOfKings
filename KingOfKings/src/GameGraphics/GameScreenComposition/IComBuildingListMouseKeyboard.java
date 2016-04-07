@@ -22,4 +22,5 @@ public interface IComBuildingListMouseKeyboard extends IComBuildingList {
 	public boolean isBuildingSelected();
 	public void unitIconSelected(int selected,int food, int gold);
 	public int getAttackBuildingNo();
+	public int getBuildBuildingBuildingNo();
 }

@@ -14,6 +14,7 @@ public class CollisionMap {
 	private int[][] collisionMap;
 	private int ignoreUnit;
 	private int viewedMap;
+	private int player;
 	
 	
 	public CollisionMap(IBuildingList buildings, IUnitList units, Map map,int mapNo){
@@ -24,6 +25,7 @@ public class CollisionMap {
 		this.viewedMap = mapNo;
 		SetCollisionMapToArray(map.toArray());
 		createCollisionMap();
+		player = map.getPlayer();
 		
 	}
 	
@@ -49,7 +51,13 @@ public class CollisionMap {
 		
 		SetCollisionMapToArray(map.toArray());
 		createCollisionMap();
+		player = map.getPlayer();
 		
+	}
+	
+	public int getPlayer(){
+		
+		return player;
 	}
 	
 	private void SetCollisionMapToArray(int[][] array){

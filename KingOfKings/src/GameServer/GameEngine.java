@@ -60,7 +60,7 @@ public class GameEngine{
 		context.buildingAttackList = new BuildingAttackList(context.maps,context.buildings);
 		
 		try {
-			context.saveGame = new SavedGame("SavedGames/PlayTest1");
+			context.saveGame = new SavedGame("SavedGames/" + mapEntry);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -798,7 +798,7 @@ public class GameEngine{
 				new ParseText(inpt).getNumbers();
 		
 		//System.out.println(numbers.get(0));
-		System.out.println("parseMoveUnit GameEngine");
+		//System.out.println("parseMoveUnit GameEngine");
 		
 		MethodParameter parameters = new MethodParameter();
 		parameters.SetMoveUnit(new Integer(numbers.get(0)).intValue(),
@@ -812,12 +812,33 @@ public class GameEngine{
 			commands.add(MethodCallup.MOVEUNIT, parameters, passedCommunicationTurn);
 		}
 	}
+	
+	public void parseAddWorkerToSite(String inpt, int passedCommunicationTurn) {
+		// TODO Auto-generated method stub
+		String[] numbers = inpt.split(" ");
+		
+		int buildingNo = new Integer(numbers[numbers.length-1]).intValue();
+		int[] unitNos = new int[numbers.length-1];
+		
+		for(int n = 0; n < numbers.length-1; n++){
+			
+			unitNos[n] = new Integer(numbers[n]).intValue();
+		}
+		
+		MethodParameter parameters = new MethodParameter();
+		parameters.setAddWorkerToSite(buildingNo,unitNos);
+		
+		
+		if(passedCommunicationTurn != -1){
+			commands.add(MethodCallup.ADDWORKERTOSITE, parameters, communicationTurn);
+		}else{
+			commands.add(MethodCallup.ADDWORKERTOSITE, parameters, passedCommunicationTurn);
+		}
+	}
 
 	public int getCommunicationTurnNo() {
 		// TODO Auto-generated method stub
 		return communicationTurn;
 	}
-
-
 	
 }

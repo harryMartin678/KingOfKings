@@ -19,6 +19,7 @@ IComBuildingListFrameProcess {
 	private Building ghostBuilding;
 	private Building SelectedBuilding;
 	private Building AttackBuilding;
+	private Building BuildBuilding;
 	private ClientWrapper cmsgs;
 	private Semaphore lock;
 	
@@ -34,7 +35,7 @@ IComBuildingListFrameProcess {
 		this.cmsgs = cmsgs;
 	}
 	
-	public synchronized void begin(){
+	public void begin(){
 		
 //		while(used){
 //			
@@ -99,10 +100,17 @@ IComBuildingListFrameProcess {
 		}
 	}
 	
-	public synchronized void end(){
+	public void end(){
 		
 		//used = false;
 		lock.release();
+		
+		try {
+			Thread.sleep(2);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -221,9 +229,20 @@ IComBuildingListFrameProcess {
 				
 				
 				if(buildings.get(b).getPlayer() == playerNumber){
-					SelectedBuilding = buildings.get(b);
-					this.end();
-					return 2;
+					
+					if(buildings.get(b).isSite()){
+						
+						BuildBuilding = buildings.get(b);
+						this.end();
+						return 3;
+						
+					}else{
+						SelectedBuilding = buildings.get(b);
+						this.end();
+						return 2;
+					}
+					
+					
 				}else{
 					AttackBuilding = buildings.get(b);
 					this.end();
@@ -359,6 +378,18 @@ IComBuildingListFrameProcess {
 			
 			SelectedBuilding.clearUnitQueue();
 		}
+	}
+
+	@Override
+	public int getBuildBuildingBuildingNo() {
+		// TODO Auto-generated method stub
+		return BuildBuilding.getBuildingNo();
+	}
+
+	@Override
+	public void setBuildings(ArrayList<Building> buildingsTemp) {
+		// TODO Auto-generated method stub
+		buildings = buildingsTemp;
 	}
 
 

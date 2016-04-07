@@ -242,6 +242,10 @@ public class ServerMessages {
 		}else if(inpt.substring(0,4).equals("atbl")){
 			
 			engine.parseAttackBuilding(inpt.substring(5), communicationTurn);
+		
+		}else if(inpt.substring(0,4).equals("wnbb")){
+			
+			engine.parseAddWorkerToSite(inpt.substring(5),communicationTurn);
 		}
 	}
 	

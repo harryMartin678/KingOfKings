@@ -1,10 +1,13 @@
 package Units;
 
+import java.util.ArrayList;
+
 import Buildings.Building;
 
 public class Worker extends Unit {
 	
 	private int buildingNo;
+	private boolean goingToBuild;
 	
 	@Override
 	public String getName() {
@@ -49,7 +52,25 @@ public class Worker extends Unit {
 	
 	public void build(int buildingNo){
 		
+		goingToBuild = true;
 		this.buildingNo = buildingNo;
+	}
+	
+	@Override
+	public void setPath(ArrayList<int[]> path) {
+		// TODO Auto-generated method stub
+		super.setPath(path);
+		goingToBuild = false;
+	}
+	
+	public boolean getGoingToBuild(){
+		
+		return goingToBuild;
+	}
+
+	public void stopBuild() {
+		// TODO Auto-generated method stub
+		goingToBuild = false;
 	}
 
 }

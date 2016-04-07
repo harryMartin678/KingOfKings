@@ -148,6 +148,12 @@ public class MethodParameter {
 		this.mapNo = mapNo;
 		this.player = player;
 	}
+
+	public void setAddWorkerToSite(int buildingNo, int[] unitNos) {
+		// TODO Auto-generated method stub
+		this.buildingNo = buildingNo;
+		this.unitNos = unitNos;
+	}
 	
 
 }

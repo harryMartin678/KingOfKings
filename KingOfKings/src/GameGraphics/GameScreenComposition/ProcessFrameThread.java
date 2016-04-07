@@ -267,8 +267,8 @@ public class ProcessFrameThread {
 		buildings.begin();
 		
 		//System.out.println("CLEAR PROCESSFRAMETHREAD");
-		buildings.clear();
-		
+		ArrayList<Building> buildingsTemp = new ArrayList<Building>();
+		//System.out.println("buildingSize " + buildings.size() + " ProcessFrameThread start");
 		while(!(msg = msgs.get(m)).equals("sites")){
 		
 			msg = msgs.get(m);
@@ -284,12 +284,14 @@ public class ProcessFrameThread {
 			String building = parsed.getUnitName();
 			
 			
-			buildings.add(new Building(new Float(numbers.get(1)).floatValue(),
+			buildingsTemp.add(new Building(new Float(numbers.get(1)).floatValue(),
 					new Float(numbers.get(2)).floatValue(),building,
 					new Integer(numbers.get(0)).intValue(),new Integer(numbers.get(3)).intValue()));
-			buildings.get(buildings.size()-1).SetSite(false);
+			buildingsTemp.get(buildingsTemp.size()-1).SetSite(false);
 			m++;
 		}
+		
+		
 		
 		while(!msgs.get(m).equals("buildingqueue")){
 		//for(int b = m; b < msgs.size(); b++){
@@ -304,16 +306,16 @@ public class ProcessFrameThread {
 			ArrayList<String> numbers = parsed.getNumbers();
 			String building = parsed.getUnitName();
 			
-			buildings.add(new Building(new Float(numbers.get(1)).intValue(),
+			buildingsTemp.add(new Building(new Float(numbers.get(1)).intValue(),
 					new Float(numbers.get(2)).intValue(),building,new Float(numbers.get(0)).intValue(),
 					new Integer(numbers.get(3)).intValue()));
-			buildings.get(buildings.size()-1).SetSite(true);
+			buildingsTemp.get(buildingsTemp.size()-1).SetSite(true);
 			
 			m++;
 		}
 		
 		m++;
-		
+		buildings.setBuildings(buildingsTemp);
 		
 		
 		while(!(m >= msgs.size() || msgs.get(m).equals("resource"))){
@@ -364,6 +366,7 @@ public class ProcessFrameThread {
 //					+ buildings.get(b).getName() + " " + buildings.get(b).isSite());
 //		}
 		//System.out.println("FULL PROCESSFRAMETHREAD");
+		//System.out.println("buildingSize " + buildings.size() + " ProcessFrameThread end");
 		buildings.end();
 	}
 	
