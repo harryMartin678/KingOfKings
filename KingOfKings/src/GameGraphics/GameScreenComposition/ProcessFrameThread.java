@@ -288,6 +288,9 @@ public class ProcessFrameThread {
 					new Float(numbers.get(2)).floatValue(),building,
 					new Integer(numbers.get(0)).intValue(),new Integer(numbers.get(3)).intValue()));
 			buildingsTemp.get(buildingsTemp.size()-1).SetSite(false);
+			buildingsTemp.get(buildingsTemp.size()-1).setAttack(new Integer(numbers.get(4)).intValue(),
+					new Integer(numbers.get(5)).intValue(),
+					new Integer(numbers.get(6)).intValue());
 			m++;
 		}
 		

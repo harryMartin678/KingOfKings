@@ -16,7 +16,7 @@ public class BallistaTower extends Tower {
 	@Override
 	public int getAttack() {
 		// TODO Auto-generated method stub
-		return super.getAttack() + 4;
+		return super.getAttack() + 2;
 	}
 	
 	@Override

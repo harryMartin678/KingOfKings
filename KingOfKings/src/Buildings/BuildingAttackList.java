@@ -31,7 +31,7 @@ public class BuildingAttackList {
 			if(!buildingDesList.get(d).buildingDestroyed()){
 				buildingDesList.get(d).simulateHit();
 			}else{
-				System.out.println("DESTROYED BUILDINGATTACKLIST");
+				//System.out.println("DESTROYED BUILDINGATTACKLIST");
 				
 				if(buildingDesList.get(d).getBuildingType().equals(Names.ROYALPALACE)){
 					

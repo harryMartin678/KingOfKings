@@ -32,6 +32,14 @@ public class TowerBattle {
 		return (towerOne.destroyed()) || (unit.dead());
 	}
 	
+	public boolean InRange(){
+		
+		int distance = (int) Math.sqrt(Math.pow((double)(unit.getX() - towerOne.getX()), 2)
+				+ Math.pow((double)(unit.getY() - towerOne.getY()), 2));
+		
+		return distance <= unit.getRange();
+	}
+	
 	public boolean twoTowers(){
 		
 		return !(towerTwo == null);
@@ -66,14 +74,15 @@ public class TowerBattle {
 
 	public void similuateHit(){
 		
-		int distance = (int) Math.sqrt(Math.pow((double) ((towerOne.getX() - unit.getX()) + (towerOne.getY() - unit.getY())),2));
+		int distance = (int) Math.sqrt(Math.pow((double)(unit.getX() - towerOne.getX()), 2)
+				+ Math.pow((double)(unit.getY() - towerOne.getY()), 2));
 		
 		if(turn && count%unit.turnsPerAHit() == 0 && distance <= unit.getRange()){
 			
 			//hit is attack + the bias 
 			int hit = unit.getAttack();
 			//remove the health 
-			unit.removeHealth(hit);
+			towerOne.removeHitpoints(hit);
 	
 		
 		}else if(!turn && count%towerOne.turnsPerAHit() == 0 && distance <= towerOne.getRange()){
@@ -89,10 +98,27 @@ public class TowerBattle {
 	
 		}
 		
+		//System.out.println(towerOne.getHitpoints() + " " + unit.getHealth() + " TowerBattle");
 		if(!turn) count++;
 		//battle is turn based hits 
 		turn =! turn;
 		
+	}
+	
+	public int getUnitNo(){
+		
+		return unit.getUnitNo();
+	}
+	
+	public void stopAttacking() {
+		// TODO Auto-generated method stub
+		unit.stopAttack(false);
+		towerOne.stopAttack();
+	}
+	
+	public void attack() {
+		// TODO Auto-generated method stub
+		unit.attack(towerOne.getX(), towerOne.getY());
 	}
 	
 	public static void main(String[] args) {
@@ -106,5 +132,9 @@ public class TowerBattle {
 		
 		tb.similuateHitTowers();
 	}
+
+	
+
+	
 
 }

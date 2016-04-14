@@ -3,6 +3,7 @@ package GameServer;
 import Buildings.BuildingAttackList;
 import Buildings.BuildingList;
 import Buildings.BuildingProgress;
+import Buildings.TowerBattles;
 import IntermediateAI.Pathfinder;
 import Map.MapList;
 import Player.Diplomacy;
@@ -23,5 +24,6 @@ public class GameEngineContext {
 	public SavedGame saveGame;
 	public String gameName;
 	public BuildingAttackList buildingAttackList;
+	//public TowerBattles towerBattles;
 
 }

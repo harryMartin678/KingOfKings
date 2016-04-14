@@ -45,6 +45,7 @@ public class UnitBattleList {
 	
 	public void addTowerUnitBattle(Unit one, Tower two){
 		
+		two.setAttacking(one.getUnitNo());
 		towerBattles.add(new TowerBattle(one,two));
 	}
 	
@@ -55,26 +56,44 @@ public class UnitBattleList {
 	
 	public void simulateTowerHit(){
 		
+		//System.out.println(towerBattles.size() + " UnitBattleList");
+		
 		for(int u = 0; u < towerBattles.size(); u++){
 			
-			if(towerBattles.get(u).twoTowers()){
+//			if(towerBattles.get(u).twoTowers()){
+//				
+//				if(towerBattles.get(u).deathTowers()){
+//					towerBattles.get(u).similuateHitTowers();
+//				}else{
+//					
+//					towerBattles.remove(u);
+//				}
+//			
+//			}else{
+			//things to do:
+			//stop towers attacking when they are out of range
+			//towers can only attack one unit at a time
+			if(!towerBattles.get(u).death()){
 				
-				if(towerBattles.get(u).deathTowers()){
-					towerBattles.get(u).similuateHitTowers();
-				}else{
+				if(towerBattles.get(u).InRange()){
 					
-					towerBattles.remove(u);
+					//System.out.println("Attacking UnitBattleList");
+					towerBattles.get(u).attack();
+					
+				}else{
+					//System.out.println("Stop Attacking UnitBattleList");
+					units.stopAttack(towerBattles.get(u).getUnitNo());
 				}
-			
+				
+				towerBattles.get(u).similuateHit();
+				
 			}else{
 				
-				if(towerBattles.get(u).death()){
-					towerBattles.get(u).similuateHit();
-				}else{
-					
-					towerBattles.remove(u);
-				}
+				towerBattles.get(u).stopAttacking();
+				towerBattles.remove(u);
+				u--;
 			}
+			//}
 		}
 	}
 	
@@ -91,6 +110,8 @@ public class UnitBattleList {
 				units.stopAttack(battles.get(u).getTwoID());
 				units.stopRetreat(battles.get(u).getOneID());
 				units.stopRetreat(battles.get(u).getTwoID());
+				units.unfollow(battles.get(u).getOneID());
+				units.unfollow(battles.get(u).getTwoID());
 				removeBattle(u);
 				u--;
 				units.end();

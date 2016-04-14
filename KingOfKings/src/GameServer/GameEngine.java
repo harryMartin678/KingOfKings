@@ -10,6 +10,8 @@ import Buildings.BuildingProgress;
 import Buildings.Castle;
 import Buildings.Farm;
 import Buildings.Names;
+import Buildings.Tower;
+import Buildings.TowerBattles;
 import GameClient.ParseText;
 import IntermediateAI.FormationMovement;
 import IntermediateAI.MapRouteFinder;
@@ -88,14 +90,17 @@ public class GameEngine{
 					context.maps.getMapWidth(i)/2, context.maps.getMapHeight(i)/2, Names.ROYALPALACE);
 			context.buildings.addBuilding(context.maps.getPlayer(i), i, 
 					(context.maps.getMapWidth(i)/2)+6, (context.maps.getMapHeight(i)/2)+6, Names.STOCKPILE);
+			context.buildings.addBuilding(2, i, 
+					(context.maps.getMapWidth(i)/2)-10, (context.maps.getMapHeight(i)/2)-10, Names.ARCHERYTOWER);
 			//context.buildings.addBuilding(1,i,3,3,Names.STOCKPILE);
 //			context.buildings.addBuilding(1,i,(context.maps.getMapWidth(i)/2),
 //					(context.maps.getMapHeight(i)/2),Names.MINE);
 			
-			//context.units.addUnit(Names.ARCHER, i, (context.maps.getMapWidth(i)/2)-6, (context.maps.getMapHeight(i)/2)-4, context.maps.getPlayer(i));
+			context.units.addUnit(Names.ARCHER, i, (context.maps.getMapWidth(i)/2)-6, (context.maps.getMapHeight(i)/2)-6, context.maps.getPlayer(i));
 			context.units.addUnit(Names.SLAVE, i, (context.maps.getMapWidth(i)/2)-5, (context.maps.getMapHeight(i)/2)-3, context.maps.getPlayer(i));
-			//context.units.addUnit(Names.AXEMAN, i, (context.maps.getMapWidth(i)/2)+9, (context.maps.getMapHeight(i)/2)+7, 2);
-			//context.units.addUnit(Names.AXEMAN, i, (context.maps.getMapWidth(i)/2)-9, (context.maps.getMapHeight(i)/2)-7, context.maps.getPlayer(i));
+			context.units.addUnit(Names.AXEMAN, i, (context.maps.getMapWidth(i)/2)+9, (context.maps.getMapHeight(i)/2)+9, 2);
+			context.units.addUnit(Names.AXEMAN, i, (context.maps.getMapWidth(i)/2)-9, (context.maps.getMapHeight(i)/2)-7, context.maps.getPlayer(i));
+			context.units.addUnit(Names.AXEMAN, i, (context.maps.getMapWidth(i)/2)-11, (context.maps.getMapHeight(i)/2)-7, context.maps.getPlayer(i));
 			context.units.addUnit(Names.SLAVE, i, (context.maps.getMapWidth(i)/2)-6, (context.maps.getMapHeight(i)/2)-2, context.maps.getPlayer(i));
 		}
 
@@ -462,10 +467,29 @@ public class GameEngine{
 			
 			if(context.buildings.getBuildingMap(b) == map && !context.buildings.isBuildingDestroyed(b)){
 				
+				String buildingAttack = "-1";
+				String buildingAttackX = "-1";
+				String buildingAttackY = "-1";
+				
+				if(context.buildings.getBuilding(b) instanceof Tower){
+					
+						buildingAttack = new Integer(
+								((Tower)context.buildings.getBuilding(b)).getAttacking()).toString();
+						if(!buildingAttack.equals("-1")){
+							buildingAttackX = new Integer((int)context.units.getUnitX(
+									((Tower)context.buildings.getBuilding(b)).getAttacking())).toString();
+							buildingAttackY = new Integer((int)context.units.getUnitY(
+									((Tower)context.buildings.getBuilding(b)).getAttacking())).toString();
+						}
+					
+				}
 				info += b + " " + context.buildings.getBuildingType(b) + " " 
 						+ context.buildings.getBuildingX(b) + " " +
 						context.buildings.getBuildingY(b) +  " " +
-						context.buildings.getBuildingPlayer(b) + "\n";
+						context.buildings.getBuildingPlayer(b) 
+						+ " " + buildingAttack
+						+ " " + buildingAttackX 
+						+ " " + buildingAttackY +"\n";
 			}
 		}
 		

@@ -1,9 +1,13 @@
 package Units;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.HashMap;
 
+import Buildings.Mine;
 import Buildings.Names;
 import GameClient.ParseText;
+import GameServer.AddUnitModule;
 import Map.CollisionMap;
 
 public class Unit {
@@ -28,12 +32,17 @@ public class Unit {
 	
 	private boolean retreat;
 	
+	private AddUnitModule addUnit;
+	private HashMap<Integer,int[]> isTaken;
+	
 	public static float SPEED_CONSTANT = 200.0f;
 	
 	public Unit(){
 		
 		health = this.getMaxHealth();
 		path = new ArrayList<float[]>();
+		isTaken = new HashMap<Integer,int[]>();
+		addUnit = new AddUnitModule();
 		moving = false;
 		follow = -1;
 		groupSpeed = -1;
@@ -55,6 +64,24 @@ public class Unit {
 		//	delayAttack++;
 		//}
 		
+	}
+	
+	public int[] getFreeSpace(CollisionMap map,int unitNo){
+		
+		Mine hack = new Mine(0);
+		hack.setPos((int)this.x, (int)this.y);
+		addUnit.setBuilding(hack);
+		
+		int[] pos = addUnit.getFreeSpace(map, (int)this.x, (int)this.y, 
+				new ArrayList<int[]>(isTaken.values()));
+		isTaken.put(unitNo, pos);
+		System.out.println(pos[0] + " " + pos[1] + " Unit");
+		return pos;
+	}
+	
+	public void unRegisterFollow(int unitNo){
+		
+		isTaken.remove(unitNo);
 	}
 	
 	public void stopAttack(boolean delay){
@@ -253,6 +280,8 @@ public class Unit {
 		
 		recalculate = 0;
 		
+		isTaken.clear();
+		
 		System.out.println("START////////");
 		for(int i = 0; i < path.size(); i++){
 			
@@ -450,7 +479,7 @@ public class Unit {
 							&& path.get(1)[1] == ParseText.round(units.get(u).getY())){
 						//System.out.println("unit stop " + this.getUnitNo() + " unit");
 						if(units.get(u).getMoving()){
-							
+
 							stop = true;
 							
 						}else{

@@ -392,6 +392,12 @@ IComBuildingListFrameProcess {
 		buildings = buildingsTemp;
 	}
 
+	@Override
+	public int getBuildingTarget(int b) {
+		// TODO Auto-generated method stub
+		return buildings.get(b).getAttack();
+	}
+
 
 
 }

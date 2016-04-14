@@ -43,12 +43,24 @@ public class ArrowAnimation {
 	
 	public void progress(){
 		
-		arrowX += speed;
-		arrowY += speed;
+		if(targetX > startX){
+			
+			arrowX += speed;
+		}else{
+			arrowX -= speed;
+		}
+		
+		if(targetY > startY){
+			arrowY += speed;
+		}else{
+			arrowY -= speed;
+		}
+			
+			
 		
 		//System.out.println(targetX + " " + targetY + " " + arrowX + " " + arrowY + " AnimationArrow");
 		
-		if(targetX - arrowX < speed || targetY - arrowY < speed){
+		if(Math.abs(targetX - arrowX) < speed || Math.abs(targetY - arrowY) < speed){
 			
 			arrowX = targetX;
 			arrowY = targetY;

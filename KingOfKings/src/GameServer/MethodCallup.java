@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import Buildings.Building;
 import Buildings.BuildingSite;
+import Buildings.Tower;
 import IntermediateAI.MapRouteFinder;
 import Map.CollisionMap;
 import Units.Unit;
@@ -71,7 +72,7 @@ public class MethodCallup implements Commands {
 			
 			if(this.parameters.ignoreUnit == -1){
 				this.moveUnit(parameters.unitNo, parameters.targetX, 
-					parameters.targetY, parameters.targetMap);
+					parameters.targetY, parameters.targetMap,false);
 			}else{
 				
 				this.moveUnit(parameters.unitNo, parameters.targetX, parameters.targetY,
@@ -183,11 +184,17 @@ public class MethodCallup implements Commands {
 			
 
 	@Override
-	public void moveUnit(int unitNo, int targetX, int targetY, int targetMap) {
+	public void moveUnit(int unitNo, int targetX, int targetY, int targetMap,boolean follow) {
 		// TODO Auto-generated method stub
 		//add a path to move to the unit 
-		if(targetX >= 0 && targetY >= 0){
+		int unitFollow = context.units.getFollow(unitNo);
+		if(unitFollow != -1 && !follow){
+			
 			context.units.unfollow(unitNo);
+			context.units.cancelFollow(unitFollow,unitNo);
+		}
+		
+		if(targetX >= 0 && targetY >= 0){
 			context.units.addPathToUnit(unitNo, 
 					new MapRouteFinder(context.units, context.buildings, context.maps
 					,context.sites).getPath((int) context.units.getMoveUnitX(unitNo),(int) context.units.getMoveUnitY(unitNo)
@@ -226,10 +233,13 @@ public class MethodCallup implements Commands {
 		// TODO Auto-generated method stub
 		
 		context.units.setFollow(unitNo,unitFollow);
-		//System.out.println(unitFollow +" "+ (int) context.units.getUnitX(unitFollow) + " " + (int) context.units.getUnitY(unitFollow)
-			//	+ " " +context.units.getUnitMap(unitFollow) + " inMethodCallup FollowUnit");
-		this.moveUnit(unitNo, (int) context.units.getUnitX(unitFollow), (int) context.units.getUnitY(unitFollow),
-				context.units.getUnitMap(unitFollow),unitFollow);
+		int[] target = context.units.getUnits(unitFollow).getFreeSpace(
+				new CollisionMap(context.buildings,context.units,
+						context.maps.getMap(context.units.getUnitMap(unitFollow)),
+						context.units.getUnitMap(unitFollow)), unitNo);
+		System.out.println(target[0] + " " + target[1] + " MethodCallup");
+		this.moveUnit(unitNo, target[0], target[1],
+				context.units.getUnitMap(unitFollow),true);
 		
 	}
 	
@@ -329,7 +339,7 @@ public class MethodCallup implements Commands {
 		
 		for(int u = 0; u < unitNo.length; u++){
 			
-			moveUnit(unitNo[u], targetX, targetY, targetMap);
+			moveUnit(unitNo[u], targetX, targetY, targetMap,false);
 		}
 		
 		context.units.setUnitGroupSpeed(unitNo,context.units.getSmallestSpeed(unitNo));
@@ -384,8 +394,12 @@ public class MethodCallup implements Commands {
 
 			taken.add(pos);
 			
-			this.moveUnit(unitNos[u],pos[0] , pos[1], toAttack.getMap());
-			context.buildingAttackList.add(context.units.getUnits(unitNos[u]), toAttack);
+			this.moveUnit(unitNos[u],pos[0] , pos[1], toAttack.getMap(),false);
+			if(toAttack instanceof Tower){
+				context.battles.addTowerUnitBattle(context.units.getUnits(unitNos[u]), (Tower)toAttack);
+			}else{
+				context.buildingAttackList.add(context.units.getUnits(unitNos[u]), toAttack);
+			}
 		}
 		
 	}
@@ -420,7 +434,7 @@ public class MethodCallup implements Commands {
 					context.units,context.maps.getMap(newBuilding.getMap()),newBuilding.getMap()),(int) context.units.getUnitX(unitNos[u]), 
 							(int) context.units.getUnitY(unitNos[u]),unitTargets));
 			this.moveUnit(unitNos[u], unitTargets.get(unitTargets.size()-1)[0],
-					unitTargets.get(unitTargets.size()-1)[1], newBuilding.getMap());
+					unitTargets.get(unitTargets.size()-1)[1], newBuilding.getMap(),false);
 			
 			((Worker) context.units.getUnits(unitNos[u])).build(newBuilding.getBuildingNo());
 			
@@ -528,7 +542,7 @@ public class MethodCallup implements Commands {
 					(int) context.units.getUnitX(unitNos[u]), 
 							(int) context.units.getUnitY(unitNos[u]),unitTargets));
 			this.moveUnit(unitNos[u], unitTargets.get(unitTargets.size()-1)[0],
-					unitTargets.get(unitTargets.size()-1)[1], newBuilding.getMap());
+					unitTargets.get(unitTargets.size()-1)[1], newBuilding.getMap(),false);
 			Worker worker = (Worker) context.units.getUnits(unitNos[u]);
 			worker.build(buildingNo);
 			context.sites.addWorker(worker);

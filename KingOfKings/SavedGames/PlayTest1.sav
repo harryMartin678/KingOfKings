@@ -1,14 +1,24 @@
 PlayTest1
 u
-0 Unit:Worker:Slave 120.0 122.0 0 0 false -1 -1
-1 Unit:Worker:Slave 119.0 123.0 0 0 false -1 -1
-2 Unit:Worker:Slave 120.0 122.0 0 1 false -1 -1
-3 Unit:Worker:Slave 119.0 123.0 0 1 false -1 -1
+0 Unit:archer 119.0 119.0 0 0 false -1 -1
+1 Unit:Worker:Slave 120.0 122.0 0 0 false -1 -1
+2 Unit:swordsman:axeman 134.0 134.0 2 0 false -1 -1
+3 Unit:swordsman:axeman 116.0 118.0 0 0 false -1 -1
+4 Unit:swordsman:axeman 114.0 118.0 0 0 false -1 -1
+5 Unit:Worker:Slave 119.0 123.0 0 0 false -1 -1
+6 Unit:archer 119.0 119.0 0 1 false -1 -1
+7 Unit:Worker:Slave 120.0 122.0 0 1 false -1 -1
+8 Unit:swordsman:axeman 134.0 134.0 2 1 false -1 -1
+9 Unit:swordsman:axeman 116.0 118.0 0 1 false -1 -1
+10 Unit:swordsman:axeman 114.0 118.0 0 1 false -1 -1
+11 Unit:Worker:Slave 119.0 123.0 0 1 false -1 -1
 b
 0 royalpalace 125.0 125.0 0
 1 stockpile 131.0 131.0 0
-2 royalpalace 125.0 125.0 1
-3 stockpile 131.0 131.0 1
+2 archerytower 115.0 115.0 0
+3 royalpalace 125.0 125.0 1
+4 stockpile 131.0 131.0 1
+5 archerytower 115.0 115.0 1
 p
 0 500 500
 1 500 500

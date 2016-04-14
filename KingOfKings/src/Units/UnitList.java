@@ -382,6 +382,11 @@ public class UnitList implements Cloneable,IUnitList {
 		
 	}
 
+	public void cancelFollow(int unitFollow,int unitNo) {
+		// TODO Auto-generated method stub
+		units.get(unitFollow).unRegisterFollow(unitNo);
+	}
+
 	
 	///public int[] getNextNode(int unitNo){
 		

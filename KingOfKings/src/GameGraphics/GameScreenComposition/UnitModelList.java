@@ -215,6 +215,13 @@ public class UnitModelList {
 
 	}
 	
+	public void towerBattle(int startX,int startY,int targetX,int targetY){
+		
+		if(arrowAnim.size() < 5){
+			addArrow(startX,startY,targetX,targetY,0);
+		}
+	}
+	
 	public void drawModel(Model model, GL2 draw, Unit unit,float width, float height
 			,int frameX, int frameY){
 		

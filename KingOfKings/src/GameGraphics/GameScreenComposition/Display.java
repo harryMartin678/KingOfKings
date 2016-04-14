@@ -236,6 +236,13 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    		continue;
 	    	}
 	    	
+	    	
+	    	if(buildings.get(b).IsTowerAttack()){
+	    		
+	    		unitModels.towerBattle((int)buildings.getBuildingX(b),(int)buildings.getBuildingY(b),
+	    				buildings.get(b).getAttackX(),buildings.get(b).getAttackY());
+	    	}
+	    	
 	    	if(buildings.isSelectedBuilding(buildings.get(b))){
 	    		Buildings.Building type = Building.GetBuildingClass(buildings.get(b).getName());
 	    		draw.glLoadIdentity();

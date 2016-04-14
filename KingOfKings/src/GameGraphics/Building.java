@@ -27,6 +27,9 @@ public class Building {
 	private int player;
 	private int progress;
 	private boolean dead;
+	private int attack;
+	private int attackX;
+	private int attackY;
 	
 	private ArrayList<String> unitQueue;
 	
@@ -144,6 +147,33 @@ public class Building {
 	public boolean cantBuild(){
 		
 		return this.cantBuild;
+	}
+	
+	public int getAttack(){
+		
+		return attack;
+	}
+	
+	public void setAttack(int attack,int attackX,int attackY){
+		
+		this.attack = attack;
+		this.attackX = attackX;
+		this.attackY = attackY;
+	}
+	
+	public int getAttackX(){
+		
+		return attackX;
+	}
+	
+	public int getAttackY(){
+		
+		return attackY;
+	}
+	
+	public boolean IsTowerAttack(){
+		
+		return attack != -1;
 	}
 	
 	public void NotEnoughResourcesToBuilding(){

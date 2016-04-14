@@ -13,7 +13,7 @@ public class Axeman extends Swordsman {
 	@Override
 	public int getMaxHealth() {
 		// TODO Auto-generated method stub
-		return super.getMaxHealth() + 25;
+		return super.getMaxHealth() + 500;
 	}
 	
 	@Override
