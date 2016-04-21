@@ -13,6 +13,7 @@ import GameGraphics.Face;
 import GameGraphics.Model;
 import GameGraphics.Unit;
 import GameGraphics.Vertex;
+import GameGraphics.VertexTex;
 import Map.Map;
 
 public class BuildingModelList {
@@ -39,12 +40,15 @@ public class BuildingModelList {
 	private float HEIGHT_CONST;
 	private float WIDTH_CONST;
 	private float scaleFactor;
+	private TextureRepo textures;
 	
-	public BuildingModelList(float HEIGHT_CONST, float WIDTH_CONST,float scaleFactor) throws IOException{
+	public BuildingModelList(float HEIGHT_CONST, float WIDTH_CONST,float scaleFactor,
+			TextureRepo textures) throws IOException{
 		
 		this.HEIGHT_CONST = HEIGHT_CONST;
 		this.WIDTH_CONST = WIDTH_CONST;
 		this.scaleFactor = scaleFactor;
+		this.textures = textures;
 		
 		site = new BuildingModel(Names.SITE,"Models",1);
 		site.setSize(0.075f,0.025f, 0.075f);
@@ -191,6 +195,7 @@ public class BuildingModelList {
 
 		draw.glLoadIdentity();
 
+		draw.glEnable(draw.GL_TEXTURE_2D);
 		if(onMap) draw.glTranslatef(building.getX()-width-frameX + model.getTransX(),
 				building.getY()-height-frameY + model.getTransY(), z);
 		else draw.glTranslatef(building.getX() ,building.getY(), z);
@@ -201,12 +206,30 @@ public class BuildingModelList {
 
 		while((next = model.popFace(0,0)) != null){
 			
+			String texturePath = null;
+
 			if(building.cantBuild()) 
 				draw.glColor3f(1.0f, 0.0f, 0.0f);
 			else{ 
-				Colour colour = model.getColour(0,0); 
-				draw.glColor3fv(FloatBuffer.wrap(colour.getDiffuse()));
+				Colour colour = model.getColour(0,0);
+				texturePath = colour.getTexturePath();
+				if(next.IsTextured() && texturePath != null){
+					
+					draw.glColor3f(1.0f,1.0f,1.0f);
+					draw.glBindTexture(draw.GL_TEXTURE_2D, textures.getTexture(texturePath));
+				}else{
+					
+					draw.glColor3fv(FloatBuffer.wrap(colour.getDiffuse()));
+				}
+				
 			}
+			
+//			if(next.IsTextured() && texturePath != null){
+//				
+//				draw.glEnable(draw.GL_TEXTURE_2D);
+//			}
+			
+			
 
 			draw.glBegin(draw.GL_POLYGON);
 
@@ -215,16 +238,27 @@ public class BuildingModelList {
 			
 				for(int i = 0; i < next.getSize(); i++){
 					
+					if(next.IsTextured() && texturePath != null){
+						
+						VertexTex vertexT = model.getVertexTex(next.getTextureFace(i)-1,0,0);
+						draw.glTexCoord2f(vertexT.getX(), vertexT.getY());
+					}
 					Vertex vertex = model.getVertex(next.getFace(i)-1,0,0);
 					draw.glVertex3f(vertex.getX(),vertex.getY(),vertex.getZ());
+					
 				}
 				
 				
 			draw.glEnd();
 			
+//			if(next.IsTextured() && texturePath != null){
+//				
+//				draw.glDisable(draw.GL_TEXTURE_2D);
+//			}
+			
 		}
 		
-		
+		draw.glDisable(draw.GL_TEXTURE_2D);
 	}
 	
 	public void drawTiles(GL2 draw,UnitModelList models,Map map,int x, int y,

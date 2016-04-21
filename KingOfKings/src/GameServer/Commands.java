@@ -14,6 +14,7 @@ public interface Commands {
 	public void followUnit(int unitNo, int unitFollow);
 	public void attackUnit(int unitNo, int targetNo);
 	public void attackBuilding(int[] unitNos, int buildingNo);
+	public void towerAttackUnit(int unitNo, int buildingNo);
 	
 	public void buildBuilding(int x, int y,int player,int map, String buildingType,int unitNo[]);
 	public void addWorkerToSite(int buildingNo, int[] unitNo);

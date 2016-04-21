@@ -46,13 +46,13 @@ public class ArcheryTower extends Tower {
 	@Override
 	public int GoldNeeded() {
 		// TODO Auto-generated method stub
-		return super.GoldNeeded() + 150;
+		return super.GoldNeeded() + 300;
 	}
 	
 	@Override
 	public int FoodNeeded() {
 		// TODO Auto-generated method stub
-		return super.FoodNeeded() + 250;
+		return super.FoodNeeded() + 600;
 	}
 
 }

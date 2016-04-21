@@ -40,6 +40,7 @@ public class Wall extends Defence {
 	@Override
 	public int FoodNeeded() {
 		// TODO Auto-generated method stub
-		return super.FoodNeeded()+20;
+		//turn down later
+		return super.FoodNeeded()+20000;
 	}
 }

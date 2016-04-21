@@ -3,6 +3,7 @@ package GameGraphics;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
+import Buildings.Names;
 import Buildings.UnitCreator;
 import GameClient.ClientMessages;
 import GameGraphics.GameScreenComposition.ClientWrapper;
@@ -396,6 +397,29 @@ IComBuildingListFrameProcess {
 	public int getBuildingTarget(int b) {
 		// TODO Auto-generated method stub
 		return buildings.get(b).getAttack();
+	}
+
+	@Override
+	public boolean selectedBuildingIsTower() {
+		// TODO Auto-generated method stub
+		if(SelectedBuilding == null){
+			
+			//System.out.println("Selected building is null BuildingList");
+			return false;
+		
+		}else{
+			
+			//System.out.println((SelectedBuilding.getName() == Names.ARCHERYTOWER) + " BuildingList");
+			return SelectedBuilding.getName().equals(Names.ARCHERYTOWER)
+					|| SelectedBuilding.getName().equals(Names.BALLISTICTOWER);
+			
+		}
+	}
+
+	@Override
+	public int getSelectedBuildingNo() {
+		// TODO Auto-generated method stub
+		return SelectedBuilding.getBuildingNo();
 	}
 
 

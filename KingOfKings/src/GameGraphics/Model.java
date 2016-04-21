@@ -169,6 +169,17 @@ public class Model {
 		}
 	}
 	
+	public VertexTex getVertexTex(int index, int currentFrame, int state) {
+		// TODO Auto-generated method stub
+		if(state == 0){
+			return frames.get(currentFrame).getVertexTex(shapeNo, index);
+		}else if(state == 1){
+			return fireFrames.get(currentFrame).getVertexTex(shapeNo, index);
+		}else{
+			return deathFrames.get(currentFrame).getVertexTex(shapeNo, index);
+		}
+	}
+	
 	public Vertex getVertex(int index,int currentFrame,int state){
 		
 		if(state == 0){
@@ -190,6 +201,8 @@ public class Model {
 			return deathFrames.get(currentFrame).getColour(shapeNo,currentIndex);
 		}
 	}
+
+	
 	
 	
 	

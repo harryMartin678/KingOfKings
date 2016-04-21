@@ -134,8 +134,16 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 		    	  
 		    		  if(buildings.setSelectedBuilding(click[0], click[1], this.playerNumber) == 0){
 		    			 
-		    			 units.addSelectedUnit(click);
-		    			 buildings.clearSelectedBuilding();
+		    			 if(buildings.selectedBuildingIsTower()){
+		    				 
+		    				 int unitNo = units.getUnitAtttack(click);
+		    				 cmsg.addMessage("taku " + unitNo + " " + buildings.getSelectedBuildingNo());
+		    				 
+		    			 }else{
+
+		    				 units.addSelectedUnit(click);
+			    			 buildings.clearSelectedBuilding();
+		    			 }
 		    			 
 		    		  }else{
 		    			  

@@ -32,6 +32,11 @@ public class Frame {
 		return shapes.get(shape).getVertex(index);
 	}
 	
+	public VertexTex getVertexTex(int shapeNo, int index) {
+		// TODO Auto-generated method stub
+		return shapes.get(shapeNo).getVertexTex(index);
+	}
+	
 	public int getShapeVertexSize(int shape){
 		
 		return shapes.get(shape).getNoOfVertices();
@@ -61,6 +66,8 @@ public class Frame {
 		
 		return materials;
 	}
+
+	
 	
 	
 	

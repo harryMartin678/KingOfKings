@@ -13,6 +13,7 @@ import Units.Worker;
 
 public class MethodCallup implements Commands {
 
+	
 	private GameEngineContext context;
 	private String methodName;
 	
@@ -41,6 +42,7 @@ public class MethodCallup implements Commands {
 	public static String ALLIANCE = "alliance";
 	public static String ATWAR = "atWar";
 	public static String ADDWORKERTOSITE = "addWordToSite";
+	public static String TOWERATTACKUNIT = "towerAttackUnit";
 	
 	private MethodParameter parameters;
 	private int CommunicationTurnNo;
@@ -178,10 +180,20 @@ public class MethodCallup implements Commands {
 		}else if(methodName.equals(ADDWORKERTOSITE)){
 			
 			this.addWorkerToSite(parameters.buildingNo, parameters.unitNos);
+		
+		}else if(methodName.equals(TOWERATTACKUNIT)){
+			
+			this.towerAttackUnit(parameters.unitNo,parameters.buildingNo);
 		}
 		
 	}
 			
+
+	public void towerAttackUnit(int unitNo, int buildingNo) {
+		// TODO Auto-generated method stub
+		context.battles.addTowerUnitBattle(context.units.getUnits(unitNo), 
+				(Tower)context.buildings.getBuilding(buildingNo));
+	}
 
 	@Override
 	public void moveUnit(int unitNo, int targetX, int targetY, int targetMap,boolean follow) {

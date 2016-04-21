@@ -5,21 +5,25 @@ import java.util.ArrayList;
 public class Shape {
 	
 	private String name;
+	private ArrayList<VertexTex> verticesTex;
 	private ArrayList<Vertex> vertices;
 	private ArrayList<Face> faces;
 	private ArrayList<int[]> materials;
 	private ArrayList<Colour> colours;
 	private int lastIndex;
+	private int lastTexIndex;
 	private int currentColour;
 	
-	public Shape(String name, int lastIndex){
+	public Shape(String name, int lastIndex,int lastTexIndex){
 		
 		this.name = name;
+		verticesTex = new ArrayList<VertexTex>();
 		vertices = new ArrayList<Vertex>();
 		faces = new ArrayList<Face>();
 		materials = new ArrayList<int[]>();
 		colours = new ArrayList<Colour>();
 		this.lastIndex = lastIndex;
+		this.lastTexIndex = lastTexIndex;
 		currentColour = 0;
 	}
 	
@@ -29,7 +33,14 @@ public class Shape {
 		//vertices 
 		if(line.charAt(0) == 'v'){
 			
-			vertices.add(new Vertex(line));
+			if(line.charAt(1) == 't'){
+				
+				verticesTex.add(new VertexTex(line));
+				
+			}else{
+				
+				vertices.add(new Vertex(line));
+			}
 		
 		//face indices 
 		}else if(line.charAt(0) == 'f'){
@@ -45,7 +56,9 @@ public class Shape {
 			mat[1] = faces.size();
 			
 			materials.add(mat);
+		
 		}
+		
 	}
 	
 	public String getName(){
@@ -100,6 +113,12 @@ public class Shape {
 
 		return vertices.size();
 	}
+	
+	public int getNoOfTexVertices() {
+		// TODO Auto-generated method stub
+		return verticesTex.size();
+	}
+
 
 	public int getNoOfFaces() {
 		
@@ -110,6 +129,11 @@ public class Shape {
 		
 		return vertices.get(index-lastIndex);
 		
+	}
+	
+	public VertexTex getVertexTex(int index) {
+		// TODO Auto-generated method stub
+		return verticesTex.get(index-lastTexIndex);
 	}
 
 	public Face getFace(int index) {
@@ -149,5 +173,8 @@ public class Shape {
 			return this.getMaterial(currentColour)[0];
 		}
 	}
+
+	
+	
 
 }

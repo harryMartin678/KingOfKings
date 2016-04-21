@@ -55,7 +55,7 @@ public class GameEngine{
 		context.gameName = mapEntry;
 		context.units = new UnitList();
 		context.buildings = new BuildingList();
-		context.players = new PlayerList(2,500,500);
+		context.players = new PlayerList(3,500,500);
 		context.dip = new Diplomacy(playerNo);
 		context.sites = new BuildingProgress();
 		context.battles = new UnitBattleList(context.units);
@@ -71,7 +71,6 @@ public class GameEngine{
 		beat = 0;
 		
 		context.players.showPlayersMaps(context.maps);
-		
 		
 		for(int i = 0; i < playerNo; i++){
 			context.maps.getMap(i).setPlayer(i);
@@ -90,18 +89,18 @@ public class GameEngine{
 					context.maps.getMapWidth(i)/2, context.maps.getMapHeight(i)/2, Names.ROYALPALACE);
 			context.buildings.addBuilding(context.maps.getPlayer(i), i, 
 					(context.maps.getMapWidth(i)/2)+6, (context.maps.getMapHeight(i)/2)+6, Names.STOCKPILE);
-			context.buildings.addBuilding(2, i, 
-					(context.maps.getMapWidth(i)/2)-10, (context.maps.getMapHeight(i)/2)-10, Names.ARCHERYTOWER);
+//			context.buildings.addBuilding(context.maps.getPlayer(i), i, 
+//					(context.maps.getMapWidth(i)/2)-10, (context.maps.getMapHeight(i)/2)-10, Names.ARCHERYTOWER);
 			//context.buildings.addBuilding(1,i,3,3,Names.STOCKPILE);
 //			context.buildings.addBuilding(1,i,(context.maps.getMapWidth(i)/2),
 //					(context.maps.getMapHeight(i)/2),Names.MINE);
 			
-			context.units.addUnit(Names.ARCHER, i, (context.maps.getMapWidth(i)/2)-6, (context.maps.getMapHeight(i)/2)-6, context.maps.getPlayer(i));
-			context.units.addUnit(Names.SLAVE, i, (context.maps.getMapWidth(i)/2)-5, (context.maps.getMapHeight(i)/2)-3, context.maps.getPlayer(i));
-			context.units.addUnit(Names.AXEMAN, i, (context.maps.getMapWidth(i)/2)+9, (context.maps.getMapHeight(i)/2)+9, 2);
-			context.units.addUnit(Names.AXEMAN, i, (context.maps.getMapWidth(i)/2)-9, (context.maps.getMapHeight(i)/2)-7, context.maps.getPlayer(i));
-			context.units.addUnit(Names.AXEMAN, i, (context.maps.getMapWidth(i)/2)-11, (context.maps.getMapHeight(i)/2)-7, context.maps.getPlayer(i));
-			context.units.addUnit(Names.SLAVE, i, (context.maps.getMapWidth(i)/2)-6, (context.maps.getMapHeight(i)/2)-2, context.maps.getPlayer(i));
+			//context.units.addUnit(Names.ARCHER, i, (context.maps.getMapWidth(i)/2)-6, (context.maps.getMapHeight(i)/2)-6, context.maps.getPlayer(i));
+			context.units.addUnit(Names.SERVANT, i, (context.maps.getMapWidth(i)/2)-5, (context.maps.getMapHeight(i)/2)-3, context.maps.getPlayer(i));
+			//context.units.addUnit(Names.AXEMAN, i, (context.maps.getMapWidth(i)/2)-11, (context.maps.getMapHeight(i)/2)-10, 2);
+			//context.units.addUnit(Names.AXEMAN, i, (context.maps.getMapWidth(i)/2)-9, (context.maps.getMapHeight(i)/2)-7, context.maps.getPlayer(i));
+			//context.units.addUnit(Names.AXEMAN, i, (context.maps.getMapWidth(i)/2)-11, (context.maps.getMapHeight(i)/2)-7, context.maps.getPlayer(i));
+			context.units.addUnit(Names.SERVANT, i, (context.maps.getMapWidth(i)/2)-6, (context.maps.getMapHeight(i)/2)-2, context.maps.getPlayer(i));
 		}
 
 		
@@ -863,6 +862,22 @@ public class GameEngine{
 	public int getCommunicationTurnNo() {
 		// TODO Auto-generated method stub
 		return communicationTurn;
+	}
+
+	public void parseTowerAttackUnit(String inpt, int passedCommunicationTurn) {
+		// TODO Auto-generated method stub
+		String[] parts = inpt.split(" ");
+		int unitNo = new Integer(parts[0]).intValue();
+		int buildingNo = new Integer(parts[1]).intValue();
+		
+		MethodParameter parameters = new MethodParameter();
+		parameters.setTowerAttack(unitNo, buildingNo);
+		
+		if(passedCommunicationTurn != -1){
+			commands.add(MethodCallup.TOWERATTACKUNIT, parameters, communicationTurn);
+		}else{
+			commands.add(MethodCallup.TOWERATTACKUNIT, parameters, passedCommunicationTurn);
+		}
 	}
 	
 }

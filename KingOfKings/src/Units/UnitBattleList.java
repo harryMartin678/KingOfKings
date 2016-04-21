@@ -56,33 +56,26 @@ public class UnitBattleList {
 	
 	public void simulateTowerHit(){
 		
-		//System.out.println(towerBattles.size() + " UnitBattleList");
-		
 		for(int u = 0; u < towerBattles.size(); u++){
 			
-//			if(towerBattles.get(u).twoTowers()){
-//				
-//				if(towerBattles.get(u).deathTowers()){
-//					towerBattles.get(u).similuateHitTowers();
-//				}else{
-//					
-//					towerBattles.remove(u);
-//				}
-//			
-//			}else{
-			//things to do:
-			//stop towers attacking when they are out of range
-			//towers can only attack one unit at a time
 			if(!towerBattles.get(u).death()){
 				
-				if(towerBattles.get(u).InRange()){
+				if(towerBattles.get(u).InUnitRange()){
 					
-					//System.out.println("Attacking UnitBattleList");
-					towerBattles.get(u).attack();
+					towerBattles.get(u).unitAttack();
 					
 				}else{
-					//System.out.println("Stop Attacking UnitBattleList");
+
 					units.stopAttack(towerBattles.get(u).getUnitNo());
+				}
+				
+				if(towerBattles.get(u).TowerInRange()){
+					
+					towerBattles.get(u).towerAttackIfNotAttacking();
+					
+				}else{
+					
+					towerBattles.get(u).stopAttacking();
 				}
 				
 				towerBattles.get(u).similuateHit();

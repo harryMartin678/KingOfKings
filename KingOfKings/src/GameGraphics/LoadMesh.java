@@ -63,6 +63,7 @@ public class LoadMesh {
 		String currentLine = null;
 		
 		int lastSize = 0;
+		int lastTexSize = 0;
 		//read the obj file
 		while((currentLine = reader.readLine()) != null){
 			
@@ -70,12 +71,13 @@ public class LoadMesh {
 				
 				//System.out.println(lastSize + " size " + shapes.get(shapes.size()-1).getName());
 				lastSize += shapes.get(shapes.size()-1).getNoOfVertices();
+				lastTexSize += shapes.get(shapes.size()-1).getNoOfTexVertices();
 			}
 			
 			//if this line is the start of a shape
 			if(currentLine.charAt(0) == 'o'){
 				
-				shapes.add(new Shape(currentLine.substring(2, currentLine.length()),lastSize));
+				shapes.add(new Shape(currentLine.substring(2, currentLine.length()),lastSize,lastTexSize));
 			//else add important information to the shape 
 			}else if(currentLine.charAt(0) == 'v' 
 					|| currentLine.charAt(0) == 'f'

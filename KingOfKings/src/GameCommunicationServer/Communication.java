@@ -236,7 +236,6 @@ public class Communication {
 						}
 					}
 					
-					//System.out.println(playersReady + " " + playersEntered + " playerCompare");
 					if(playersReady == playersEntered){
 						
 						

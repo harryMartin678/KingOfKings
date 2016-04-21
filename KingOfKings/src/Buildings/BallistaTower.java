@@ -46,13 +46,13 @@ public class BallistaTower extends Tower {
 	@Override
 	public int GoldNeeded() {
 		// TODO Auto-generated method stub
-		return super.GoldNeeded()+250;
+		return super.GoldNeeded()+500;
 	}
 	
 	@Override
 	public int FoodNeeded() {
 		// TODO Auto-generated method stub
-		return super.FoodNeeded()+400;
+		return super.FoodNeeded()+1000;
 	}
 
 }

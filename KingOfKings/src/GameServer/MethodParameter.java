@@ -154,6 +154,12 @@ public class MethodParameter {
 		this.buildingNo = buildingNo;
 		this.unitNos = unitNos;
 	}
+
+	public void setTowerAttack(int unitNo, int buildingNo) {
+		// TODO Auto-generated method stub
+		this.unitNo = unitNo;
+		this.buildingNo = buildingNo;
+	}
 	
 
 }

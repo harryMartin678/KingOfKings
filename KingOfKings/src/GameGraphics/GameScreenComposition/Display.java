@@ -47,6 +47,7 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	private IComMouseKeyboard mouseKeyboard;
 	private IComMapDisplay map;
 	private DisplayMenus menus;
+	private TextureRepo textures;
 	
 	private final float scaleFactor = 1.0f; 
 	private final float WIDTH_CONST = 1.25f;
@@ -65,13 +66,11 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	
 	private int food;
 	private int gold;
-	
-	//private int[] texture = new int[3];
-	
-	//private Texture texture;
+
 	
 	public Display(){
 		
+		textures = new TextureRepo();
 	}
 	
 	public void setUpDisplay(IComUnitListDisplay units, IComBuildingListDisplay buildings,
@@ -82,8 +81,10 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 		this.mouseKeyboard = mouseKeyboard;
 		this.map = map;
 		
-		buildingModels = new BuildingModelList(FRAME_X_SIZE/HEIGHT_CONST,FRAME_Y_SIZE/WIDTH_CONST,scaleFactor);
-		unitModels = new UnitModelList(FRAME_X_SIZE/HEIGHT_CONST,FRAME_Y_SIZE/WIDTH_CONST,scaleFactor);
+		buildingModels = new BuildingModelList(FRAME_X_SIZE/HEIGHT_CONST,FRAME_Y_SIZE/WIDTH_CONST,scaleFactor
+				,textures);
+		unitModels = new UnitModelList(FRAME_X_SIZE/HEIGHT_CONST,FRAME_Y_SIZE/WIDTH_CONST,scaleFactor,
+				textures);
 		
 		menus = new DisplayMenus(FRAME_X_SIZE/HEIGHT_CONST,FRAME_Y_SIZE/WIDTH_CONST,scaleFactor,
 				units,buildings,buildingModels,unitModels,map,FRAME_X_SIZE,FRAME_Y_SIZE,playerNumber);
@@ -269,32 +270,31 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	}
 	
 	//to get textures working
-	public void showSquare(GL2 draw){
-		
-		
-		draw.glLoadIdentity();
-		draw.glColor3f(1.0f,1.0f,1.0f);
-		//draw.glBindTexture(GL2.GL_TEXTURE_2D, texture[0]);
-		draw.glTranslatef(0.0f, 0.0f, -15.0f);
-		draw.glScalef(5.0f, 5.0f, 1.0f);
-		draw.glRotatef(90, 1, 0, 0);
-//		texture.enable();
-//    	texture.bind();
-		draw.glBegin(GL2.GL_QUADS);
-			
-        	draw.glTexCoord2f(1.0f, 1.0f); draw.glVertex3f(-1.0f, -1.0f, -1.0f);  // Top Right Of The Texture and Quad
-        	draw.glTexCoord2f(0.0f, 1.0f); draw.glVertex3f( 1.0f, -1.0f, -1.0f);  // Top Left Of The Texture and Quad
-        	draw.glTexCoord2f(0.0f, 0.0f); draw.glVertex3f( 1.0f, -1.0f,  1.0f);  // Bottom Left Of The Texture and Quad
-        	draw.glTexCoord2f(1.0f, 0.0f); draw.glVertex3f(-1.0f, -1.0f,  1.0f);  // Bottom Right Of The Texture and 
-		draw.glEnd();
-	}
+//	public void showSquare(GL2 draw,int texture){
+//		
+//		
+//		
+//		draw.glColor3f(1.0f,1.0f,1.0f);
+//		draw.glBindTexture(GL2.GL_TEXTURE_2D, texture);
+//		//draw.glTranslatef(0.0f, 0.0f, -15.0f);
+//		draw.glScalef(5.0f, 5.0f, 1.0f);
+//		draw.glRotatef(90, 1, 0, 0);
+//
+//		draw.glBegin(GL2.GL_QUADS);
+//			
+//        	draw.glTexCoord2f(1.0f, 1.0f); draw.glVertex3f(-1.0f, -1.0f, -1.0f);  // Top Right Of The Texture and Quad
+//        	draw.glTexCoord2f(0.0f, 1.0f); draw.glVertex3f( 1.0f, -1.0f, -1.0f);  // Top Left Of The Texture and Quad
+//        	draw.glTexCoord2f(0.0f, 0.0f); draw.glVertex3f( 1.0f, -1.0f,  1.0f);  // Bottom Left Of The Texture and Quad
+//        	draw.glTexCoord2f(1.0f, 0.0f); draw.glVertex3f(-1.0f, -1.0f,  1.0f);  // Bottom Right Of The Texture and 
+//		draw.glEnd();
+//	}
 	
 	public void display(GLAutoDrawable drawable,GLU glu, GLUT glut) {
 		
 		GL2 draw = drawable.getGL().getGL2();
 		draw.glClear(draw.GL_COLOR_BUFFER_BIT | draw.GL_DEPTH_BUFFER_BIT); // clear color and depth buffers
 	    draw.glLoadIdentity();  // reset the model-view matrix
-	   
+	    
 	    
 	    glu.gluLookAt(0.0f, 0.0f, 10.0f, 
 	    		0.0f, 10.0f, 0.0f, 
@@ -309,9 +309,18 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    
 	    drawUnits(draw);
 	    drawBuildings(draw);
+	  //  draw.glEnable(GL2.GL_TEXTURE_2D);
+//	    draw.glLoadIdentity();
+//	    draw.glTranslatef(4.0f, 0.0f, -15.0f);
+//	    
+//	    showSquare(draw,textures.getTexture("sandstonewall.jpg"));
+//	    //draw.glDisable(GL2.GL_TEXTURE_2D);
+//	    draw.glLoadIdentity();
+//	    draw.glTranslatef(-4.0f, 0.0f, -15.0f);
 //	    draw.glEnable(GL2.GL_TEXTURE_2D);
-//	    showSquare(draw);
+//	    showSquare(draw,textures.getTexture("rooftiles.png"));
 //	    draw.glDisable(GL2.GL_TEXTURE_2D);
+//	    
 	    
 	    
 //	    buildings.begin();
@@ -605,127 +614,14 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	}
 	
 	
-	
 	public void init(GL2 gl,GLU glu){
 		
-//		BufferedImage img = readPNGImage("ImageBank/MainMenu/ExitButton.png");
-//		gl.glGenTextures(3, IntBuffer.wrap(this.texture));
-//
-//       // Create Nearest Filtered Texture
-//        gl.glBindTexture(GL2.GL_TEXTURE_2D, texture[0]);
-//  		gl.glTexParameteri(GL2.GL_TEXTURE_2D,GL2.GL_TEXTURE_MIN_FILTER,GL2.GL_NEAREST);
-//  		gl.glTexParameteri(GL2.GL_TEXTURE_2D,GL2.GL_TEXTURE_MAG_FILTER,GL2.GL_NEAREST);
-//        makeRGBTexture(gl, glu, img, GL2.GL_TEXTURE_2D, false);
-//      
-//        // Create Linear Filtered Texture
-//        gl.glBindTexture(GL2.GL_TEXTURE_2D, texture[1]);
-//  		gl.glTexParameteri(GL2.GL_TEXTURE_2D,GL2.GL_TEXTURE_MIN_FILTER,GL2.GL_LINEAR);
-//  		gl.glTexParameteri(GL2.GL_TEXTURE_2D,GL2.GL_TEXTURE_MAG_FILTER,GL2.GL_LINEAR);
-//  		makeRGBTexture(gl, glu, img, GL2.GL_TEXTURE_2D, false);
+		gl.glEnable(gl.GL_TEXTURE_2D);
+		textures.LoadTextures(new String[]{"rooftiles.png","sandstonewall.jpg"
+				,"fabicTexture.png"});
+		gl.glDisable(gl.GL_TEXTURE_2D);
       
-  		// Create MipMapped Texture
-//  		gl.glBindTexture(GL2.GL_TEXTURE_2D, texture[2]);
-//  		gl.glTexParameteri(GL2.GL_TEXTURE_2D,GL2.GL_TEXTURE_MIN_FILTER,GL2.GL_LINEAR);
-//  		gl.glTexParameteri(GL2.GL_TEXTURE_2D,GL2.GL_TEXTURE_MAG_FILTER,GL2.GL_LINEAR);
-//  		makeRGBTexture(gl, glu, img, GL2.GL_TEXTURE_2D, true);
-//		try {
-//			URL url = getClass().getResource("/ImageBank/rooftiles.jpg");
-//			File file = new File(url.getPath());
-//			BufferedImage image = ImageIO.read(file);
-//			ByteArrayOutputStream os = new ByteArrayOutputStream();
-//			ImageIO.write(image, "jpg", os);
-//            InputStream stream = new ByteArrayInputStream(os.toByteArray());
-//            TextureData data = TextureIO.newTextureData(gl.getGLProfile(), stream, 100, 200, false, "jpg");
-//            texture = TextureIO.newTexture(data);
-//       }
-//       catch (IOException exc) {
-//            exc.printStackTrace();
-//            System.exit(1);
-//       }
 	}
-	
-//	public final static URL getResource(final String filename)
-//	{
-//	    // Try to load resource from jar
-//	    URL url = ClassLoader.getSystemResource(filename);
-//	    // If not found in jar, then load from disk
-//	    if (url == null)
-//	    {
-//	      try
-//	      {
-//	        url = new URL("file", "localhost", filename);
-//	      }
-//	      catch (Exception urlException){} // ignore
-//	    }
-//	    return url;
-//	 }
-//	
-//	private BufferedImage readPNGImage(String resourceName)
-//    {
-//	      try
-//	      {
-//	        URL url = getResource(resourceName);
-//	        if (url == null)
-//	        {
-//	          throw new RuntimeException("Error reading resource " + resourceName);
-//	        }
-//	        BufferedImage img = ImageIO.read(url);
-//	        java.awt.geom.AffineTransform tx = java.awt.geom.AffineTransform.getScaleInstance(1, -1); 
-//	        tx.translate(0, -img.getHeight(null)); 
-//	        AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR); 
-//	        img = op.filter(img, null); 
-//	        return img;
-//	      }
-//	      catch (IOException e)
-//	      {
-//	        throw new RuntimeException(e);
-//	      }
-//    }
-//	
-//	private void makeRGBTexture(GL2 gl, GLU glu, BufferedImage img, int target, boolean mipmapped)
-//    {
-//		  //System.out.println(img.getType() + " " + BufferedImage.TYPE_INT_RGB + " Display");
-////	    BufferedImage convertedImg = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_RGB);
-////	    convertedImg.getGraphics().drawImage(img, 0, 0, null);
-//		//System.out.println(img.getHeight() + " )
-//	      ByteBuffer dest = null;
-//	      switch (img.getType())
-//	      {
-//	        case BufferedImage.TYPE_3BYTE_BGR:
-//	        case BufferedImage.TYPE_CUSTOM:
-//	        {
-//	          byte[] data = ((DataBufferByte) img.getRaster().getDataBuffer()).getData();
-//	          dest = ByteBuffer.allocateDirect(data.length);
-//	          dest.order(ByteOrder.nativeOrder());
-//	          dest.put(data, 0, data.length);
-//	          break;
-//	        }
-//	        case BufferedImage.TYPE_INT_RGB:
-//	        {
-//	          int[] data = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
-//	          dest = ByteBuffer.allocateDirect(data.length * 
-//	        		  DataBufferInt.getDataTypeSize(DataBufferInt.TYPE_INT));
-//	          dest.order(ByteOrder.nativeOrder());
-//	          dest.asIntBuffer().put(data, 0, data.length);
-//	          break;
-//	        }
-//	        default:
-//	          throw new RuntimeException("Unsupported image type " + img.getType());
-//	      }
-//	      
-//	      if (mipmapped)
-//	      {
-//	        glu.gluBuild2DMipmaps(target, GL2.GL_RGB8, img.getWidth(), 
-//	        		img.getHeight(), GL2.GL_RGB, GL2.GL_UNSIGNED_BYTE, dest);
-//	      }
-//	      else
-//	      {
-//	        gl.glTexImage2D(target, 0, GL2.GL_RGB, img.getWidth(), 
-//	        		img.getHeight(), 0, GL2.GL_RGB, GL2.GL_UNSIGNED_BYTE, dest);
-//	      }
-//    }
 
-
-	
 	
 }

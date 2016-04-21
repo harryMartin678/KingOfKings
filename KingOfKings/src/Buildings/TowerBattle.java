@@ -32,7 +32,7 @@ public class TowerBattle {
 		return (towerOne.destroyed()) || (unit.dead());
 	}
 	
-	public boolean InRange(){
+	public boolean InUnitRange(){
 		
 		int distance = (int) Math.sqrt(Math.pow((double)(unit.getX() - towerOne.getX()), 2)
 				+ Math.pow((double)(unit.getY() - towerOne.getY()), 2));
@@ -85,7 +85,8 @@ public class TowerBattle {
 			towerOne.removeHitpoints(hit);
 	
 		
-		}else if(!turn && count%towerOne.turnsPerAHit() == 0 && distance <= towerOne.getRange()){
+		}else if(!turn && count%towerOne.turnsPerAHit() == 0 && distance <= towerOne.getRange()
+				&& towerOne.getAttacking() == unit.getUnitNo()){
 			
 			int bias = (towerOne.getAttack() - unit.getDefence());
 			if(bias < 0){
@@ -113,14 +114,39 @@ public class TowerBattle {
 	public void stopAttacking() {
 		// TODO Auto-generated method stub
 		unit.stopAttack(false);
-		towerOne.stopAttack();
+		towerOne.stopAttacking();
 	}
 	
-	public void attack() {
+	public void stopUnitAttack(){
+		
+		unit.stopAttack(false);
+	}
+	
+	public void stopTowerAttack(){
+		
+		towerOne.stopAttacking();
+	}
+	
+	public boolean TowerInRange() {
+		// TODO Auto-generated method stub
+		int distance = (int) Math.sqrt(Math.pow((double)(unit.getX() - towerOne.getX()), 2)
+				+ Math.pow((double)(unit.getY() - towerOne.getY()), 2));
+		
+		return distance <= towerOne.getRange();
+	}
+
+	public void unitAttack() {
 		// TODO Auto-generated method stub
 		unit.attack(towerOne.getX(), towerOne.getY());
 	}
 	
+	public void towerAttackIfNotAttacking(){
+		
+		if(towerOne.getAttacking() == -1){
+			towerOne.setAttacking(unit.getUnitNo());
+		}
+	}
+
 	public static void main(String[] args) {
 		
 		Castle ct = new Castle(0);
@@ -132,8 +158,6 @@ public class TowerBattle {
 		
 		tb.similuateHitTowers();
 	}
-
-	
 
 	
 

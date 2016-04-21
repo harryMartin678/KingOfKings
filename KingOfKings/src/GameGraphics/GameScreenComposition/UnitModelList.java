@@ -20,6 +20,7 @@ import GameGraphics.Face;
 import GameGraphics.Model;
 import GameGraphics.Unit;
 import GameGraphics.Vertex;
+import GameGraphics.VertexTex;
 import Map.Map;
 
 public class UnitModelList {
@@ -46,16 +47,18 @@ public class UnitModelList {
 	private float HEIGHT_CONST;
 	private float WIDTH_CONST;
 	private float scaleFactor;
+	private TextureRepo textures;
 	
 	private ArrayList<ArrowAnimation> arrowAnim; 
 	
 	
-	public UnitModelList(float HEIGHT_CONST, float WIDTH_CONST,float scaleFactor)
+	public UnitModelList(float HEIGHT_CONST, float WIDTH_CONST,float scaleFactor,TextureRepo textures)
 	throws IOException{
 		
 		this.HEIGHT_CONST = HEIGHT_CONST;
 		this.WIDTH_CONST = WIDTH_CONST;
 		this.scaleFactor = scaleFactor;
+		this.textures = textures;
 		
 		models = new Hashtable<String,Model>();
 		
@@ -248,6 +251,8 @@ public class UnitModelList {
 
 		draw.glLoadIdentity();
 
+		
+		
 		//move the unit in relation to the width and height of the map, and the frame position
 		draw.glTranslatef(unit.getX()-width-frameX, unit.getY()-height-frameY, z); //-35
 		//scales the model's size
@@ -262,10 +267,22 @@ public class UnitModelList {
 
 		while((next = model.popFace(currentFrame,state)) != null){
 			
+			
+			
+			
 			//get the colour of the face
 			Colour colour = model.getColour(currentFrame,state);
 			
+			if(next.IsTextured() && colour.getTexturePath() != null){
+				
+				draw.glEnable(draw.GL_TEXTURE_2D);
+			}
+			
 			float[] check = colour.getDiffuse();
+			if(next.IsTextured() && colour.getTexturePath() != null){
+				
+				draw.glBindTexture(draw.GL_TEXTURE_2D, textures.getTexture(colour.getTexturePath()));
+			}
 			//if a indicate colour is since then substitute the player's colour 
 			if(cantAfford){
 				
@@ -289,10 +306,21 @@ public class UnitModelList {
 					
 					Vertex vertex = model.getVertex(next.getFace(i)-1,currentFrame,state);
 					draw.glVertex3f(vertex.getX(),vertex.getY(),vertex.getZ());
+					
+					if(next.IsTextured() && colour.getTexturePath() != null){
+						
+						VertexTex vertexT = model.getVertexTex(next.getTextureFace(i)-1,currentFrame,state);
+						draw.glTexCoord2d(vertexT.getX(), vertexT.getY());
+					}
 				}
 				
 				
 			draw.glEnd();
+			
+			if(next.IsTextured() && colour.getTexturePath() != null){
+				
+				draw.glDisable(draw.GL_TEXTURE_2D);
+			}
 			
 		}
 		

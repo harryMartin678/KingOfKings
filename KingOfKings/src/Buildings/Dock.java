@@ -36,4 +36,10 @@ public class Dock extends Naval{
 		// TODO Auto-generated method stub
 		return super.getSizeY()+2;
 	}
+	
+	@Override
+	public int GoldNeeded() {
+		// TODO Auto-generated method stub
+		return super.GoldNeeded()+10000;
+	}
 }

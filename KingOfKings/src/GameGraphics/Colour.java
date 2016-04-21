@@ -41,7 +41,7 @@ public class Colour {
 		
 		}else if(line.charAt(0) == 'm'){
 			
-			texturePath = line.substring(7);
+			texturePath = line.split(" ")[1];
 		}
 	}
 	

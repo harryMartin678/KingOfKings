@@ -92,16 +92,16 @@ public class MapList implements IComMapBATTList {
 	public boolean NoWinner() {
 		// TODO Auto-generated method stub
 		
-		return true;
-//		for(int w = 1; w < maps.size(); w++){
-//			
-//			if(maps.get(w).getPlayer() != maps.get(w-1).getPlayer()){
-//				
-//				return true;
-//			}
-//		}
-//		
-//		return false;
+		//return true;
+		for(int w = 1; w < maps.size(); w++){
+			
+			if(maps.get(w).getPlayer() != maps.get(w-1).getPlayer()){
+				
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	

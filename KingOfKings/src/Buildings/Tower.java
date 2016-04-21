@@ -1,23 +1,35 @@
 package Buildings;
 
+import java.util.ArrayList;
+
 public class Tower extends Defence {
 
-	private int attack;
+	private ArrayList<Integer> attack;
 	
 	public Tower(int buildingNo) {
 		super(buildingNo);
 		// TODO Auto-generated constructor stub
-		attack = -1;
+		attack = new ArrayList<Integer>();
 	}
 	
 	public void setAttacking(int unitNo){
 		
-		attack = unitNo;
+		attack.add(unitNo);
+	}
+	
+	public void stopAttacking(){
+		
+		attack.remove(attack.size()-1);
 	}
 	
 	public int getAttacking(){
 		
-		return attack;
+		if(attack.size() == 0){
+			
+			return -1;
+		}
+		
+		return attack.get(attack.size()-1);
 	}
 
 	public int getAttack(){
@@ -41,8 +53,4 @@ public class Tower extends Defence {
 		return super.getMaxHitpoint() + 200;
 	}
 
-	public void stopAttack() {
-		// TODO Auto-generated method stub
-		attack = -1;
-	}
 }

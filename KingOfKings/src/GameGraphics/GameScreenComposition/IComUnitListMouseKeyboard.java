@@ -68,4 +68,5 @@ public interface IComUnitListMouseKeyboard extends IComUnitList {
 	public boolean isWorkerSelected();
 	public void clearNonAttackSelectedUnits();
 	public void clearAttackSelectedUnits();
+	public int getUnitAtttack(int[] click);
 }

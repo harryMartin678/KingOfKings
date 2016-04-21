@@ -246,6 +246,10 @@ public class ServerMessages {
 		}else if(inpt.substring(0,4).equals("wnbb")){
 			
 			engine.parseAddWorkerToSite(inpt.substring(5),communicationTurn);
+		
+		}else if(inpt.substring(0,4).equals("taku")){
+			
+			engine.parseTowerAttackUnit(inpt.substring(5),communicationTurn);
 		}
 	}
 	

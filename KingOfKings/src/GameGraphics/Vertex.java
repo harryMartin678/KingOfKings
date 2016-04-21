@@ -1,20 +1,10 @@
 package GameGraphics;
 
-public class Vertex extends Info {
+public class Vertex extends VertexTex {
 
 	public Vertex(String information) {
 		super(information);
 		
-	}
-	
-	public float getX(){
-		
-		return pts.get(0).floatValue();
-	}
-	
-	public float getY(){
-		
-		return pts.get(1).floatValue();
 	}
 	
 	public float getZ(){

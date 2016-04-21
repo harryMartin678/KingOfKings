@@ -8,52 +8,31 @@ public class Info {
 
 	public Info(String information){
 		
-		//ignore letter, then the space 
-		information = information.substring(2, information.length());
+		DoConstructor(information);
+
+	}
+	
+	public Info(boolean nothing){
+		
+		
+	}
+	
+	protected void DoConstructor(String information){
+		//ignore letter, then the space
 		pts = new ArrayList<Float>();
 		
-		//note important area in optimisation 
-		while(true){
+		//split into the numbers 
+		String[] numbers = information.split(" ");
+		
+		//start at 1 to ignore the descriptor char 
+		//collect the floats
+		for(int n = 1; n < numbers.length; n++){
 			
-			String stpt = getNumber(information);
-			
-			//convert number in the form of a string in to a Float 
-			pts.add(new Float(stpt));
-			
-			//if the last number was the last number in the line 
-			if(information.length() == stpt.length()){
-				
-				break;
-			}
-			//removes the last number from the line
-			information = information.substring(stpt.length()+1, information.length());
+			pts.add(new Float(numbers[n]));
 		}
-	
 	}
 	
-	//gets the next number 
-	public String getNumber(String number){
-		
-		String no = "";
-		
-		for(int i = 0; i < number.length(); i++){
-			
-			//the end of the number 
-			if(number.charAt(i) == ' '){
-				
-				break;
-			
-			}else{
-				
-				//else keep adding digits 
-				no = no + number.charAt(i);
-				
-			}
-		}
-		
-		return no;
-		
-	}
+	
 	
 	
 }

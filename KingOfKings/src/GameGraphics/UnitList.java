@@ -455,4 +455,36 @@ public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,I
 		}
 	}
 
+	@Override
+	public int getUnitAtttack(int[] click) {
+		// TODO Auto-generated method stub
+		ArrayList<SelectedUnit> unitsToAttack = new ArrayList<SelectedUnit>();
+		int selected = 0;
+		for(int u = 0; u < units.size(); u++){
+			
+			if(ClickInUnit(click, units.get(u)) && units.get(u).getPlayer() != this.myPlayerNumber){
+				
+				SelectedUnit su = new SelectedUnit();
+				su.unitNo = units.get(u).getUnitNo();
+				su.isWorker = units.get(u).getUnitType().equals(Names.SLAVE)
+						|| units.get(u).getUnitType().equals(Names.SERVANT);
+				su.distance = Math.abs(units.get(u).getX() - click[0]) 
+						+ Math.abs(units.get(u).getY() - click[1]) + ((double)click[2]/1000.0);
+				unitsToAttack.add(su);
+			}
+		}
+		if(unitsToAttack.size() > 0){
+			
+			for(int s = 1; s < unitsToAttack.size(); s++){
+				
+				if(unitsToAttack.get(selected).distance > unitsToAttack.get(s).distance){
+					
+					selected = s;
+				}
+			}
+		}
+		
+		return unitsToAttack.get(selected).unitNo;
+	}
+
 }
