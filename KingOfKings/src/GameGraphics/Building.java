@@ -33,8 +33,9 @@ public class Building {
 	
 	private ArrayList<String> unitQueue;
 	
-	public Building(String name){
+	public Building(String name,int player){
 		
+		this.player = player;
 		this.name = name;
 		cantBuild = false;
 		unitQueue = new ArrayList<String>();
@@ -130,7 +131,8 @@ public class Building {
 	public void CanBuildThere(CollisionMap map){
 		
 		Buildings.Building check = GetBuildingClass(getName());
-		
+//		System.out.println(map.getPlayer() + " map player " + this.getPlayer() +
+//				" Building CanBuildThere");
 		if(!name.equals(Names.MINE)){
 			int sizeX = check.getSizeX();
 			int sizeY = check.getSizeY();

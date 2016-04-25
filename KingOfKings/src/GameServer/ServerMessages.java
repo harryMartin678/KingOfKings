@@ -24,152 +24,6 @@ public class ServerMessages {
 		start = true;
 		engine = new GameEngine("PlayTest1",noOfPlayer,beacon);
 		
-		
-//		try {
-//			System.out.println("success");
-//			server = new Server();
-//					
-//		} catch (IOException e) {
-//		// TODO Auto-generated catch block
-//					
-//			e.printStackTrace();
-//		}
-	
-		
-		
-//		Thread handleInput = new Thread(new Runnable(){
-//
-//			@Override
-//			public void run() {
-//				// TODO Auto-generated method stub
-//				
-//				while(true){
-//					
-//					for(int p = 0; p < server.noOfPlayers(); p++){
-//						
-//						try {
-//							if(server.messageReady(p)){
-//								String inpt = server.getMessage(p);
-//								
-//								if(!inpt.equals("SEND_FRAME")){
-//									System.out.println(inpt);
-//								}
-//								
-//								if(inpt.substring(0, 4).equals("utat")){
-//									
-//									engine.parseMoveUnit(inpt.substring(5));
-//								
-//								}
-//								//else if(inpt.equals("SEND_FRAME")){
-//									
-//								//	sendFrame(p);
-//								
-//								//}
-//								else if(inpt.substring(0,4).equals("vwmp")){
-//									
-//									engine.setNewViewMap(new Integer(inpt.substring(5)).intValue()
-//											,p);
-//								
-//								}else if(inpt.substring(0,4).equals("utwp")){
-//									
-//									engine.parseWayPoints(inpt.substring(5),p);
-//								
-//								}else if(inpt.substring(0,4).equals("gtat")){
-//									
-//									engine.parseGroupMovement(inpt.substring(5));
-//								
-//								}else if(inpt.substring(0,4).equals("utfl")){
-//									
-//									engine.parseFollowMovement(inpt);
-//								
-//								}else if(inpt.substring(0,4).equals("utak")){
-//									
-//									engine.parseAttack(inpt);
-//								
-//								}else if(inpt.substring(0,4).equals("gtwp")){
-//									
-//									engine.parseGroupWayMovement(inpt.substring(5));
-//								
-//								}else if(inpt.substring(0,4).equals("gtfl")){
-//									
-//									engine.parseGroupFollowMovement(inpt.substring(5));
-//								
-//								}else if(inpt.substring(0,4).equals("gtak")){
-//									
-//									engine.parseGroupAttack(inpt.substring(5));
-//								
-//								}else if(inpt.substring(0, 2).equals("bb")){
-//									
-//									engine.parseBuildings(inpt.substring(2),p);
-//								
-//								}else if(inpt.substring(0,3).equals("auq")){
-//									
-//									engine.parseAddUnitToQueue(inpt.substring(3),p);
-//								}
-//								
-//							}
-//						} catch (IOException e) {
-//							// TODO Auto-generated catch block
-//							e.printStackTrace();
-//						}
-//						
-//					}
-//					
-//					try {
-//						Thread.sleep(50);
-//					} catch (InterruptedException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//				}
-//			}
-//			
-//			
-//		});
-//		
-//		handleInput.start();
-//		
-//		Thread handleAcceptance = new Thread(new Runnable(){
-//
-//			@Override
-//			public void run() {
-//				// TODO Auto-generated method stub
-//				
-//				while(true){
-//					
-//					if(!start){
-//						
-//						//stub
-//						startGame("Game1",playerNo);
-//						break;
-//					}
-//					
-//					int player = server.getPlayersEntered();
-//					//System.out.println(player + " player");
-//					
-//					if(player != -1){
-//					
-//						
-//						playerNo++;
-//						//give information about lobby
-//						start = false;
-//					}
-//					
-//					try {
-//						Thread.sleep(100);
-//					} catch (InterruptedException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//				}
-//			}
-//			
-//			
-//		});
-//		
-//		handleAcceptance.start();
-		
-		
 	}
 	
 	public void parseClientMessage(String inpt){
@@ -181,8 +35,6 @@ public class ServerMessages {
 		if(inpt.charAt(0) == 'c'){
 			
 			String[] message = inpt.substring(2).split(Pattern.quote("|"));
-//			System.out.println(message.length + " message length");
-//			System.out.println(message[0] + " from " + inpt.substring(2) + " msg2 " + message[1] );
 			inpt = message[1];
 			
 			communicationTurn = new Integer(message[0]).intValue();
@@ -193,19 +45,13 @@ public class ServerMessages {
 			engine.parseMoveUnit(inpt.substring(5),communicationTurn);
 		
 		}
-		//else if(inpt.equals("SEND_FRAME")){
-			
-		//	sendFrame(p);
-		
-		//}
 		else if(inpt.substring(0,4).equals("vwmp")){
 			
-			engine.setNewViewMap(new Integer(inpt.substring(5)).intValue()
-					,thisPlayer,communicationTurn);
+			engine.setNewViewMap(inpt.substring(5),communicationTurn);
 		
 		}else if(inpt.substring(0,4).equals("utwp")){
 			
-			engine.parseWayPoints(inpt.substring(5),thisPlayer,communicationTurn);
+			engine.parseWayPoints(inpt.substring(5),communicationTurn);
 		
 		}else if(inpt.substring(0,4).equals("gtat")){
 			
@@ -233,11 +79,11 @@ public class ServerMessages {
 		
 		}else if(inpt.substring(0, 2).equals("bb")){
 			
-			engine.parseBuildings(inpt.substring(2),thisPlayer,communicationTurn);
+			engine.parseBuildings(inpt.substring(3),communicationTurn);
 		
 		}else if(inpt.substring(0,3).equals("auq")){
 			
-			engine.parseAddUnitToQueue(inpt.substring(3),thisPlayer,communicationTurn);
+			engine.parseAddUnitToQueue(inpt.substring(3),communicationTurn);
 		
 		}else if(inpt.substring(0,4).equals("atbl")){
 			

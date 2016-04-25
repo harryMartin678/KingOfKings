@@ -206,6 +206,7 @@ IComBuildingListFrameProcess {
 	@Override
 	public synchronized void setGhostBuilding(Building building) {
 		// TODO Auto-generated method stub
+
 		ghostBuilding = building;
 	}
 
@@ -292,7 +293,8 @@ IComBuildingListFrameProcess {
 		
 		if(selected < listOfUnits.length && unitDes.goldNeeded() <= gold && unitDes.foodNeeded() <= food){
 			
-			cmsgs.addMessage("auq " + SelectedBuilding.getBuildingNo() + " " + listOfUnits[selected]);
+			cmsgs.addMessage("auq " + SelectedBuilding.getBuildingNo() + " " + listOfUnits[selected]
+					 + " " + SelectedBuilding.getPlayer());
 		}
 		
 		

@@ -45,6 +45,7 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 		units = new UnitList();
 		buildings = new BuildingList();
 		
+		//System.out.println(new Integer(load.get(0)).intValue() + " GraphicsEngine");
 		this.setMyPlayerNumber(new Integer(load.get(0)).intValue());
 		
 		map.SetDisplay((IComMapUpdateDisplayFrame)display);

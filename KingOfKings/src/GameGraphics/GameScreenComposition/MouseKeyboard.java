@@ -122,8 +122,8 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 		    		  //buildings.begin();
 		    		 // System.out.println(units.getUnitsSelectedString() + " MouseKeyboard");
 		    		  cmsg.addMessage("bb " + buildings.getGhostBuildingX() + " " + buildings.getGhostBuildingY()
-		    				   + " " + viewedMap + " " + units.getUnitsSelectedString() 
-		    				   + buildings.getGhostBuildingName() );
+		    				   + " " + viewedMap + " " + playerNumber + " " + units.getUnitsSelectedString() 
+		    				   + buildings.getGhostBuildingName());
 		    		  
 		    		  
 		    		  buildings.removeGhostBuilding();
@@ -278,87 +278,87 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 		
 		//1 1
 		if(inRect(0.013177159242331982,0.5843971371650696,0.05490483343601227,0.6425532102584839
-				,x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.STOCKPILE), gold, food)){
+				,x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.STOCKPILE,playerNumber), gold, food)){
 			
 			//System.out.println(1 + " " + 1);
-			buildings.setGhostBuilding(new Building(Names.STOCKPILE));
+			buildings.setGhostBuilding(new Building(Names.STOCKPILE,playerNumber));
 		
 		//2 1
 		}else if(inRect(0.05710102617740631,0.5829787254333496,0.0907759889960289,0.6397163271903992,
-				x,y)&& !BuildingModelList.SetEnoughRes(new Building(Names.WALL), gold, food)){
+				x,y)&& !BuildingModelList.SetEnoughRes(new Building(Names.WALL,playerNumber), gold, food)){
 			
 			//System.out.println(2 + " " + 1);
-			buildings.setGhostBuilding(new Building(Names.WALL));
+			buildings.setGhostBuilding(new Building(Names.WALL,playerNumber));
 		
 		//3 1
 		}else if(inRect(0.0922401174902916,0.5829787254333496,0.1229868233203888,0.6368794441223145,
-				x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.MINE), gold, food)){
+				x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.MINE,playerNumber), gold, food)){
 			
 			//System.out.println(3 + " " + 1);
-			buildings.setGhostBuilding(new Building(Names.MINE));
+			buildings.setGhostBuilding(new Building(Names.MINE,playerNumber));
 		
 		//1 2
 		}else if(inRect(0.012445094995200634,0.6439716219902039,0.04904831573367119,0.7191489338874817,
-				x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.FORT), gold, food)){
+				x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.FORT,playerNumber), gold, food)){
 			
 			//System.out.println(1 + " " + 2);
-			buildings.setGhostBuilding(new Building(Names.FORT));
+			buildings.setGhostBuilding(new Building(Names.FORT,playerNumber));
 		
 		//2 2
 		}else if(inRect(0.055636897683143616,0.6397163271903992,0.0893118605017662,0.7262411117553711
-				,x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.ROYALPALACE), gold, food)){
+				,x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.ROYALPALACE,playerNumber), gold, food)){
 			
 			//System.out.println(2 + " " + 2);
 			//buildings.setGhostBuilding(new Building(Names.ROYALPALACE));
 		
 		//3 2
 		}else if(inRect(0.09297218173742294,0.6354609727859497,0.1229868233203888,0.7248227000236511,
-				x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.STABLE), gold, food)){
+				x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.STABLE,playerNumber), gold, food)){
 			
 			//System.out.println(3 + " " + 2);
-			buildings.setGhostBuilding(new Building(Names.STABLE));
+			buildings.setGhostBuilding(new Building(Names.STABLE,playerNumber));
 			
 		//1 3
 		}else if(inRect(0.012445094995200634,0.7276595830917358,0.059297218918800354,0.8283687829971313,
-				x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.CASTLE), gold, food)){
+				x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.CASTLE,playerNumber), gold, food)){
 			
 			//System.out.println(1 + " " + 3);
-			buildings.setGhostBuilding(new Building(Names.CASTLE));
+			buildings.setGhostBuilding(new Building(Names.CASTLE,playerNumber));
 		
 		//2 3
 		}else if(inRect(0.0614934116601944,0.7290779948234558,0.08711566776037216,0.8184397220611572,
-				x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.DOCK), gold, food)){
+				x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.DOCK,playerNumber), gold, food)){
 			
 			//System.out.println(2 + " " + 3);
-			buildings.setGhostBuilding(new Building(Names.DOCK));
+			buildings.setGhostBuilding(new Building(Names.DOCK,playerNumber));
 		
 		//3 3
 		}else if(inRect(0.0907759889960289,0.7262411117553711,0.12225475907325745,0.8141843676567078,
-				x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.FARM), gold, food)){
+				x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.FARM,playerNumber), gold, food)){
 			
 			//System.out.println(3 + " " + 3);
-			buildings.setGhostBuilding(new Building(Names.FARM));
+			buildings.setGhostBuilding(new Building(Names.FARM,playerNumber));
 		
 		//1 4
 		}else if(inRect(0.012445094995200634,0.8382978439331055,0.04758418723940849,0.9063829779624939,
-				x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.ARCHERYTOWER), gold, food)){
+				x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.ARCHERYTOWER,playerNumber), gold, food)){
 			
 			//System.out.println(1 + " " + 4);
-			buildings.setGhostBuilding(new Building(Names.ARCHERYTOWER));
+			buildings.setGhostBuilding(new Building(Names.ARCHERYTOWER,playerNumber));
 		
 		//2 4
 		}else if(inRect(0.058565154671669006,0.8269503712654114,0.08857979625463486,0.9092198610305786,
-				x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.BALLISTICTOWER), gold, food)){
+				x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.BALLISTICTOWER,playerNumber), gold, food)){
 			
 			//System.out.println(2 + " " + 4);
-			buildings.setGhostBuilding(new Building(Names.BALLISTICTOWER));
+			buildings.setGhostBuilding(new Building(Names.BALLISTICTOWER,playerNumber));
 		
 		//3 4
 		}else if(inRect(0.08784773200750351,0.8255318999290466,0.1229868233203888,0.9063829779624939,
-				x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.BARRACK), gold, food)){
+				x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.BARRACK,playerNumber), gold, food)){
 			
 			//System.out.println(3 + " " + 4);
-			buildings.setGhostBuilding(new Building(Names.BARRACK));
+			buildings.setGhostBuilding(new Building(Names.BARRACK,playerNumber));
 			
 		}
 		
@@ -452,7 +452,7 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 					y >= 0.41702127659574467-(m*0.0283687943262412) && 
 					y <= 0.4453900709219858 - (m*0.0283687943262412)){
 				
-				cmsg.addMessage("vwmp "+m);
+				cmsg.addMessage("vwmp "+ m + " " + playerNumber);
 				return true;
 			}
 			

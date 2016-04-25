@@ -185,7 +185,8 @@ public class ProcessFrameThread {
 //					
 //					engine.setMyPlayerNumber(new Integer(mapInfo.get(in+1)).intValue());
 //				}
-				
+//				System.out.println(new Integer(mapInfo.get(in)).intValue() + " map " +
+//						new Integer(mapInfo.get(in+1)).intValue() + " player ProcesssFrameThread");
 				map.setMapPlayer(new Integer(mapInfo.get(in)).intValue(),
 						new Integer(mapInfo.get(in+1)).intValue());
 			}
@@ -283,7 +284,7 @@ public class ProcessFrameThread {
 			ArrayList<String> numbers = parsed.getNumbers();
 			String building = parsed.getUnitName();
 			
-			
+			//System.out.println(new Integer(numbers.get(3)).intValue() + " player ProcesssFrameThread");
 			buildingsTemp.add(new Building(new Float(numbers.get(1)).floatValue(),
 					new Float(numbers.get(2)).floatValue(),building,
 					new Integer(numbers.get(0)).intValue(),new Integer(numbers.get(3)).intValue()));
@@ -375,7 +376,6 @@ public class ProcessFrameThread {
 	
 	
 	public void load(ArrayList<String> load){
-		
 		
 		processFrame(load,2);
 		//getFrame.start();

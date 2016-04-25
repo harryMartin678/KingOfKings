@@ -33,7 +33,7 @@ public class GameScreen implements GLEventListener  {
 		this.cmsg = cmsg;
 		this.frame = frame;
 		
-		System.out.println("start");
+		System.out.println("start GameScreen");
 		waitForReady.start();
 		System.out.println("finish");
 		

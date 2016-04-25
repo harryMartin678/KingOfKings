@@ -482,6 +482,7 @@ public class GameEngine{
 						}
 					
 				}
+
 				info += b + " " + context.buildings.getBuildingType(b) + " " 
 						+ context.buildings.getBuildingX(b) + " " +
 						context.buildings.getBuildingY(b) +  " " +
@@ -530,7 +531,7 @@ public class GameEngine{
 		return context.players.getPlayerViewedMap(player);
 	}
 	
-	public void parseWayPoints(String input, int player,int passedCommunicationTurn){
+	public void parseWayPoints(String input,int passedCommunicationTurn){
 		
 		int unitNo = new Integer(input.charAt(0)).intValue() - 48;
 		
@@ -714,26 +715,29 @@ public class GameEngine{
 		//this.attackUnit(unitNo, unitAttack);
 	}
 	
-	public void parseBuildings(String inpt, int player,int passedCommunicationTurn){
+	public void parseBuildings(String inpt,int passedCommunicationTurn){
 		
-		ParseText text = new ParseText(inpt);
-		ArrayList<String> numbers = text.getNumbers();
-		String name = text.getUnitName();
-		numbers.remove(numbers.size()-1);
+//		ParseText text = new ParseText(inpt);
+//		ArrayList<String> numbers = text.getNumbers();
 		
-		int[] unitNos = new int[numbers.size()-3];
+//		numbers.remove(numbers.size()-1);
+		
+		String[] msgs = inpt.split(" ");
+		String name = msgs[msgs.length-1];
+		
+		int[] unitNos = new int[msgs.length-5];
 		
 //		System.out.println("GAMEENGINE BB");
-//		for(int i = 0; i < numbers.size(); i++){
+//		for(int i = 0; i < msgs.length; i++){
 //			
-//			System.out.println(numbers.get(i));
+//			System.out.println(msgs[i]);
 //		}
 //		System.out.println("GAMEENGINE BB");
 		
-		for(int n = 3; n < numbers.size(); n++){
+		for(int n = 4; n < msgs.length-1; n++){
 			
-			if(numbers.get(n).length() > 0){
-				unitNos[n-3] = new Integer(numbers.get(n)).intValue();
+			if(msgs[n].length() > 0){
+				unitNos[n-4] = new Integer(msgs[n]).intValue();
 			}
 		}
 		
@@ -745,8 +749,8 @@ public class GameEngine{
 //		System.out.println("GAMEENGINE BB UNITNOS");
 //		
 		MethodParameter parameters = new MethodParameter();
-		parameters.setBuildBuilding(new Float(numbers.get(0)).intValue(), new Float(numbers.get(1)).intValue(),
-				new Float(numbers.get(2)).intValue(),player,name,unitNos);
+		parameters.setBuildBuilding(new Float(msgs[0]).intValue(), new Float(msgs[1]).intValue(),
+				new Float(msgs[2]).intValue(),new Integer(msgs[3]).intValue(),name,unitNos);
 		
 		if(passedCommunicationTurn != -1){
 			commands.add(MethodCallup.BUILDBUILDING, parameters, communicationTurn);
@@ -759,7 +763,7 @@ public class GameEngine{
 		
 	}
 
-	public void parseAddUnitToQueue(String inpt, int player,int passedCommunicationTurn) {
+	public void parseAddUnitToQueue(String inpt,int passedCommunicationTurn) {
 		// TODO Auto-generated method stub
 		ParseText text = new ParseText(inpt);
 		ArrayList<String> numbers = text.getNumbers();
@@ -768,7 +772,8 @@ public class GameEngine{
 		//System.out.println("enter add unit to queue " + unitType);
 		
 		MethodParameter parameters = new MethodParameter();
-		parameters.setAddUnitToBuildQueue(new Integer(numbers.get(0)).intValue(), unitType,player);
+		parameters.setAddUnitToBuildQueue(new Integer(numbers.get(0)).intValue(), unitType,
+				new Integer(numbers.get(1)).intValue());
 		
 		if(passedCommunicationTurn != -1){
 			commands.add(MethodCallup.ADDUNITTOBUILDINGQUEUE, parameters, communicationTurn);
@@ -779,8 +784,11 @@ public class GameEngine{
 		
 	}
 
-	public void setNewViewMap(int mapNo, int player,int passedCommunicationTurn) {
+	public void setNewViewMap(String inpt,int passedCommunicationTurn) {
 		// TODO Auto-generated method stub
+		String[] msgs = inpt.split(" ");
+		int mapNo = new Integer(msgs[0]).intValue();
+		int player = new Integer(msgs[1]).intValue();
 		MethodParameter parameters = new MethodParameter();
 		parameters.setNewViewMap(mapNo, player);
 		if(passedCommunicationTurn != -1){
