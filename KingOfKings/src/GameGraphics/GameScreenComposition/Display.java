@@ -345,7 +345,8 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    //draw menus 
 	    
 	   // System.out.println(food + " " + gold + " display");
-	    menus.drawMenus(draw, frameX, frameY,food,gold);
+	    menus.drawMenus(draw, frameX, frameY,food,gold,
+	    		(int)this.getScreenWidth(),(int)this.getScreenHeight());
 	    draw.glEnable(draw.GL_LIGHTING);
 
 	    drawable.swapBuffers();

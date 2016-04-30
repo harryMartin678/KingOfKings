@@ -1,18 +1,14 @@
 PlayTest1
 u
-0 Unit:Worker:Slave 120.0 122.0 0 0 false -1 -1
-1 Unit:Worker:Slave 119.0 123.0 0 0 false -1 -1
-2 Unit:Worker:Slave 120.0 122.0 1 1 false -1 -1
-3 Unit:Worker:Slave 119.0 123.0 1 1 false -1 -1
-4 Unit:Worker:Slave 120.0 122.0 2 2 false -1 -1
-5 Unit:Worker:Slave 119.0 123.0 2 2 false -1 -1
+0 Unit:Worker:servant 120.0 122.0 0 0 false -1 -1
+1 Unit:Worker:servant 119.0 123.0 0 0 false -1 -1
+2 Unit:Worker:servant 120.0 122.0 1 1 false -1 -1
+3 Unit:Worker:servant 119.0 123.0 1 1 false -1 -1
 b
 0 royalpalace 125.0 125.0 0
 1 stockpile 131.0 131.0 0
 2 royalpalace 125.0 125.0 1
 3 stockpile 131.0 131.0 1
-4 royalpalace 125.0 125.0 2
-5 stockpile 131.0 131.0 2
 p
 0 500 500
 1 500 500

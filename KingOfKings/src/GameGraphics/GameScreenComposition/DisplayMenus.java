@@ -1,8 +1,12 @@
 package GameGraphics.GameScreenComposition;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.io.IOException;
 
 import javax.media.opengl.GL2;
+
+import com.jogamp.opengl.util.awt.TextRenderer;
 
 import Buildings.Names;
 import Buildings.UnitCreator;
@@ -27,6 +31,12 @@ public class DisplayMenus {
 	
 	private int FRAME_X_SIZE;
 	private int FRAME_Y_SIZE;
+	
+	private int ScreenWidth;
+	private int ScreenHeight;
+	
+	private TextRenderer text;
+	private TextRenderer mapText;
 	
 	private TextModel[] symbols;
 	
@@ -58,11 +68,17 @@ public class DisplayMenus {
 		}
 		
 		symbols[36] = new TextModel("cluc","Models/Alphabet");
+		
 	}
 	
 	
-	public void drawMenus(GL2 draw,int frameX,int frameY,int food,int gold){
+	public void drawMenus(GL2 draw,int frameX,int frameY,int food,int gold
+			,int screenWidth, int screenHeight){
 		
+		text = new TextRenderer(new Font("Verdana", Font.BOLD, 24));
+		mapText = new TextRenderer(new Font("Verdana", Font.BOLD, 8));
+		this.ScreenWidth = screenWidth;
+		this.ScreenHeight = screenHeight;
 		drawLeftPanel(draw,frameX,frameY,food,gold);
 		drawRightPanel(draw,frameX,frameY);
 		drawTopPanel(draw,food,gold);
@@ -106,7 +122,7 @@ public class DisplayMenus {
 		
 		//top panel
 		drawMenuQuad(draw,14.5f,4.0f, -19.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 3.0f);
-		drawMapInfo(draw,11.0f,1.0f, -19.0f);
+		drawMapInfo(draw,0.86f,0.56f, -19.0f);
 		
 		drawMiniMap(draw,13.5f,-4.25f,-18.0f,frameX,frameY);
 		//bottom panel
@@ -118,8 +134,9 @@ public class DisplayMenus {
 		
 		for(int m = 0; m < map.getMapListSize(); m++){
 			
-			drawString(draw,x,y+0.5f*m,z,0.0f,0.0f,0.0f,0.4f, map.getMapName(m)
+			drawString(draw,x,y+0.0325f*m,z,0.0f,0.0f,0.0f,0.4f, map.getMapName(m)
 					+ " " + new Integer(map.getMapPlayer(m)));
+			//drawString(draw,x,y+0.0325f*m,z,0.0f,0.0f,0.0f,0.4f, new Integer(m).toString());
 		}
 	}
 	
@@ -213,26 +230,29 @@ public class DisplayMenus {
 
 		//top panel
 		drawMenuQuad(draw,0.0f,8.5f, -20.0f,0.65f, 0.5f, 0.39f,15.0f, 3.0f, 1.15f);
-		
-		drawString(draw,-1.5f,7.75f,-21.0f,0.0f,0.0f,0.0f,0.75f,"pause");
 		//pause game button
 		drawMenuQuad(draw,0.0f,8.5f, -20.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 0.75f);
-		
-		drawString(draw,-6.5f,7.75f,-21.0f,0.0f,0.0f,0.0f,0.75f,new Integer(food).toString());
+		//-1.5f,7.75f,-21.0f
+		drawString(draw,0.47f,0.935f,-21.0f,0.0f,0.0f,0.0f,0.75f,"Pause");
 		//food panel
 		drawMenuQuad(draw,-6.0f,8.5f, -20.0f,0.45f, 0.15f, 0.0f,2.0f, 3.0f, 0.75f);
+		drawString(draw,0.315f,0.935f,-21.0f,0.0f,0.0f,0.0f,0.75f,new Integer(food).toString());
 		
-		drawString(draw,-11.25f,7.75f, -21.0f,0.0f,0.0f,0.0f,0.75f,"save");
 		//save game button
 		drawMenuQuad(draw,-11.0f,8.5f, -20.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 0.75f);
+		//-11.25f,7.75f, -21.0f
+		drawString(draw,0.175f,0.935f, -21.0f,0.0f,0.0f,0.0f,0.75f,"Save");
 		
-		drawString(draw,4.0f,7.75f,-21.0f,0.0f,0.0f,0.0f,0.75f,new Integer(gold).toString());
 		//gold panel
 		drawMenuQuad(draw,5.5f,8.5f, -20.0f,0.45f, 0.15f, 0.0f,2.0f, 3.0f, 0.75f);
+		//4.0f,7.75f,-21.0f
+		drawString(draw,0.625f,0.935f,-21.0f,0.0f,0.0f,0.0f,0.75f,new Integer(gold).toString());
 		
-		drawString(draw,8.0f,7.75f, -21.0f,0.0f,0.0f,0.0f,0.75f,"quit");
 		//quit game button
 		drawMenuQuad(draw,10.0f,8.5f, -20.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 0.75f);
+		//8.0f,7.75f, -21.0f
+		drawString(draw,0.75f,0.935f, -21.0f,0.0f,0.0f,0.0f,0.75f,"Quit");
+		
 		
 	}
 
@@ -265,24 +285,34 @@ public class DisplayMenus {
 	//draws a string using the letter models 
 	private void drawString(GL2 draw, float x, float y,float z,float r, 
 				float g, float b,float fontSize, String msg){
-			
-			for(int s = 0; s < msg.length(); s++){
-				
-				for(int i = 97; i <= 122; i++){
-					if(msg.charAt(s) == i){
-						drawText(draw,symbols[(i-97)],
-								x+(((float) s)*fontSize),y,z,r,g,b,fontSize);
-					}
-				}
-				
-				for(int i = 48; i <= 57; i++){
-					
-					if(msg.charAt(s) == i){
-						drawText(draw,symbols[(i-22)],
-								x+(((float) s)*fontSize),y,z,r,g,b,fontSize);
-					}
-				}
-			}
+		//System.out.println("draw Text DisplayMenu");
+		//TextRenderer text = new TextRenderer(new Font("Verdana",Font.BOLD,(int)fontSize*20));
+		text.beginRendering(this.ScreenWidth,this.ScreenHeight);
+		//text.setColor(new Color(r,g,b));
+		text.setColor(Color.BLACK);
+		text.setSmoothing(true);
+		//System.out.println(fontSize*20 + " DisplayMenu");
+		text.draw(msg, (int)(this.ScreenWidth * x), (int)(this.ScreenHeight * y));
+		
+		text.endRendering();
+		text.flush();
+//			for(int s = 0; s < msg.length(); s++){
+//				
+//				for(int i = 97; i <= 122; i++){
+//					if(msg.charAt(s) == i){
+//						drawText(draw,symbols[(i-97)],
+//								x+(((float) s)*fontSize),y,z,r,g,b,fontSize);
+//					}
+//				}
+//				
+//				for(int i = 48; i <= 57; i++){
+//					
+//					if(msg.charAt(s) == i){
+//						drawText(draw,symbols[(i-22)],
+//								x+(((float) s)*fontSize),y,z,r,g,b,fontSize);
+//					}
+//				}
+//			}
 		}
 		
 		private void drawText(GL2 draw, TextModel model, float x, float y,float z

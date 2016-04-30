@@ -445,12 +445,14 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 	}
 
 	private boolean selectMapInfo(double x, double y){
-	
+		//0.86f,0.56f
+		double iy = 1.0 - y;
+
 		for(int m = 0; m < map.getMapListSize(); m++){
 			
 			if(x <= 0.9655929721815519 && x >= 0.8535871156661786 && 
-					y >= 0.41702127659574467-(m*0.0283687943262412) && 
-					y <= 0.4453900709219858 - (m*0.0283687943262412)){
+					iy >= 0.56+(m*0.0325) && 
+							iy <= 0.56 + ((m+1)*0.0325)){
 				
 				cmsg.addMessage("vwmp "+ m + " " + playerNumber);
 				return true;
