@@ -11,4 +11,5 @@ public interface IComMouseKeyboard {
 //	&& x >= Math.min(lastDB[0],startDB[0])
 	public boolean isInDragBox(int x, int y);
 	public void moveUnit(int tx,int ty,int difference);
+	public void setButtonList(ButtonList buttons);
 }

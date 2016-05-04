@@ -298,6 +298,7 @@ IComBuildingListFrameProcess {
 		}
 		
 		
+		
 	}
 
 	@Override

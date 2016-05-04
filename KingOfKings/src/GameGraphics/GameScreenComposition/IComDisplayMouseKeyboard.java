@@ -74,5 +74,7 @@ public interface IComDisplayMouseKeyboard extends IComDisplay {
 		}
 	 */
 	public void handleMiniMapSelection(int squareX,int squareY);
+	public void CreateBuildingIconButtons();
+	public void CreateUnitIcons();
 	
 }

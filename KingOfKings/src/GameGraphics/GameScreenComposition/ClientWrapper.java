@@ -47,7 +47,7 @@ public class ClientWrapper {
 					
 					String msg;
 					
-					if((msg = cmsg.getMessage()) != "null"){
+					if((msg = cmsg.getMessage()) != "null" && msg != null){
 						
 						if(msg.equals("ALLREADY")){
 							

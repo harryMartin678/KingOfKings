@@ -14,7 +14,6 @@ public class Graphics{
 	private JFrame window;
 	private Container pane;
 	private LobbyGUI lobby;
-	
 
 	public Graphics(){
 

@@ -58,11 +58,15 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	private int frameX = 0;
 	private int frameY = 0;
 	
+	private int delayedFrameX = 0;
+	private int delayedFrameY = 0;
+	
 	private float w;
 	private float h;
 	
 	private BuildingModelList buildingModels;
 	private UnitModelList unitModels;
+	private ButtonList buttons;
 	
 	private int food;
 	private int gold;
@@ -71,6 +75,7 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	public Display(){
 		
 		textures = new TextureRepo();
+		buttons = new ButtonList();
 	}
 	
 	public void setUpDisplay(IComUnitListDisplay units, IComBuildingListDisplay buildings,
@@ -82,14 +87,18 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 		this.map = map;
 		
 		buildingModels = new BuildingModelList(FRAME_X_SIZE/HEIGHT_CONST,FRAME_Y_SIZE/WIDTH_CONST,scaleFactor
-				,textures);
+				,textures,buttons);
 		unitModels = new UnitModelList(FRAME_X_SIZE/HEIGHT_CONST,FRAME_Y_SIZE/WIDTH_CONST,scaleFactor,
-				textures);
+				textures,buttons);
 		
-		menus = new DisplayMenus(FRAME_X_SIZE/HEIGHT_CONST,FRAME_Y_SIZE/WIDTH_CONST,scaleFactor,
-				units,buildings,buildingModels,unitModels,map,FRAME_X_SIZE,FRAME_Y_SIZE,playerNumber);
+		menus = new DisplayMenus(scaleFactor,units,buildings,buildingModels,unitModels,map,
+				FRAME_X_SIZE,FRAME_Y_SIZE,playerNumber,buttons);
+		mouseKeyboard.setButtonList(buttons);
+		buildingModels.SetUpBuildingModelList(menus);
+		unitModels.SetUpUnitModels(menus);
 		
 	}
+	
 	
 	private void drawWayPoints(GL2 draw){
 		
@@ -309,6 +318,11 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    
 	    drawUnits(draw);
 	    drawBuildings(draw);
+	    
+	    frameX = delayedFrameX;
+	    frameY = delayedFrameY;
+	    
+	    
 	  //  draw.glEnable(GL2.GL_TEXTURE_2D);
 //	    draw.glLoadIdentity();
 //	    draw.glTranslatef(4.0f, 0.0f, -15.0f);
@@ -465,25 +479,25 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	@Override
 	public int getFrameX() {
 		// TODO Auto-generated method stub
-		return frameX;
+		return delayedFrameX;
 	}
 
 	@Override
 	public int getFrameY() {
 		// TODO Auto-generated method stub
-		return frameY;
+		return delayedFrameY;
 	}
 
 	@Override
 	public void setFrameX(int frameX) {
 		// TODO Auto-generated method stub
-		this.frameX = frameX;
+		this.delayedFrameX = frameX;
 	}
 
 	@Override
 	public void setFrameY(int frameY) {
 		// TODO Auto-generated method stub
-		this.frameY = frameY;
+		this.delayedFrameY = frameY;
 	}
 	
 	public int getFrameXSize(){
@@ -499,60 +513,60 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	@Override
 	public void moveMap(int[] square) {
 		// TODO Auto-generated method stub	
-		if(square[1] < (FRAME_Y_SIZE+frameY) && square[1] > (FRAME_Y_SIZE-6+frameY)){
+		if(square[1] < (FRAME_Y_SIZE+delayedFrameY) && square[1] > (FRAME_Y_SIZE-6+delayedFrameY)){
 			
-			if(square[1] < (FRAME_Y_SIZE+frameY) && square[1] > (FRAME_Y_SIZE-3+frameY)){	
-				if(frameY < map.getHeight()-FRAME_Y_SIZE){
-					frameY+=2;
+			if(square[1] < (FRAME_Y_SIZE+frameY) && square[1] > (FRAME_Y_SIZE-3+delayedFrameY)){	
+				if(delayedFrameY < map.getHeight()-FRAME_Y_SIZE){
+					delayedFrameY+=2;
 				}
 			}else{
 				
-				if(frameY < map.getHeight()-FRAME_Y_SIZE){
-					frameY++;
+				if(delayedFrameY < map.getHeight()-FRAME_Y_SIZE){
+					delayedFrameY++;
 				}
 			}
 		
 		}
 		
-		if(square[1] >= frameY && square[1] < frameY + 6){
+		if(square[1] >= delayedFrameY && square[1] < delayedFrameY + 6){
 			
-			if((square[1] >= frameY && square[1] < frameY + 3)){
-				if(frameY > 1){
-					frameY-=2;
+			if((square[1] >= delayedFrameY && square[1] < delayedFrameY + 3)){
+				if(delayedFrameY > 1){
+					delayedFrameY-=2;
 				}
 			}else{
 				
-				if(frameY > 0){
-					frameY--;
+				if(delayedFrameY > 0){
+					delayedFrameY--;
 				}
 			}
 		}
 		
-		if(square[0] < (FRAME_X_SIZE+frameX) && square[0] > (FRAME_X_SIZE-6+frameX)){
+		if(square[0] < (FRAME_X_SIZE+delayedFrameX) && square[0] > (FRAME_X_SIZE-6+delayedFrameX)){
 			
-			if(square[0] < (FRAME_X_SIZE+frameX) && square[0] > (FRAME_X_SIZE-3+frameX)){
-				if(frameX < map.getWidth()-FRAME_X_SIZE){
-					frameX+=2;
+			if(square[0] < (FRAME_X_SIZE+delayedFrameX) && square[0] > (FRAME_X_SIZE-3+delayedFrameX)){
+				if(delayedFrameX < map.getWidth()-FRAME_X_SIZE){
+					delayedFrameX+=2;
 				}
 			}else{
 				
-				if(frameX < map.getWidth()-FRAME_X_SIZE){
-					frameX++;
+				if(delayedFrameX < map.getWidth()-FRAME_X_SIZE){
+					delayedFrameX++;
 				}
 			}
 		
 		}
 		
-		if(square[0] >= frameX && square[0] < frameX + 6){
+		if(square[0] >= delayedFrameX && square[0] < delayedFrameX + 6){
 			
-			if(square[0] >= frameX && square[0] < frameX + 3){
-				if(frameX > 1){
-					frameX-=2;
+			if(square[0] >= delayedFrameX && square[0] < delayedFrameX + 3){
+				if(delayedFrameX > 1){
+					delayedFrameX-=2;
 				}
 			}else{
 				
-				if(frameX > 0){
-					frameX--;
+				if(delayedFrameX > 0){
+					delayedFrameX--;
 				}
 			}
 		}
@@ -575,8 +589,8 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 		
 		}else{
 		
-			frameX = squareX;
-			frameY = squareY;
+			delayedFrameX = squareX;
+			delayedFrameY = squareY;
 		}
 	}
 
@@ -592,11 +606,11 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 		// TODO Auto-generated method stub
 		if(x - FRAME_X_SIZE > 0){
 			
-			this.frameX = x - FRAME_X_SIZE/2;
+			this.delayedFrameX = x - FRAME_X_SIZE/2;
 			
 		}else{
 			
-			this.frameX = 0;
+			this.delayedFrameX = 0;
 		}
 		
 	}
@@ -606,11 +620,11 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 		// TODO Auto-generated method stub
 		if(y - FRAME_Y_SIZE > 0){
 			
-			this.frameY = y - FRAME_Y_SIZE/2;
+			this.delayedFrameY = y - FRAME_Y_SIZE/2;
 			
 		}else{
 			
-			this.frameY = 0;
+			this.delayedFrameY = 0;
 		}
 	}
 	
@@ -622,6 +636,18 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 				,"fabicTexture.png"});
 		gl.glDisable(gl.GL_TEXTURE_2D);
       
+	}
+
+	@Override
+	public void CreateBuildingIconButtons() {
+		// TODO Auto-generated method stub
+		menus.CreateButtonIconButtons();
+	}
+
+	@Override
+	public void CreateUnitIcons() {
+		// TODO Auto-generated method stub
+		unitModels.CreateUnitIconsButton(buildings.getSelectedBuilding(), -15.45f,-4.5f);
 	}
 
 	

@@ -50,15 +50,21 @@ public class UnitModelList {
 	private TextureRepo textures;
 	
 	private ArrayList<ArrowAnimation> arrowAnim; 
+	private ButtonList buttons;
+	private IDrawButton drawButton;
 	
 	
-	public UnitModelList(float HEIGHT_CONST, float WIDTH_CONST,float scaleFactor,TextureRepo textures)
+	public UnitModelList(float HEIGHT_CONST, float WIDTH_CONST,float scaleFactor,TextureRepo textures,
+			ButtonList buttons)
 	throws IOException{
 		
 		this.HEIGHT_CONST = HEIGHT_CONST;
 		this.WIDTH_CONST = WIDTH_CONST;
 		this.scaleFactor = scaleFactor;
 		this.textures = textures;
+		this.buttons = buttons;
+		
+		buttons.AddButtonGroup("UnitIcons");
 		
 		models = new Hashtable<String,Model>();
 		
@@ -102,6 +108,11 @@ public class UnitModelList {
 		models.put(Names.SWORDSMAN, swordsman);
 		//unitModels = new Model[]{servant,slave,axeman,swordsman,spearman,fishingBoat,warship
 			//	,flagship,lightChariot,heavyChariot,archer,heavyarcher,batteringRam,heavyBatteringRam};
+	}
+	
+	public void SetUpUnitModels(IDrawButton drawButton){
+		
+		this.drawButton = drawButton;
 	}
 	
 	public void addArrow(float startX,float startY,float targetX, float targetY,int unitNo){
@@ -267,9 +278,6 @@ public class UnitModelList {
 
 		while((next = model.popFace(currentFrame,state)) != null){
 			
-			
-			
-			
 			//get the colour of the face
 			Colour colour = model.getColour(currentFrame,state);
 			
@@ -360,19 +368,42 @@ public class UnitModelList {
 		drawModel(flag,draw,flagUn,WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
 	}
 	
-	public void drawBuildingUnitIcons(float x, float y,float z
-			,GL2 draw,int playerNumber,Building SelectedBuilding,int food,int gold){
+	public void CreateUnitIconsButton(Building SelectedBuilding,float x, float y){
 		
+		ButtonGroup group = buttons.GetGroup("UnitIcons");
+		group.Clear();
 		UnitCreator type = (UnitCreator)Building.GetBuildingClass(SelectedBuilding.getName());
-		
 		String unitsPossible = type.unitcreated();
 		
 		String[] unitTypes = unitsPossible.split(";");
 		
 		for(int u = 0; u < unitTypes.length; u++){
 			
+			//1.75f 2.5f
+			float ux = ((u % 4) * 0.75f) + x + 1.5f; 
+			float uy = ((u / 4) * -1.0f) + y + 2.5f;
+			
+			group.AddButton(ux, uy, 0.25f, 0.25f, "", unitTypes[u]);
+		}
+		
+	}
+	
+	public void drawBuildingUnitIcons(float x, float y,float z
+			,GL2 draw,int playerNumber,Building SelectedBuilding,int food,int gold){
+		
+		UnitCreator type = (UnitCreator)Building.GetBuildingClass(SelectedBuilding.getName());
+		String unitsPossible = type.unitcreated();
+		
+		String[] unitTypes = unitsPossible.split(";");
+		
+		ButtonGroup group = buttons.GetGroup("UnitIcons");
+		
+		for(int u = 0; u < unitTypes.length; u++){
+			
 			float ux = ((u % 4) * 0.75f) + x + 1.75f; 
 			float uy = ((u / 4) * -1.0f) + y + 2.5f;
+			
+			drawButton.DrawButton(draw, group.GetButton(unitTypes[u]), z);
 			
 			Model model = models.get(unitTypes[u]);
 			if(model == null){

@@ -17,10 +17,8 @@ import GameGraphics.Vertex;
 import Map.Map;
 import Map.MapList;
 
-public class DisplayMenus {
+public class DisplayMenus implements IDrawButton {
 	
-	private float HEIGHT_CONST;
-	private float WIDTH_CONST;
 	private float scaleFactor = 1.0f;
 	private IComUnitListDisplay units;
 	private IComBuildingListDisplay buildings;
@@ -37,16 +35,15 @@ public class DisplayMenus {
 	
 	private TextRenderer text;
 	private TextRenderer mapText;
+	private ButtonList buttons;
 	
 	private TextModel[] symbols;
 	
-	public DisplayMenus(float HEIGHT_CONST,float WIDTH_CONST,float scaleFactor,IComUnitListDisplay units,
+	public DisplayMenus(float scaleFactor,IComUnitListDisplay units,
 			IComBuildingListDisplay buildings,BuildingModelList buildingModels,UnitModelList unitModels,
 			IComMapDisplay map,int FRAME_X_SIZE,int FRAME_Y_SIZE
-			,int playerNumber) throws IOException{
+			,int playerNumber,ButtonList buttons) throws IOException {
 		
-		this.HEIGHT_CONST = HEIGHT_CONST;
-		this.WIDTH_CONST = WIDTH_CONST;
 		
 		this.units = units;
 		this.buildings = buildings;
@@ -68,6 +65,20 @@ public class DisplayMenus {
 		}
 		
 		symbols[36] = new TextModel("cluc","Models/Alphabet");
+		this.buttons = buttons;
+		CreateButtons();
+	}
+	
+	public void CreateButtons(){
+
+		float x = 12.05f;
+		float y = 1.1f;
+		for(int m = 0; m < map.getMapListSize(); m++){
+			
+			buttons.AddButton(x, y + 0.5f * m, 1.35f, 0.20f, "", map.getMapName(m));
+		}
+		
+		buttons.AddButtonGroup("BuildingIcons");
 		
 	}
 	
@@ -93,7 +104,7 @@ public class DisplayMenus {
 		//top panel
 		drawMenuQuad(draw,-15.25f,4.0f, -19.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 3.0f);
 		
-		drawBuildingIcons(-15.25f,-4.5f,-18.0f,draw,frameX,frameY,food,gold);
+		drawBuildingIcons(-15.25f,-4.5f,-18.9f,draw,frameX,frameY,food,gold);
 		drawUnitIcons(-15.45f,-4.5f,-18.0f,draw,playerNumber,
 				buildings.getSelectedBuilding(),food,gold);
 		//bottom panel
@@ -122,7 +133,8 @@ public class DisplayMenus {
 		
 		//top panel
 		drawMenuQuad(draw,14.5f,4.0f, -19.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 3.0f);
-		drawMapInfo(draw,0.86f,0.56f, -19.0f);
+		//0.86f
+		drawMapInfo(draw,0.87f,0.56f, -18.0f);
 		
 		drawMiniMap(draw,13.5f,-4.25f,-18.0f,frameX,frameY);
 		//bottom panel
@@ -134,6 +146,11 @@ public class DisplayMenus {
 		
 		for(int m = 0; m < map.getMapListSize(); m++){
 			
+			ButtonGraphic button = buttons.GetButton(map.getMapName(m));
+			button.IsDrawn();
+			drawMenuQuad(draw,button.GetX(),button.GetY(),z,button.GetRed(),button.GetGreen(),button.GetBlue(),
+					button.GetSizeX(),button.GetSizeY(),button.GetSizeY());
+			//x,y+0.0325f*m
 			drawString(draw,x,y+0.0325f*m,z,0.0f,0.0f,0.0f,0.4f, map.getMapName(m)
 					+ " " + new Integer(map.getMapPlayer(m)));
 			//drawString(draw,x,y+0.0325f*m,z,0.0f,0.0f,0.0f,0.4f, new Integer(m).toString());
@@ -365,6 +382,19 @@ public class DisplayMenus {
 					unitModels.drawBuildingQueue(x + 2.0f,y,z,draw,SelectedBuilding,playerNumber);
 					buildings.end();
 				}
+		}
+
+		public void CreateButtonIconButtons() {
+			// TODO Auto-generated method stub
+			buildingModels.CreateButtonIconButton(buildings.getSelectedBuilding());
+		}
+
+		@Override
+		public void DrawButton(GL2 draw, ButtonGraphic button,float z) {
+			// TODO Auto-generated method stub
+			this.drawMenuQuad(draw, button.GetX(), button.GetY(), z,
+					button.GetRed(), button.GetGreen(), button.GetBlue(), button.GetSizeX(),
+					button.GetSizeY(), button.GetSizeY());
 		}
 
 }
