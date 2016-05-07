@@ -22,7 +22,7 @@ public class Graphics{
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		window.setTitle("King of Kings");
-		
+		window.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		pane = window.getContentPane();
 		pane.setLayout(new CardLayout(2,1));
 		cmsg = new ClientMessages();

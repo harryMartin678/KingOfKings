@@ -263,7 +263,8 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 			@Override
 			public void mouseMoved(MouseEvent e) {
 				// TODO Auto-generated method stub
-
+				//System.out.println(e.getX() + " " + e.getY() + " GraphicsEngine");
+				mouseKeyboard.handleHover(e);
 			}
 			
 			
@@ -281,7 +282,7 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 			}
 
 			@Override
-			public void mouseEntered(MouseEvent arg0) {
+			public void mouseEntered(MouseEvent e) {
 				// TODO Auto-generated method stub
 				
 			}

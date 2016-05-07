@@ -372,18 +372,20 @@ public class UnitModelList {
 		
 		ButtonGroup group = buttons.GetGroup("UnitIcons");
 		group.Clear();
-		UnitCreator type = (UnitCreator)Building.GetBuildingClass(SelectedBuilding.getName());
-		String unitsPossible = type.unitcreated();
-		
-		String[] unitTypes = unitsPossible.split(";");
-		
-		for(int u = 0; u < unitTypes.length; u++){
+		if(Building.GetBuildingClass(SelectedBuilding.getName()) instanceof UnitCreator){
+			UnitCreator type = (UnitCreator)Building.GetBuildingClass(SelectedBuilding.getName());
+			String unitsPossible = type.unitcreated();
 			
-			//1.75f 2.5f
-			float ux = ((u % 4) * 0.75f) + x + 1.5f; 
-			float uy = ((u / 4) * -1.0f) + y + 2.5f;
+			String[] unitTypes = unitsPossible.split(";");
 			
-			group.AddButton(ux, uy, 0.25f, 0.25f, "", unitTypes[u]);
+			for(int u = 0; u < unitTypes.length; u++){
+				
+				//1.75f 2.5f
+				float ux = ((u % 4) * 0.75f) + x + 1.5f; 
+				float uy = ((u / 4) * -1.0f) + y + 2.5f;
+				
+				group.AddButton(ux, uy, 0.25f, 0.25f, "", unitTypes[u]);
+			}
 		}
 		
 	}

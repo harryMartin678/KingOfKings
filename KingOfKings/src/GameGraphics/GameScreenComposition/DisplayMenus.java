@@ -93,7 +93,7 @@ public class DisplayMenus implements IDrawButton {
 		drawLeftPanel(draw,frameX,frameY,food,gold);
 		drawRightPanel(draw,frameX,frameY);
 		drawTopPanel(draw,food,gold);
-		drawBottomFill(draw);
+		//drawBottomFill(draw);
 	}
 	
 	private void drawLeftPanel(GL2 draw,int frameX,int frameY,int food,int gold){
@@ -246,39 +246,43 @@ public class DisplayMenus implements IDrawButton {
 	private void drawTopPanel(GL2 draw,int food,int gold){
 
 		//top panel
-		drawMenuQuad(draw,0.0f,8.5f, -20.0f,0.65f, 0.5f, 0.39f,15.0f, 3.0f, 1.15f);
+		drawMenuQuad(draw,0.0f,8.8f, -21.0f,0.65f, 0.5f, 0.39f,15.0f, 0.2f, 1.0f);
+		
+		//0.93f, 0.37f, 0.0f
+		//quit game button
+		drawMenuQuad(draw,-15.25f,8.0f, -20.0f,1.0f, 0.0f, 0.0f,0.3f, 0.2f, 0.3f);
 		//pause game button
-		drawMenuQuad(draw,0.0f,8.5f, -20.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 0.75f);
+		drawMenuQuad(draw,-14.25f,8.0f, -20.0f,0.0f, 1.0f, 0.0f,0.3f, 0.2f, 0.3f);
 		//-1.5f,7.75f,-21.0f
-		drawString(draw,0.47f,0.935f,-21.0f,0.0f,0.0f,0.0f,0.75f,"Pause");
-		//food panel
-		drawMenuQuad(draw,-6.0f,8.5f, -20.0f,0.45f, 0.15f, 0.0f,2.0f, 3.0f, 0.75f);
-		drawString(draw,0.315f,0.935f,-21.0f,0.0f,0.0f,0.0f,0.75f,new Integer(food).toString());
+		//drawString(draw,0.47f,0.935f,-21.0f,0.0f,0.0f,0.0f,0.75f,"Pause");
+		
 		
 		//save game button
-		drawMenuQuad(draw,-11.0f,8.5f, -20.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 0.75f);
+		drawMenuQuad(draw,-13.25f,8.0f, -20.0f,0.0f, 0.0f, 1.0f,0.3f, 0.2f, 0.3f);
 		//-11.25f,7.75f, -21.0f
-		drawString(draw,0.175f,0.935f, -21.0f,0.0f,0.0f,0.0f,0.75f,"Save");
+		//drawString(draw,0.175f,0.935f, -21.0f,0.0f,0.0f,0.0f,0.75f,"Save");
 		
+		//food panel
+		drawMenuQuad(draw,-6.0f,8.0f, -20.0f,0.45f, 0.15f, 0.0f,2.0f, 0.2f, 0.4f);
+		drawString(draw,0.26f,0.965f,-21.0f,0.0f,0.0f,0.0f,0.75f,new Integer(food).toString());
 		//gold panel
-		drawMenuQuad(draw,5.5f,8.5f, -20.0f,0.45f, 0.15f, 0.0f,2.0f, 3.0f, 0.75f);
+		drawMenuQuad(draw,6.0f,8.0f, -20.0f,0.45f, 0.15f, 0.0f,2.0f, 0.2f, 0.4f);
 		//4.0f,7.75f,-21.0f
-		drawString(draw,0.625f,0.935f,-21.0f,0.0f,0.0f,0.0f,0.75f,new Integer(gold).toString());
+		drawString(draw,0.628f,0.965f,-21.0f,0.0f,0.0f,0.0f,0.75f,new Integer(gold).toString());
 		
-		//quit game button
-		drawMenuQuad(draw,10.0f,8.5f, -20.0f,0.93f, 0.37f, 0.0f,2.0f, 3.0f, 0.75f);
+		
 		//8.0f,7.75f, -21.0f
-		drawString(draw,0.75f,0.935f, -21.0f,0.0f,0.0f,0.0f,0.75f,"Quit");
+		//drawString(draw,0.75f,0.935f, -21.0f,0.0f,0.0f,0.0f,0.75f,"Quit");
 		
 		
 	}
 
 	
-	private void drawBottomFill(GL2 draw){
-		
-		drawMenuQuad(draw,0.0f,-9.5f, -20.0f,0.65f, 0.5f, 0.39f,15.0f, 3.0f, 0.5f);
-
-	}
+//	private void drawBottomFill(GL2 draw){
+//		
+//		drawMenuQuad(draw,0.0f,-9.5f, -20.0f,0.65f, 0.5f, 0.39f,15.0f, 3.0f, 0.5f);
+//
+//	}
 	
 	private void drawMenuQuad(GL2 draw, float tx, float ty, float tz, float cx, float cy, float cz,
 			float sx, float sy, float sz){

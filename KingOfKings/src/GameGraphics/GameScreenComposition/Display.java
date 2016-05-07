@@ -50,9 +50,9 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	private TextureRepo textures;
 	
 	private final float scaleFactor = 1.0f; 
-	private final float WIDTH_CONST = 1.25f;
-	private final float HEIGHT_CONST = 3;
-	private final int FRAME_Y_SIZE = 25;
+	private final float WIDTH_CONST = 20.3f;
+	private final float HEIGHT_CONST = 14.21f;
+	private final int FRAME_Y_SIZE = 28;
 	private final int FRAME_X_SIZE = 40;
 	
 	private int frameX = 0;
@@ -68,6 +68,8 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	private UnitModelList unitModels;
 	private ButtonList buttons;
 	
+	private HoverPanelGraphic hoverPanel;
+	
 	private int food;
 	private int gold;
 
@@ -76,6 +78,8 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 		
 		textures = new TextureRepo();
 		buttons = new ButtonList();
+		
+		//System.out.println(WIDTH_CONST + " " + HEIGHT_CONST + " DISPLAY");
 	}
 	
 	public void setUpDisplay(IComUnitListDisplay units, IComBuildingListDisplay buildings,
@@ -86,9 +90,9 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 		this.mouseKeyboard = mouseKeyboard;
 		this.map = map;
 		
-		buildingModels = new BuildingModelList(FRAME_X_SIZE/HEIGHT_CONST,FRAME_Y_SIZE/WIDTH_CONST,scaleFactor
+		buildingModels = new BuildingModelList(HEIGHT_CONST,WIDTH_CONST,scaleFactor
 				,textures,buttons);
-		unitModels = new UnitModelList(FRAME_X_SIZE/HEIGHT_CONST,FRAME_Y_SIZE/WIDTH_CONST,scaleFactor,
+		unitModels = new UnitModelList(HEIGHT_CONST,WIDTH_CONST,scaleFactor,
 				textures,buttons);
 		
 		menus = new DisplayMenus(scaleFactor,units,buildings,buildingModels,unitModels,map,
@@ -124,37 +128,36 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    				x < 0 || y < 0){
 	    			
 	    			drawTile(draw,(float) x,(float) y,
-	    					0.0f,0.0f,0.0f,FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
+	    					0.0f,0.0f,0.0f,WIDTH_CONST,HEIGHT_CONST);
 	    		}else{
 	    			
 	    			//0.93f,0.68f,0.79f
 	    		if(mouseKeyboard.isInDragBox(x,y)){
 	    			
 	    			drawTile(draw,(float) x,(float) y
-    						,0.0f,0.0f,1.0f,FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
+    						,0.0f,0.0f,1.0f,WIDTH_CONST,HEIGHT_CONST);
 	    			
 	    		}else{
 		    		//0.93f,0.68f,0.79f
-		    		drawTile(draw,(float) x,(float) y
-		    			,0.52f,0.45f,0.32f,FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
-//	    			
+		    		drawTile(draw,(float) x,(float) y,0.52f,0.45f,0.32f,WIDTH_CONST,HEIGHT_CONST);
+	    			
 //	    			if(x == map.getWidth()/2 && y == map.getHeight()/2){
 //	    				
 //	    				drawTile(draw,(float)x,(float)y
-//	    						,1.0f,0.0f,0.0f,FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
+//	    						,1.0f,0.0f,0.0f,WIDTH_CONST,HEIGHT_CONST);
 //	    			}else{
 //	    			
 //		    			if(checked){
 //			    			drawTile(draw,(float) x,(float) y
-//					    			,0.0f,0.0f,0.0f,FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
+//					    			,0.0f,0.0f,0.0f,WIDTH_CONST,HEIGHT_CONST);
 //		    			}else{
 //			    					
 //			    			drawTile(draw,(float) x,(float) y
-//			    					,1.0f,1.0f,1.0f,FRAME_Y_SIZE/WIDTH_CONST,FRAME_X_SIZE/HEIGHT_CONST);
+//			    					,1.0f,1.0f,1.0f,WIDTH_CONST,HEIGHT_CONST);
 //		    			}
 //	    			}
-		    			
-	    		}
+//		    			
+	    			}
 	    			
 	    			checked =! checked;
 	    		}
@@ -202,8 +205,8 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 		    	if(u < units.size() && units.isUnitSelected(units.get(u).getUnitNo())){
 		    		
 		    		draw.glLoadIdentity();
-		    		draw.glTranslatef(units.get(u).getX()-(FRAME_Y_SIZE/WIDTH_CONST)-frameX, 
-		    				units.get(u).getY()-(FRAME_X_SIZE/HEIGHT_CONST)-frameY, -34.0f);
+		    		draw.glTranslatef(units.get(u).getX()-(WIDTH_CONST)-frameX, 
+		    				units.get(u).getY()-(HEIGHT_CONST)-frameY, -34.0f);
 		    		draw.glColor3f(0.0f, 0.0f, 1.0f);
 		    		draw.glScalef(0.5f, 0.5f, 0.5f);
 		    		
@@ -256,8 +259,8 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    	if(buildings.isSelectedBuilding(buildings.get(b))){
 	    		Buildings.Building type = Building.GetBuildingClass(buildings.get(b).getName());
 	    		draw.glLoadIdentity();
-	    		draw.glTranslatef(buildings.get(b).getX()-(FRAME_Y_SIZE/WIDTH_CONST)-frameX, 
-	    				buildings.get(b).getY()-(FRAME_X_SIZE/HEIGHT_CONST)-frameY, -33.0f);
+	    		draw.glTranslatef(buildings.get(b).getX()-(WIDTH_CONST)-frameX, 
+	    				buildings.get(b).getY()-(HEIGHT_CONST)-frameY, -33.0f);
 	    		draw.glColor3f(0.0f, 0.0f, 1.0f);
 	    		draw.glScalef(type.getSizeX(), type.getSizeY(), 1.0f);
 	    		
@@ -648,6 +651,24 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	public void CreateUnitIcons() {
 		// TODO Auto-generated method stub
 		unitModels.CreateUnitIconsButton(buildings.getSelectedBuilding(), -15.45f,-4.5f);
+	}
+
+	@Override
+	public int getFrameSizeY() {
+		// TODO Auto-generated method stub
+		return FRAME_Y_SIZE;
+	}
+
+	@Override
+	public int getFrameSizeX() {
+		// TODO Auto-generated method stub
+		return FRAME_X_SIZE;
+	}
+
+	@Override
+	public void CreateHoverPanel(String type, int index,double cornerX, double cornerY) {
+		// TODO Auto-generated method stub
+		System.out.println(type + " " + index + " Display");
 	}
 
 	

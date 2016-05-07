@@ -69,6 +69,17 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 		move.moveUnit(tx, ty,difference, fDown, shiftDown);
 	}
 	
+	private void RegulateHovering(int x, int y) {
+		// TODO Auto-generated method stub
+		//System.out.println(x + " " + y + " MouseKeyboard");
+		float px = (float)x/(float)width;
+		float py = (float)y/(float)height;
+		if(selectMenu(px,py,food,gold,true)){
+			
+			
+		}
+	}
+	
 	
 	public void regulateMouse(int frameX,int frameY,int FRAME_X_SIZE,int FRAME_Y_SIZE,int viewedMap){
 		
@@ -81,10 +92,10 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 	    	  
 	    	  double x = (double)mouse.getX()/(double)width, y = (double)mouse.getY()/(double)height;
 	    	  
-//	    	  System.out.println(x + " " + y + " MouseKeyboard");
+//	    	  System.out.println(x + "," + y + " MouseKeyboard");
 //	    	  System.out.println("////////////////////////////");
 
-		      if(!selectMenu(x, y,food,gold)){	
+		      if(!selectMenu(x, y,food,gold,false)){	
 		        	
 		    	  int[] click = selectMap(x,y);
 
@@ -220,24 +231,28 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 	   
 	}
 	
-	
-	private boolean selectMenu(double x, double y,int food, int gold){
+	private boolean selectMenu(double x, double y,int food, int gold,boolean hover){
 		
 		
 //		System.out.println("MENU");
-//		System.out.println(xa + " " + ya);
+		//System.out.println(x + " " + y + " MouseKeyboard");
 		
 		if(inRect(0.011713031,0.5829787,0.12445095,0.9106383,x,y)){
 			
 			if(units.isWorkerSelected()){
 				
-				selectBuildingIcons(x, y,food,gold);
+				selectBuildingIcons(x, y,food,gold,hover);
 			
 			}else if(buildings.isBuildingSelected()){
 				
-				selectUnitIcons(x,y,food,gold);
+				selectUnitIcons(x,y,food,gold,hover);
 			}
 			return true;
+		}
+		
+		if(hover){
+			
+			return false;
 		}
 		
 		if(inRect(0.85431916,0.5829787,0.9670571,0.9106383,x,y)){
@@ -247,19 +262,22 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 		}
 		
 		//quit button
-		if(inRect(0.715959,0.012765957,0.8250366,0.09219858,x,y)){
+		if(inRect(0.020558002936857563,0.004267425320056899,
+				0.0381791483113069,0.03840682788051209,x,y)){
 			
 			System.out.println("Quit");
 			return true;
 		
 		//pause button
-		}else if(inRect(0.44582725,0.012765957,0.5534407,0.09078014,x,y)){
+		}else if(inRect(0.05066079295154185,0.002844950213371266,
+				0.0697503671071953,0.03840682788051209,x,y)){
 		
 			System.out.println("Pause");
 			return true;
 		
 		//save button
-		}else if(inRect(0.14787701,0.012765957,0.25549048,0.09219858,x,y)){
+		}else if(inRect(0.08223201174743025,0.004267425320056899,
+				0.09985315712187959,0.03698435277382646,x,y)){
 			
 			System.out.println("Save");
 			return true;
@@ -271,7 +289,7 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 		
 	}
 	
-	private void selectUnitIcons(double x, double y,int food, int gold){
+	private void selectUnitIcons(double x, double y,int food, int gold,boolean hover){
 //		0.012445095168374817 0.5843971631205673
 //		0.05197657393850659 0.6425531914893617
 		ButtonGroup group = buttons.GetGroup("UnitIcons");
@@ -288,97 +306,169 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 						0.5843971631205673 + (0.0581560283687944*ys),
 						0.0315712187958884 + (0.02569750364*xs),
 						0.6425531914893617 + (0.0581560283687944*ys),x,y)){
-					
-					group.SelectedByIndex((group.Size()-1)- (xs + (ys*3)));
-					buildings.unitIconSelected(xs + (ys*3),food,gold);
+					if(hover){
+						
+						display.CreateHoverPanel(HoverPanelGraphic.UnitIconPanel,
+								(group.Size()-1)- (xs + (ys*3)),0.015418502202643172 + (0.02569750364*xs),
+								0.6425531914893617 + (0.0581560283687944*ys));
+						
+					}else{
+						group.SelectedByIndex((group.Size()-1)- (xs + (ys*3)));
+						buildings.unitIconSelected(xs + (ys*3),food,gold);
+					}
 					break;
 				}
 			}
 		}
 	}
 	
-	private void selectBuildingIcons(double x, double y,int food, int gold){
+	private void selectBuildingIcons(double x, double y,int food, int gold,boolean hover){
 		
 		ButtonGroup group = buttons.GetGroup("BuildingIcons");
 		//1 1
 		if(inRect(0.01762114537444934,0.5931721194879089,0.04331864904552129,0.6443812233285917
 				,x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.ARCHERYTOWER,playerNumber), gold, food)){
 			
-			//System.out.println(1 + " " + 1);
-			group.Selected(Names.ARCHERYTOWER);
-			buildings.setGhostBuilding(new Building(Names.ARCHERYTOWER,playerNumber));
+			if(hover){
+				
+				display.CreateHoverPanel(HoverPanelGraphic.BuildingIconPanel, 0,
+						0.01762114537444934,0.6443812233285917);
+				
+			}else{
+				//System.out.println(1 + " " + 1);
+				group.Selected(Names.ARCHERYTOWER);
+				buildings.setGhostBuilding(new Building(Names.ARCHERYTOWER,playerNumber));
+			}
 		
 		//2 1
 		}else if(inRect(0.05506607929515418,0.5917496443812233,0.08223201174743025,0.6443812233285917,
-				x,y)&& !BuildingModelList.SetEnoughRes(new Building(Names.BALLISTICTOWER,playerNumber), gold, food)){
-			
-			group.Selected(Names.BALLISTICTOWER);
-			//System.out.println(2 + " " + 1);
-			buildings.setGhostBuilding(new Building(Names.BALLISTICTOWER,playerNumber));
+				x,y)){
+			if(hover){
+				
+				display.CreateHoverPanel(HoverPanelGraphic.BuildingIconPanel, 1,
+						0.05506607929515418,0.6443812233285917);
+				
+			}else if(!BuildingModelList.SetEnoughRes(
+					new Building(Names.BALLISTICTOWER,playerNumber), gold, food)){
+				group.Selected(Names.BALLISTICTOWER);
+				//System.out.println(2 + " " + 1);
+				buildings.setGhostBuilding(new Building(Names.BALLISTICTOWER,playerNumber));
+			}
 		
 		//3 1
 		}else if(inRect(0.0947136563876652,0.5931721194879089,0.1204111600587371,0.6443812233285917,
-				x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.BARRACK,playerNumber), gold, food)){
+				x,y)){
 			
-			group.Selected(Names.BARRACK);
-			//System.out.println(3 + " " + 1);
-			buildings.setGhostBuilding(new Building(Names.MINE,playerNumber));
+			if(hover){
+				
+				display.CreateHoverPanel(HoverPanelGraphic.BuildingIconPanel, 2,0.0947136563876652,
+						0.6443812233285917);
+				
+			}else if(!BuildingModelList.SetEnoughRes(
+					new Building(Names.BARRACK,playerNumber), gold, food)){
+			
+				group.Selected(Names.BARRACK);
+				//System.out.println(3 + " " + 1);
+				buildings.setGhostBuilding(new Building(Names.MINE,playerNumber));
+			}
 		
 		//1 2
 		}else if(inRect(0.01762114537444934,0.6813655761024182,0.042584434654919234,0.7297297297297297,
-				x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.CASTLE,playerNumber), gold, food)){
+				x,y)){
 			
-			group.Selected(Names.CASTLE);
-			//System.out.println(1 + " " + 2);
-			buildings.setGhostBuilding(new Building(Names.CASTLE,playerNumber));
+			if(hover){
+				
+				display.CreateHoverPanel(HoverPanelGraphic.BuildingIconPanel, 3,0.01762114537444934,
+						0.7297297297297297);
+				
+			}else if(!BuildingModelList.SetEnoughRes(new Building(Names.CASTLE,playerNumber), gold, food)){
+				group.Selected(Names.CASTLE);
+				//System.out.println(1 + " " + 2);
+				buildings.setGhostBuilding(new Building(Names.CASTLE,playerNumber));
+			}
 		
 		//2 2
 		}else if(inRect(0.055800293685756244,0.6813655761024182,0.08223201174743025,0.7297297297297297
-				,x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.DOCK,playerNumber), gold, food)){
-			
-			//System.out.println(2 + " " + 2);
-			buildings.setGhostBuilding(new Building(Names.DOCK,playerNumber));
+				,x,y)){
+			if(hover){
+				
+				display.CreateHoverPanel(HoverPanelGraphic.BuildingIconPanel, 4,0.055800293685756244,
+						0.7297297297297297);
+				
+			}else if(!BuildingModelList.SetEnoughRes(new Building(Names.DOCK,playerNumber), gold, food)){
+				group.Selected(Names.DOCK);
+				//System.out.println(2 + " " + 2);
+				buildings.setGhostBuilding(new Building(Names.DOCK,playerNumber));
+			}
 		
 		//3 2
 		}else if(inRect(0.0947136563876652,0.6813655761024182,0.1196769456681351,0.7297297297297297,
-				x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.FARM,playerNumber), gold, food)){
+				x,y)){
+			if(hover){
+				
+				display.CreateHoverPanel(HoverPanelGraphic.BuildingIconPanel, 5,0.0947136563876652
+						,0.7297297297297297);
+			}
+			else if(!BuildingModelList.SetEnoughRes(new Building(Names.FARM,playerNumber), gold, food)){
+				group.Selected(Names.FARM);
 			
-			group.Selected(Names.FARM);
-			//System.out.println(3 + " " + 2);
-			buildings.setGhostBuilding(new Building(Names.FARM,playerNumber));
+				//System.out.println(3 + " " + 2);
+				buildings.setGhostBuilding(new Building(Names.FARM,playerNumber));
+			}
 			
 		//1 3
 		}else if(inRect(0.016886930983847283,0.7681365576102418,0.042584434654919234,0.8165007112375533,
-				x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.FORT,playerNumber), gold, food)){
-			
-			group.Selected(Names.FORT);
-			//System.out.println(1 + " " + 3);
-			buildings.setGhostBuilding(new Building(Names.FORT,playerNumber));
-		
+				x,y) ){
+			if(hover){
+				
+				display.CreateHoverPanel(HoverPanelGraphic.BuildingIconPanel, 6,0.016886930983847283
+						,0.8165007112375533);
+				
+			}else if(!BuildingModelList.SetEnoughRes(new Building(Names.FORT,playerNumber), gold, food)){
+				group.Selected(Names.FORT);
+				//System.out.println(1 + " " + 3);
+				buildings.setGhostBuilding(new Building(Names.FORT,playerNumber));
+			}
 		//2 3
 		}else if(inRect(0.055800293685756244,0.7667140825035562,0.08223201174743025,0.817923186344239,
-				x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.STABLE,playerNumber), gold, food)){
-			
-			group.Selected(Names.STABLE);
-			//System.out.println(2 + " " + 3);
-			buildings.setGhostBuilding(new Building(Names.STABLE,playerNumber));
-		
+				x,y)){
+			if(hover){
+				
+				display.CreateHoverPanel(HoverPanelGraphic.BuildingIconPanel, 7,0.055800293685756244
+						,0.817923186344239);
+				
+			}else if(!BuildingModelList.SetEnoughRes(new Building(Names.STABLE,playerNumber), gold, food)){
+				group.Selected(Names.STABLE);
+				//System.out.println(2 + " " + 3);
+				buildings.setGhostBuilding(new Building(Names.STABLE,playerNumber));
+			}
 		//3 3
 		}else if(inRect(0.0947136563876652,0.7695590327169275,0.12041116005873716,0.8193456614509246,
-				x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.STOCKPILE,playerNumber), gold, food)){
-			
-			group.Selected(Names.STOCKPILE);
-			//System.out.println(3 + " " + 3);
-			buildings.setGhostBuilding(new Building(Names.STOCKPILE,playerNumber));
-		
+				x,y)){
+			if(hover){
+				
+				display.CreateHoverPanel(HoverPanelGraphic.BuildingIconPanel, 8,0.0947136563876652,
+						0.8193456614509246);
+				
+			}else if(!BuildingModelList.SetEnoughRes(new Building(Names.STOCKPILE,playerNumber), gold, food)){
+				group.Selected(Names.STOCKPILE);
+				//System.out.println(3 + " " + 3);
+				buildings.setGhostBuilding(new Building(Names.STOCKPILE,playerNumber));
+			}
 		//1 4
 		}else if(inRect(0.01762114537444934,0.8563300142247511,0.04331864904552129,0.9061166429587483,
-				x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.WALL,playerNumber), gold, food)){
-			
-			group.Selected(Names.WALL);
-			//System.out.println(1 + " " + 4);
-			buildings.setGhostBuilding(new Building(Names.WALL,playerNumber));
-		
+				x,y)){
+			if(hover){
+				
+				display.CreateHoverPanel(HoverPanelGraphic.BuildingIconPanel, 9,
+						0.01762114537444934,0.9061166429587483);
+				
+			}else if(!BuildingModelList.SetEnoughRes(new Building(Names.WALL,playerNumber), gold, food)){
+				
+				group.Selected(Names.WALL);
+				//System.out.println(1 + " " + 4);
+				buildings.setGhostBuilding(new Building(Names.WALL,playerNumber));
+			}
 		//2 4
 //		}else if(inRect(0.058565154671669006,0.8269503712654114,0.08857979625463486,0.9092198610305786,
 //				x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.BALLISTICTOWER,playerNumber), gold, food)){
@@ -389,12 +479,17 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 //		
 //		//3 4
 		}else if(inRect(0.0947136563876652,0.8549075391180654,0.12041116005873716,0.9061166429587483,
-				x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.MINE,playerNumber), gold, food)){
-			
-			group.Selected(Names.MINE);
-			//System.out.println(3 + " " + 4);
-			buildings.setGhostBuilding(new Building(Names.MINE,playerNumber));
-			
+				x,y)){
+			if(hover){
+				
+				display.CreateHoverPanel(HoverPanelGraphic.BuildingIconPanel, 10,
+						0.0947136563876652,0.9061166429587483);
+				
+			}else if(!BuildingModelList.SetEnoughRes(new Building(Names.MINE,playerNumber), gold, food)){
+				group.Selected(Names.MINE);
+				//System.out.println(3 + " " + 4);
+				buildings.setGhostBuilding(new Building(Names.MINE,playerNumber));
+			}
 		}
 		
 
@@ -421,18 +516,19 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 		
 		
 		
-		for(int y = 0; y < 25; y++){
-			for(int x = 0; x < 40; x++){
-			
+		for(int y = 0; y < display.getFrameSizeY(); y++){
+			for(int x = 0; x < display.getFrameSizeX(); x++){
+				//0.99776741 //0.96505049 //0.9347517490386963 // 0.9702127575874329
 				if(inRect(0.1398243010044098 + (x*(0.03513909876/2.0)),
-						0.9347517490386963 - (y*(0.06950354576/2.0)),
+						0.96505049 - (y*(0.06950354576/2.0)),
 						0.15739385783672333 + (x*(0.03513909876/2.0)),
-						0.9702127575874329 - (y*(0.06950354576/2.0)),
+						0.99776741 - (y*(0.06950354576/2.0)),
 							mx,my)){
 					
 					int difference = (int)(Math.abs((mx - 0.145 + (x*(0.03513909876/2.0)))) +
 							Math.abs((my - 0.955 + (y*(0.06950354576/2.0))))) * 1000;
 					
+					//System.out.println(x + " " + y + " MouseKeyboard");
 					return display.getFrameAdjustedPos(new int[]{x,y,difference});
 					
 				}
@@ -528,6 +624,14 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 		lastDB = null;
 	}
 	
+	public void handleHover(MouseEvent e){
+		
+		//RegulateHovering(e.getX()/display.getScreenWidth(),e.getY()/display.getScreenHeight());
+		RegulateHovering(e.getX(),e.getY());
+	}
+	
+	
+
 	public void handleKeyboardPressed(KeyEvent e){
 		
 		System.out.println(e.getKeyChar() + " pressed");
