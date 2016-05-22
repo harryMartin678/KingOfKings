@@ -1,44 +1,22 @@
 package GameGraphics.GameScreenComposition;
 
-import java.awt.image.AffineTransformOp;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.awt.image.DataBufferInt;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.Buffer;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 
-import javax.imageio.ImageIO;
-import javax.media.opengl.GL2;
-import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.GLDrawable;
-import javax.media.opengl.glu.GLU;
-
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.gl2.GLUT;
-import com.jogamp.opengl.util.texture.Texture;
-import com.jogamp.opengl.util.texture.TextureData;
-import com.jogamp.opengl.util.texture.TextureIO;
 
-import Buildings.Names;
 import GameGraphics.Building;
-import GameGraphics.BuildingModel;
-import GameGraphics.ChariotModel;
 import GameGraphics.Face;
 import GameGraphics.Model;
-import GameGraphics.TextModel;
 import GameGraphics.Unit;
 import GameGraphics.Vertex;
+import GameGraphics.Menu.DrawMenuModel;
+import GameGraphics.Menu.Menu;
+import GameGraphics.Menu.UnitIconSelection;
 import Map.CollisionMap;
-import Map.Map;
-import Map.MapList;
 
 public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard,IComMapUpdateDisplayFrame {
 
@@ -46,14 +24,16 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	private IComBuildingListDisplay buildings;
 	private IComMouseKeyboard mouseKeyboard;
 	private IComMapDisplay map;
-	private DisplayMenus menus;
+	private DrawMenuModel menuModels;
+	//private DisplayMenus menus;
 	private TextureRepo textures;
+	private int playerNumber;
 	
 	private final float scaleFactor = 1.0f; 
-	private final float WIDTH_CONST = 20.3f;
-	private final float HEIGHT_CONST = 14.21f;
-	private final int FRAME_Y_SIZE = 28;
-	private final int FRAME_X_SIZE = 40;
+	private final float WIDTH_CONST = 27.97f;//20.3f
+	private final float HEIGHT_CONST = 7.85f;//14.21f
+	private final int FRAME_Y_SIZE = 22;//28
+	private final int FRAME_X_SIZE = 57;//40
 	
 	private int frameX = 0;
 	private int frameY = 0;
@@ -66,18 +46,22 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	
 	private BuildingModelList buildingModels;
 	private UnitModelList unitModels;
-	private ButtonList buttons;
+	//private ButtonList buttons;
 	
 	private HoverPanelGraphic hoverPanel;
 	
 	private int food;
 	private int gold;
+	private Menu menu;
 
 	
-	public Display(){
+	public Display(Menu menu){
 		
 		textures = new TextureRepo();
-		buttons = new ButtonList();
+		//buttons = new ButtonList();
+		
+		this.menu = menu;
+		
 		
 		//System.out.println(WIDTH_CONST + " " + HEIGHT_CONST + " DISPLAY");
 	}
@@ -91,15 +75,18 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 		this.map = map;
 		
 		buildingModels = new BuildingModelList(HEIGHT_CONST,WIDTH_CONST,scaleFactor
-				,textures,buttons);
+				,textures);
 		unitModels = new UnitModelList(HEIGHT_CONST,WIDTH_CONST,scaleFactor,
-				textures,buttons);
+				textures);
 		
-		menus = new DisplayMenus(scaleFactor,units,buildings,buildingModels,unitModels,map,
-				FRAME_X_SIZE,FRAME_Y_SIZE,playerNumber,buttons);
-		mouseKeyboard.setButtonList(buttons);
-		buildingModels.SetUpBuildingModelList(menus);
-		unitModels.SetUpUnitModels(menus);
+		this.playerNumber = playerNumber;
+		menuModels = new DrawMenuModel(units, buildings, buildingModels, unitModels);
+		
+	//	menus = new DisplayMenus(scaleFactor,units,buildings,buildingModels,unitModels,map,
+			//	FRAME_X_SIZE,FRAME_Y_SIZE,playerNumber,buttons);
+		//mouseKeyboard.setButtonList(buttons);
+		//buildingModels.SetUpBuildingModelList(menus);
+		///unitModels.SetUpUnitModels(menus);
 		
 	}
 	
@@ -163,7 +150,7 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    		}
 	    	}
 	    	
-	    	checked =! checked;
+	    	//checked =! checked;
 	    }
 	}
 	
@@ -237,23 +224,17 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    	buildings.canBuildThere(collMap);
 	    	buildings.canBuildGhost(collMap);
 	    	//System.out.println(buildingSelection.cantBuild());
-	    	buildings.drawGhostBuilding();
+	    	//buildings.drawGhostBuilding();
+	    	buildingModels.drawBuilding(draw, buildings.getGhostBuilding(), frameX, frameY);
 	    }
 	    
 	    //draw buildings in view
 	    for(int b = 0; b < buildings.size(); b++){
 
-	    	if( b >= buildings.size() || buildings.inFrame(b, frameX, frameY, FRAME_X_SIZE, FRAME_Y_SIZE) 
+	    	if( buildings.inFrame(b, frameX, frameY, FRAME_X_SIZE, FRAME_Y_SIZE) 
 	    			|| map.getTile((int) buildings.get(b).getX(),(int) buildings.get(b).getY()) == -1){
 	    		
 	    		continue;
-	    	}
-	    	
-	    	
-	    	if(buildings.get(b).IsTowerAttack()){
-	    		
-	    		unitModels.towerBattle((int)buildings.getBuildingX(b),(int)buildings.getBuildingY(b),
-	    				buildings.get(b).getAttackX(),buildings.get(b).getAttackY());
 	    	}
 	    	
 	    	if(buildings.isSelectedBuilding(buildings.get(b))){
@@ -273,11 +254,17 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    		draw.glEnd();
 	    	}
 	    	
-	    	if(buildings.get(b) != null){
-	    		buildingModels.drawBuilding(draw, buildings.get(b), frameX, frameY);
+	    	if(buildings.get(b).IsTowerAttack()){
+	    		
+	    		unitModels.towerBattle((int)buildings.getBuildingX(b),(int)buildings.getBuildingY(b),
+	    				buildings.get(b).getAttackX(),buildings.get(b).getAttackY());
 	    	}
+	    	
+	    	//if(buildings.get(b) != null){
+    		buildingModels.drawBuilding(draw, buildings.get(b), frameX, frameY);
+	    	//}
 	    }
-	    buildings.removeGhostBuilding();
+	   // buildings.removeGhostBuilding();
 	    buildings.end();
 	}
 	
@@ -322,6 +309,7 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    drawUnits(draw);
 	    drawBuildings(draw);
 	    
+	    
 	    frameX = delayedFrameX;
 	    frameY = delayedFrameY;
 	    
@@ -359,17 +347,52 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 //	    buildings.end();
 	   
 	    draw.glDisable(draw.GL_LIGHTING);
-	    //draw menus 
-	    
+	    //draw menus
+	    int showOffIndex = -1;
+	    if(hoverPanel != null){
+	    	
+	    	if((hoverPanel.getIndex()+1) % 3 == 0 || hoverPanel.getIndex()/3 == 2){
+	    		
+	    		showOffIndex = -1;
+	    	}else{
+	    		
+	    		showOffIndex = hoverPanel.getIndex()+4;
+	    	}
+	    	
+	    }
 	   // System.out.println(food + " " + gold + " display");
-	    menus.drawMenus(draw, frameX, frameY,food,gold,
-	    		(int)this.getScreenWidth(),(int)this.getScreenHeight());
+	    
+	  //  menus.drawMenus(draw, frameX, frameY,food,gold,
+	    ///		(int)this.getScreenWidth(),(int)this.getScreenHeight(),hoverPanel != null,
+	    	//	showOffIndex);
+	    drawHoverPanel(draw);
+	    //mapDiagram.DrawMapDiagram(draw, this.getScreenWidth(),this.getScreenHeight());
+	    
+	    menu.DrawMenu(draw, (int)this.getScreenWidth(), (int)this.getScreenHeight(),
+	    		new UnitIconSelection(buildings.isUnitCreatorSelected(),
+	    				buildings.getUnitQueueSize()),units.workSelected(),
+	    		units,buildings,map.getWidth(),map.getHeight(),map.getViewedMap(),
+	    		FRAME_X_SIZE,FRAME_Y_SIZE,frameX,frameY);
+	    
+	    draw.glDisable(draw.GL_LIGHTING);
+	    menuModels.drawUnitIcons(-15.1f,-5.0f,-18.0f, draw, playerNumber, 
+	    		buildings.getSelectedBuilding(),food, gold);
+	    menuModels.drawBuildingIcons(-15.25f,-4.5f,-18.9f, draw, frameX,
+	    		frameY, food, gold, false, -1);
+	    
 	    draw.glEnable(draw.GL_LIGHTING);
-
 	    drawable.swapBuffers();
 	
 	}
 	
+	private void drawHoverPanel(GL2 draw) {
+		// TODO Auto-generated method stub
+		if(hoverPanel != null){
+			
+			//menus.drawHoverPanel(draw, hoverPanel);
+		}
+	}
+
 	public static float[] getNormal(Face next, Model model, int currentFrame,int state){
 		
 		float[] normal = new float[]{0.0f,0.0f,0.0f};
@@ -641,17 +664,17 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
       
 	}
 
-	@Override
-	public void CreateBuildingIconButtons() {
-		// TODO Auto-generated method stub
-		menus.CreateButtonIconButtons();
-	}
+//	@Override
+//	public void CreateBuildingIconButtons() {
+//		// TODO Auto-generated method stub
+//		//menus.CreateButtonIconButtons();
+//	}
 
-	@Override
-	public void CreateUnitIcons() {
-		// TODO Auto-generated method stub
-		unitModels.CreateUnitIconsButton(buildings.getSelectedBuilding(), -15.45f,-4.5f);
-	}
+//	@Override
+//	public void CreateUnitIcons() {
+//		// TODO Auto-generated method stub
+//		unitModels.CreateUnitIconsButton(buildings.getSelectedBuilding(), -16.0f,-5.0f);
+//	}
 
 	@Override
 	public int getFrameSizeY() {
@@ -665,10 +688,52 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 		return FRAME_X_SIZE;
 	}
 
+//	@Override
+//	public void CreateHoverPanel(String type,String name, int index,double cornerX, double cornerY) {
+//		// TODO Auto-generated method stub
+//		//System.out.println(type + " " + index + " Display");
+//		HoverPanelGraphic panel = new HoverPanelGraphic(index);
+//		panel.SetColour(1.0f, 1.0f, 1.0f);
+//		
+//		if(type == HoverPanelGraphic.UnitIconPanel){
+//			float ux = ((index % 4) * 0.75f) - 12.7f; 
+//			float uy = ((index / 4) * -1.0f) - 3.25f;
+//			//float[] pos = unitModels.getXY(index,-13.45f,-4.5f);
+//			panel.SetPos(ux,uy, 1.0f, 1.0f);
+//		}else{
+//			panel.SetPos((float)cornerX, (float)cornerY, 1.0f, 1.0f);
+//		}
+//		
+//		
+//		hoverPanel = panel;
+//	}
+
 	@Override
-	public void CreateHoverPanel(String type, int index,double cornerX, double cornerY) {
+	public void RemoveHoverPanel() {
 		// TODO Auto-generated method stub
-		System.out.println(type + " " + index + " Display");
+		hoverPanel = null;
+	}
+
+	@Override
+	public void CreateHoverPanel(String type, String name,int index,double cornerX, double cornerY) {
+		// TODO Auto-generated method stub
+		HoverPanelGraphic panel = new HoverPanelGraphic(index);
+		panel.SetColour(1.0f, 1.0f, 1.0f);
+		panel.SetMousePos(cornerX, cornerY);
+		panel.SetName(name);
+		
+		if(type == HoverPanelGraphic.UnitIconPanel){
+			float ux = UnitModelList.getUnitIconX(-15.62f, index);// -16.0f,
+			//float uy = ((index / 4) * -1.0f) - 3.25f;
+			//float[] pos = unitModels.getXY(index,-13.45f,-4.5f);
+			panel.SetPos(ux,-6.5f, 1.0f, 1.0f);
+		}else if(type == HoverPanelGraphic.BuildingIconPanel){
+			
+			float[] pos = buildingModels.getXYofBuildingIcon(name);
+			panel.SetPos(pos[0], pos[1], 1.0f, 1.0f);
+		}
+		
+		hoverPanel = panel;
 	}
 
 	

@@ -1,27 +1,21 @@
 package GameLobbyGUI;
 
-import java.awt.Dimension;
-import javax.swing.JFrame;
 import java.awt.Graphics;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.TextField;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.awt.event.ContainerListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
-import javax.media.opengl.GLCapabilities;
-import javax.media.opengl.GLProfile;
-import javax.media.opengl.awt.GLJPanel;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import com.jogamp.opengl.GLCapabilities;
+import com.jogamp.opengl.GLProfile;
+import com.jogamp.opengl.awt.GLJPanel;
 import com.jogamp.opengl.util.FPSAnimator;
 
 import GameClient.ClientMessages;

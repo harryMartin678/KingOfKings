@@ -3,8 +3,6 @@ package GameGraphics;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.media.opengl.GL2;
-import javax.media.opengl.glu.GLU;
 
 //holds a model and all of it's animation frames 
 public class Model {
@@ -201,6 +199,36 @@ public class Model {
 			return deathFrames.get(currentFrame).getColour(shapeNo,currentIndex);
 		}
 	}
+
+//	public boolean anyAbove(float z,int currentFrameNo,int state) {
+//		// TODO Auto-generated method stub
+//		Frame currentFrame;
+//		
+//		if(state == 0){
+//			
+//			currentFrame = frames.get(currentFrameNo);
+//			
+//		}else if(state == 1){
+//			
+//			currentFrame = fireFrames.get(currentFrameNo);
+//			
+//		}else{
+//			
+//			currentFrame = deathFrames.get(currentFrameNo);
+//		}
+//		
+//		for(int s = 0; s < currentFrame.getNoOfShapes(); s++){
+//			for(int v = 0; v < currentFrame.getShapeVertexSize(s); v++){
+//				
+//				if(currentFrame.getVertex(s, v).getZ() > z){
+//					
+//					return false;
+//				}
+//			}
+//		}
+//		
+//		return true;
+//	}
 
 	
 	

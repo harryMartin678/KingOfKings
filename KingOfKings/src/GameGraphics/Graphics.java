@@ -18,7 +18,7 @@ public class Graphics{
 	public Graphics(){
 
 		window = new JFrame();
-		window.setSize(500,500);
+		//window.setSizet(500,500);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		window.setTitle("King of Kings");

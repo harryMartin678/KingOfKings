@@ -1,5 +1,7 @@
 package GameGraphics.GameScreenComposition;
 
+import java.util.ArrayList;
+
 import Map.Map;
 import Map.MapList;
 
@@ -133,6 +135,12 @@ public class MapComp implements IComMapMouseKeyboard, IComMapDisplay, IComFrameP
 	public int getLastMapFrameY() {
 		// TODO Auto-generated method stub
 		return lastMapFrames[viewedMap][2];
+	}
+
+	@Override
+	public ArrayList<int[]> GetTransitions() {
+		// TODO Auto-generated method stub
+		return maps.GetTransitions();
 	}
 
 }

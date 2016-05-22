@@ -3,7 +3,7 @@ package GameGraphics.GameScreenComposition;
 import Buildings.Names;
 import GameGraphics.Unit;
 
-public interface IComUnitListDisplay extends IComUnitList {
+public interface IComUnitListDisplay extends IComUnitList  {
 
 	public int getNumberOfWayPoints();
 	public int[] getWayPoint(int index);
@@ -20,4 +20,5 @@ public interface IComUnitListDisplay extends IComUnitList {
 	public boolean workSelected();
 	public int getSelectedUnitSize();
 	public Unit getUnitByUnitNo(int unitNo);
+	public int getUnitPlayer(int u);
 }

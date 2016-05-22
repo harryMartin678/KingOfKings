@@ -94,6 +94,7 @@ public class ClientMessages implements IGotToTurn{
 		}
 	}
 	
+	//To implement: only one thread should be able to remove or add
 	public String getFrameMessage(){
 		
 		client.start();

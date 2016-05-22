@@ -82,6 +82,18 @@ public class Map {
 		return transitionPoints.get(index);
 	}
 	
+	public int[] getAllTransitionPoints(){
+		
+		int[] maps = new int[transitionPoints.size()];
+		
+		for(int t = 0; t < transitionPoints.size(); t++){
+			
+			maps[t] = transitionPoints.get(t)[2];
+		}
+		
+		return maps;
+	}
+	
 	
 	public void setTile(int x, int y, int tile){
 		

@@ -13,4 +13,8 @@ public interface IComBuildingListDisplay extends IComBuildingList {
 	public Building getSelectedBuilding();
 	public void canBuildThere(CollisionMap collMap);
 	public int getBuildingTarget(int b);
+	public Building getGhostBuilding();
+	public boolean isUnitCreatorSelected();
+	public int getUnitQueueSize();
+	public int getBuildingPlayer(int b);
 }

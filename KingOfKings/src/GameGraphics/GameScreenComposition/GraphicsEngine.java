@@ -8,15 +8,14 @@ import java.awt.event.MouseMotionListener;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.GLException;
-import javax.media.opengl.glu.GLU;
-
+import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GLException;
+import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.gl2.GLUT;
 
-import GameClient.ClientMessages;
 import GameGraphics.BuildingList;
 import GameGraphics.UnitList;
+import GameGraphics.Menu.Menu;
 
 public class GraphicsEngine implements IComGameEngineFrameProcess {
 	
@@ -28,6 +27,7 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 	private ClientWrapper cmsg;
 	private int myPlayerNumber;
 	private ProcessFrameThread processFrame;
+	private Menu menu;
 	
 	private boolean start;
 
@@ -40,8 +40,9 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 		final ArrayList<String> load = Load();
 		map = new MapComp(load.get(1));
 		
-		display = new Display();
-		mouseKeyboard = new MouseKeyboard();
+		menu = new Menu();
+		display = new Display(menu);
+		mouseKeyboard = new MouseKeyboard(menu);
 		units = new UnitList();
 		buildings = new BuildingList();
 		

@@ -92,16 +92,54 @@ public class MapList implements IComMapBATTList {
 	public boolean NoWinner() {
 		// TODO Auto-generated method stub
 		
-		//return true;
-		for(int w = 1; w < maps.size(); w++){
+		return true;
+//		for(int w = 1; w < maps.size(); w++){
+//			
+//			if(maps.get(w).getPlayer() != maps.get(w-1).getPlayer()){
+//				
+//				return true;
+//			}
+//		}
+//		
+//		return false;
+	}
+
+	public ArrayList<int[]> GetTransitions() {
+		// TODO Auto-generated method stub
+		ArrayList<int[]> transitions = new ArrayList<int[]>();
+		
+		for(int t = 0; t < maps.size(); t++){
 			
-			if(maps.get(w).getPlayer() != maps.get(w-1).getPlayer()){
+			int[] trans = maps.get(t).getAllTransitionPoints();
+			for(int m = 0; m < trans.length; m++){
 				
-				return true;
+				transitions.add(new int[]{t,trans[m]-1});
 			}
+			
 		}
 		
-		return false;
+		//System.out.println(transitions.size() + " MapList");
+		
+		for(int c = 0; c < transitions.size(); c++){
+			for(int t = 0; t < transitions.size(); t++){
+				
+				if(t == c){
+					
+					continue;
+				}
+				//System.out.println(transitions.get(c)[0] + " " + transitions.get(t)[1] + " MapList");
+				if(transitions.get(c)[0] == transitions.get(t)[1]){
+					
+					transitions.remove(t);
+					break;
+				}
+			}
+			
+		}	
+		
+		//System.out.println(transitions.size() + " MapList");
+		
+		return transitions;
 	}
 	
 	

@@ -7,8 +7,10 @@ import Buildings.Names;
 import GameGraphics.GameScreenComposition.IComUnitListDisplay;
 import GameGraphics.GameScreenComposition.IComUnitListFrameProcess;
 import GameGraphics.GameScreenComposition.IComUnitListMouseKeyboard;
+import GameGraphics.Menu.IComMenuUnitList;
 
-public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,IComUnitListFrameProcess {
+public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,
+IComUnitListFrameProcess {
 	
 	private ArrayList<Unit> units;
 	private boolean used;
@@ -485,6 +487,12 @@ public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,I
 		}
 		
 		return unitsToAttack.get(selected).unitNo;
+	}
+
+	@Override
+	public int getUnitPlayer(int unitNo) {
+		// TODO Auto-generated method stub
+		return units.get(unitNo).getPlayer();
 	}
 
 }

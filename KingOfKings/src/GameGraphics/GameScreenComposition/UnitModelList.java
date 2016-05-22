@@ -3,12 +3,9 @@ package GameGraphics.GameScreenComposition;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
-import java.util.Dictionary;
 import java.util.Hashtable;
 
-import javax.media.opengl.GL;
-import javax.media.opengl.GL2;
-import javax.media.opengl.glu.GLU;
+import com.jogamp.opengl.GL2;
 
 import Buildings.Names;
 import Buildings.UnitCreator;
@@ -21,7 +18,6 @@ import GameGraphics.Model;
 import GameGraphics.Unit;
 import GameGraphics.Vertex;
 import GameGraphics.VertexTex;
-import Map.Map;
 
 public class UnitModelList {
 
@@ -50,21 +46,21 @@ public class UnitModelList {
 	private TextureRepo textures;
 	
 	private ArrayList<ArrowAnimation> arrowAnim; 
-	private ButtonList buttons;
-	private IDrawButton drawButton;
+	//private ButtonList buttons;
+	//private IDrawButton drawButton;
 	
 	
-	public UnitModelList(float HEIGHT_CONST, float WIDTH_CONST,float scaleFactor,TextureRepo textures,
-			ButtonList buttons)
+	public UnitModelList(float HEIGHT_CONST, float WIDTH_CONST,float scaleFactor,TextureRepo textures)
+			//ButtonList buttons)
 	throws IOException{
 		
 		this.HEIGHT_CONST = HEIGHT_CONST;
 		this.WIDTH_CONST = WIDTH_CONST;
 		this.scaleFactor = scaleFactor;
 		this.textures = textures;
-		this.buttons = buttons;
+		//this.buttons = buttons;
 		
-		buttons.AddButtonGroup("UnitIcons");
+		//buttons.AddButtonGroup("UnitIcons");
 		
 		models = new Hashtable<String,Model>();
 		
@@ -110,10 +106,10 @@ public class UnitModelList {
 			//	,flagship,lightChariot,heavyChariot,archer,heavyarcher,batteringRam,heavyBatteringRam};
 	}
 	
-	public void SetUpUnitModels(IDrawButton drawButton){
-		
-		this.drawButton = drawButton;
-	}
+//	public void SetUpUnitModels(IDrawButton drawButton){
+//		
+//		this.drawButton = drawButton;
+//	}
 	
 	public void addArrow(float startX,float startY,float targetX, float targetY,int unitNo){
 		
@@ -368,26 +364,31 @@ public class UnitModelList {
 		drawModel(flag,draw,flagUn,WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
 	}
 	
-	public void CreateUnitIconsButton(Building SelectedBuilding,float x, float y){
+//	public void CreateUnitIconsButton(Building SelectedBuilding,float x, float y){
+//		
+//		ButtonGroup group = buttons.GetGroup("UnitIcons");
+//		group.Clear();
+//		if(Building.GetBuildingClass(SelectedBuilding.getName()) instanceof UnitCreator){
+//			UnitCreator type = (UnitCreator)Building.GetBuildingClass(SelectedBuilding.getName());
+//			String unitsPossible = type.unitcreated();
+//			
+//			String[] unitTypes = unitsPossible.split(";");
+//			
+//			for(int u = 0; u < unitTypes.length; u++){
+//				
+//				//1.75f 2.5f
+//				float ux = getUnitIconX(x,u)-0.25f;//((u % 4) * 0.75f) + x + 1.5f; 
+//				//float uy = ((u / 4) * -1.0f) + y + 2.5f;
+//				
+//				group.AddButton(ux, y-0.075f, 0.25f, 0.25f, "", unitTypes[u]);
+//			}
+//		}
+//		
+//	}
+	
+	public static float getUnitIconX(float x,int unitNo){
 		
-		ButtonGroup group = buttons.GetGroup("UnitIcons");
-		group.Clear();
-		if(Building.GetBuildingClass(SelectedBuilding.getName()) instanceof UnitCreator){
-			UnitCreator type = (UnitCreator)Building.GetBuildingClass(SelectedBuilding.getName());
-			String unitsPossible = type.unitcreated();
-			
-			String[] unitTypes = unitsPossible.split(";");
-			
-			for(int u = 0; u < unitTypes.length; u++){
-				
-				//1.75f 2.5f
-				float ux = ((u % 4) * 0.75f) + x + 1.5f; 
-				float uy = ((u / 4) * -1.0f) + y + 2.5f;
-				
-				group.AddButton(ux, uy, 0.25f, 0.25f, "", unitTypes[u]);
-			}
-		}
-		
+		return (unitNo * 1.25f) + x + 2.75f;
 	}
 	
 	public void drawBuildingUnitIcons(float x, float y,float z
@@ -398,14 +399,15 @@ public class UnitModelList {
 		
 		String[] unitTypes = unitsPossible.split(";");
 		
-		ButtonGroup group = buttons.GetGroup("UnitIcons");
+		//ButtonGroup group = buttons.GetGroup("UnitIcons");
 		
 		for(int u = 0; u < unitTypes.length; u++){
 			
-			float ux = ((u % 4) * 0.75f) + x + 1.75f; 
-			float uy = ((u / 4) * -1.0f) + y + 2.5f;
+//			float ux = ((u % 4) * 0.75f) + x + 1.75f; 
+//			float uy = ((u / 4) * -1.0f) + y + 2.5f;
+			float ux = getUnitIconX(x,u);
 			
-			drawButton.DrawButton(draw, group.GetButton(unitTypes[u]), z);
+			//drawButton.DrawButton(draw, group.GetButton(unitTypes[u]), z);
 			
 			Model model = models.get(unitTypes[u]);
 			if(model == null){
@@ -415,7 +417,7 @@ public class UnitModelList {
 			
 			Units.Unit unitDes = Units.Unit.GetUnit(model.getName());
 			
-			Unit unit = new Unit(ux,uy,model.getName(),playerNumber,0);
+			Unit unit = new Unit(ux,y,model.getName(),playerNumber,0);
 			
 			boolean cantAfford = false;
 			if(unitDes.goldNeeded() > gold && unitDes.foodNeeded() > food){
@@ -502,6 +504,13 @@ public class UnitModelList {
 				queueNo++;
 			}
 		}
+		
+	}
+	
+	public float[] getXY(int unitNo,float x, float y){
+		
+		return new float[]{(float) x + ((unitNo%5)*0.5f),(float) y + (-(unitNo/4)*0.5f)};
+
 	}
 	
 }

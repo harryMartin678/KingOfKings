@@ -4,14 +4,13 @@ import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.util.HashMap;
 
-import javax.media.opengl.GL2;
+import com.jogamp.opengl.GL2;
 
 import Buildings.Names;
 import GameGraphics.Building;
 import GameGraphics.BuildingModel;
 import GameGraphics.Colour;
 import GameGraphics.Face;
-import GameGraphics.Model;
 import GameGraphics.Unit;
 import GameGraphics.Vertex;
 import GameGraphics.VertexTex;
@@ -42,19 +41,20 @@ public class BuildingModelList {
 	private float WIDTH_CONST;
 	private float scaleFactor;
 	private TextureRepo textures;
+	private boolean isHoverPanel;
 	
 	private HashMap<String,Building> buildingIcons;
-	private ButtonList buttons;
+	//private ButtonList buttons;
 	private IDrawButton drawButton;
 	
 	public BuildingModelList(float HEIGHT_CONST, float WIDTH_CONST,float scaleFactor,
-			TextureRepo textures,ButtonList buttons) throws IOException{
+			TextureRepo textures) throws IOException{
 		
 		this.HEIGHT_CONST = HEIGHT_CONST;
 		this.WIDTH_CONST = WIDTH_CONST;
 		this.scaleFactor = scaleFactor;
 		this.textures = textures;
-		this.buttons = buttons;
+		//this.buttons = buttons;
 		
 		site = new BuildingModel(Names.SITE,"Models",1);
 		site.setSize(0.075f,0.025f, 0.075f);
@@ -116,25 +116,25 @@ public class BuildingModelList {
 		// TODO Auto-generated method stub
 		buildingIcons = new HashMap<String, Building>();
 		//-15.25f,-4.5f,-18.0f
-		float x = -15.65f;
-		float y = -0.40f;
+		float x = -12.9f;
+		float y = -5.25f;
 		
-		float xConst = 1.2f;
-		float yConst = 1.4f;
+		float xConst = 1.25f;
+		float yConst = 1.25f;
 		
 		Building royalPala = new Building(x + 2*xConst, y + 1.75f, Names.ROYALPALACE,-1,0);
 										//2.0 , 1.0
-		Building archTower = new Building(x+xConst, y - yConst, Names.ARCHERYTOWER,-1,0);
-		Building ballisTower = new Building(x + 2*xConst, y - yConst, Names.BALLISTICTOWER,-1,0);
-		Building barr = new Building(x + 3*xConst, y - yConst, Names.BARRACK,-1,0);
-		Building cast = new Building(x + xConst, y - 2*yConst, Names.CASTLE,-1,0);
-		Building doc = new Building(x + 2*xConst, y - 2*yConst, Names.DOCK,-1,0);
-		Building far = new Building(x + 3*xConst, y - 2*yConst, Names.FARM,-1,0);
-		Building fortb = new Building(x +xConst, y - 3*yConst, Names.FORT,-1,0);
-		Building stab = new Building(x + 2*xConst, y - 3*yConst, Names.STABLE,-1,0);
-		Building stock = new Building(x + 3*xConst, y - 3*yConst, Names.STOCKPILE,-1,0);
-		Building wal = new Building(x + 1*xConst, y - 4*yConst, Names.WALL,-1,0);
-		Building min = new Building(x + 3*xConst, y - 4*yConst, Names.MINE,-1,0);
+		Building archTower = new Building(x, y, Names.ARCHERYTOWER,-1,0);
+		Building ballisTower = new Building(x + xConst, y, Names.BALLISTICTOWER,-1,0);
+		Building barr = new Building(x + 2*xConst, y, Names.BARRACK,-1,0);
+		Building cast = new Building(x + 3*xConst, y, Names.CASTLE,-1,0);
+		Building doc = new Building(x + 4*xConst, y, Names.DOCK,-1,0);
+		Building far = new Building(x + 5*xConst, y, Names.FARM,-1,0);
+		Building fortb = new Building(x  + 6*xConst, y, Names.FORT,-1,0);
+		Building stab = new Building(x + 7*xConst, y, Names.STABLE,-1,0);
+		Building stock = new Building(x + 8*xConst, y, Names.STOCKPILE,-1,0);
+		Building wal = new Building(x + 2*xConst, y - yConst, Names.WALL,-1,0);
+		Building min = new Building(x + 6*xConst, y - yConst, Names.MINE,-1,0);
 		
 		buildingIcons.put(Names.ARCHERYTOWER, archTower);
 		buildingIcons.put(Names.BALLISTICTOWER, ballisTower);
@@ -366,39 +366,45 @@ public class BuildingModelList {
 	}
 	
 	public void drawBuildingIcon(GL2 draw,float x, float y,float z,int frameX,int frameY,
-			int food, int gold){
+			int food, int gold,boolean isHoverPanel,int dontShowIndex){
 		
 		//System.out.println(food + " " + gold + " BuildingModelList drawBuildingIcon");
-		ButtonGroup group = buttons.GetGroup("BuildingIcons");
+		//ButtonGroup group = buttons.GetGroup("BuildingIcons");
 		//Building archTower = new Building(x+2.0f, y - 1.0f, Names.ARCHERYTOWER,-1,0);
 		Building  archTower = buildingIcons.get(Names.ARCHERYTOWER);
 		
 		SetEnoughRes(archTower, gold, food);
 		
-		drawBuildingModel(archeryTower, draw,archTower,
-				WIDTH_CONST,HEIGHT_CONST,z,false,0.2f,frameX,frameY);
+		if(!isHoverPanel || dontShowIndex != 0){
+			drawBuildingModel(archeryTower, draw,archTower,
+					WIDTH_CONST,HEIGHT_CONST,z,false,0.2f,frameX,frameY);
+		}
 		
-		drawButton.DrawButton(draw,group.GetButton(Names.ARCHERYTOWER),z);		
+		//drawButton.DrawButton(draw,group.GetButton(Names.ARCHERYTOWER),z);		
 		//Building ballisTower = new Building(x + 3.0f, y - 1.0f, Names.BALLISTICTOWER,-1,0);
 		
 		Building ballisTower = buildingIcons.get(Names.BALLISTICTOWER);
 		
 		SetEnoughRes(ballisTower, gold, food);
 		
-		drawBuildingModel(ballisticTower, draw,ballisTower,
-				WIDTH_CONST,HEIGHT_CONST,z,false,0.2f,frameX,frameY);
+		if(!isHoverPanel || dontShowIndex != 1){
+			drawBuildingModel(ballisticTower, draw,ballisTower,
+					WIDTH_CONST,HEIGHT_CONST,z,false,0.2f,frameX,frameY);
+		}
 		
-		drawButton.DrawButton(draw,group.GetButton(Names.BALLISTICTOWER),z);
+	//	drawButton.DrawButton(draw,group.GetButton(Names.BALLISTICTOWER),z);
 		
 		//Building barr = new Building(x + 4.0f, y - 1.0f, Names.BARRACK,-1,0);
 		Building barr = buildingIcons.get(Names.BARRACK);
 		
 		SetEnoughRes(barr, gold, food);
 		
-		drawBuildingModel(barrack, draw,barr,
-				WIDTH_CONST,HEIGHT_CONST,z,false,0.2f,frameX,frameY);
+		if(!isHoverPanel || dontShowIndex != 2){
+			drawBuildingModel(barrack, draw,barr,
+					WIDTH_CONST,HEIGHT_CONST,z,false,0.2f,frameX,frameY);
+		}
 		
-		drawButton.DrawButton(draw,group.GetButton(Names.BARRACK),z);
+		//drawButton.DrawButton(draw,group.GetButton(Names.BARRACK),z);
 		
 		//Building cast = new Building(x + 2.0f, y + 0.5f, Names.CASTLE,-1,0);
 		Building cast = buildingIcons.get(Names.CASTLE);
@@ -407,40 +413,48 @@ public class BuildingModelList {
 		
 		//System.out.println(castBuild.FoodNeeded() + " " + castBuild.GoldNeeded() + " BuildingModelList drawBuildingIcon");
 		
-		drawBuildingModel(castle, draw,cast,
-				WIDTH_CONST,HEIGHT_CONST,z,false,0.2f,frameX,frameY);
+		if(!isHoverPanel || dontShowIndex != 3){
+			drawBuildingModel(castle, draw,cast,
+					WIDTH_CONST,HEIGHT_CONST,z,false,0.2f,frameX,frameY);
+		}
 		
-		drawButton.DrawButton(draw,group.GetButton(Names.CASTLE),z);
+		//drawButton.DrawButton(draw,group.GetButton(Names.CASTLE),z);
 		
 		//Building doc = new Building(x + 3.0f, y + 0.30f, Names.DOCK,-1,0);
 		Building doc = buildingIcons.get(Names.DOCK);
 		
 		SetEnoughRes(doc, gold, food);
 		
-		drawBuildingModel(dock, draw,doc,
-				WIDTH_CONST,HEIGHT_CONST,z,false,0.2f,frameX,frameY);
+		if(!isHoverPanel || dontShowIndex != 4){
+			drawBuildingModel(dock, draw,doc,
+					WIDTH_CONST,HEIGHT_CONST,z,false,0.2f,frameX,frameY);
+		}
 		
-		drawButton.DrawButton(draw,group.GetButton(Names.DOCK),z);
+		//drawButton.DrawButton(draw,group.GetButton(Names.DOCK),z);
 		
 		//Building far = new Building(x + 4.0f, y + 0.5f, Names.FARM,-1,0);
 		Building far = buildingIcons.get(Names.FARM);
 		
 		SetEnoughRes(far, gold, food);
 		
-		drawBuildingModel(farm, draw,far,
-				WIDTH_CONST,HEIGHT_CONST,z,false,0.2f,frameX,frameY);
+		if(!isHoverPanel || dontShowIndex != 5){
+			drawBuildingModel(farm, draw,far,
+					WIDTH_CONST,HEIGHT_CONST,z,false,0.2f,frameX,frameY);
+		}
 		
-		drawButton.DrawButton(draw,group.GetButton(Names.FARM),z);
+		//drawButton.DrawButton(draw,group.GetButton(Names.FARM),z);
 		
 		//Building fortb = new Building(x + 1.5f, y + 1.5f, Names.FORT,-1,0);
 		Building fortb = buildingIcons.get(Names.FORT);
 		
 		SetEnoughRes(fortb, gold, food);
 		
-		drawBuildingModel(fort, draw,fortb,
-				WIDTH_CONST,HEIGHT_CONST,z,false,0.133f,frameX,frameY);
+		if(!isHoverPanel || dontShowIndex != 6){
+			drawBuildingModel(fort, draw,fortb,
+					WIDTH_CONST,HEIGHT_CONST,z,false,0.133f,frameX,frameY);
+		}
 		
-		drawButton.DrawButton(draw,group.GetButton(Names.FORT),z);
+		//drawButton.DrawButton(draw,group.GetButton(Names.FORT),z);
 		
 		//Building royalPala = new Building(x + 3.0f, y + 1.75f, Names.ROYALPALACE,-1,0);
 		Building royalPala = buildingIcons.get(Names.ROYALPALACE);
@@ -455,40 +469,48 @@ public class BuildingModelList {
 		
 		SetEnoughRes(stab, gold, food);
 		
-		drawBuildingModel(stable, draw,stab,
-				WIDTH_CONST,HEIGHT_CONST,z,false,0.2f,frameX,frameY);
+		if(!isHoverPanel || dontShowIndex != 7){
+			drawBuildingModel(stable, draw,stab,
+					WIDTH_CONST,HEIGHT_CONST,z,false,0.2f,frameX,frameY);
+		}
 		
-		drawButton.DrawButton(draw,group.GetButton(Names.STABLE),z);
+		//drawButton.DrawButton(draw,group.GetButton(Names.STABLE),z);
 		
 		//Building stock = new Building(x + 2.0f, y + 3.0f, Names.STOCKPILE,-1,0);
 		Building stock = buildingIcons.get(Names.STOCKPILE);
 		
 		SetEnoughRes(stock, gold, food);
 		
-		drawBuildingModel(stockpile, draw,stock,
-				WIDTH_CONST,HEIGHT_CONST,z,false,0.2f,frameX,frameY);
+		if(!isHoverPanel || (dontShowIndex != 8 && dontShowIndex != 7)){
+			drawBuildingModel(stockpile, draw,stock,
+					WIDTH_CONST,HEIGHT_CONST,z,false,0.2f,frameX,frameY);
+		}
 		
-		drawButton.DrawButton(draw,group.GetButton(Names.STOCKPILE),z);
+		//drawButton.DrawButton(draw,group.GetButton(Names.STOCKPILE),z);
 		
 		//Building wal = new Building(x + 3.0f, y + 3.0f, Names.WALL,-1,0);
 		Building wal = buildingIcons.get(Names.WALL);
 		
 		SetEnoughRes(wal, gold, food);
 		
-		drawBuildingModel(wall, draw,wal,
-				WIDTH_CONST,HEIGHT_CONST,z,false,0.3f,frameX,frameY);
+		if(!isHoverPanel || dontShowIndex != 9){
+			drawBuildingModel(wall, draw,wal,
+					WIDTH_CONST,HEIGHT_CONST,z,false,0.3f,frameX,frameY);
+		}
 		
-		drawButton.DrawButton(draw,group.GetButton(Names.WALL),z);
+		//drawButton.DrawButton(draw,group.GetButton(Names.WALL),z);
 		
 		//Building min = new Building(x + 4.0f, y + 3.0f, Names.MINE,-1,0);
 		Building min = buildingIcons.get(Names.MINE);
 		
 		SetEnoughRes(min, gold, food);
 		
-		drawBuildingModel(mine, draw,min,
-				WIDTH_CONST,HEIGHT_CONST,z,false,0.3f,frameX,frameY);
+		if(!isHoverPanel || dontShowIndex != 10){
+			drawBuildingModel(mine, draw,min,
+					WIDTH_CONST,HEIGHT_CONST,z,false,0.3f,frameX,frameY);
+		}
 		
-		drawButton.DrawButton(draw,group.GetButton(Names.MINE),z);
+		//drawButton.DrawButton(draw,group.GetButton(Names.MINE),z);
 	}
 	
 	public static boolean SetEnoughRes(Building building,int gold,int food){
@@ -502,19 +524,28 @@ public class BuildingModelList {
 		return false;
 	}
 
-	public void CreateButtonIconButton(Building selectedBuilding) {
-		// TODO Auto-generated method stub
-		ButtonGroup group = buttons.GetGroup("BuildingIcons");
-		Object[] icons =  buildingIcons.values().toArray();
-		Object[] names =  buildingIcons.keySet().toArray();
+//	public void CreateButtonIconButton(Building selectedBuilding) {
+//		// TODO Auto-generated method stub
+//		//ButtonGroup group = buttons.GetGroup("BuildingIcons");
+//		Object[] icons =  buildingIcons.values().toArray();
+//		Object[] names =  buildingIcons.keySet().toArray();
+//		
+//		for(int b = 0; b < icons.length; b++){
+//			
+//			group.AddButton(((Building)icons[b]).getX()-0.1f, ((Building)icons[b]).getY()-0.1f, 0.4f,0.4f, "",
+//					names[b].toString());
+//		}
+//	}
+	
+	public float[] getXYofBuildingIcon(String name){
 		
-		for(int b = 0; b < icons.length; b++){
-			
-			group.AddButton(((Building)icons[b]).getX()-0.1f, ((Building)icons[b]).getY()-0.1f, 0.4f,0.4f, "",
-					names[b].toString());
-		}
+		return new float[]{buildingIcons.get(name).getX()+1.4f,buildingIcons.get(name).getY()-1.4f};
 	}
 
+	public void setHoverPanel(boolean isHoverPanel){
+		
+		this.isHoverPanel = isHoverPanel;
+	}
 
 
 }

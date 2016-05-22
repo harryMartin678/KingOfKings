@@ -38,7 +38,6 @@ public class Communication {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				
 				mainLoop:
 				while(true){
 					

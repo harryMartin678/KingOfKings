@@ -10,6 +10,7 @@ import GameGraphics.GameScreenComposition.ClientWrapper;
 import GameGraphics.GameScreenComposition.IComBuildingListDisplay;
 import GameGraphics.GameScreenComposition.IComBuildingListFrameProcess;
 import GameGraphics.GameScreenComposition.IComBuildingListMouseKeyboard;
+import GameGraphics.Menu.IComMenuBuildingList;
 import Map.CollisionMap;
 
 public class BuildingList implements IComBuildingListDisplay, IComBuildingListMouseKeyboard, 
@@ -18,15 +19,18 @@ IComBuildingListFrameProcess {
 	private ArrayList<Building> buildings;
 	//private boolean used;
 	private Building ghostBuilding;
-	private Building SelectedBuilding;
-	private Building AttackBuilding;
-	private Building BuildBuilding;
+	private int SelectedBuilding;
+	private int AttackBuilding;
+	private int BuildBuilding;
 	private ClientWrapper cmsgs;
 	private Semaphore lock;
 	
 	public BuildingList(){
 		
 		buildings = new ArrayList<Building>();
+		SelectedBuilding = -1;
+		AttackBuilding = -1;
+		BuildBuilding = -1;
 		//used = false;
 		lock = new Semaphore(3);
 	}
@@ -83,9 +87,9 @@ IComBuildingListFrameProcess {
 		Building toAdd = this.getBuildingByBuildingNo(building);
 		toAdd.addUnitQueue(unit);
 		
-		if(SelectedBuilding != null && SelectedBuilding.getBuildingNo() == building){
+		if(SelectedBuilding != -1 && SelectedBuilding == building){
 			
-			SelectedBuilding.addUnitQueue(unit);
+			buildings.get(SelectedBuilding).addUnitQueue(unit);
 		}
 	}
 	
@@ -96,8 +100,8 @@ IComBuildingListFrameProcess {
 	
 	public synchronized void clearSelectedBuildingQueue(int buildingNo){
 		
-		if(SelectedBuilding != null && SelectedBuilding.getBuildingNo() == buildingNo){
-			SelectedBuilding.clearUnitQueue();
+		if(SelectedBuilding != -1 && SelectedBuilding == buildingNo){
+			buildings.get(SelectedBuilding).clearUnitQueue();
 		}
 	}
 	
@@ -234,19 +238,19 @@ IComBuildingListFrameProcess {
 					
 					if(buildings.get(b).isSite()){
 						
-						BuildBuilding = buildings.get(b);
+						BuildBuilding = b;
 						this.end();
 						return 3;
 						
 					}else{
-						SelectedBuilding = buildings.get(b);
+						SelectedBuilding = b;
 						this.end();
 						return 2;
 					}
 					
 					
 				}else{
-					AttackBuilding = buildings.get(b);
+					AttackBuilding = b;
 					this.end();
 					return 1;
 					
@@ -261,44 +265,53 @@ IComBuildingListFrameProcess {
 	@Override
 	public synchronized boolean isSelectedBuilding(Building building) {
 		// TODO Auto-generated method stub
-		return SelectedBuilding != null && SelectedBuilding.getBuildingNo() == building.getBuildingNo();
+		return SelectedBuilding != -1 && SelectedBuilding == building.getBuildingNo();
 	}
 
 	@Override
 	public synchronized void clearSelectedBuilding() {
 		// TODO Auto-generated method stub
-		SelectedBuilding = null;
+		SelectedBuilding = -1;
 	}
 
 	@Override
 	public synchronized Building getSelectedBuilding() {
 		// TODO Auto-generated method stub
-		return SelectedBuilding;
+		if(SelectedBuilding == -1){
+			
+			return null;
+		}
+		return buildings.get(SelectedBuilding);
 	}
 
 	@Override
 	public synchronized boolean isBuildingSelected() {
 		// TODO Auto-generated method stub
-		return SelectedBuilding != null;
+		return SelectedBuilding != -1;
 	}
 
 	//handle the selection of units to be added to the queue
 	@Override
 	public synchronized void unitIconSelected(int selected,int food,int gold) {
 		// TODO Auto-generated method stub
-		UnitCreator type = (UnitCreator) Building.GetBuildingClass(SelectedBuilding.getName());
+		UnitCreator type = (UnitCreator) Building.GetBuildingClass(buildings.get(SelectedBuilding).getName());
 		String[] listOfUnits = type.unitcreated().split(";");
 		
 		Units.Unit unitDes = Units.Unit.GetUnit(listOfUnits[selected]);
 		
 		if(selected < listOfUnits.length && unitDes.goldNeeded() <= gold && unitDes.foodNeeded() <= food){
 			
-			cmsgs.addMessage("auq " + SelectedBuilding.getBuildingNo() + " " + listOfUnits[selected]
-					 + " " + SelectedBuilding.getPlayer());
+			cmsgs.addMessage("auq " + SelectedBuilding + " " + listOfUnits[selected]
+					 + " " +  buildings.get(SelectedBuilding).getPlayer());
 		}
-		
-		
-		
+
+	}
+	
+	@Override
+	public String getUnitType(int index) {
+		// TODO Auto-generated method stub
+		UnitCreator type = (UnitCreator) Building.GetBuildingClass(buildings.get(SelectedBuilding).getName());
+		return type.unitcreated().split(";")[index];
 	}
 
 	@Override
@@ -319,13 +332,13 @@ IComBuildingListFrameProcess {
 	@Override
 	public synchronized int getGhostBuildingSelected() {
 		// TODO Auto-generated method stub
-		return SelectedBuilding.getBuildingNo();
+		return buildings.get(SelectedBuilding).getBuildingNo();
 	}
 
 	@Override
 	public synchronized int getAttackBuildingNo() {
 		// TODO Auto-generated method stub
-		return AttackBuilding.getBuildingNo();
+		return buildings.get(AttackBuilding).getBuildingNo();
 	}
 
 	@Override
@@ -378,16 +391,16 @@ IComBuildingListFrameProcess {
 			buildings.get(b).clearUnitQueue();
 		}
 		
-		if(SelectedBuilding != null){
-			
-			SelectedBuilding.clearUnitQueue();
-		}
+//		if(SelectedBuilding != -1){
+//			
+//			buildings.get(SelectedBuilding).clearUnitQueue();
+//		}
 	}
 
 	@Override
 	public int getBuildBuildingBuildingNo() {
 		// TODO Auto-generated method stub
-		return BuildBuilding.getBuildingNo();
+		return BuildBuilding;
 	}
 
 	@Override
@@ -405,7 +418,7 @@ IComBuildingListFrameProcess {
 	@Override
 	public boolean selectedBuildingIsTower() {
 		// TODO Auto-generated method stub
-		if(SelectedBuilding == null){
+		if(SelectedBuilding == -1){
 			
 			//System.out.println("Selected building is null BuildingList");
 			return false;
@@ -413,8 +426,8 @@ IComBuildingListFrameProcess {
 		}else{
 			
 			//System.out.println((SelectedBuilding.getName() == Names.ARCHERYTOWER) + " BuildingList");
-			return SelectedBuilding.getName().equals(Names.ARCHERYTOWER)
-					|| SelectedBuilding.getName().equals(Names.BALLISTICTOWER);
+			return buildings.get(SelectedBuilding).getName().equals(Names.ARCHERYTOWER)
+					|| buildings.get(SelectedBuilding).getName().equals(Names.BALLISTICTOWER);
 			
 		}
 	}
@@ -422,8 +435,47 @@ IComBuildingListFrameProcess {
 	@Override
 	public int getSelectedBuildingNo() {
 		// TODO Auto-generated method stub
-		return SelectedBuilding.getBuildingNo();
+		return SelectedBuilding;
 	}
+
+	@Override
+	public Building getGhostBuilding() {
+		// TODO Auto-generated method stub
+		return ghostBuilding;
+	}
+
+	@Override
+	public boolean isUnitCreatorSelected() {
+		// TODO Auto-generated method stub
+		return SelectedBuilding != -1 && 
+				Building.GetBuildingClass(buildings.get(SelectedBuilding).getName()) 
+				instanceof UnitCreator;
+	}
+
+	@Override
+	public int getUnitQueueSize() {
+		// TODO Auto-generated method stub
+		
+		if(SelectedBuilding == -1 || 
+				!(Building.GetBuildingClass(buildings.get(SelectedBuilding).getName())
+						instanceof UnitCreator)){
+			
+			return 0;
+		}
+		
+		UnitCreator type = (UnitCreator)Building.GetBuildingClass(
+				buildings.get(SelectedBuilding).getName());
+		String unitsPossible = type.unitcreated();
+		
+		return unitsPossible.split(";").length;
+	}
+
+	@Override
+	public int getBuildingPlayer(int b) {
+		// TODO Auto-generated method stub
+		return buildings.get(b).getPlayer();
+	}
+
 
 
 

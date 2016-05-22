@@ -24,6 +24,12 @@ public class BuildingModel extends Model{
 		
 		return texturePaths;
 	}
+
+//	public boolean anyAbove(float z) {
+//		// TODO Auto-generated method stub
+//		return super.anyAbove(z, 0,0);
+//	}
+
 	
 
 }

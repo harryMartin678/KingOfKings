@@ -25,4 +25,6 @@ public interface IComBuildingListMouseKeyboard extends IComBuildingList {
 	public int getBuildBuildingBuildingNo();
 	public boolean selectedBuildingIsTower();
 	public int getSelectedBuildingNo();
+	public String getUnitType(int index);
+	public boolean isUnitCreatorSelected();
 }

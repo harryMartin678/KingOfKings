@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import Buildings.Names;
 import GameClient.ClientMessages;
 import GameGraphics.Building;
+import GameGraphics.Menu.IComMouseKeyboardMenu;
+import GameGraphics.Menu.Menu;
 
-public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
+public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,IComMouseKeyboardMenu {
 	
 	private MouseEvent mouse;
 	private boolean drag = false;
@@ -25,6 +27,7 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 	private IComBuildingListMouseKeyboard buildings;
 	private IComDisplayMouseKeyboard display;
 	private IComMapMouseKeyboard map;
+	private MouseKeyboardMapDiagram mapDiagram;
 	private int playerNumber;
 	private ClientWrapper cmsg;
 	private MoveUnit move;
@@ -32,11 +35,12 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 	private int food;
 	private int gold;
 	
-	private ButtonList buttons;
+	//private ButtonList buttons;
+	private Menu menu;
 	
-	public MouseKeyboard(){
+	public MouseKeyboard(Menu menu){
 		
-		
+		this.menu = menu;
 	}
 	
 	public void setUpMouseKeyboard(IComUnitListMouseKeyboard units,
@@ -48,6 +52,7 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 		this.display = display;
 		this.map = map;
 		this.cmsg = cmsg;
+		mapDiagram = new MouseKeyboardMapDiagram(map);
 		
 		this.playerNumber = playerNumber;
 		
@@ -74,17 +79,22 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 		//System.out.println(x + " " + y + " MouseKeyboard");
 		float px = (float)x/(float)width;
 		float py = (float)y/(float)height;
-		if(selectMenu(px,py,food,gold,true)){
-			
-			
-		}
+		
+		
+//		if(selectMenu(px,py,food,gold,true)){
+//			
+//			
+//		}else{
+//			
+//			display.RemoveHoverPanel();
+//		}
 	}
 	
 	
 	public void regulateMouse(int frameX,int frameY,int FRAME_X_SIZE,int FRAME_Y_SIZE,int viewedMap){
 		
-		buttons.GetGroup("BuildingIcons").AreDrawn();
-		buttons.GetGroup("UnitIcons").AreDrawn();
+		//buttons.GetGroup("BuildingIcons").AreDrawn();
+		//buttons.GetGroup("UnitIcons").AreDrawn();
 	    if (mouse != null)
 	    {
 	      
@@ -134,7 +144,7 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 		    			  units.clearSelectedUnits();
 		    		  }
 
-		    		  ClearBuildingIconsButtonGroup();
+		    		  //ClearBuildingIconsButtonGroup();
 		    		  
 		    	  }else if(buildings.isBuildingGhost() && buildings.canBuildGhostBuilding()){
 		    		  
@@ -169,11 +179,12 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 		    			 
 		    			 
 		    		  }else{
-		    			  ClearUnitIconsButtonGroup();
+		    			  menu.ClearUnitIcons();
+		    			 // ClearUnitIconsButtonGroup();
 		    		  }
 		    		  
 		    		  
-		    		  ClearBuildingIconsButtonGroup();
+		    		  //ClearBuildingIconsButtonGroup();
 		    	  }
 		       }
 	    	   mouse = null;
@@ -237,16 +248,29 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 //		System.out.println("MENU");
 		//System.out.println(x + " " + y + " MouseKeyboard");
 		
-		if(inRect(0.011713031,0.5829787,0.12445095,0.9106383,x,y)){
+//		if(inRect(0.018355359765051395,0.802275960170697,
+//				0.35829662261380324,0.9630156472261735,x,y)){
+//			
+//			
+////			if(units.isWorkerSelected()){
+////				
+////				selectBuildingIcons(x, y,food,gold,hover);
+////			
+////			}else if(buildings.isBuildingSelected()){
+////				
+////				selectUnitIcons(x,y,food,gold,hover);
+////			}
+//			return true;
+//		}
+		
+		if(menu.RegulateMenuMouse(x, y, units.isWorkerSelected(),
+				buildings.isUnitCreatorSelected(),this,map.getWidth(),map.getHeight())){
 			
-			if(units.isWorkerSelected()){
-				
-				selectBuildingIcons(x, y,food,gold,hover);
+			return true;
+		}
+		
+		if(!hover && mapDiagram.selectMapsIcons(x,y,display.getScreenWidth(),display.getScreenHeight())){
 			
-			}else if(buildings.isBuildingSelected()){
-				
-				selectUnitIcons(x,y,food,gold,hover);
-			}
 			return true;
 		}
 		
@@ -292,28 +316,33 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 	private void selectUnitIcons(double x, double y,int food, int gold,boolean hover){
 //		0.012445095168374817 0.5843971631205673
 //		0.05197657393850659 0.6425531914893617
-		ButtonGroup group = buttons.GetGroup("UnitIcons");
+		//ButtonGroup group = buttons.GetGroup("UnitIcons");
 		
 		for(int ys = 0; ys < 2; ys++){
 			for(int xs = 0; xs < 3; xs++){
 				
-				if(xs + (ys*3) >= group.Size()){
-					
-					break;
-				}
+//				if(xs + (ys*3) >= group.Size()){
+//					
+//					break;
+//				}
 				
-				if(inRect(0.015418502202643172 + (0.02569750364*xs),
-						0.5843971631205673 + (0.0581560283687944*ys),
-						0.0315712187958884 + (0.02569750364*xs),
-						0.6425531914893617 + (0.0581560283687944*ys),x,y)){
+//				(0.015418502202643172 + (0.02569750364*xs),
+//						0.5843971631205673 + (0.0581560283687944*ys),
+//						0.0315712187958884 + (0.02569750364*xs),
+//						0.6425531914893617 + (0.0581560283687944*ys),x,y)
+				if(inRect(0.03010279001468429 + (0.05066079295*xs),
+						0.8207681365576103,
+						0.04772393538913363 + (0.05066079295*xs),
+						0.8506401137980085,x,y)){
 					if(hover){
 						
 						display.CreateHoverPanel(HoverPanelGraphic.UnitIconPanel,
-								(group.Size()-1)- (xs + (ys*3)),0.015418502202643172 + (0.02569750364*xs),
-								0.6425531914893617 + (0.0581560283687944*ys));
+								buildings.getUnitType(xs + (ys*3)),
+								(xs + (ys*3)),0.03010279001468429 + (0.05066079295*xs), //+ (0.02569750364*xs),
+								0.8506401137980085); //+ (0.0581560283687944*ys));
 						
 					}else{
-						group.SelectedByIndex((group.Size()-1)- (xs + (ys*3)));
+						//group.SelectedByIndex((group.Size()-1)- (xs + (ys*3)));
 						buildings.unitIconSelected(xs + (ys*3),food,gold);
 					}
 					break;
@@ -323,149 +352,150 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 	}
 	
 	private void selectBuildingIcons(double x, double y,int food, int gold,boolean hover){
-		
-		ButtonGroup group = buttons.GetGroup("BuildingIcons");
+
+		//ButtonGroup group = buttons.GetGroup("BuildingIcons");
 		//1 1
-		if(inRect(0.01762114537444934,0.5931721194879089,0.04331864904552129,0.6443812233285917
-				,x,y) && !BuildingModelList.SetEnoughRes(new Building(Names.ARCHERYTOWER,playerNumber), gold, food)){
+		if(inRect(0.03524229074889868,0.8093883357041252,0.06093979441997063,0.8591749644381224
+				,x,y)){ //&& !BuildingModelList.SetEnoughRes(new Building(Names.ARCHERYTOWER,playerNumber), gold, food)){
 			
 			if(hover){
 				
-				display.CreateHoverPanel(HoverPanelGraphic.BuildingIconPanel, 0,
-						0.01762114537444934,0.6443812233285917);
+				display.CreateHoverPanel(HoverPanelGraphic.BuildingIconPanel, Names.ARCHERYTOWER,0
+						,0.03524229074889868,0.8591749644381224);
 				
-			}else{
+			}else if(!BuildingModelList.SetEnoughRes(
+					new Building(Names.ARCHERYTOWER,playerNumber), gold, food)){
 				//System.out.println(1 + " " + 1);
-				group.Selected(Names.ARCHERYTOWER);
+				//group.Selected(Names.ARCHERYTOWER);
 				buildings.setGhostBuilding(new Building(Names.ARCHERYTOWER,playerNumber));
 			}
 		
 		//2 1
-		}else if(inRect(0.05506607929515418,0.5917496443812233,0.08223201174743025,0.6443812233285917,
+		}else if(inRect(0.09177679882525698,0.8093883357041252,0.11747430249632893,0.8591749644381224,
 				x,y)){
 			if(hover){
 				
-				display.CreateHoverPanel(HoverPanelGraphic.BuildingIconPanel, 1,
-						0.05506607929515418,0.6443812233285917);
+				display.CreateHoverPanel(HoverPanelGraphic.BuildingIconPanel, Names.BALLISTICTOWER,1
+						,0.09177679882525698,0.8591749644381224);
 				
 			}else if(!BuildingModelList.SetEnoughRes(
 					new Building(Names.BALLISTICTOWER,playerNumber), gold, food)){
-				group.Selected(Names.BALLISTICTOWER);
+				//group.Selected(Names.BALLISTICTOWER);
 				//System.out.println(2 + " " + 1);
 				buildings.setGhostBuilding(new Building(Names.BALLISTICTOWER,playerNumber));
 			}
 		
 		//3 1
-		}else if(inRect(0.0947136563876652,0.5931721194879089,0.1204111600587371,0.6443812233285917,
+		}else if(inRect(0.14757709251101322,0.8093883357041252,0.17400881057268722,0.8591749644381224,
 				x,y)){
 			
 			if(hover){
 				
-				display.CreateHoverPanel(HoverPanelGraphic.BuildingIconPanel, 2,0.0947136563876652,
-						0.6443812233285917);
+				display.CreateHoverPanel(HoverPanelGraphic.BuildingIconPanel, Names.BARRACK,2
+						,0.14757709251101322,0.8591749644381224);
 				
 			}else if(!BuildingModelList.SetEnoughRes(
 					new Building(Names.BARRACK,playerNumber), gold, food)){
 			
-				group.Selected(Names.BARRACK);
+				//group.Selected(Names.BARRACK);
 				//System.out.println(3 + " " + 1);
-				buildings.setGhostBuilding(new Building(Names.MINE,playerNumber));
+				buildings.setGhostBuilding(new Building(Names.BARRACK,playerNumber));
 			}
 		
 		//1 2
-		}else if(inRect(0.01762114537444934,0.6813655761024182,0.042584434654919234,0.7297297297297297,
+		}else if(inRect(0.2077826725403818,0.8093883357041252,0.2305433186490455,0.8549075391180654,
 				x,y)){
 			
 			if(hover){
 				
-				display.CreateHoverPanel(HoverPanelGraphic.BuildingIconPanel, 3,0.01762114537444934,
-						0.7297297297297297);
+				display.CreateHoverPanel(HoverPanelGraphic.BuildingIconPanel, Names.CASTLE,3
+						,0.2077826725403818,0.8549075391180654);
 				
 			}else if(!BuildingModelList.SetEnoughRes(new Building(Names.CASTLE,playerNumber), gold, food)){
-				group.Selected(Names.CASTLE);
+				//group.Selected(Names.CASTLE);
 				//System.out.println(1 + " " + 2);
 				buildings.setGhostBuilding(new Building(Names.CASTLE,playerNumber));
 			}
 		
 		//2 2
-		}else if(inRect(0.055800293685756244,0.6813655761024182,0.08223201174743025,0.7297297297297297
+		}else if(inRect(0.26064610866372984,0.8093883357041252,0.28707782672540383,0.8591749644381224
 				,x,y)){
 			if(hover){
 				
-				display.CreateHoverPanel(HoverPanelGraphic.BuildingIconPanel, 4,0.055800293685756244,
-						0.7297297297297297);
+				display.CreateHoverPanel(HoverPanelGraphic.BuildingIconPanel, Names.DOCK,4
+						,0.26064610866372984,0.8591749644381224);
 				
 			}else if(!BuildingModelList.SetEnoughRes(new Building(Names.DOCK,playerNumber), gold, food)){
-				group.Selected(Names.DOCK);
+				///group.Selected(Names.DOCK);
 				//System.out.println(2 + " " + 2);
 				buildings.setGhostBuilding(new Building(Names.DOCK,playerNumber));
 			}
 		
 		//3 2
-		}else if(inRect(0.0947136563876652,0.6813655761024182,0.1196769456681351,0.7297297297297297,
+		}else if(inRect(0.31718061674008813,0.8093883357041252,0.3436123348017621,0.8591749644381224,
 				x,y)){
 			if(hover){
 				
-				display.CreateHoverPanel(HoverPanelGraphic.BuildingIconPanel, 5,0.0947136563876652
-						,0.7297297297297297);
+				display.CreateHoverPanel(HoverPanelGraphic.BuildingIconPanel, Names.FARM,5
+						,0.31718061674008813,0.8591749644381224);
 			}
 			else if(!BuildingModelList.SetEnoughRes(new Building(Names.FARM,playerNumber), gold, food)){
-				group.Selected(Names.FARM);
+				//group.Selected(Names.FARM);
 			
 				//System.out.println(3 + " " + 2);
 				buildings.setGhostBuilding(new Building(Names.FARM,playerNumber));
 			}
 			
 		//1 3
-		}else if(inRect(0.016886930983847283,0.7681365576102418,0.042584434654919234,0.8165007112375533,
+		}else if(inRect(0.03524229074889868,0.9046941678520626,0.06093979441997063,0.9516358463726885,
 				x,y) ){
 			if(hover){
 				
-				display.CreateHoverPanel(HoverPanelGraphic.BuildingIconPanel, 6,0.016886930983847283
-						,0.8165007112375533);
+				display.CreateHoverPanel(HoverPanelGraphic.BuildingIconPanel, Names.FORT,6
+						,0.03524229074889868,0.9516358463726885);
 				
 			}else if(!BuildingModelList.SetEnoughRes(new Building(Names.FORT,playerNumber), gold, food)){
-				group.Selected(Names.FORT);
+				//group.Selected(Names.FORT);
 				//System.out.println(1 + " " + 3);
 				buildings.setGhostBuilding(new Building(Names.FORT,playerNumber));
 			}
 		//2 3
-		}else if(inRect(0.055800293685756244,0.7667140825035562,0.08223201174743025,0.817923186344239,
+		}else if(inRect(0.09104258443465492,0.903271692745377,0.11820851688693099,0.9530583214793741,
 				x,y)){
 			if(hover){
 				
-				display.CreateHoverPanel(HoverPanelGraphic.BuildingIconPanel, 7,0.055800293685756244
-						,0.817923186344239);
+				display.CreateHoverPanel(HoverPanelGraphic.BuildingIconPanel, Names.STABLE,7
+						,0.09104258443465492,0.9530583214793741);
 				
 			}else if(!BuildingModelList.SetEnoughRes(new Building(Names.STABLE,playerNumber), gold, food)){
-				group.Selected(Names.STABLE);
+				//group.Selected(Names.STABLE);
 				//System.out.println(2 + " " + 3);
 				buildings.setGhostBuilding(new Building(Names.STABLE,playerNumber));
 			}
 		//3 3
-		}else if(inRect(0.0947136563876652,0.7695590327169275,0.12041116005873716,0.8193456614509246,
+		}else if(inRect(0.14977973568281938,0.903271692745377,0.17400881057268722,0.9502133712660028,
 				x,y)){
 			if(hover){
 				
-				display.CreateHoverPanel(HoverPanelGraphic.BuildingIconPanel, 8,0.0947136563876652,
-						0.8193456614509246);
+				display.CreateHoverPanel(HoverPanelGraphic.BuildingIconPanel, Names.STOCKPILE,8
+						,0.14977973568281938,0.9502133712660028);
 				
 			}else if(!BuildingModelList.SetEnoughRes(new Building(Names.STOCKPILE,playerNumber), gold, food)){
-				group.Selected(Names.STOCKPILE);
+				//group.Selected(Names.STOCKPILE);
 				//System.out.println(3 + " " + 3);
 				buildings.setGhostBuilding(new Building(Names.STOCKPILE,playerNumber));
 			}
 		//1 4
-		}else if(inRect(0.01762114537444934,0.8563300142247511,0.04331864904552129,0.9061166429587483,
+		}else if(inRect(0.20411160058737152,0.903271692745377,0.2305433186490455,0.9516358463726885,
 				x,y)){
 			if(hover){
 				
-				display.CreateHoverPanel(HoverPanelGraphic.BuildingIconPanel, 9,
-						0.01762114537444934,0.9061166429587483);
+				display.CreateHoverPanel(HoverPanelGraphic.BuildingIconPanel, Names.WALL,9
+						,0.20411160058737152,0.9516358463726885);
 				
 			}else if(!BuildingModelList.SetEnoughRes(new Building(Names.WALL,playerNumber), gold, food)){
 				
-				group.Selected(Names.WALL);
+				//group.Selected(Names.WALL);
 				//System.out.println(1 + " " + 4);
 				buildings.setGhostBuilding(new Building(Names.WALL,playerNumber));
 			}
@@ -478,15 +508,15 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 //			buildings.setGhostBuilding(new Building(Names.BALLISTICTOWER,playerNumber));
 //		
 //		//3 4
-		}else if(inRect(0.0947136563876652,0.8549075391180654,0.12041116005873716,0.9061166429587483,
+		}else if(inRect(0.26138032305433184,0.9018492176386913,0.28707782672540383,0.9516358463726885,
 				x,y)){
 			if(hover){
 				
-				display.CreateHoverPanel(HoverPanelGraphic.BuildingIconPanel, 10,
-						0.0947136563876652,0.9061166429587483);
+				display.CreateHoverPanel(HoverPanelGraphic.BuildingIconPanel, Names.MINE,10
+						,0.26138032305433184,0.9516358463726885);
 				
 			}else if(!BuildingModelList.SetEnoughRes(new Building(Names.MINE,playerNumber), gold, food)){
-				group.Selected(Names.MINE);
+				//group.Selected(Names.MINE);
 				//System.out.println(3 + " " + 4);
 				buildings.setGhostBuilding(new Building(Names.MINE,playerNumber));
 			}
@@ -513,16 +543,17 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 //					return new int[]{x+frameX,y+frameY};
 //				}
 //			}
-		
-		
-		
+		//0.1398243010044098 + (x*(0.03513909876/2.0))
+		//0.96505049 - (y*(0.06950354576/2.0)),
+		//0.15739385783672333 + (x*(0.03513909876/2.0)),
+		//0.99776741 - (y*(0.06950354576/2.0)),
 		for(int y = 0; y < display.getFrameSizeY(); y++){
 			for(int x = 0; x < display.getFrameSizeX(); x++){
 				//0.99776741 //0.96505049 //0.9347517490386963 // 0.9702127575874329
-				if(inRect(0.1398243010044098 + (x*(0.03513909876/2.0)),
-						0.96505049 - (y*(0.06950354576/2.0)),
-						0.15739385783672333 + (x*(0.03513909876/2.0)),
-						0.99776741 - (y*(0.06950354576/2.0)),
+				if(inRect(0.0 + (x*(0.03513909876/2.0)),
+						0.748221906116643 - (y*(0.06950354576/2.0)),
+						0.01762114537444934 + (x*(0.03513909876/2.0)),
+						0.7809388335704125 - (y*(0.06950354576/2.0)),
 							mx,my)){
 					
 					int difference = (int)(Math.abs((mx - 0.145 + (x*(0.03513909876/2.0)))) +
@@ -584,7 +615,7 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 			if(x <= 0.9655929721815519 && x >= 0.8535871156661786 && 
 					iy >= 0.56+(m*0.0325) && 
 							iy <= 0.56 + ((m+1)*0.0325)){
-				buttons.Selected(map.getMapName(m));
+			//	buttons.Selected(map.getMapName(m));
 				cmsg.addMessage("vwmp "+ m + " " + playerNumber);
 				return true;
 			}
@@ -606,6 +637,8 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 			lx = (double)e.getX()/(double)width;
 			ly = (double)e.getY()/(double)height;
 		}
+		menu.DragMenuMouse(e.getX()/(double)width, e.getY()/(double)height,
+				map.getWidth(), map.getHeight(), this);
 		drag = true;
 		dragBox = true;
 		mouse = e;
@@ -692,22 +725,45 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess {
 		dragBox = false;
 	}
 
-	@Override
-	public void setButtonList(ButtonList buttons) {
-		// TODO Auto-generated method stub
-		this.buttons = buttons;
-	}
+//	@Override
+//	public void setButtonList(ButtonList buttons) {
+//		// TODO Auto-generated method stub
+//		this.buttons = buttons;
+//	}
 	
 	public void ClearBuildingIconsButtonGroup(){
 		
-		buttons.GetGroup("BuildingIcons").Clear();
-		display.CreateBuildingIconButtons();
+//		buttons.GetGroup("BuildingIcons").Clear();
+//		display.CreateBuildingIconButtons();
+	}
+
+	@Override
+	public void SelectGhostBuilding(String buildingName) {
+		// TODO Auto-generated method stub
+		if(!BuildingModelList.SetEnoughRes(new Building(buildingName,playerNumber), 
+				gold, food)){
+			buildings.setGhostBuilding(new Building(buildingName,playerNumber));
+		}
+		
+	}
+
+	@Override
+	public void SelectUnitToBuild(int unitNo) {
+		// TODO Auto-generated method stub
+		buildings.unitIconSelected(unitNo,food,gold);
+	}
+
+	@Override
+	public void MoveFrame(int[] frame) {
+		// TODO Auto-generated method stub
+		display.setFrameX(frame[0] - (display.getFrameSizeX()/2));
+		display.setFrameY(frame[1] - (display.getFrameSizeY()/2));
 	}
 	
-	public void ClearUnitIconsButtonGroup(){
-		
-		display.CreateUnitIcons();
-	}
+//	public void ClearUnitIconsButtonGroup(){
+//		
+//		display.CreateUnitIcons();
+//	}
 	
 
 }

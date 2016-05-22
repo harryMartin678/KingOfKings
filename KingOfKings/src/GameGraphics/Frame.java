@@ -3,8 +3,6 @@ package GameGraphics;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.media.opengl.GL2;
-import javax.media.opengl.glu.GLU;
 
 //holds a frame of a unit 
 public class Frame {
