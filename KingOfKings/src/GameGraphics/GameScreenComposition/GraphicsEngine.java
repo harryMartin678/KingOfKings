@@ -16,6 +16,7 @@ import com.jogamp.opengl.util.gl2.GLUT;
 import GameGraphics.BuildingList;
 import GameGraphics.UnitList;
 import GameGraphics.Menu.Menu;
+import Map.GraphicsCollisionMap;
 
 public class GraphicsEngine implements IComGameEngineFrameProcess {
 	
@@ -67,8 +68,7 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 				(IComBuildingListMouseKeyboard)buildings,(IComDisplayMouseKeyboard) display, 
 				map, myPlayerNumber, cmsg);
 
-		
-		
+		GraphicsCollisionMap.RefreshCollisionMap(this.map.getMap().toArray());
 		
 		new Thread(new Runnable(){
 

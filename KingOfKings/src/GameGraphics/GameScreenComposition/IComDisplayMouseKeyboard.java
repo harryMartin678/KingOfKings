@@ -79,8 +79,6 @@ public interface IComDisplayMouseKeyboard extends IComDisplay {
 	public int getFrameSizeY();
 	public int getFrameSizeX();
 	//public void CreateHoverPanel(String type,int index,double cornerX, double cornerY);
-	public void CreateHoverPanel(String type,String name, int index,double cornerX,double cornerY);
-	public void RemoveHoverPanel();
 	public void setFrameX(int frameX);
 	public void setFrameY(int frameY);
 	

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import Buildings.Building;
 import Map.CollisionMap;
+import Map.GameEngineCollisionMap;
 
 public class AddUnitModule {
 
@@ -19,11 +20,11 @@ public class AddUnitModule {
 	public void AddUnit(String unit, Building building,GameEngineContext context){
 		
 		this.building = building;
-		CollisionMap map = new CollisionMap(context.buildings,context.units,
-				context.maps.getMap(building.getMap()),building.getMap());
+//		CollisionMap map = new CollisionMap(context.buildings,context.units,
+//				context.maps.getMap(building.getMap()),building.getMap());
 		//map.printCollisionMap();
 		//context.units.printUnits(building.getMap());
-		int[] pos = getFreeSpace(map, building.getX() + building.getSizeX()+1, 
+		int[] pos = getFreeSpace(building.getMap(), building.getX() + building.getSizeX()+1, 
 					building.getY() + building.getSizeY() + 1, new ArrayList<int[]>());
 		
 		this.buildingNo = building.getBuildingNo();
@@ -45,7 +46,7 @@ public class AddUnitModule {
 	}
 	
 	//not working needs debugging, only shows two sides of a building
-	public int[] getFreeSpace(CollisionMap map,int unitX, int unitY,ArrayList<int[]> taken){
+	public int[] getFreeSpace(int mapNo,int unitX, int unitY,ArrayList<int[]> taken){
 		
 		
 		//the corners of the building 
@@ -62,7 +63,7 @@ public class AddUnitModule {
 		int closestDistance = Integer.MAX_VALUE;
 		int[] closestPos = new int[]{-1,-1};
 		
-		int[][] mapArray = map.getCollisionMap();
+		int[][] mapArray = GameEngineCollisionMap.toArray(mapNo);
 		ArrayList<int[]> onMap = new ArrayList<int[]>();
 		
 		

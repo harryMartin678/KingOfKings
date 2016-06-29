@@ -89,7 +89,7 @@ public class Battle {
 		return one.getRetreat();
 	}
 	
-	public void similuateHit(CollisionMap map){
+	public void similuateHit(){//CollisionMap map){
 		
 		//int distance = (int) Math.sqrt(Math.pow((double) ((one.getX() - two.getX()) + (one.getY() - two.getY())),2));
 		
@@ -112,7 +112,7 @@ public class Battle {
 			
 			if(one.getRange() < two.getRange()){
 				
-				two.Retreat(map,two.getX(),two.getY());
+				two.Retreat(two.getX(),two.getY());
 			
 			}else{
 				
@@ -133,7 +133,7 @@ public class Battle {
 			
 			if(two.getRange() < one.getRange()){
 				
-				one.Retreat(map,one.getX(),one.getY());
+				one.Retreat(one.getX(),one.getY());
 			
 			}else{
 				

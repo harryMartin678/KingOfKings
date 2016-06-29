@@ -15,6 +15,7 @@ import Buildings.RoyalPalace;
 import Buildings.Stable;
 import Buildings.Stockpile;
 import Map.CollisionMap;
+import Map.GraphicsCollisionMap;
 
 public class Building {
 	
@@ -128,7 +129,7 @@ public class Building {
 		
 	}
 	
-	public void CanBuildThere(CollisionMap map){
+	public void CanBuildThere(int playerNumber){
 		
 		Buildings.Building check = GetBuildingClass(getName());
 //		System.out.println(map.getPlayer() + " map player " + this.getPlayer() +
@@ -137,12 +138,12 @@ public class Building {
 			int sizeX = check.getSizeX();
 			int sizeY = check.getSizeY();
 			//System.out.println(sizeX + " " + sizeY + " building CanBuildThere");
-			cantBuild = !map.inArea((int)this.x,(int)this.y,sizeX,sizeY) 
-						|| map.getPlayer() != this.getPlayer();
+			cantBuild = !GraphicsCollisionMap.InArea((int)this.x,(int)this.y,sizeX,sizeY) 
+						|| playerNumber != this.getPlayer();
 		}else{
 			//System.out.println(map.getCollisionMap()[(int)this.x][(int)this.y] + " building");
-			cantBuild = !(map.getCollisionMap()[(int)this.y][(int)this.x] == 3)
-						|| map.getPlayer() != this.getPlayer();
+			cantBuild = !(GraphicsCollisionMap.getTile((int)this.x, (int)this.y) == 3)
+						|| playerNumber != this.getPlayer();
 		}
 	}
 	

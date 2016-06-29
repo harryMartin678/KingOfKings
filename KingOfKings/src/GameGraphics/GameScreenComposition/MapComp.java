@@ -2,6 +2,8 @@ package GameGraphics.GameScreenComposition;
 
 import java.util.ArrayList;
 
+import Map.CollisionMap;
+import Map.GraphicsCollisionMap;
 import Map.Map;
 import Map.MapList;
 
@@ -109,6 +111,8 @@ public class MapComp implements IComMapMouseKeyboard, IComMapDisplay, IComFrameP
 		
 		this.viewedMap = viewedMap;
 		map = maps.getMap(viewedMap);
+		
+		GraphicsCollisionMap.RefreshCollisionMap(map.toArray());
 		
 		if(firstTimeViewedMapSet){
 			

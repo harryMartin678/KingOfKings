@@ -163,9 +163,7 @@ public class UnitBattleList {
 			}
 			
 			if(simulateHit){
-				battles.get(u).similuateHit(new CollisionMap(buildings,units,
-						maps.getMap(units.getUnitMap(battles.get(u).getOneID())),
-								units.getUnitMap(battles.get(u).getOneID())));
+				battles.get(u).similuateHit();
 			}
 		}
 	}

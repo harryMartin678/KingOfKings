@@ -9,6 +9,7 @@ import Buildings.Names;
 import GameClient.ParseText;
 import GameServer.AddUnitModule;
 import Map.CollisionMap;
+import Map.GameEngineCollisionMap;
 
 public class Unit {
 	
@@ -66,8 +67,10 @@ public class Unit {
 		
 	}
 	
-	public int[] getFreeSpace(CollisionMap map,int unitNo){
+	public int[] getFreeSpace(int unitNo){
 		
+		//this shouldn't look like this
+		//or maybe it should
 		Mine hack = new Mine(0);
 		hack.setPos((int)this.x, (int)this.y);
 		addUnit.setBuilding(hack);
@@ -264,6 +267,11 @@ public class Unit {
 			health -= hit;
 		}else{
 			health = 0;
+		}
+		
+		if(dead()){
+			
+			GameEngineCollisionMap.removeUnit(this.unitNo, this.map);
 		}
 	}
 	
@@ -577,10 +585,11 @@ public class Unit {
 		}
 	}
 	
-	public void Retreat(CollisionMap map,float rx,float ry){
+	//CollisionMap map,
+	public void Retreat(float rx,float ry){
 		
 		
-		int[][] areaCanWalk = map.getCollisionMap();
+		//int[][] areaCanWalk = map.getCollisionMap();
 		float[] directions = new float[]{0,1,0,-1,1,0,-1,0,-1,-1,1,-1,-1,1,1,1};
 		
 		int directionIndex = -1;
@@ -591,7 +600,9 @@ public class Unit {
 			float tempDist = (float) Math.sqrt(Math.abs(((int)this.getX() + (int)directions[d])-rx)
 					 + Math.abs(((int)this.getY() + (int)directions[d+1]) - ry));
 			
-			if(areaCanWalk[(int)this.getY() + (int)directions[d]][(int)this.getX() + (int)directions[d+1]] == 0
+			;
+			if(GameEngineCollisionMap.getTile((int)this.getX() + (int)directions[d+1],
+					(int)this.getY() + (int)directions[d],this.map) == 0
 					&& tempDist > distance){
 				
 				distance = tempDist;

@@ -1,284 +1,95 @@
 package Map;
 
-import Units.UnitList;
-import Buildings.BuildingList;
-import Buildings.BuildingProgress;
-import GameGraphics.IBuildingList;
-import GameGraphics.IUnitList;
+import java.util.HashMap;
 
 public class CollisionMap {
-	
-	private IBuildingList buildings;
-	private IUnitList units;
-	private BuildingProgress sites;
-	private int[][] collisionMap;
-	private int ignoreUnit;
-	private int viewedMap;
-	private int player;
-	
-	
-	public CollisionMap(IBuildingList buildings, IUnitList units, Map map,int mapNo){
-		
-		this.buildings = buildings;
-		this.units = units;
-		ignoreUnit = -1;
-		this.viewedMap = mapNo;
-		SetCollisionMapToArray(map.toArray());
-		createCollisionMap();
-		player = map.getPlayer();
-		
-	}
-	
-//	public CollisionMap(IBuildingList buildings, IUnitList units, Map map,BuildingProgress sites,int mapNo){
-//		
-//		this.buildings = buildings;
-//		this.units = units;
-//		this.sites = sites;
-//		this.viewedMap = mapNo;
-//		SetCollisionMapToArray(map.toArray());
-//		createCollisionMap();
-//	}
-	
-	
-	public CollisionMap(IBuildingList buildings, IUnitList units, Map map, int ignoreUnit,int mapNo){
-		
-		this.buildings = buildings;
-		this.units = units;
-		this.ignoreUnit = ignoreUnit;
-		this.viewedMap = mapNo;
-		
-		//System.out.println("ignore Unit " + ignoreUnit);
-		
-		SetCollisionMapToArray(map.toArray());
-		createCollisionMap();
-		player = map.getPlayer();
-		
-	}
-	
-	public int getPlayer(){
-		
-		return player;
-	}
-	
-	private void SetCollisionMapToArray(int[][] array){
-		
-		collisionMap = new int[array.length][array[0].length];
-		
-		for(int y = 0; y < collisionMap.length; y++){
-			for(int x = 0; x < collisionMap[0].length; x++){
-				
-				collisionMap[x][y] = array[x][y];
-			}
-		}
-	}
-	
-	public void printCollisionMap(int mx, int my){
-		
-		for(int y = 0; y < collisionMap.length; y++){
-			for(int x = 0; x < collisionMap[y].length; x++){
-				
-				if(y == my && x == mx){
-					
-					System.out.print(3 + " ");
-				
-				}else{
-					
-					System.out.print(collisionMap[y][x] + " ");
-				}
-				
-				
-			}
-			
-			System.out.println();
-		}
-		
-	}
-	
-	public void printCollisionMap(){
-		
-		for(int y = 0; y < collisionMap.length; y++){
-			for(int x = 0; x < collisionMap[y].length; x++){
-				
-				System.out.print(collisionMap[y][x] + " ");
-			}
-			
-			System.out.println();
-		}
-	}
-	
-	public int[][] getCollisionMap(){
-		
-		return collisionMap;
-	}
-	
-	private void createCollisionMap(){
-		
-		units.begin();
-		for(int u = 0; u < units.getUnitListSize(); u++){
-			
-			if(units.getUnitMap(u) == -1 || units.getUnitMap(u) == this.viewedMap){
-				collisionMap[(int)units.getUnitY(u)][(int)units.getUnitX(u)] = 8;
-			}
-		}
-		units.end();
-		
-		for(int b = 0; b < buildings.getBuildingsSize(); b++){
-			
-			//System.out.println((buildings.getBuildingMap(b) == this.viewedMap || 
-			//		buildings.getBuildingMap(b) == -1) + " CollisionMap");
-			if(buildings.getBuildingMap(b) == -1 || buildings.getBuildingMap(b) == this.viewedMap){
-				//collisionMap[(int)buildings.getBuildingY(b)][(int)buildings.getBuildingX(b)] = 9;
-				fillInBuilding((int)buildings.getBuildingX(b),(int)buildings.getBuildingY(b),
-						buildings.getBuildingDiameterX(b),buildings.getBuildingDiameterY(b));
-			}
-		}
-		
-		if(ignoreUnit != -1){
-			
-			collisionMap[(int)units.getUnitY(ignoreUnit)][(int)units.getUnitX(ignoreUnit)] = 0;
-		}
-		
-		
-//		for(int s = 0; s < sites.getSiteSize();s++){
-//			
-//			if(sites.getSiteMap(s) == -1 || sites.getSiteMap(s) == this.viewedMap){
-//				
-//				collisionMap[(int)sites.getSiteX(s)][(int)sites.getSiteY(s)] = 10;
-//			}
-//		}
-	}
-	
-	
-	private void fillInBuilding(int x, int y,int sizeX,int sizeY){
-		
-		for(int sy = y - (sizeY-1); sy < y + sizeY; sy++){
-			for(int sx = x - (sizeX-1); sx < x + sizeX; sx++){
-				
-				collisionMap[sy][sx] = 9;
-			}
-		}
-	}
-	
-//	private void createCollisionMap(){
-//		
-//		//collisionMap[buildings.getBuildingY(0)][buildings.getBuildingX(0)] = 2;
-//		//System.out.println(buildings.getBuildingsSize());
-//		for(int y = 0; y < collisionMap.length; y++){
-//			for(int x = 0; x < collisionMap[y].length; x++){
-//				
-//				if(collisionMap[y][x] != 0){
-//					
-//					continue;
-//				}
-//				
-//				
-//				units.begin();
-//				
-//				for(int u = 0; u < units.getUnitListSize(); u++){
-//				
-//					
-//					if(u == ignoreUnit){
-//						
-//						break;
-//					}
-//					
-//					if(units.checkInUnit(x, y, u)){
-//						
-//						collisionMap[y][x] = 8;
-//						break;
-//					}
-//					
-//				}
-//				
-//				units.end();
-//				
-//				if(collisionMap[y][x] == 8){
-//					
-//					continue;
-//				}
-//				
-//				
-//				for(int b = 0; b < buildings.getBuildingsSize(); b++){
-//					
-//					if(buildings.inBuilding(x, y, b)){
-//						
-//						collisionMap[y][x] = 9;
-//						break;
-//					}
-//				}
-//				
-//				if(collisionMap[y][x] == 9 || sites == null){
-//		
-//					continue;
-//				}
-//				
-//				if(sites.inSite(x,y)){
-//					
-//					collisionMap[y][x] = 10;
-//				}
-//				
-//			}
-//		}
-//	}
-	
-	public boolean inArea(int x, int y, int sizeX, int sizeY){
-		
-		if(x - sizeX < 0 || x + sizeX > collisionMap[0].length
-				|| y - sizeY < 0 || y + sizeY > collisionMap.length){
-			
-			return false;
-		}
-		
-		for(int cy = y - sizeY; cy < y + sizeY; cy++){
-			for(int cx = x - sizeX; cx < x + sizeX; cx++){
-				
-				if(collisionMap[cy][cx] != 0){
-					
-					return false;
-				}
-			}
-		}
-		
-		
-		return true;
-	}
-	
-//	public static void main(String[] args){
-//		
-//		int[][]  map = new int[10][10];
-//		CollisionMap.fillInBuilding(5,5, 2, 2,map);
-//		
-//		for(int y = 0; y < map.length; y++){
-//			for(int x = 0; x < map[y].length; x++){
-//				
-//				System.out.print(map[y][x]);
-//			}
-//			
-//			System.out.println();
-//		}
-//	}
-	
-	
-//	public static void main(String[] args) {
-//		
-//		BuildingList buildings = new BuildingList();
-//		buildings.addBuilding(1, 1,5, 5, 0);
-//		
-//		CollisionMap map = new CollisionMap(buildings,new UnitList()
-//				,new MapList("game1").getMap(1));
-//		
-//		boolean canBuild = map.inArea(4,4, 2, 2);
-//		
-//		System.out.println(canBuild);
-//		
-////		for(int x = 0; x < map.length; x++){
-////			for(int y = 0; y < map[x].length; y++){
-////				
-////				System.out.print(map[x][y]);
-////			}
-////			
-////			System.out.println();
-////		}
-//	}
 
+	public int[][] CollisionMap;
+	protected HashMap<Integer,int[]> UnitToPos = new HashMap<Integer, int[]>();
+	protected HashMap<Integer,int[]> BuildingToPos = new HashMap<Integer,int[]>();
+	
+	
+	public CollisionMap(){
+		
+		
+	}
+	
+	public void RefreshCollisionMap(int[][] map){
+		
+		CollisionMap = new int[map.length][map[0].length];
+		
+		for(int x = 0; x < map.length; x++){
+			for(int y = 0; y < map[x].length; y++){
+				
+				CollisionMap[x][y] = map[x][y];
+			}
+		}
+	}
+	
+	public void RemoveUnit(int unitNo){
+		
+		int[] pos = UnitToPos.get(unitNo);
+		
+		CollisionMap[pos[0]][pos[1]] = 0;
+	}
+	
+	public void addUnit(int x, int y,int unitNo){
+		
+		UnitToPos.put(unitNo, new int[]{x,y});
+		CollisionMap[x][y] = 7;
+	}
+	
+	public void addBuilding(int x, int y,int buildingNo){
+		
+		BuildingToPos.put(buildingNo, new int[]{x,y});
+		CollisionMap[x][y] = 8;
+	}
+	
+	public void removeBuilding(int buildingNo){
+		
+		int[] pos = BuildingToPos.get(buildingNo);
+		
+		CollisionMap[pos[0]][pos[1]] = 0;
+	}
+	
+	public int getTile(int x,int y){
+		
+		return CollisionMap[x][y];
+	}
+	
+	public boolean InArea(int x, int y, int SizeX, int SizeY){
+		
+		for(int ax = -SizeX + x; ax <= SizeX + x; ax++){
+			for(int ay = -SizeY + y; ay <= SizeY + y; ay++){
+				
+				if(CollisionMap[ax][ay] != 0){
+					
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+
+	public int[][] ToArray() {
+		// TODO Auto-generated method stub
+		return CollisionMap;
+	}
+	
+	public int[][] ToArray(int ignoreUnit){
+		
+		int[][] copy = new int[CollisionMap.length][CollisionMap[0].length];
+		
+		for(int r = 0;r < CollisionMap.length; r++){
+			
+			copy[r] = CollisionMap[r].clone();
+		}
+		
+		int[] pos = UnitToPos.get(ignoreUnit);
+		
+		copy[pos[0]][pos[1]] = 0;
+		
+		return copy;
+	}
 }

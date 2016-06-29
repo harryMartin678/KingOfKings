@@ -8,6 +8,7 @@ import GameGraphics.GameScreenComposition.IComUnitListDisplay;
 import GameGraphics.GameScreenComposition.IComUnitListFrameProcess;
 import GameGraphics.GameScreenComposition.IComUnitListMouseKeyboard;
 import GameGraphics.Menu.IComMenuUnitList;
+import Map.GraphicsCollisionMap;
 
 public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,
 IComUnitListFrameProcess {
@@ -80,6 +81,7 @@ IComUnitListFrameProcess {
 	
 	public void remove(int index){
 		
+		GraphicsCollisionMap.removeUnit(units.get(index).getUnitNo());
 		units.remove(index);
 	}
 	
@@ -116,6 +118,7 @@ IComUnitListFrameProcess {
 	
 	public void add(Unit unit){
 		
+		GraphicsCollisionMap.addUnit((int)unit.getX(), (int)unit.getY(), unit.getUnitNo());
 		units.add(unit);
 	}
 	

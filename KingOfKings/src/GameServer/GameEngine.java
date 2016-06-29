@@ -17,6 +17,7 @@ import IntermediateAI.FormationMovement;
 import IntermediateAI.MapRouteFinder;
 import IntermediateAI.Pathfinder;
 import Map.CollisionMap;
+import Map.GameEngineCollisionMap;
 import Map.Map;
 import Map.MapList;
 import Player.Diplomacy;
@@ -48,7 +49,7 @@ public class GameEngine{
 		
 		communicationTurn = 0;
 		resourceBeat = 0;
-		
+
 		this.beacon = beacon;
 		
 		context.maps = new MapList(mapEntry);
@@ -60,6 +61,8 @@ public class GameEngine{
 		context.sites = new BuildingProgress();
 		context.battles = new UnitBattleList(context.units);
 		context.buildingAttackList = new BuildingAttackList(context.maps,context.buildings);
+		
+		GameEngineCollisionMap.SetUpCollisionMaps(context.maps);
 		
 		try {
 			context.saveGame = new SavedGame("SavedGames/" + mapEntry);

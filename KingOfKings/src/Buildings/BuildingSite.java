@@ -27,12 +27,12 @@ public class BuildingSite {
 		return building;
 	}
 	
-	public int[] getFreeSpace(CollisionMap map,int unitX, int unitY,ArrayList<int[]> taken){
+	public int[] getFreeSpace(int unitX, int unitY,ArrayList<int[]> taken){
 		
 		ArrayList<int[]> com = new ArrayList<int[]>();
 		com.addAll(taken);
 		com.addAll(takenSpaces.values());
-		return building.getFreeSpace(map, unitX, unitY,com);
+		return building.getFreeSpace(unitX, unitY,com);
 	}
 	
 	public void addWorker(Worker creator){

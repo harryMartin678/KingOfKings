@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import Buildings.Names;
 import GameGraphics.IUnitList;
+import Map.GameEngineCollisionMap;
 
 public class UnitList implements Cloneable,IUnitList {
 	
@@ -31,6 +32,9 @@ public class UnitList implements Cloneable,IUnitList {
 		
 		unit.setUnit(units.size());
 		units.add(unit);
+		
+		GameEngineCollisionMap.addUnit((int)unit.getX(), (int)unit.getY(), unit.getUnitNo(),
+				unit.getMap());
 	}
 	
 	public void addUnitToBoat(int unitNo, int boatNo){
@@ -183,6 +187,8 @@ public class UnitList implements Cloneable,IUnitList {
 		
 			units.get(units.size()-1).setUnit(units.size()-1);
 		}
+		
+		GameEngineCollisionMap.addUnit((int)x, (int)y, units.size()-1, map);
 	}
 	
 

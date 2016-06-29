@@ -3,6 +3,7 @@ package Buildings;
 import java.util.ArrayList;
 
 import GameGraphics.IBuildingList;
+import Map.GameEngineCollisionMap;
 
 public class BuildingList implements IBuildingList,IComBuildingBATTList {
 	
@@ -122,6 +123,8 @@ public class BuildingList implements IBuildingList,IComBuildingBATTList {
 		buildings.get(buildings.size()-1).setPlayer(player);
 		buildings.get(buildings.size()-1).SetBuildingNo(buildingNo);
 		
+		GameEngineCollisionMap.addBuilding(x, y, buildingNo, map);
+		
 		
 	}
 	
@@ -129,6 +132,8 @@ public class BuildingList implements IBuildingList,IComBuildingBATTList {
 		
 		//System.out.println("addBuilding");
 		buildings.add(building);
+		GameEngineCollisionMap.addBuilding(building.getX(), building.getY(),
+				building.getBuildingNo(), building.getMap());
 	}
 
 	public int getBuildingQueueSize(int index) {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import Buildings.BuildingList;
 import Map.CollisionMap;
+import Map.GameEngineCollisionMap;
 import Map.MapList;
 import Units.UnitList;
 
@@ -40,13 +41,14 @@ public class FormationMovement {
 			
 			int newPos = orgPath.get(i)[0] + posX;
 			
-			
+//			new CollisionMap(buildings, units,
+//					maps.getMap(map),map).getCollisionMap()[orgPath.get(i)[1]]
+//							[newPos] != 0
 			//move the path point over up to the posX value 
 			for(int j = posX; j >= 0; j--){
 				if(newPos >= maps.getMapWidth(map) 
-						|| new CollisionMap(buildings, units,
-								maps.getMap(map),map).getCollisionMap()[orgPath.get(i)[1]]
-										[newPos] != 0){
+						|| GameEngineCollisionMap.getTile(
+								orgPath.get(i)[1], newPos, map) != 0){
 					
 					newPos --;
 				
@@ -74,11 +76,13 @@ public class FormationMovement {
 			
 			if(isGap(orgPath.get(i),orgPath.get(i-1))){
 				
+				//new CollisionMap(buildings, units,
+				//maps.getMap(map),map).getCollisionMap()
 						ArrayList<int[]> newSection = 
-								new Pathfinder(new CollisionMap(buildings, units,
-										maps.getMap(map),map).getCollisionMap()).getPath(orgPath.get(i)[0]
-												, orgPath.get(i)[1],orgPath.get(i-1)[0]
-														, orgPath.get(i-1)[1]);
+								new Pathfinder(GameEngineCollisionMap.toArray(map)
+										).getPath(orgPath.get(i)[0]
+											, orgPath.get(i)[1],orgPath.get(i-1)[0]
+												, orgPath.get(i-1)[1]);
 						
 						//add the new path section to connect the two nodes
 						orgPath.addAll(i,newSection);

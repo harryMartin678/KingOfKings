@@ -12,6 +12,7 @@ import GameGraphics.GameScreenComposition.IComBuildingListFrameProcess;
 import GameGraphics.GameScreenComposition.IComBuildingListMouseKeyboard;
 import GameGraphics.Menu.IComMenuBuildingList;
 import Map.CollisionMap;
+import Map.GraphicsCollisionMap;
 
 public class BuildingList implements IComBuildingListDisplay, IComBuildingListMouseKeyboard, 
 IComBuildingListFrameProcess {
@@ -63,11 +64,14 @@ IComBuildingListFrameProcess {
 	
 	public synchronized void add(Building building){
 		
+		GraphicsCollisionMap.addBuilding((int)building.getX(), (int)building.getY(),
+				building.getBuildingNo());
 		buildings.add(building);
 	}
 	
 	public synchronized void remove(int index){
 		
+		GraphicsCollisionMap.removeBuilding(buildings.get(index).getBuildingNo());
 		buildings.remove(index);
 	}
 	
@@ -142,7 +146,7 @@ IComBuildingListFrameProcess {
 	}
 
 	@Override
-	public synchronized boolean canBuildGhost(CollisionMap map) {
+	public synchronized boolean canBuildGhost() {
 		// TODO Auto-generated method stub
 		return (ghostBuilding != null && !ghostBuilding.cantBuild());
 	}
@@ -342,10 +346,10 @@ IComBuildingListFrameProcess {
 	}
 
 	@Override
-	public synchronized void canBuildThere(CollisionMap collMap) {
+	public synchronized void canBuildThere(int playerNumber) {
 		// TODO Auto-generated method stub
 		if(isBuildingGhost()){
-			ghostBuilding.CanBuildThere(collMap);
+			ghostBuilding.CanBuildThere(playerNumber);
 		}else{
 			
 			System.out.println("NULL GHOSTBUILDING buildingList");

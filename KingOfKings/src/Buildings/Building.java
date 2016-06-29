@@ -6,6 +6,7 @@ import GameGraphics.UnitList;
 import GameServer.AddUnitModule;
 import GameServer.GameEngineContext;
 import Map.CollisionMap;
+import Map.GameEngineCollisionMap;
 import Map.Map;
 
 public class Building {
@@ -114,9 +115,9 @@ public class Building {
 		return temp;
 	}
 	
-	public int[] getFreeSpace(CollisionMap map,int unitX, int unitY,ArrayList<int[]> taken){
+	public int[] getFreeSpace(int unitX, int unitY,ArrayList<int[]> taken){
 		
-		return addUnit.getFreeSpace(map, unitX, unitY,taken);
+		return addUnit.getFreeSpace(map,unitX, unitY,taken);
 	}
 	
 	public String getUnitQueue(){
@@ -222,6 +223,11 @@ public class Building {
 	public void removeHitpoints(int amount){
 		
 		hitpoints -= amount;
+		
+		if(destroyed()){
+			
+			GameEngineCollisionMap.removeBuilding(this.buildingNo, this.map);
+		}
 	}
 	
 	public void addUnit(String unit,GameEngineContext context){

@@ -243,12 +243,11 @@ public class MethodCallup implements Commands {
 	@Override
 	public void followUnit(int unitNo, int unitFollow) {
 		// TODO Auto-generated method stub
-		
+//		new CollisionMap(context.buildings,context.units,
+//				context.maps.getMap(context.units.getUnitMap(unitFollow)),
+//				context.units.getUnitMap(unitFollow))
 		context.units.setFollow(unitNo,unitFollow);
-		int[] target = context.units.getUnits(unitFollow).getFreeSpace(
-				new CollisionMap(context.buildings,context.units,
-						context.maps.getMap(context.units.getUnitMap(unitFollow)),
-						context.units.getUnitMap(unitFollow)), unitNo);
+		int[] target = context.units.getUnits(unitFollow).getFreeSpace(unitNo);
 		System.out.println(target[0] + " " + target[1] + " MethodCallup");
 		this.moveUnit(unitNo, target[0], target[1],
 				context.units.getUnitMap(unitFollow),true);
@@ -397,11 +396,12 @@ public class MethodCallup implements Commands {
 		Building toAttack = context.buildings.getBuilding(buildingNo);
 		
 		ArrayList<int[]> taken = new ArrayList<int[]>();
-		CollisionMap map = new CollisionMap(context.buildings,context.units,
-				context.maps.getMap(toAttack.getMap()),toAttack.getMap());
+//		CollisionMap map = new CollisionMap(context.buildings,context.units,
+//				context.maps.getMap(toAttack.getMap()),toAttack.getMap());
 		for(int u = 0; u < unitNos.length; u++){
 			
-			int[] pos = toAttack.getFreeSpace(map,(int)context.units.getUnitX(unitNos[u]),
+			int[] pos = toAttack.getFreeSpace(
+					(int)context.units.getUnitX(unitNos[u]),
 					(int)context.units.getUnitY(unitNos[u]), taken);
 
 			taken.add(pos);
@@ -440,10 +440,12 @@ public class MethodCallup implements Commands {
 		BuildingSite site = context.sites.getLastSite();
 		
 		ArrayList<int[]> unitTargets = new ArrayList<int[]>();
-		
+//		new CollisionMap(context.buildings,
+//				context.units,context.maps.getMap(newBuilding.getMap()),
+//				newBuilding.getMap())
 		for(int u = 0; u < unitNos.length; u++){
-			unitTargets.add(site.getFreeSpace(new CollisionMap(context.buildings,
-					context.units,context.maps.getMap(newBuilding.getMap()),newBuilding.getMap()),(int) context.units.getUnitX(unitNos[u]), 
+			unitTargets.add(site.getFreeSpace(
+							(int) context.units.getUnitX(unitNos[u]), 
 							(int) context.units.getUnitY(unitNos[u]),unitTargets));
 			this.moveUnit(unitNos[u], unitTargets.get(unitTargets.size()-1)[0],
 					unitTargets.get(unitTargets.size()-1)[1], newBuilding.getMap(),false);
@@ -546,11 +548,13 @@ public class MethodCallup implements Commands {
 		
 		ArrayList<int[]> unitTargets = new ArrayList<int[]>();	
 
+		
+//		new CollisionMap(context.buildings,
+//				context.units,context.maps.getMap(newBuilding.getMap()),newBuilding.getMap()),
 		for(int u = 0; u < unitNos.length; u++){
 			
 			Building newBuilding = context.sites.getBuilding(buildingNo);
-			unitTargets.add(newBuilding.getFreeSpace(new CollisionMap(context.buildings,
-					context.units,context.maps.getMap(newBuilding.getMap()),newBuilding.getMap()),
+			unitTargets.add(newBuilding.getFreeSpace(
 					(int) context.units.getUnitX(unitNos[u]), 
 							(int) context.units.getUnitY(unitNos[u]),unitTargets));
 			this.moveUnit(unitNos[u], unitTargets.get(unitTargets.size()-1)[0],

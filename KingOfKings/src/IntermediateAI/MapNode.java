@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import Buildings.BuildingList;
 import Map.CollisionMap;
+import Map.GameEngineCollisionMap;
 import Map.Map;
 import Units.UnitList;
 
@@ -12,10 +13,10 @@ public class MapNode {
 	private ArrayList<int[]> path;
 	private int mapNo;
 	
-	public MapNode(int startX, int startY, int targetX, int targetY,int mapNo,
-			CollisionMap map){
+	public MapNode(int startX, int startY, int targetX, int targetY,int mapNo){
 		
-		path = new Pathfinder(map.getCollisionMap()).getPath(startX, startY, targetX, targetY);
+		path = new Pathfinder(GameEngineCollisionMap.toArray(mapNo)
+				).getPath(startX, startY, targetX, targetY);
 		this.mapNo = mapNo;
 	}
 	

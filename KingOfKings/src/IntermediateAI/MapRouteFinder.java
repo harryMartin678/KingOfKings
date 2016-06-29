@@ -6,6 +6,7 @@ import Buildings.BuildingList;
 import Buildings.BuildingProgress;
 import Buildings.BuildingSite;
 import Map.CollisionMap;
+import Map.GameEngineCollisionMap;
 import Map.MapList;
 import Units.UnitList;
 
@@ -60,8 +61,10 @@ public class MapRouteFinder {
 				//System.out.println("Pre PathFinder MapRouteFinder");
 				//find a path to the target node from the transition point 
 				//if(sites == null){
-					path.addAll(reverseList(new Pathfinder(new CollisionMap(buildings,units
-							,maps.getMap(currentMap),currentMap).getCollisionMap()
+//				new CollisionMap(buildings,units
+//						,maps.getMap(currentMap),currentMap).getCollisionMap()
+					path.addAll(reverseList(
+							new Pathfinder(GameEngineCollisionMap.toArray(currentMap)
 							).getPath(startX, startY, targetX, targetY)));
 //				}else{
 //					
@@ -71,9 +74,11 @@ public class MapRouteFinder {
 //				}
 				//System.out.println("Post PathFinder MapRouteFinder");
 			}else{
+				//new CollisionMap(buildings,units
+					//	,maps.getMap(currentMap),ignoreUnit,currentMap).getCollisionMap()
 				//find a path to the target node from the transition point 
-				path.addAll(reverseList(new Pathfinder(new CollisionMap(buildings,units
-						,maps.getMap(currentMap),ignoreUnit,currentMap).getCollisionMap()
+				path.addAll(reverseList(
+						new Pathfinder(GameEngineCollisionMap.toArray(currentMap, currentMap)
 						).getPath(startX, startY, targetX, targetY)));
 				
 			}
@@ -114,8 +119,10 @@ public class MapRouteFinder {
 					System.out.println(mapTo + " mapRouteFinder");
 					//find a path from the start transition point to the transition point 
 					//of the next map
-					path.addAll(reverseList(new Pathfinder(new CollisionMap(buildings,units
-					,maps.getMap(currentMap),currentMap).getCollisionMap()
+					//new CollisionMap(buildings,units
+						//	,maps.getMap(currentMap),currentMap).getCollisionMap()
+					path.addAll(reverseList(
+							new Pathfinder(GameEngineCollisionMap.toArray(currentMap)
 					).getPath(startX, startY, 
 							maps.getMap(currentMap).getTransitionPointByIndex(m)[0],
 							maps.getMap(currentMap).getTransitionPointByIndex(m)[1])));

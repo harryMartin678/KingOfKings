@@ -17,6 +17,7 @@ import GameGraphics.Menu.DrawMenuModel;
 import GameGraphics.Menu.Menu;
 import GameGraphics.Menu.UnitIconSelection;
 import Map.CollisionMap;
+import Map.GraphicsCollisionMap;
 
 public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard,IComMapUpdateDisplayFrame {
 
@@ -48,7 +49,7 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	private UnitModelList unitModels;
 	//private ButtonList buttons;
 	
-	private HoverPanelGraphic hoverPanel;
+	//private HoverPanelGraphic hoverPanel;
 	
 	private int food;
 	private int gold;
@@ -81,6 +82,9 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 		
 		this.playerNumber = playerNumber;
 		menuModels = new DrawMenuModel(units, buildings, buildingModels, unitModels);
+		
+		//System.out.println((this.map.getMap() == null) + " Display");
+		
 		
 	//	menus = new DisplayMenus(scaleFactor,units,buildings,buildingModels,unitModels,map,
 			//	FRAME_X_SIZE,FRAME_Y_SIZE,playerNumber,buttons);
@@ -215,14 +219,13 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 		
 		buildings.begin();
 	    
-	    
 	    if(buildings.isBuildingGhost()){
 	    	//System.out.println(buildings.isBuildingGhost() + " before coll map display");
-	    	CollisionMap collMap = new CollisionMap(buildings,units,map.getMap(),map.getViewedMap());
+	    	//CollisionMap collMap = new CollisionMap(buildings,units,map.getMap(),map.getViewedMap());
 	    	//System.out.println(buildings.isBuildingGhost() + " after coll map display");
 	    	//map.printCollisionMap((int)buildingSelection.getX(),(int)buildingSelection.getY());
-	    	buildings.canBuildThere(collMap);
-	    	buildings.canBuildGhost(collMap);
+	    	buildings.canBuildThere(playerNumber);
+	    	buildings.canBuildGhost();
 	    	//System.out.println(buildingSelection.cantBuild());
 	    	//buildings.drawGhostBuilding();
 	    	buildingModels.drawBuilding(draw, buildings.getGhostBuilding(), frameX, frameY);
@@ -348,31 +351,18 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	   
 	    draw.glDisable(draw.GL_LIGHTING);
 	    //draw menus
-	    int showOffIndex = -1;
-	    if(hoverPanel != null){
-	    	
-	    	if((hoverPanel.getIndex()+1) % 3 == 0 || hoverPanel.getIndex()/3 == 2){
-	    		
-	    		showOffIndex = -1;
-	    	}else{
-	    		
-	    		showOffIndex = hoverPanel.getIndex()+4;
-	    	}
-	    	
-	    }
-	   // System.out.println(food + " " + gold + " display");
-	    
-	  //  menus.drawMenus(draw, frameX, frameY,food,gold,
-	    ///		(int)this.getScreenWidth(),(int)this.getScreenHeight(),hoverPanel != null,
-	    	//	showOffIndex);
-	    drawHoverPanel(draw);
+//	   // System.out.println(food + " " + gold + " display");
+//	    
+//	  //  menus.drawMenus(draw, frameX, frameY,food,gold,
+//	    ///		(int)this.getScreenWidth(),(int)this.getScreenHeight(),hoverPanel != null,
+//	    	//	showOffIndex);
+//	    drawHoverPanel(draw);
 	    //mapDiagram.DrawMapDiagram(draw, this.getScreenWidth(),this.getScreenHeight());
 	    
 	    menu.DrawMenu(draw, (int)this.getScreenWidth(), (int)this.getScreenHeight(),
 	    		new UnitIconSelection(buildings.isUnitCreatorSelected(),
 	    				buildings.getUnitQueueSize()),units.workSelected(),
-	    		units,buildings,map.getWidth(),map.getHeight(),map.getViewedMap(),
-	    		FRAME_X_SIZE,FRAME_Y_SIZE,frameX,frameY);
+	    		units,buildings,map,playerNumber,FRAME_X_SIZE,FRAME_Y_SIZE,frameX,frameY);
 	    
 	    draw.glDisable(draw.GL_LIGHTING);
 	    menuModels.drawUnitIcons(-15.1f,-5.0f,-18.0f, draw, playerNumber, 
@@ -383,14 +373,6 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    draw.glEnable(draw.GL_LIGHTING);
 	    drawable.swapBuffers();
 	
-	}
-	
-	private void drawHoverPanel(GL2 draw) {
-		// TODO Auto-generated method stub
-		if(hoverPanel != null){
-			
-			//menus.drawHoverPanel(draw, hoverPanel);
-		}
 	}
 
 	public static float[] getNormal(Face next, Model model, int currentFrame,int state){
@@ -661,6 +643,7 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 		textures.LoadTextures(new String[]{"rooftiles.png","sandstonewall.jpg"
 				,"fabicTexture.png"});
 		gl.glDisable(gl.GL_TEXTURE_2D);
+		
       
 	}
 
@@ -708,33 +691,8 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 //		hoverPanel = panel;
 //	}
 
-	@Override
-	public void RemoveHoverPanel() {
-		// TODO Auto-generated method stub
-		hoverPanel = null;
-	}
 
-	@Override
-	public void CreateHoverPanel(String type, String name,int index,double cornerX, double cornerY) {
-		// TODO Auto-generated method stub
-		HoverPanelGraphic panel = new HoverPanelGraphic(index);
-		panel.SetColour(1.0f, 1.0f, 1.0f);
-		panel.SetMousePos(cornerX, cornerY);
-		panel.SetName(name);
-		
-		if(type == HoverPanelGraphic.UnitIconPanel){
-			float ux = UnitModelList.getUnitIconX(-15.62f, index);// -16.0f,
-			//float uy = ((index / 4) * -1.0f) - 3.25f;
-			//float[] pos = unitModels.getXY(index,-13.45f,-4.5f);
-			panel.SetPos(ux,-6.5f, 1.0f, 1.0f);
-		}else if(type == HoverPanelGraphic.BuildingIconPanel){
-			
-			float[] pos = buildingModels.getXYofBuildingIcon(name);
-			panel.SetPos(pos[0], pos[1], 1.0f, 1.0f);
-		}
-		
-		hoverPanel = panel;
-	}
+
 
 	
 }

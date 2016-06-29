@@ -13,5 +13,5 @@ public interface IComBuildingList extends IBuildingList {
 	public Building get(int index);
 	
 	public boolean isBuildingGhost();
-	public boolean canBuildGhost(CollisionMap map);
+	public boolean canBuildGhost();
 }
