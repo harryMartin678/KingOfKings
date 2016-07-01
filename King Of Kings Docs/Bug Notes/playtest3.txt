@@ -1,0 +1,14 @@
+-null exception addWorkerToSite probably NewBuilding
+-flashing ghostbuilding
+-ghostbuilding not on center of cursor
+-random arrow glitch
+-update ghostbuilding with new resources
+-worker constantly in building animation and doesn't actually do any building - only happened to player 2
+-units on minimap in front of anything else
+-when trying to build slave it builds servant - done
+-servants and slaves you build act weird
+-when click to get on to a mine it goes the opposite way 
+-when moving frame it is jerky could be frameX and frameY changing in async with display loop
+-when moving frame buildings disappear prematurely out of existence
+-barrack can't build anything
+-client message get all ready null exception thread concurrency 
