@@ -12,6 +12,7 @@ import GameGraphics.GameScreenComposition.IComBuildingListMouseKeyboard;
 import GameGraphics.GameScreenComposition.IComMapDisplay;
 import GameGraphics.GameScreenComposition.IComMapMouseKeyboard;
 import GameGraphics.GameScreenComposition.IComUnitListDisplay;
+import Map.GraphicsCollisionMap;
 
 
 public class Menu {
@@ -34,7 +35,7 @@ public class Menu {
 		UnitIcons = new ArrayList<MenuShape>();
 		BuildingIcons = new ArrayList<MenuShape>();
 		TopIcons = new ArrayList<MenuShape>();
-		saveGame = new SaveGameDialog();
+		//saveGame = new SaveGameDialog();
 //		CreatePopup("Test Popup", "This is a text popup. This is meant as a text. \n "
 //				+ "It should allow for multiple lines. It should also be in the center of \n"
 //				+ "of the screen.");

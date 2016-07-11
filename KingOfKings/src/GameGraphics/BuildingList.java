@@ -25,6 +25,7 @@ IComBuildingListFrameProcess {
 	private int BuildBuilding;
 	private ClientWrapper cmsgs;
 	private Semaphore lock;
+	private IComMouseKeyboardBuildingList mouseKeyboard;
 	
 	public BuildingList(){
 		
@@ -34,6 +35,12 @@ IComBuildingListFrameProcess {
 		BuildBuilding = -1;
 		//used = false;
 		lock = new Semaphore(3);
+	}
+	
+	public void SetUpBuildingList(IComMouseKeyboardBuildingList mouseKeyboard){
+		
+		this.mouseKeyboard = mouseKeyboard;
+		
 	}
 	
 	public void setClientMessager(ClientWrapper cmsgs){
@@ -64,8 +71,10 @@ IComBuildingListFrameProcess {
 	
 	public synchronized void add(Building building){
 		
+		Buildings.Building SizeInfo = Building.GetBuildingClass(building.getName());
+		
 		GraphicsCollisionMap.addBuilding((int)building.getX(), (int)building.getY(),
-				building.getBuildingNo());
+				SizeInfo.getSizeX(),SizeInfo.getSizeY(),building.getBuildingNo());
 		buildings.add(building);
 	}
 	
@@ -172,10 +181,12 @@ IComBuildingListFrameProcess {
 	public synchronized boolean inFrame(int buildingNo, int frameX, int frameY,
 			int FRAME_X_SIZE, int FRAME_Y_SIZE) {
 		// TODO Auto-generated method stub
-		return !(buildings.get(buildingNo).getX() >= frameX 
-			&& buildings.get(buildingNo).getX() < (frameX + FRAME_X_SIZE)
-			&& buildings.get(buildingNo).getY() >= frameY 
-			&& buildings.get(buildingNo).getY() < (frameY + FRAME_Y_SIZE));
+		Buildings.Building SizeInfo = GameGraphics.Building.GetBuildingClass(
+				buildings.get(buildingNo).getName());
+		return !(buildings.get(buildingNo).getX() + SizeInfo.getSizeX() >= frameX 
+			&& buildings.get(buildingNo).getX() - SizeInfo.getSizeX() < (frameX + FRAME_X_SIZE)
+			&& buildings.get(buildingNo).getY() + SizeInfo.getSizeY() >= frameY 
+			&& buildings.get(buildingNo).getY() - SizeInfo.getSizeY() < (frameY + FRAME_Y_SIZE));
 	}
 
 	@Override
@@ -207,7 +218,7 @@ IComBuildingListFrameProcess {
 		// TODO Auto-generated method stub
 		if(ghostBuilding != null && square[0] != -1 && square[1] != -1){
 		
-			ghostBuilding.setXY(square[0], square[1]);
+			ghostBuilding.setXY(square[0], square[1] + 2);
 		}
 	}
 
@@ -352,7 +363,7 @@ IComBuildingListFrameProcess {
 			ghostBuilding.CanBuildThere(playerNumber);
 		}else{
 			
-			System.out.println("NULL GHOSTBUILDING buildingList");
+			//System.out.println("NULL GHOSTBUILDING buildingList");
 		}
 	}
 
@@ -478,6 +489,12 @@ IComBuildingListFrameProcess {
 	public int getBuildingPlayer(int b) {
 		// TODO Auto-generated method stub
 		return buildings.get(b).getPlayer();
+	}
+
+	@Override
+	public void moveGhostBuildingGraphics() {
+		// TODO Auto-generated method stub
+		mouseKeyboard.moveGhostBuilding();
 	}
 
 

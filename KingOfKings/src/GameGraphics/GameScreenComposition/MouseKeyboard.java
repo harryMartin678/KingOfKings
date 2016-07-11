@@ -8,10 +8,12 @@ import java.util.ArrayList;
 import Buildings.Names;
 import GameClient.ClientMessages;
 import GameGraphics.Building;
+import GameGraphics.IComMouseKeyboardBuildingList;
 import GameGraphics.Menu.IComMouseKeyboardMenu;
 import GameGraphics.Menu.Menu;
 
-public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,IComMouseKeyboardMenu {
+public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,
+	IComMouseKeyboardMenu,IComMouseKeyboardBuildingList {
 	
 	private MouseEvent mouse;
 	private boolean drag = false;
@@ -238,8 +240,18 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,IC
 	
 		display.moveMap(square);
 		
-		buildings.moveGhostBuilding(square);
+		//buildings.moveGhostBuilding(square);
 	   
+	}
+	
+	public void moveGhostBuilding(){
+		
+		double mx = (double) MouseInfo.getPointerInfo().getLocation().getX()/(double)width;
+	    double my = (double) MouseInfo.getPointerInfo().getLocation().getY()/(double)height;
+	    	
+		int square[] = selectMap(mx,my);  
+		
+		buildings.moveGhostBuilding(square);
 	}
 	
 	private boolean selectMenu(double x, double y,int food, int gold,boolean hover){
@@ -317,26 +329,39 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,IC
 		//0.96505049 - (y*(0.06950354576/2.0)),
 		//0.15739385783672333 + (x*(0.03513909876/2.0)),
 		//0.99776741 - (y*(0.06950354576/2.0)),
-		for(int y = 0; y < display.getFrameSizeY(); y++){
-			for(int x = 0; x < display.getFrameSizeX(); x++){
-				//0.99776741 //0.96505049 //0.9347517490386963 // 0.9702127575874329
-				if(inRect(0.0 + (x*(0.03513909876/2.0)),
-						0.748221906116643 - (y*(0.06950354576/2.0)),
-						0.01762114537444934 + (x*(0.03513909876/2.0)),
-						0.7809388335704125 - (y*(0.06950354576/2.0)),
-							mx,my)){
-					
-					int difference = (int)(Math.abs((mx - 0.145 + (x*(0.03513909876/2.0)))) +
-							Math.abs((my - 0.955 + (y*(0.06950354576/2.0))))) * 1000;
-					
-					//System.out.println(x + " " + y + " MouseKeyboard");
-					return display.getFrameAdjustedPos(new int[]{x,y,difference});
-					
-				}
-			}
+//		for(int y = 0; y < display.getFrameSizeY(); y++){
+//			for(int x = 0; x < display.getFrameSizeX(); x++){
+//				//0.99776741 //0.96505049 //0.9347517490386963 // 0.9702127575874329
+//				if(inRect(0.0 + (x*(0.03513909876/2.0)),
+//						0.748221906116643 - (y*(0.06950354576/2.0)),
+//						0.01762114537444934 + (x*(0.03513909876/2.0)),
+//						0.7809388335704125 - (y*(0.06950354576/2.0)),
+//							mx,my)){
+//					
+//					int difference = (int)(Math.abs((mx - 0.145 + (x*(0.03513909876/2.0)))) +
+//							Math.abs((my - 0.955 + (y*(0.06950354576/2.0))))) * 1000;
+//					
+//					//System.out.println(x + " " + y + " MouseKeyboard");
+//					return display.getFrameAdjustedPos(new int[]{x,y,difference});
+//					
+//				}
+//			}
+//		}
+		
+		int x = (int)(mx / 0.01756954938);
+		int y = (int)((0.748221906116643 - my)/0.03475177288);
+		
+		if(x >= display.getFrameSizeX() || y >= display.getFrameSizeY()){
+			
+			return new int[]{-1,-1,-1};
 		}
 		
-		return new int[]{-1,-1,-1};
+		int difference = (int)(Math.abs((mx - 0.145 + (x*(0.03513909876/2.0)))) +
+				Math.abs((my - 0.955 + (y*(0.06950354576/2.0))))) * 1000;
+		
+		
+		return display.getFrameAdjustedPos(new int[]{x,y,difference});
+		
 	}
 	
 	private void selectMiniMap(double x, double y){

@@ -123,7 +123,8 @@ public class BuildingList implements IBuildingList,IComBuildingBATTList {
 		buildings.get(buildings.size()-1).setPlayer(player);
 		buildings.get(buildings.size()-1).SetBuildingNo(buildingNo);
 		
-		GameEngineCollisionMap.addBuilding(x, y, buildingNo, map);
+		GameEngineCollisionMap.addBuilding(x, y,building.getSizeX(),building.getSizeY(),
+				buildingNo, map);
 		
 		
 	}
@@ -133,6 +134,7 @@ public class BuildingList implements IBuildingList,IComBuildingBATTList {
 		//System.out.println("addBuilding");
 		buildings.add(building);
 		GameEngineCollisionMap.addBuilding(building.getX(), building.getY(),
+				building.getSizeX(),building.getSizeY(),
 				building.getBuildingNo(), building.getMap());
 	}
 

@@ -17,7 +17,7 @@ public class GameEngineCollisionMap {
 	
 	public static void addUnit(int x, int y, int unitNo, int mapNo){
 		
-		GameEngineCollisionMap.maps[mapNo].addUnit(x, y, unitNo);
+		GameEngineCollisionMap.maps[mapNo].addUnit(x, y, unitNo,false);
 	}
 	
 	public static void removeUnit(int unitNo, int mapNo){
@@ -25,14 +25,19 @@ public class GameEngineCollisionMap {
 		GameEngineCollisionMap.maps[mapNo].RemoveUnit(unitNo);
 	}
 	
-	public static void addBuilding(int x, int y, int buildingNo, int mapNo){
+	public static void addBuilding(int x, int y,int SizeX,int SizeY, int buildingNo, int mapNo){
 		
-		GameEngineCollisionMap.maps[mapNo].addBuilding(x, y, buildingNo);
+		GameEngineCollisionMap.maps[mapNo].addBuilding(x, y,SizeX,SizeY, buildingNo);
 	}
 	
 	public static void removeBuilding(int buildingNo,int mapNo){
 		
 		GameEngineCollisionMap.maps[mapNo].removeBuilding(buildingNo);
+	}
+	
+	public static void moveUnit(int unitNo,int newX,int newY,int mapNo){
+		
+		GameEngineCollisionMap.maps[mapNo].moveUnit(unitNo, newX, newY);
 	}
 	
 	public static boolean InArea(int x, int y, int SizeX,int SizeY, int mapNo){
@@ -53,5 +58,10 @@ public class GameEngineCollisionMap {
 	public static int[][] toArray(int mapNo,int ignoreUnit){
 		
 		return GameEngineCollisionMap.maps[mapNo].ToArray(ignoreUnit);
+	}
+
+	public static int IsUnitInFront(int unitNo, int[] direction, int mapNo) {
+		// TODO Auto-generated method stub
+		return GameEngineCollisionMap.maps[mapNo].IsUnitInFront(unitNo, direction);
 	}
 }

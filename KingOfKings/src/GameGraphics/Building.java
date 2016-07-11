@@ -75,6 +75,13 @@ public class Building {
 
 	public String getUnitFromQueue(int no){
 		
+//		System.out.println("BUILDING QUEUE START BUILDING");
+//		for(int q = 0; q < unitQueue.size(); q++){
+//			
+//			System.out.println(unitQueue.get(q));
+//		}
+//		System.out.println("BUILDING QUEUE END BUILDING");
+		
 		return unitQueue.get(no);
 	}
 	
@@ -137,9 +144,10 @@ public class Building {
 		if(!name.equals(Names.MINE)){
 			int sizeX = check.getSizeX();
 			int sizeY = check.getSizeY();
-			//System.out.println(sizeX + " " + sizeY + " building CanBuildThere");
-			cantBuild = !GraphicsCollisionMap.InArea((int)this.x,(int)this.y,sizeX,sizeY) 
+		  
+			cantBuild = GraphicsCollisionMap.InArea((int)this.x,(int)this.y,sizeX,sizeY) 
 						|| playerNumber != this.getPlayer();
+			
 		}else{
 			//System.out.println(map.getCollisionMap()[(int)this.x][(int)this.y] + " building");
 			cantBuild = !(GraphicsCollisionMap.getTile((int)this.x, (int)this.y) == 3)

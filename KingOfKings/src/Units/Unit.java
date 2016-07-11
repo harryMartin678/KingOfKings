@@ -10,6 +10,7 @@ import GameClient.ParseText;
 import GameServer.AddUnitModule;
 import Map.CollisionMap;
 import Map.GameEngineCollisionMap;
+import Map.GraphicsCollisionMap;
 
 public class Unit {
 	
@@ -26,6 +27,8 @@ public class Unit {
 	private boolean isAttack;
 	private int delayAttack;
 	private int delayRetreat;
+	
+	//private boolean changed;
 	
 	private float groupSpeed;
 	private boolean stop;
@@ -53,6 +56,21 @@ public class Unit {
 		delayAttack = 0;
 		delayRetreat = 0;
 	}
+	
+//	public boolean IsChanged(){
+//		
+//		return changed;
+//	}
+//	
+//	public void SetUnChanged(){
+//		
+//		changed = false;
+//	}
+//	
+//	private void SetChanged(){
+//		
+//		changed = true;
+//	}
 	
 	public void attack(int ax, int ay){
 		
@@ -347,7 +365,7 @@ public class Unit {
 //		}
 		
 		//System.out.println((targetX - x ) + " " + (targetY - y) +  " in unit");
-		
+		//SetChanged();
 		if(targetX - x > 0 && targetY - y == 0){
 			
 			//System.out.println("90 unit");
@@ -392,6 +410,7 @@ public class Unit {
 	
 	public void move(){
 		
+		//SetChanged();
 		moving = true;
 	}
 	
@@ -437,7 +456,9 @@ public class Unit {
 				
 				recalculate = 0;
 			}
-			return new int[]{(int)path.get(0)[0],(int)path.get(0)[1],map};
+			//return new int[]{(int)path.get(0)[0],(int)path.get(0)[1],map};
+			return new int[]{(int)path.get(path.size()-1)[0],
+					(int)path.get(path.size()-1)[1],map};
 		}
 	}
 	
@@ -461,57 +482,92 @@ public class Unit {
 				//end of group movement if this is a group movement
 				groupSpeed = -1;
 				
+			}else if(path.size() == 0){
+				
+				moving = false;
+				
 			}else{
 	
 				stop = false;
 				
-				//if there is a unit in front of this unit
-				for(int u = 0; u < units.size(); u++){
+				int isUnitInFront = GameEngineCollisionMap.IsUnitInFront(ownNo,
+						new int[]{ ((int)path.get(1)[0] - (int)path.get(0)[0]),
+								 ((int)path.get(1)[1] - (int)path.get(0)[1])},map);
+				
+				if(isUnitInFront != -1 && !units.get(isUnitInFront).dead()){
 					
-					//ignore itself
-					if(u == ownNo){
+					System.out.println(isUnitInFront + " IsUnitInFront Unit");
+					if(isUnitInFront == ownNo){
 						
-						continue;
+						System.out.println(((path.get(1)[0] - path.get(0)[0])) + " " +
+								(path.get(1)[1] - path.get(0)[1]) + " IsOwn Unit");
+						System.out.println(path.get(1)[0] + " " + path.get(0)[0] + " xs Unit");
+						System.out.println(path.get(1)[1] + " " + path.get(0)[1] + " ys Unit");
 					}
-					
-					//don't worry if it's the destination
-					if(path.size() == 0){
+					System.out.println(isUnitInFront + " InFront Unit");
+					if(units.get(isUnitInFront).getMoving()){
 						
-						moving = false;
-						break;
+						stop = true;
 						
-					}
-					
-					//if there is a unit in front of it
-					if(!units.get(u).dead() && path.get(1)[0] ==  ParseText.round(units.get(u).getX())
-							&& path.get(1)[1] == ParseText.round(units.get(u).getY())){
-						//System.out.println("unit stop " + this.getUnitNo() + " unit");
-						if(units.get(u).getMoving()){
-
-							stop = true;
-							
+					}else{
+						
+						if(isUnitInFront == follow){
+							recalculate = 2;
 						}else{
-							
-							//if it's close to the destination then stop
-							//if(path.size() == 2){
-								
-								//path.clear();
-								//moving = false;
-								
-							//else find another route 
-							//}else{
-								
-								if(u == follow){
-									recalculate = 2;
-								}else{
-									recalculate = 1;
-								}
-							//}
-							
-							
+							recalculate = 1;
 						}
+						
 					}
 				}
+				
+				//this needs to use the spatial map, very INEFFICIENT 
+				//if there is a unit in front of this unit
+//				for(int u = 0; u < units.size(); u++){
+//					
+//					//ignore itself
+//					if(u == ownNo){
+//						
+//						continue;
+//					}
+//					
+//					//don't worry if it's the destination
+//					if(path.size() == 0){
+//						
+//						moving = false;
+//						break;
+//						
+//					}
+//					
+//					//if there is a unit in front of it
+//					if(!units.get(u).dead() && path.get(1)[0] ==  ParseText.round(units.get(u).getX())
+//							&& path.get(1)[1] == ParseText.round(units.get(u).getY())){
+//						//System.out.println("unit stop " + this.getUnitNo() + " unit");
+//						if(units.get(u).getMoving()){
+//
+//							stop = true;
+//							
+//						}else{
+//							
+//							//if it's close to the destination then stop
+//							//if(path.size() == 2){
+//								
+//								//path.clear();
+//								//moving = false;
+//								
+//							//else find another route 
+//							//}else{
+//								
+//								if(u == follow){
+//									recalculate = 2;
+//								}else{
+//									recalculate = 1;
+//								}
+//							//}
+//							
+//							
+//						}
+//					}
+//				}
 				
 				//if the unit hasn't stopped then keep going 
 				if(!stop){
@@ -579,9 +635,15 @@ public class Unit {
 									path.get(1)[0],path.get(1)[1]);
 						}
 					}
+					
+					
 				}
 	
 			}
+		}
+		
+		if(!stop || retreat){
+			GameEngineCollisionMap.moveUnit(ownNo, (int)x, (int)y, map);
 		}
 	}
 	

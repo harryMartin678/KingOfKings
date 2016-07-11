@@ -317,17 +317,17 @@ public class BuildingModelList {
 		
 		if(map.getTile(x, y) == 1){
 			
-			Unit treeUn =new Unit((float) x,(float) y,"tree",0,-1);
+			Unit treeUn = new Unit((float) x,(float) y,"tree",0,-1);
 			models.drawModel(tree,draw,treeUn,WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
 		
 		}else if(map.getTile(x, y) == 2){
 			
-			Unit rockUn =new Unit((float) x,(float) y,"rock",0,-1);
+			Unit rockUn = new Unit((float) x,(float) y,"rock",0,-1);
 			models.drawModel(rock,draw,rockUn,WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
 		
 		}else if(map.getTile(x, y) == 3){
 			
-			Unit goldUn =new Unit((float) x,(float) y,"gold",0,-1);
+			Unit goldUn = new Unit((float) x,(float) y,"gold",0,-1);
 			models.drawModel(gold,draw,goldUn,WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
 		
 		}else if(map.getTile(x,y) == 4){

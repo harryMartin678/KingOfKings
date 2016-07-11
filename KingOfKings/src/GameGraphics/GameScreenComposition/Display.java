@@ -170,7 +170,7 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    			break;
 	    		}
 	    		
-	    		buildingModels.drawTiles(draw, unitModels, map.getMap(), x, y, frameX, frameY);
+	    		buildingModels.drawTiles(draw, unitModels, map.getMap(), x,y, frameX, frameY);
 	    	}
 
 	    }
@@ -226,6 +226,7 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    	//map.printCollisionMap((int)buildingSelection.getX(),(int)buildingSelection.getY());
 	    	buildings.canBuildThere(playerNumber);
 	    	buildings.canBuildGhost();
+	    	buildings.moveGhostBuildingGraphics();
 	    	//System.out.println(buildingSelection.cantBuild());
 	    	//buildings.drawGhostBuilding();
 	    	buildingModels.drawBuilding(draw, buildings.getGhostBuilding(), frameX, frameY);

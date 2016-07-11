@@ -184,7 +184,7 @@ public class Pathfinder {
 //		}
 //		System.out.println("end pathfinder");
 		if((startX == targetX && startY == targetY)
-				|| (map[targetY][targetX] != 0 && map[targetY][targetX] != 4)){
+				|| (map[targetX][targetY] != 0 && map[targetX][targetY] != 4)){
 		
 			ArrayList<int[]> ret = new ArrayList<int[]>();
 			ret.add(new int[]{startX,startY});
@@ -271,8 +271,8 @@ public class Pathfinder {
 			//walkable
 			if(currentNode.getY() >= map.length || currentNode.getX() >= map[0].length || 
 					currentNode.getX() < 0 ||currentNode.getY() < 0 
-					|| (map[currentNode.getY()][currentNode.getX()] != 0
-							&& map[currentNode.getY()][currentNode.getX()] != 4)){
+					|| (map[currentNode.getX()][currentNode.getY()] != 0
+							&& map[currentNode.getX()][currentNode.getY()] != 4)){
 				
 				closedList.add(currentNode);
 				continue;

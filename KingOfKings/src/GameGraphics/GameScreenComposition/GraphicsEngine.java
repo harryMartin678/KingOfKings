@@ -67,8 +67,9 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 		mouseKeyboard.setUpMouseKeyboard((IComUnitListMouseKeyboard)units,
 				(IComBuildingListMouseKeyboard)buildings,(IComDisplayMouseKeyboard) display, 
 				map, myPlayerNumber, cmsg);
+		buildings.SetUpBuildingList(mouseKeyboard);
 
-		GraphicsCollisionMap.RefreshCollisionMap(this.map.getMap().toArray());
+		//GraphicsCollisionMap.RefreshCollisionMap(this.map.getMap().toArray());
 		
 		new Thread(new Runnable(){
 

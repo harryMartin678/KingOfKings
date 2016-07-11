@@ -17,6 +17,7 @@ public class ProcessFrameThread {
 	private IComUnitListFrameProcess units;
 	private IComBuildingListFrameProcess buildings;
 	private IComMouseFrameProcess mouse;
+	private boolean mapBeenSet;
 	
 	public ProcessFrameThread(ClientWrapper cmsg,IComFrameProcessMap map,
 			IComFrameProcessDisplay display,IComGameEngineFrameProcess engine,
@@ -133,6 +134,7 @@ public class ProcessFrameThread {
 	private void processFrame(ArrayList<String> msgs, int index){
 		
 		String msg;
+		boolean mapChangedFrame = false;
 		
 		buildings.clearAllQueues();
 		
@@ -152,18 +154,25 @@ public class ProcessFrameThread {
 			viewedMap = new Integer(msgs.get(index)).intValue();
 			int lastViewedMap = map.getViewedMap();
 			
-			if(lastViewedMap != viewedMap){
+			if(lastViewedMap != viewedMap || !mapBeenSet){
 				
-				map.setLastMapFrames(display.getFrameX(),display.getFrameY());
-			}
-			
-			map.setViewedMap(viewedMap);
-			
-			if(lastViewedMap != viewedMap){
+				if(mapBeenSet){
+					map.setLastMapFrames(display.getFrameX(),display.getFrameY());
+				}
 				
+				map.setViewedMap(viewedMap);
+				mapChangedFrame = true;
+				
+//				if(lastViewedMap != viewedMap){
+//					
 				display.setFrameX(map.getLastMapFramesX());
 				display.setFrameY(map.getLastMapFrameY());
+				//}
+					
+				mapBeenSet = true;
 			}
+			
+			
 			
 			index++;
 		}else{
@@ -195,7 +204,9 @@ public class ProcessFrameThread {
 		
 		units.begin();
 		
-		units.clear();
+		//units.clear();
+		
+		ArrayList<Unit> TempUnits = new ArrayList<Unit>();
 		
 		while(!(msg = msgs.get(m)).equals("buildinglist")){
 			
@@ -223,7 +234,8 @@ public class ProcessFrameThread {
 						new Float(numbers.get(2)).floatValue()
 						,unitName,
 						new Integer(numbers.get(3)).intValue(),new Integer(numbers.get(0)).intValue());
-				units.add(chariot);
+				TempUnits.add(chariot);
+				//units.add(chariot);
 			
 			}else{
 
@@ -255,11 +267,15 @@ public class ProcessFrameThread {
 					//System.out.println(unit.getUnitNo() + " " + unit.getX()
 						//	+ " " + unit.getY());
 				//}
-				units.add(unit);
+				//units.add(unit);
+				TempUnits.add(unit);
 			}
 				
 			m++;
 		}
+		
+		
+		units.setUnits(TempUnits,mapChangedFrame);
 		
 		units.end();
 		
@@ -299,7 +315,7 @@ public class ProcessFrameThread {
 		
 		while(!msgs.get(m).equals("buildingqueue")){
 		//for(int b = m; b < msgs.size(); b++){
-
+			
 			if(msgs.get(m).equals("sites")){
 				
 				m++;

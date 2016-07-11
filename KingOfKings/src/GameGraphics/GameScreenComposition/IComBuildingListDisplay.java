@@ -17,4 +17,5 @@ public interface IComBuildingListDisplay extends IComBuildingList {
 	public boolean isUnitCreatorSelected();
 	public int getUnitQueueSize();
 	public int getBuildingPlayer(int b);
+	public void moveGhostBuildingGraphics();
 }

@@ -12,7 +12,7 @@ public class Map {
 	
 	public Map(int x, int y){
 		
-		map = new int[y][x];
+		map = new int[x][y];
 		transitionPoints = new ArrayList<int[]>();
 	}
 	
@@ -40,7 +40,7 @@ public class Map {
 		
 		//System.out.println(x + " " + y + " " + mapNo + " Map");
 		int[] pt = new int[]{x,y,mapNo};
-		map[y][x] = 4;
+		map[x][y] = 4;
 		
 		transitionPoints.add(pt);
 	}
@@ -97,12 +97,12 @@ public class Map {
 	
 	public void setTile(int x, int y, int tile){
 		
-		map[y][x] = tile;
+		map[x][y] = tile;
 	}
 	
 	public int getTile(int x, int y){
 		
-		return map[y][x];
+		return map[x][y];
 	}
 	
 	public int[] getRow(int row){
@@ -130,7 +130,7 @@ public class Map {
 		for(int y = 0; y < map.length; y++){
 			for(int x = 0; x < map[y].length; x++){
 				
-				System.out.print(map[y][x]);
+				System.out.print(map[x][y]);
 			}
 			
 			System.out.println();

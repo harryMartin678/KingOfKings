@@ -56,7 +56,7 @@ public class GameEngine{
 		context.gameName = mapEntry;
 		context.units = new UnitList();
 		context.buildings = new BuildingList();
-		context.players = new PlayerList(3,500,500);
+		context.players = new PlayerList(3,5000,5000);
 		context.dip = new Diplomacy(playerNo);
 		context.sites = new BuildingProgress();
 		context.battles = new UnitBattleList(context.units);

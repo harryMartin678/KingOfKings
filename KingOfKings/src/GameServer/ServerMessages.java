@@ -124,7 +124,9 @@ public class ServerMessages {
 		output += engine.getPlayerResource(thisPlayer);
 		output += "END_FRAME\n";
 		//addMessage(player,output);
-		
+		if(engine.getUnitQueues(thisPlayer).length() > 0){
+			System.out.println(output + " ServerMessage");
+		}
 		return output;
 		
 	}

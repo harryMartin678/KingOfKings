@@ -52,7 +52,7 @@ public class DrawMenuModel {
 				units.end();
 				//drawMenuQuad(draw,-13.52f,-2.85f, -18.0f,1.0f, 0.84f, 0.0f,1.75f,1.5f, 1.5f);
 				buildings.begin();
-				unitModels.drawBuildingQueue(x + 2.0f,y,z,draw,SelectedBuilding,playerNumber);
+				unitModels.drawBuildingQueue(x+3.0f ,y -1.0f,z,draw,SelectedBuilding,playerNumber);
 				buildings.end();
 			}
 	}

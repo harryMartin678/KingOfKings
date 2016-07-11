@@ -52,7 +52,7 @@ public class Minimap {
 			new Rectangle().DrawWithoutCreation(draw, ScreenWidth, ScreenHeight,
 					CenterX + ((buildings.getBuildingX(b)/(float)mapWidth) * SizeX), 
 					CenterY + ((buildings.getBuildingY(b)/(float)mapHeight) * SizeY), 
-					0.002f, 0.002f, buffer.get(0), buffer.get(1),buffer.get(2),true);
+					0.004f, 0.004f, buffer.get(0), buffer.get(1),buffer.get(2),true);
 		}
 		buildings.end();
 		//System.out.println(FRAME_X_SIZE + " " + mapWidth + " MiniMap");

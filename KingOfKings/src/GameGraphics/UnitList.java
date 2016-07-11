@@ -1,13 +1,13 @@
 package GameGraphics;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.Semaphore;
 
 import Buildings.Names;
 import GameGraphics.GameScreenComposition.IComUnitListDisplay;
 import GameGraphics.GameScreenComposition.IComUnitListFrameProcess;
 import GameGraphics.GameScreenComposition.IComUnitListMouseKeyboard;
-import GameGraphics.Menu.IComMenuUnitList;
 import Map.GraphicsCollisionMap;
 
 public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,
@@ -62,7 +62,9 @@ IComUnitListFrameProcess {
 //		
 //		used = true;
 		try {
+			GraphicsCollisionMap.Begin();
 			lock.acquire();
+
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -80,9 +82,10 @@ IComUnitListFrameProcess {
 	}
 	
 	public void remove(int index){
-		
+	
 		GraphicsCollisionMap.removeUnit(units.get(index).getUnitNo());
 		units.remove(index);
+		
 	}
 	
 	public void removeByUnitNo(int unitNo){
@@ -96,6 +99,7 @@ IComUnitListFrameProcess {
 				break;
 			}
 		}
+		
 	}
 	
 	public Unit getUnitByUnitNo(int unitNo){
@@ -126,6 +130,7 @@ IComUnitListFrameProcess {
 		
 		//used = false;
 		//currentThread = null;
+		GraphicsCollisionMap.End();
 		lock.release();
 	}
 
@@ -496,6 +501,29 @@ IComUnitListFrameProcess {
 	public int getUnitPlayer(int unitNo) {
 		// TODO Auto-generated method stub
 		return units.get(unitNo).getPlayer();
+	}
+
+	@Override
+	public void setUnits(ArrayList<Unit> units,boolean isMapRefresh) {
+		// TODO Auto-generated method stub
+		if(isMapRefresh){
+			
+			this.clear();
+		}else{
+			
+			while(this.units.size() > 0){
+				
+				this.remove(0);
+			}
+		}
+			
+		//this.units.clear();
+		
+		for(int n = 0; n < units.size(); n++){
+			
+			this.add(units.get(n));
+		}
+		
 	}
 
 }
