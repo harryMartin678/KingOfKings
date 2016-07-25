@@ -15,7 +15,8 @@ public class CreateVectorObj {
 		ArrayList<ArrayList<Vertex>> keyFrame = new ArrayList<ArrayList<Vertex>>();
 		for(int f = 1; f <= fileNo; f++){
 			
-			keyFrame.add(new EditModel(filename + new Integer(f).toString()).getVertices());
+			keyFrame.add(new EditModel(
+					filename.replace('x', new Integer(f).toString().charAt(0))).getVertices());
 		}
 		
 		ArrayList<Vector> vectors = new ArrayList<Vector>();
@@ -117,9 +118,9 @@ public class CreateVectorObj {
 		}
 	}
 	
-	public static void main(String[] args) {
-		
-		new CreateVectorObj("bin/ModelEditor/templateAnim", 2);
-	}
+//	public static void main(String[] args) {
+//		
+//		new CreateVectorObj("bin/ModelEditor/SwordsSmithxd", 3);
+//	}
 
 }

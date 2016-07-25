@@ -56,10 +56,7 @@ public class ArrowAnimation {
 			arrowY -= speed;
 		}
 			
-			
-		
 		//System.out.println(targetX + " " + targetY + " " + arrowX + " " + arrowY + " AnimationArrow");
-		
 		if(Math.abs(targetX - arrowX) < speed || Math.abs(targetY - arrowY) < speed){
 			
 			arrowX = targetX;

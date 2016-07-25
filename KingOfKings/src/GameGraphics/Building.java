@@ -184,7 +184,7 @@ public class Building {
 	
 	public boolean IsTowerAttack(){
 		
-		return attack != -1;
+		return attack != -1 && !site;
 	}
 	
 	public void NotEnoughResourcesToBuilding(){

@@ -67,6 +67,8 @@ public class EditModel {
 		
 		File newFile = new File(String.join("/", newParts) + ".obj");
 		
+		System.out.println(newFile.getAbsolutePath());
+		
 		BufferedWriter writer = null;
 		try {
 			writer = new BufferedWriter(new FileWriter(newFile));
@@ -254,9 +256,9 @@ public class EditModel {
 
 	
 	
-//	public static void main(String[] args) {
-//		
-//		new EditModel("bin/ModelEditor/archer1");
-//	}
+	public static void main(String[] args) {
+		
+		new EditModel("bin/ModelEditor/SwordsSmith");
+	}
 
 }
