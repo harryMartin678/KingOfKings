@@ -1,5 +1,5 @@
 # Blender MTL File: 'ballistictower1d.blend'
-# Material Count: 7
+# Material Count: 8
 
 newmtl Material.000
 Ns 96.078431
@@ -30,7 +30,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd  C:\\Users\\harry\\Documents\\Models\\BuildingModels\\Texture\\rooftiles.jpg
+map_Kd  C:\\Users\\harry\\Documents\\Non-code material\\King Of Kings Docs\\NewModels\\BuildingModels\\Texture\\rooftiles.jpg
 
 newmtl Material.003
 Ns 96.078431
@@ -66,6 +66,16 @@ newmtl Material.006
 Ns 96.078431
 Ka 1.000000 1.000000 1.000000
 Kd 0.787909 0.127936 0.006338
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+
+newmtl Material.007
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.098400 0.098400 0.098400
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.000000

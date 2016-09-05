@@ -1,6 +1,8 @@
 package GameGraphics.GameScreenComposition;
 
 import java.io.IOException;
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
 import com.jogamp.opengl.GL2;
@@ -10,6 +12,7 @@ import com.jogamp.opengl.util.gl2.GLUT;
 
 import GameGraphics.Building;
 import GameGraphics.Face;
+import GameGraphics.IBoundingBoxes;
 import GameGraphics.Model;
 import GameGraphics.Unit;
 import GameGraphics.Vertex;
@@ -31,8 +34,8 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	private int playerNumber;
 	
 	private final float scaleFactor = 1.0f; 
-	private final float WIDTH_CONST = 27.97f;//20.3f
-	private final float HEIGHT_CONST = 7.85f;//14.21f
+	public static final float WIDTH_CONST = 27.97f;//20.3f
+	public static final float HEIGHT_CONST = 7.85f;//14.21f
 	private final int FRAME_Y_SIZE = 22;//28
 	private final int FRAME_X_SIZE = 57;//40
 	
@@ -41,6 +44,14 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	
 	private int delayedFrameX = 0;
 	private int delayedFrameY = 0;
+	
+	public static final float[][] LookAtMatrix = new float[][]{{0.0f, 0.0f, 10.0f}, 
+    		{0.0f, 1.0f, 0.0f}, 
+    		{0.0f, 0.0f, 0.0f}};
+    		
+    public static float[] modelview;
+    public static float[] projection;
+    public static int[] viewport;
 	
 	private float w;
 	private float h;
@@ -105,6 +116,16 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 		    	unitModels.drawFlag(draw, flagUn, frameX, frameY);
 	    	}
 	    }
+	}
+	
+	public IBoundingBoxes getUnitBBoxes(){
+		
+		return unitModels;
+	}
+	
+	public IBoundingBoxes getBuildingBBoxes() {
+		// TODO Auto-generated method stub
+		return buildingModels;
 	}
 	
 	private void drawTiles(GL2 draw){
@@ -178,40 +199,40 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	
 	private void drawUnits(GL2 draw){
 		
-		 units.begin();
-		    
+		units.begin();
 		    //draw units in view 
-		    for(int u = 0; u < units.size(); u++){
-		    	
-		    	if(units.inFrame(u, frameX, frameY, FRAME_X_SIZE, FRAME_Y_SIZE)
-		    			|| map.getTile((int) units.get(u).getX(),(int) units.get(u).getY()) == -1){
-		    		
-		    		continue;
-		    	}
-		    	//System.out.println(units.get(u).getUnitType() + " in draw");
-		    	unitModels.drawUnit(draw, units.get(u),frameX, frameY,
-		    			units.getUnitByUnitNo(units.get(u).getAttacking()));
-		    	unitModels.drawArrows(draw, frameX, frameY);
-		    	
-		    	if(u < units.size() && units.isUnitSelected(units.get(u).getUnitNo())){
-		    		
-		    		draw.glLoadIdentity();
-		    		draw.glTranslatef(units.get(u).getX()-(WIDTH_CONST)-frameX, 
-		    				units.get(u).getY()-(HEIGHT_CONST)-frameY, -34.0f);
-		    		draw.glColor3f(0.0f, 0.0f, 1.0f);
-		    		draw.glScalef(0.5f, 0.5f, 0.5f);
-		    		
-		    		
-		    		draw.glBegin(draw.GL_LINE_LOOP);
-		    			draw.glVertex3f(1.0f, 1.0f, -1.0f); //bottom face
-		    			draw.glVertex3f(-1.0f, 1.0f, -1.0f);
-		    			draw.glVertex3f(-1.0f, -1.0f, -1.0f);
-		    			draw.glVertex3f(1.0f, -1.0f, -1.0f);
-		    		draw.glEnd();
-		    	}
-		    }
-		    unitModels.progressArrowAnim();
-		    units.end();
+	    for(int u = 0; u < units.size(); u++){
+	    	
+	    	if(units.outOfFrame(u, frameX, frameY, FRAME_X_SIZE, FRAME_Y_SIZE)
+	    			|| map.getTile((int) units.get(u).getX(),(int) units.get(u).getY()) == -1){
+	    		
+	    		continue;
+	    	}
+	    	
+	    	
+	    	unitModels.drawUnit(draw, units.get(u),frameX, frameY,
+	    			units.getUnitByUnitNo(units.get(u).getAttacking()));
+	    	unitModels.drawArrows(draw, frameX, frameY);
+	    	
+	    	if(u < units.size() && units.isUnitSelected(units.get(u).getUnitNo())){
+	    		
+	    		draw.glLoadIdentity();
+	    		draw.glTranslatef(units.get(u).getX()-(WIDTH_CONST)-frameX, 
+	    				units.get(u).getY()-(HEIGHT_CONST)-frameY, -34.0f);
+	    		draw.glColor3f(0.0f, 0.0f, 1.0f);
+	    		draw.glScalef(0.5f, 0.5f, 0.5f);
+	    		
+	    		
+	    		draw.glBegin(draw.GL_LINE_LOOP);
+	    			draw.glVertex3f(1.0f, 1.0f, -1.0f); //bottom face
+	    			draw.glVertex3f(-1.0f, 1.0f, -1.0f);
+	    			draw.glVertex3f(-1.0f, -1.0f, -1.0f);
+	    			draw.glVertex3f(1.0f, -1.0f, -1.0f);
+	    		draw.glEnd();
+	    	}
+	    }
+	    unitModels.progressArrowAnim();
+	    units.end();
 	}
 	
 	
@@ -298,14 +319,32 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 		draw.glClear(draw.GL_COLOR_BUFFER_BIT | draw.GL_DEPTH_BUFFER_BIT); // clear color and depth buffers
 	    draw.glLoadIdentity();  // reset the model-view matrix
 	    
+	    modelview = new float[16];
+		projection = new float[16];
+		viewport = new int[4];
+		draw.glGetFloatv(draw.GL_MODELVIEW_MATRIX,modelview,0);
+		draw.glGetFloatv(draw.GL_PROJECTION_MATRIX,projection,0);
+		draw.glGetIntegerv(draw.GL_VIEWPORT, viewport,0);
+//	    float right[]    = { 1, 0, 0, 0 };
+//		float up[]       = { 0, 1, 0, 0 };
+//		float forward[]  = { 0, 0, 1, 0 };
+//		float position[] = { 0, 0, 0, 1 };
+//		 
+//		float ViewMatrix[][] = {
+//		    {   right[0],    right[1],    right[2],    right[3] }, // First column
+//		    {      up[0],       up[1],       up[2],       up[3] }, // Second column
+//		    { forward[0],  forward[1],  forward[2],  forward[3] }, // Third column
+//		    {position[0], position[1], position[2], position[3] }  // Forth column
+//		};
 	    
-	    glu.gluLookAt(0.0f, 0.0f, 10.0f, 
-	    		0.0f, 10.0f, 0.0f, 
-	    		0.0f, 0.0f, 0.0f);
+	    glu.gluLookAt(LookAtMatrix[0][0], LookAtMatrix[0][1], LookAtMatrix[0][2], 
+	    		LookAtMatrix[1][0], LookAtMatrix[1][1], LookAtMatrix[1][2], 
+	    		LookAtMatrix[2][0], LookAtMatrix[2][1], LookAtMatrix[2][2]);
 	    
+	    Unit.AnimateUnits();
 	    //draw.glDisable(draw.GL_LIGHTING);
 	    
-	    
+	    draw.glEnable(draw.GL_LIGHTING);
 	    drawWayPoints(draw);
 	    drawMapFeatures(draw);
 	    drawTiles(draw);
@@ -448,18 +487,31 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 		
 		draw.glLoadIdentity();
 		
+		
+		draw.glColor3f(1.0f, 1.0f, 1.0f);
+		draw.glEnable(draw.GL_TEXTURE_2D);
+		//draw.glDisable(draw.GL_LIGHTING);
+		draw.glBindTexture(draw.GL_TEXTURE_2D, textures.getTexture("floortile.png"));
+		
 		draw.glTranslatef(x-width-frameX, y-height-frameY, -35f);
-		draw.glScalef(0.5f, 0.5f, 0.5f);
+		draw.glScalef(0.75f, 0.75f, 0.75f);
 		draw.glRotatef(90.0f, 1, 0, 0);
-		draw.glColor3f(red, green, blue);
+		//draw.glColor3f(red, green, blue);
 		
 		draw.glNormal3f(0.0f, 1.0f, 0.0f);
 		draw.glBegin(draw.GL_QUADS);
+			draw.glTexCoord2f(0.0f, 0.0f);
 			draw.glVertex3f(1.0f, -1.0f, 1.0f);
+			draw.glTexCoord2f(1.0f, 0.0f);
 			draw.glVertex3f(-1.0f, -1.0f, 1.0f);
+			draw.glTexCoord2f(1.0f, 1.0f);
 			draw.glVertex3f(-1.0f, -1.0f, -1.0f);
+			draw.glTexCoord2f(0.0f, 1.0f);
 			draw.glVertex3f(1.0f, -1.0f, -1.0f);
 		draw.glEnd();
+		
+		draw.glDisable(draw.GL_TEXTURE_2D);
+		//draw.glEnable(draw.GL_LIGHTING);
 		
 	}
 	
@@ -640,9 +692,9 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	
 	public void init(GL2 gl,GLU glu){
 		
+		
 		gl.glEnable(gl.GL_TEXTURE_2D);
-		textures.LoadTextures(new String[]{"rooftiles.png","sandstonewall.jpg"
-				,"fabicTexture.png"});
+		textures.LoadTextures(new String[]{"floortile.png"});
 		gl.glDisable(gl.GL_TEXTURE_2D);
 		
       
@@ -671,6 +723,8 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 		// TODO Auto-generated method stub
 		return FRAME_X_SIZE;
 	}
+
+	
 
 //	@Override
 //	public void CreateHoverPanel(String type,String name, int index,double cornerX, double cornerY) {

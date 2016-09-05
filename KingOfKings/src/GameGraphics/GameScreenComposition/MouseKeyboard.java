@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import Buildings.Names;
 import GameClient.ClientMessages;
 import GameGraphics.Building;
+import GameGraphics.IBoundingBoxes;
 import GameGraphics.IComMouseKeyboardBuildingList;
 import GameGraphics.Menu.IComMouseKeyboardMenu;
 import GameGraphics.Menu.Menu;
@@ -32,6 +33,8 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,
 	private int playerNumber;
 	private ClientWrapper cmsg;
 	private MoveUnit move;
+	private IBoundingBoxes unitBoxes;
+	private IBoundingBoxes buildingBoxes;
 	
 	private int food;
 	private int gold;
@@ -46,13 +49,16 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,
 	
 	public void setUpMouseKeyboard(IComUnitListMouseKeyboard units,
 			IComBuildingListMouseKeyboard buildings, IComDisplayMouseKeyboard display,
-			IComMapMouseKeyboard map,int playerNumber,ClientWrapper cmsg){
+			IComMapMouseKeyboard map,int playerNumber,ClientWrapper cmsg
+			,IBoundingBoxes unitBoxes,IBoundingBoxes buildingBoxes){
 		
 		this.units = units;
 		this.buildings = buildings;
 		this.display = display;
 		this.map = map;
 		this.cmsg = cmsg;
+		this.unitBoxes = unitBoxes;
+		this.buildingBoxes = buildingBoxes;
 		
 		this.playerNumber = playerNumber;
 		
@@ -93,7 +99,8 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,
 	}
 	
 	
-	public void regulateMouse(int frameX,int frameY,int FRAME_X_SIZE,int FRAME_Y_SIZE,int viewedMap){
+	public void regulateMouse(int frameX,int frameY,int FRAME_X_SIZE,int FRAME_Y_SIZE,
+			int viewedMap){
 		
 		//buttons.GetGroup("BuildingIcons").AreDrawn();
 		//buttons.GetGroup("UnitIcons").AreDrawn();
@@ -108,13 +115,14 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,
 //	    	  System.out.println("////////////////////////////");
 
 		      if(!selectMenu(x, y,food,gold,false)){	
-		        	
+
 		    	  int[] click = selectMap(x,y);
 
 		    	  if(units.getSelectedUnitsSize() > 0 && !buildings.isBuildingGhost()){
 		    		  
 		    		  int outcome;
-		    		  if((outcome = buildings.setSelectedBuilding(click[0], click[1],this.playerNumber)) == 0){
+		    		  if((outcome = buildings.setSelectedBuilding(selectBuilding(x,y,frameX,frameY)
+		    				  ,this.playerNumber)) == 0){
 		    			  
 		    			//System.out.println(units.getSelectedUnitsSize() + " regulateMouse");
 		    		  	move.moveUnit(click[0],click[1],click[2],fDown,shiftDown);
@@ -164,17 +172,18 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,
 		    	  
 		    	  }else{
 		    	  
-		    		  if(buildings.setSelectedBuilding(click[0], click[1], this.playerNumber) == 0){
+		    		  if(buildings.setSelectedBuilding(selectBuilding(x,y,frameX,frameY), 
+		    				  this.playerNumber) == 0){
 		    			 
 		    			 if(buildings.selectedBuildingIsTower()){
 		    				 
-		    				 int unitNo = units.getUnitAtttack(click);
+		    				 int unitNo = units.getUnitAtttack(x,y,width,height,unitBoxes,frameX,frameY);
 		    				 cmsg.addMessage("taku " + unitNo + " " + buildings.getSelectedBuildingNo());
 		    				 
 		    			 }else{
 
 		    				 
-		    				 units.addSelectedUnit(click);
+		    				 units.addSelectedUnit(selectUnit(x,y,frameX,frameY));
 			    			 buildings.clearSelectedBuilding();
 		    			 }
 		    			 
@@ -233,15 +242,31 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,
 	    
 	    }
 	    	
-	    double mx = (double) MouseInfo.getPointerInfo().getLocation().getX()/(double)width;
-	    double my = (double) MouseInfo.getPointerInfo().getLocation().getY()/(double)height;
+	    
 	    	
-		int square[] = selectMap(mx,my);    
-	
-		display.moveMap(square);
+		
 		
 		//buildings.moveGhostBuilding(square);
 	   
+	}
+	
+	private int selectBuilding(double x, double y, int frameX, int frameY) {
+		// TODO Auto-generated method stub
+		return buildings.getSelectedBuilding(x,y,width,height,buildingBoxes,frameX,frameY);
+	}
+
+	private int selectUnit(double x, double y,int frameX,int frameY) {
+		// TODO Auto-generated method stub
+		return units.getSelectedUnit(x,y,width,height,unitBoxes,frameX,frameY);
+	}
+
+	public void moveMap(){
+		
+		double mx = (double) MouseInfo.getPointerInfo().getLocation().getX()/(double)width;
+	    double my = (double) MouseInfo.getPointerInfo().getLocation().getY()/(double)height;
+	    
+		int square[] = selectMap(mx,my);    
+		display.moveMap(square);
 	}
 	
 	public void moveGhostBuilding(){
@@ -421,7 +446,8 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,
 	}
 	
 	
-	public void handleMouseDragged(MouseEvent e){
+	public void handleMouseDragged(MouseEvent e,int frameX, int frameY, 
+			int FRAME_X_SIZE, int FRAME_Y_SIZE, int viewedMap){
 		
 		if(!dragBox){
 			
@@ -437,9 +463,12 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,
 		drag = true;
 		dragBox = true;
 		mouse = e;
+		
+		regulateMouse(frameX, frameY, FRAME_X_SIZE, FRAME_Y_SIZE, viewedMap);
 	}
 	
-	public void handleMouseClicked(MouseEvent e){
+	public void handleMouseClicked(MouseEvent e,int frameX, int frameY, 
+			int FRAME_X_SIZE, int FRAME_Y_SIZE, int viewedMap){
 		
 		//System.out.println("click");
 		//System.out.println(e.getX() + " " + e.getY());
@@ -450,12 +479,16 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,
 		//to remove a left over drag box 
 		startDB = null;
 		lastDB = null;
+		
+		regulateMouse(frameX, frameY, FRAME_X_SIZE, FRAME_Y_SIZE, viewedMap);
 	}
 	
-	public void handleHover(MouseEvent e){
+	public void handleHover(MouseEvent e){//,int frameX, int frameY, 
+			//int FRAME_X_SIZE, int FRAME_Y_SIZE, int viewedMap){
 		
 		//RegulateHovering(e.getX()/display.getScreenWidth(),e.getY()/display.getScreenHeight());
 		RegulateHovering(e.getX(),e.getY());
+		//regulateMouse(frameX, frameY, FRAME_X_SIZE, FRAME_Y_SIZE, viewedMap);
 	}
 	
 	
@@ -512,12 +545,14 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,
 		this.gold = gold;
 	}
 
-	public void handleReleasedMouse(MouseEvent e) {
+	public void handleReleasedMouse(MouseEvent e,int frameX, int frameY, 
+			int FRAME_X_SIZE, int FRAME_Y_SIZE, int viewedMap) {
 		// TODO Auto-generated method stub
 		lastDB = null;
 		startDB = null;
 		drag = false;
 		dragBox = false;
+		regulateMouse(frameX, frameY, FRAME_X_SIZE, FRAME_Y_SIZE, viewedMap);
 	}
 
 //	@Override

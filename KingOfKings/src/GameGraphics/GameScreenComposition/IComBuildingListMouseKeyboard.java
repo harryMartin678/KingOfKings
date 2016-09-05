@@ -1,6 +1,7 @@
 package GameGraphics.GameScreenComposition;
 
 import GameGraphics.Building;
+import GameGraphics.IBoundingBoxes;
 
 public interface IComBuildingListMouseKeyboard extends IComBuildingList {
 
@@ -17,7 +18,7 @@ public interface IComBuildingListMouseKeyboard extends IComBuildingList {
 	public void moveGhostBuilding(int[] square);
 	public void setGhostBuilding(Building building);
 	public void endGhostBuildingSession();
-	public int setSelectedBuilding(int clickX, int clickY, int playerNumber);
+	public int setSelectedBuilding(int buildingNo, int playerNumber);
 	public void clearSelectedBuilding();
 	public boolean isBuildingSelected();
 	public void unitIconSelected(int selected,int food, int gold);
@@ -27,4 +28,6 @@ public interface IComBuildingListMouseKeyboard extends IComBuildingList {
 	public int getSelectedBuildingNo();
 	public String getUnitType(int index);
 	public boolean isUnitCreatorSelected();
+	public int getSelectedBuilding(double x, double y, int width,
+			int height, IBoundingBoxes boxes, int frameX,int frameY);
 }

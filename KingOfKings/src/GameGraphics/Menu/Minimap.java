@@ -7,6 +7,7 @@ import com.jogamp.opengl.GL2;
 import GameGraphics.GameScreenComposition.Display;
 import GameGraphics.GameScreenComposition.IComBuildingListDisplay;
 import GameGraphics.GameScreenComposition.IComUnitListDisplay;
+import GameGraphics.GameScreenComposition.TextureRepo;
 
 public class Minimap {
 	
@@ -26,11 +27,11 @@ public class Minimap {
 	public void DrawMinimap(GL2 draw,int ScreenWidth,int ScreenHeight,
 			IComBuildingListDisplay buildings,IComUnitListDisplay units
 			,int mapWidth,int mapHeight,int myPlayer,int FRAME_X_SIZE,int FRAME_Y_SIZE,
-			int FrameX,int FrameY){
+			int FrameX,int FrameY,TextureRepo textures){
 
 		//System.out.println(FRAME_X_SIZE + " " + FRAME_Y_SIZE + " MiniMap");
 		new Rectangle().DrawWithoutCreation(draw, ScreenWidth, ScreenHeight, 
-				CenterX, CenterY, SizeX, SizeY, 0.5f, 0.5f, 0.5f,true);
+				CenterX, CenterY, SizeX, SizeY, 0.5f, 0.5f, 0.5f,true,textures);
 		
 		units.begin();
 		for(int u = 0; u < units.size(); u++){
@@ -52,7 +53,7 @@ public class Minimap {
 			new Rectangle().DrawWithoutCreation(draw, ScreenWidth, ScreenHeight,
 					CenterX + ((buildings.getBuildingX(b)/(float)mapWidth) * SizeX), 
 					CenterY + ((buildings.getBuildingY(b)/(float)mapHeight) * SizeY), 
-					0.004f, 0.004f, buffer.get(0), buffer.get(1),buffer.get(2),true);
+					0.004f, 0.004f, buffer.get(0), buffer.get(1),buffer.get(2),true,textures);
 		}
 		buildings.end();
 		//System.out.println(FRAME_X_SIZE + " " + mapWidth + " MiniMap");
@@ -60,7 +61,7 @@ public class Minimap {
 				CenterX + ((FrameX/(float)mapWidth) * SizeX),
 				CenterY + ((FrameY/(float)mapHeight) * SizeY),
 				((float)FRAME_X_SIZE/(float)mapWidth)*0.1f,
-				((float)FRAME_Y_SIZE/(float)mapHeight)*0.1f, 0.0f, 0.0f, 0.0f, false);
+				((float)FRAME_Y_SIZE/(float)mapHeight)*0.1f, 0.0f, 0.0f, 0.0f, false,textures);
 		
 	}
 	

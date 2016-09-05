@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import GameClient.ClientMessages;
 import GameClient.ParseText;
 import GameGraphics.Building;
-import GameGraphics.ChariotUnit;
 import GameGraphics.Unit;
 
 public class ProcessFrameThread {
@@ -228,16 +227,16 @@ public class ProcessFrameThread {
 				continue;
 			}
 			
-			if(parsed.getUnitType().equals("chariot")){
-				
-				ChariotUnit chariot = new ChariotUnit(new Float(numbers.get(1)).floatValue(),
-						new Float(numbers.get(2)).floatValue()
-						,unitName,
-						new Integer(numbers.get(3)).intValue(),new Integer(numbers.get(0)).intValue());
-				TempUnits.add(chariot);
-				//units.add(chariot);
-			
-			}else{
+//			if(parsed.getUnitType().equals("chariot")){
+//				
+//				ChariotUnit chariot = new ChariotUnit(new Float(numbers.get(1)).floatValue(),
+//						new Float(numbers.get(2)).floatValue()
+//						,unitName,
+//						new Integer(numbers.get(3)).intValue(),new Integer(numbers.get(0)).intValue());
+//				TempUnits.add(chariot);
+//				//units.add(chariot);
+//			
+//			}else{
 
 				
 				Unit unit = new Unit(new Float(numbers.get(1)).floatValue(),
@@ -269,7 +268,7 @@ public class ProcessFrameThread {
 				//}
 				//units.add(unit);
 				TempUnits.add(unit);
-			}
+			//}
 				
 			m++;
 		}

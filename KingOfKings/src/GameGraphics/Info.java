@@ -20,7 +20,6 @@ public class Info {
 	protected void DoConstructor(String information){
 		//ignore letter, then the space
 		pts = new ArrayList<Float>();
-		
 		//split into the numbers 
 		String[] numbers = information.split(" ");
 		

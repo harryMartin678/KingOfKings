@@ -1,6 +1,5 @@
 package GameGraphics.GameScreenComposition;
 
-import GameClient.ClientMessages;
 
 public class MoveUnit {
 	
@@ -16,9 +15,9 @@ public class MoveUnit {
 		this.cmsg = cmsg;
 	}
 	
-	private void singleFollow(int tx,int ty,int difference){
+	private void singleFollow(int unitNo){
 		
-		units.addSelectedUnit(new int[]{tx,ty,difference});
+		units.addSelectedUnit(unitNo);
 		
 		//System.out.println(units.getSelectedUnitsSize() + " singleFollow");
 		  
@@ -29,11 +28,11 @@ public class MoveUnit {
 		}else{
 		  
 			int unitFollow = units.getFollowUnit();
-		  	int unitNo = units.getBaseSelectedUnit();
+		  	int unitSelected = units.getBaseSelectedUnit();
 		  
 		  	units.clearSelectedUnits();
 		  
-		  	cmsg.addMessage("utfl " + unitNo + " " + unitFollow);
+		  	cmsg.addMessage("utfl " + unitSelected + " " + unitFollow);
 		}
 	}
 	
@@ -73,11 +72,11 @@ public class MoveUnit {
 		  }
 	}
 	
-	private void groupFollow(int tx, int ty,int difference){
+	private void groupFollow(int unitNo){
 		
 		int oldSize = units.getSelectedUnitsSize();
 		
-		  units.addSelectedUnit(new int[]{tx,ty,difference});
+		  units.addSelectedUnit(unitNo);
 		  
 		  if(units.getSelectedUnitsSize() == oldSize){
 			  
@@ -130,7 +129,7 @@ public class MoveUnit {
 		}
 	}
 	
-	public void moveUnit(int tx, int ty,int difference,boolean fDown,boolean shiftDown){
+	public void moveUnit(int tx, int ty,int unitNo,boolean fDown,boolean shiftDown){
 
 		//System.out.println(tx + " " + ty + " " + fDown + " " + shiftDown + " "
 			//	+ units.areWayPointSetting() + " moveUnit ");
@@ -141,7 +140,7 @@ public class MoveUnit {
 				if(fDown){
 					 
 					//System.out.println("FOLLOW");
-					singleFollow(tx,ty,difference);
+					singleFollow(unitNo);
 					  
 				  }else{
 					  
@@ -160,7 +159,7 @@ public class MoveUnit {
 			if(!units.areWayPointSetting()){
 				
 				if(fDown){
-					  groupFollow(tx,ty,difference);
+					  groupFollow(unitNo);
 					  
 				  }else{
 					  

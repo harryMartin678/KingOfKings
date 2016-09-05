@@ -3,6 +3,7 @@ package Units;
 import java.util.ArrayList;
 
 import Buildings.Building;
+import Buildings.Names;
 
 public class Worker extends Unit {
 	
@@ -12,7 +13,7 @@ public class Worker extends Unit {
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
-		return super.getName() + ":Worker";
+		return super.getName() + ":" + Names.WORKER;
 	}
 	
 	@Override

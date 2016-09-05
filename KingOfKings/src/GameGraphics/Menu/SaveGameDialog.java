@@ -2,6 +2,8 @@ package GameGraphics.Menu;
 
 import com.jogamp.opengl.GL2;
 
+import GameGraphics.GameScreenComposition.TextureRepo;
+
 public class SaveGameDialog {
 
 	private TextList savedGames;
@@ -27,14 +29,14 @@ public class SaveGameDialog {
 		
 	}
 	
-	public void DrawSaveGameDialog(GL2 draw,int ScreenWidth,int ScreenHeight){
+	public void DrawSaveGameDialog(GL2 draw,int ScreenWidth,int ScreenHeight,TextureRepo textures){
 		
 		new Rectangle().DrawWithoutCreation(draw, ScreenWidth, ScreenHeight,
-				0.1f,0.2f, 0.8f, 0.75f, 1.0f,1.0f,1.0f, true);
+				0.1f,0.2f, 0.8f, 0.75f, 1.0f,1.0f,1.0f, true,textures);
 		new Rectangle().DrawWithoutCreation(draw, ScreenWidth, ScreenHeight,
-				0.15f,0.3f, 0.7f, 0.55f, 1.0f,1.0f,0.0f, true);
+				0.15f,0.3f, 0.7f, 0.55f, 1.0f,1.0f,0.0f, true,textures);
 		
-		savedGames.DrawTextList(draw, ScreenWidth, ScreenHeight);
+		savedGames.DrawTextList(draw, ScreenWidth, ScreenHeight,textures);
 	}
 	
 	public boolean RegulateSGDMouse(float x, float y,int ScreenWidth,int ScreenHeight){

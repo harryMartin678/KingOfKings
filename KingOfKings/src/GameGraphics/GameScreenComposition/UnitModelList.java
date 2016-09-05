@@ -11,30 +11,22 @@ import Buildings.Names;
 import Buildings.UnitCreator;
 import GameGraphics.Building;
 import GameGraphics.BuildingModel;
-import GameGraphics.ChariotModel;
 import GameGraphics.Colour;
 import GameGraphics.Face;
+import GameGraphics.IBoundingBoxes;
 import GameGraphics.Model;
 import GameGraphics.Unit;
 import GameGraphics.Vertex;
 import GameGraphics.VertexTex;
 
-public class UnitModelList {
+public class UnitModelList implements IBoundingBoxes {
 
-	private Model slave;
-	private Model servant;
-	private Model axeman;
+	private Model worker;
 	private Model swordsman;
 	private Model spearman;
-	private Model fishingBoat;
-	private Model warship;
-	private Model flagship;
-	private ChariotModel lightChariot;
-	private ChariotModel heavyChariot;
+	private Model hound;
+	private Model giant;
 	private Model archer;
-	private Model heavyarcher;
-	private Model batteringRam;
-	private Model heavyBatteringRam;
 	private Model arrow;
 	private BuildingModel flag;
 	//private Model[] unitModels;
@@ -66,42 +58,31 @@ public class UnitModelList {
 		
 		arrowAnim = new ArrayList<ArrowAnimation>();
 		
-		servant = new Model(Names.SERVANT,"Models",3,0);
-		slave = new Model(Names.SLAVE,"Models",3,0);
-		axeman = new Model(Names.AXEMAN,"Models",3,0);
 		swordsman = new Model(Names.SWORDSMAN,"Models",3,0);
 		spearman = new Model(Names.SPEARMAN,"Models",3,0);
-		fishingBoat = new Model(Names.FISHINGBOAT,"Models",1,1);
-		fishingBoat.setSize(0.1f, 0.1f, 0.2f);
-		warship = new Model(Names.WARSHIP,"Models",1,1);
-		warship.setSize(0.1f, 0.1f, 0.2f);
-		flagship = new Model(Names.FLAGSHIP,"Models",1,1);
-		warship.setSize(0.1f, 0.1f, 0.2f);
-		lightChariot = new ChariotModel(Names.LIGHTCHARIOT,"Models",3);
-		lightChariot.setSize(0.15f, 0.15f, 0.2f);
-		heavyChariot = new ChariotModel(Names.HEAVYCHARIOT,"Models",3);
-		heavyChariot.setSize(0.15f, 0.15f, 0.2f);
 		archer = new Model(Names.ARCHER,"Models",3,0);
-		heavyarcher = new Model(Names.HEAVYARCHER,"Models",3,0);
-		batteringRam = new Model(Names.BATTERINGRAM,"Models",3,0);
-		batteringRam.setSize(0.1f, 0.1f, 0.2f);
-		heavyBatteringRam = new Model(Names.HEAVYBATTERINGRAM,"Models",3,0);
-		heavyBatteringRam.setSize(0.1f, 0.2f, 0.2f);
-		arrow = new Model(Names.ARROW,"Models",1,0);
+		archer.setSize(1.0f, 1.0f, 1.0f);
+		worker = new Model(Names.WORKER, "Models", 3, 0);
+		//worker.setAngle(45);
+		worker.setSize(1.0f, 1.0f, 1.0f);
+		worker.setTrans(0.0f, 0.0f);
+		giant = new Model(Names.GIANT, "Models", 3,0);
+		hound = new Model(Names.HOUND, "Models", 3,0);
+		hound.setSize(1.0f, 1.0f, 1.0f);
+		hound.setTrans(0.0f, 0.0f);
+
+		arrow = new Model(Names.ARROW,"Models",1,3);
 		arrow.setSize(0.075f, 0.075f, 0.075f);
 		
-		flag = new BuildingModel("flag","Models",1);
+		flag = new BuildingModel("flag","Models",1,true);
 		flag.setSize(0.3f,0.3f, 0.3f);
 		
 		models.put(Names.ARCHER, archer);
-		models.put(Names.AXEMAN, axeman);
-		models.put(Names.BATTERINGRAM, batteringRam);
-		models.put(Names.HEAVYARCHER, heavyarcher);
-		models.put(Names.HEAVYBATTERINGRAM, heavyBatteringRam);
-		models.put(Names.SERVANT, servant);
-		models.put(Names.SLAVE, slave);
 		models.put(Names.SPEARMAN, spearman);
 		models.put(Names.SWORDSMAN, swordsman);
+		models.put(Names.GIANT, giant);
+		models.put(Names.HOUND, hound);
+		models.put(Names.WORKER, worker);
 		//unitModels = new Model[]{servant,slave,axeman,swordsman,spearman,fishingBoat,warship
 			//	,flagship,lightChariot,heavyChariot,archer,heavyarcher,batteringRam,heavyBatteringRam};
 	}
@@ -159,63 +140,8 @@ public class UnitModelList {
 	
 	public void drawUnit(GL2 draw, Unit unit,int frameX,int frameY,Unit attack){
 		
-		//System.out.println(unit.getUnitType() + " unitModeList");
-		if(unit.getUnitType().equals(Names.SERVANT)){
-    		
-    		drawModel(servant,draw,unit,WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
-    		
-    	}else if(unit.getUnitType().equals(Names.SLAVE)){
-    		
-    		drawModel(slave,draw,unit,WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
-    		
-    	}else if(unit.getUnitType().equals(Names.AXEMAN)){
-    		
-    		drawModel(axeman,draw,unit,WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
-    		
-    	}else if(unit.getUnitType().equals(Names.SWORDSMAN)){
-    		
-    		drawModel(swordsman,draw,unit,WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
-    		
-    	}else if(unit.getUnitType().equals(Names.SPEARMAN)){
-    		
-    		drawModel(spearman,draw,unit,WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
-    		
-    	}else if(unit.getUnitType().equals(Names.ARCHER)){
-    		
-    		drawModel(archer,draw,unit,WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
-    		
-    	}else if(unit.getUnitType().equals(Names.HEAVYARCHER)){
-    		
-    		drawModel(heavyarcher,draw,unit,WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
-    		
-    	}else if(unit.getUnitType().equals(Names.BATTERINGRAM)){
-    		
-    		drawModel(batteringRam,draw,unit,WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
-    		
-    	}else if(unit.getUnitType().equals(Names.HEAVYBATTERINGRAM)){
-    		
-    		drawModel(heavyBatteringRam,draw,unit,WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
-    		
-    	}else if(unit.getUnitType().equals(Names.LIGHTCHARIOT)){
-    		
-    		drawModel(lightChariot,draw,unit,WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
-    		
-    	}else if(unit.getUnitType().equals(Names.HEAVYCHARIOT)){
-    		
-    		drawModel(heavyChariot,draw,unit,WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
-    		
-    	}else if(unit.getUnitType().equals(Names.FISHINGBOAT)){
-    		
-    		drawModel(fishingBoat,draw,unit,WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
-    		
-    	}else if(unit.getUnitType().equals(Names.WARSHIP)){
-    		
-    		drawModel(warship,draw,unit,WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
-    		
-    	}else if(unit.getUnitType().equals(Names.FLAGSHIP)){
-    		
-    		drawModel(flagship,draw,unit,WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
-    	}
+		drawModel(models.get(unit.getUnitType()),draw,unit,
+				WIDTH_CONST,HEIGHT_CONST,frameX,frameY);
 		
 		if(attack != null){ //&& !onArrowList(unit.getUnitNo())){
 			
@@ -258,8 +184,6 @@ public class UnitModelList {
 
 		draw.glLoadIdentity();
 
-		
-		
 		//move the unit in relation to the width and height of the map, and the frame position
 		draw.glTranslatef(unit.getX()-width-frameX, unit.getY()-height-frameY, z); //-35
 		//scales the model's size
@@ -308,12 +232,13 @@ public class UnitModelList {
 				
 				for(int i = 0; i < next.getSize(); i++){
 					
+					
 					Vertex vertex = model.getVertex(next.getFace(i)-1,currentFrame,state);
 					draw.glVertex3f(vertex.getX(),vertex.getY(),vertex.getZ());
 					
 					if(next.IsTextured() && colour.getTexturePath() != null){
 						
-						VertexTex vertexT = model.getVertexTex(next.getTextureFace(i)-1,currentFrame,state);
+						VertexTex vertexT = model.getVertexTex(next.getTextureFace(i)-1,state);
 						draw.glTexCoord2d(vertexT.getX(), vertexT.getY());
 					}
 				}
@@ -512,5 +437,45 @@ public class UnitModelList {
 		return new float[]{(float) x + ((unitNo%5)*0.5f),(float) y + (-(unitNo/4)*0.5f)};
 
 	}
+	
+	
+	public Model GetModel(String unitType){
+		
+		if(Names.WORKER.equals(unitType)){
+			
+			return worker;
+		
+		}else if(Names.ARCHER.equals(unitType)){
+			
+			return archer;
+		
+		}else if(Names.GIANT.equals(unitType)){
+			
+			return giant;
+		
+		}else if(Names.HOUND.equals(unitType)){
+			
+			return hound;
+		
+		}else if(Names.SPEARMAN.equals(unitType)){
+			
+			return spearman;
+		
+		}else if(Names.SWORDSMAN.equals(unitType)){
+			
+			return swordsman;
+			
+		}else{
+			
+			return null;
+		}
+	}
+
+	@Override
+	public float[] GetBoundingBox(String type,int state) {
+		// TODO Auto-generated method stub
+		return GetModel(type).getBB(state);
+	}
+
 	
 }

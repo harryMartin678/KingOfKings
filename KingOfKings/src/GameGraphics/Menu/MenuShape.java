@@ -2,6 +2,8 @@ package GameGraphics.Menu;
 
 import com.jogamp.opengl.GL2;
 
+import GameGraphics.GameScreenComposition.TextureRepo;
+
 public class MenuShape {
 	
 	protected float CenterX;
@@ -15,6 +17,7 @@ public class MenuShape {
 	private boolean Selected;
 	private int MAXDELAY = 10;
 	private int Delay = MAXDELAY;
+	protected String texturePath;
 	
 	private float diffRed;
 	private float diffGreen;
@@ -24,7 +27,7 @@ public class MenuShape {
 
 	
 	public MenuShape(float CenterX,float CenterY,float SizeX,float SizeY,float Red,float Green
-			,float Blue,int index){
+			,float Blue,int index,String texturePath){
 		
 		this.CenterX = CenterX;
 		this.CenterY = CenterY;
@@ -34,6 +37,7 @@ public class MenuShape {
 		this.Green = Green;
 		this.Blue = Blue;
 		this.index = index;
+		this.texturePath = texturePath;
 		
 		Selected = false;
 	}
@@ -93,7 +97,7 @@ public class MenuShape {
 		}
 	}
 	
-	public void Draw(GL2 draw,int ScreenWidth,int ScreenHeight){
+	public void Draw(GL2 draw,int ScreenWidth,int ScreenHeight,TextureRepo textures){
 		
 		
 	}

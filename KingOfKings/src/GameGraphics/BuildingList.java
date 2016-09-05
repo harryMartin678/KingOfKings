@@ -7,12 +7,14 @@ import Buildings.Names;
 import Buildings.UnitCreator;
 import GameClient.ClientMessages;
 import GameGraphics.GameScreenComposition.ClientWrapper;
+import GameGraphics.GameScreenComposition.Display;
 import GameGraphics.GameScreenComposition.IComBuildingListDisplay;
 import GameGraphics.GameScreenComposition.IComBuildingListFrameProcess;
 import GameGraphics.GameScreenComposition.IComBuildingListMouseKeyboard;
 import GameGraphics.Menu.IComMenuBuildingList;
 import Map.CollisionMap;
 import Map.GraphicsCollisionMap;
+import Util.Vector3;
 
 public class BuildingList implements IComBuildingListDisplay, IComBuildingListMouseKeyboard, 
 IComBuildingListFrameProcess {
@@ -235,46 +237,52 @@ IComBuildingListFrameProcess {
 		ghostBuilding = null;
 	}
 	
-	public synchronized int setSelectedBuilding(int clickX, int clickY, int playerNumber){
+	public synchronized int setSelectedBuilding(int buildingNo, int playerNumber){
+		
+		
+		if(buildingNo == -1){
+			
+			return 0;
+		}
 		
 		//this.begin();
-		for(int b = 0; b < buildings.size(); b++){
-			
-			Buildings.Building type = Building.GetBuildingClass(buildings.get(b).getName());
-			
-			if(clickX < buildings.get(b).getX() + type.getSizeX()
-			   && clickX > buildings.get(b).getX() - type.getSizeX()
-			   && clickY < buildings.get(b).getY() + type.getSizeY()
-			   && clickY > buildings.get(b).getY() - type.getSizeY()
-			   ){
+//		for(int b = 0; b < buildings.size(); b++){
+//			
+//			Buildings.Building type = Building.GetBuildingClass(buildings.get(b).getName());
+//			
+//			if(clickX < buildings.get(b).getX() + type.getSizeX()
+//			   && clickX > buildings.get(b).getX() - type.getSizeX()
+//			   && clickY < buildings.get(b).getY() + type.getSizeY()
+//			   && clickY > buildings.get(b).getY() - type.getSizeY()
+//			   ){
 				
 				
-				if(buildings.get(b).getPlayer() == playerNumber){
+			if(buildings.get(buildingNo).getPlayer() == playerNumber){
+				
+				if(buildings.get(buildingNo).isSite()){
 					
-					if(buildings.get(b).isSite()){
-						
-						BuildBuilding = b;
-						this.end();
-						return 3;
-						
-					}else{
-						SelectedBuilding = b;
-						this.end();
-						return 2;
-					}
-					
+					BuildBuilding = buildingNo;
+					this.end();
+					return 3;
 					
 				}else{
-					AttackBuilding = b;
+					SelectedBuilding = buildingNo;
 					this.end();
-					return 1;
-					
+					return 2;
 				}
 				
+				
+			}else{
+				AttackBuilding = buildingNo;
+				this.end();
+				return 1;
+				
 			}
-		}
+				
+//			}
+//		}
 		//this.end();
-		return 0;
+		//return 0;
 	}
 
 	@Override
@@ -495,6 +503,30 @@ IComBuildingListFrameProcess {
 	public void moveGhostBuildingGraphics() {
 		// TODO Auto-generated method stub
 		mouseKeyboard.moveGhostBuilding();
+	}
+
+	@Override
+	public int getSelectedBuilding(double x, double y, int width, int height, IBoundingBoxes boxes, int frameX,
+			int frameY) {
+		// TODO Auto-generated method stub
+		
+		x = x * width;
+		y = y * height;
+		
+		MousePicker picking = new MousePicker();
+		Vector3 ray = picking.CalculateMouseRay((int)x, (int)y, width, height);
+		
+		for(int b = 0; b < buildings.size(); b++){
+			
+			if(picking.IsSelected(boxes.GetBoundingBox(buildings.get(b).getName(),
+					 0), ray,buildings.get(b).getX() - Display.WIDTH_CONST - frameX,
+					buildings.get(b).getY() - Display.HEIGHT_CONST - frameY)){
+				
+				return buildings.get(b).getBuildingNo();
+			}
+		}
+		
+		return -1;
 	}
 
 

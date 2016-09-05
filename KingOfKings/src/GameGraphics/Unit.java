@@ -1,5 +1,7 @@
 package GameGraphics;
 
+import java.util.ArrayList;
+
 import Buildings.Names;
 
 public class Unit {
@@ -15,6 +17,25 @@ public class Unit {
 	private int unitNo;
 	private int angle;
 	private int attackingUnit;
+	private static ArrayList<Unit> MovingUnits = new ArrayList<Unit>();
+	
+	public static void addUnit(Unit unit){
+		
+		MovingUnits.add(unit);
+	}
+	
+	public static void removeUnit(Unit unit){
+		
+		MovingUnits.remove(unit);
+	}
+	
+	public static void AnimateUnits(){
+		
+		for(int m = 0; m < MovingUnits.size(); m++){
+			
+			MovingUnits.get(m).changeCurrentFrame();
+		}
+	}
 	
 	public Unit(float x, float y,String unitType, int player, int unitNo){
 		
@@ -32,7 +53,7 @@ public class Unit {
 	
 	public boolean fireArrow(){
 		
-		return (state == 1 && (unitType.equals(Names.ARCHER) || unitType.equals(Names.HEAVYARCHER)));
+		return (state == 1 && unitType.equals(Names.ARCHER));
 	}
 	
 	public void setAngle(int angle){
@@ -62,16 +83,19 @@ public class Unit {
 	
 	public void setFiring(){
 		
+		this.Animating();
 		state = 1;
 	}
 	
 	public void stopFiring(){
 		
 		state = 0;
+		this.StopAnimating();
 	}
 	
 	public void die(){
 		
+		//this.Animating();
 		state = 2;
 	}
 	
@@ -82,6 +106,7 @@ public class Unit {
 	
 	public void moving(){
 		
+	    this.Animating();
 		moving = true;
 	}
 	
@@ -93,6 +118,7 @@ public class Unit {
 	public void stopMoving(){
 		
 		moving = false;
+		this.StopAnimating();
 	}
 	
 	public void setAttack(int unitToAttack){
@@ -105,6 +131,22 @@ public class Unit {
 		return this.attackingUnit;
 	}
 	
+	private void Animating(){
+		
+		if(state == 0 && !moving){
+			
+			Unit.addUnit(this);
+		}
+	}
+	
+	private void StopAnimating(){
+		
+		if(state == 0 && !moving){
+			
+			Unit.removeUnit(this);
+		}
+	}
+	
 	public boolean inUnit(int x, int y){
 		
 		return (((int)this.x) - x) == 0 && (((int)this.y) - y) == 0; 
@@ -114,7 +156,7 @@ public class Unit {
 		
 		if(moving || state > 0){
 			
-			if(currentFrame == 2){
+			if(currentFrame >= 100){
 				
 				forward = false;
 			
@@ -125,10 +167,10 @@ public class Unit {
 
 			
 			if(forward) {
-				currentFrame ++;
+				currentFrame += 2;
 			}
 			else {
-				currentFrame--;
+				currentFrame -= 2;
 			}
 			
 		}

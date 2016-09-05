@@ -252,13 +252,32 @@ public class EditModel {
 					+ Math.pow(vertex.y - this.y, 2) 
 					+ Math.pow(vertex.z - this.z, 2));
 		}
+		
 	}
 
 	
 	
 	public static void main(String[] args) {
 		
-		new EditModel("bin/ModelEditor/SwordsSmith");
+//		String[] objs = new String[]{"worker","worker1a","worker1d","Archer1","Archer1a"
+//				,"Archer1d","Archer1w","archerytower","archerytower1d","ballistictower",
+//				"ballistictower1d","farm","mine","Giant","Giant1a","Giant1d","Giant1w"
+//				,"GiantLiar","GiantLiar1d","Hound","Hound1a","Hound1d","Hound1w",
+//				"HoundPit","HoundPit1d","royalPalace","Spearman","Spearman1a","Spearman1d",
+//				"Spearman1w","Spearyard","Spearyard1d","stockpile","stockpile1d","SwordsMan",
+//				"SwordsMana1","SwordsMand1","SwordsManw1","SwordsSmith","SwordsSmith1d"};
+//		
+//		for(int f = 0; f < objs.length; f++){
+//			
+//			assert(new File("bin/ModelEditor/" + objs[f] + ".obj").exists());
+//			
+//		}
+//		
+//		for(int b = 0; b < objs.length; b++){
+//			
+//			new EditModel("bin/ModelEditor/" + objs[b]);
+//		}
+		new EditModel("bin/ModelEditor/Stockpile");
 	}
 
 }

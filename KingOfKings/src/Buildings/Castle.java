@@ -1,6 +1,6 @@
 package Buildings;
 
-public class Castle extends Fort {
+public class Castle extends Tower {
 	
 	public Castle(int buildingNo) {
 		super(buildingNo);
@@ -31,11 +31,11 @@ public class Castle extends Fort {
 		return super.getBuildTime()+200;
 	}
 	
-	@Override
-	public String unitcreated() {
-		// TODO Auto-generated method stub
-		return super.unitcreated() + Names.BATTERINGRAM + ";" + Names.HEAVYARCHER;
-	}
+//	@Override
+//	public String unitcreated() {
+//		// TODO Auto-generated method stub
+//		return super.unitcreated() + Names.BATTERINGRAM + ";" + Names.HEAVYARCHER;
+//	}
 	
 	
 	@Override

@@ -37,10 +37,10 @@ public class UnitList implements Cloneable,IUnitList {
 				unit.getMap());
 	}
 	
-	public void addUnitToBoat(int unitNo, int boatNo){
-		
-		((Naval) units.get(boatNo)).addUnit(unitNo);
-	}
+//	public void addUnitToBoat(int unitNo, int boatNo){
+//		
+//		((Naval) units.get(boatNo)).addUnit(unitNo);
+//	}
 	
 	public Unit getUnits(int id){
 		
@@ -106,82 +106,32 @@ public class UnitList implements Cloneable,IUnitList {
 		if(unitType.equals(Names.ARCHER)){
 			
 			units.add(new Archer());
-			units.get(units.size()-1).setPlayer(player);
-			units.get(units.size()-1).setPos(x, y);
-			units.get(units.size()-1).setMap(map);
 				
-		}else if(unitType.equals(Names.AXEMAN)){
-			
-			units.add(new Axeman());
-			units.get(units.size()-1).setPlayer(player);
-			units.get(units.size()-1).setPos(x, y);
-			units.get(units.size()-1).setMap(map);
-			
-			
-		}else if(unitType.equals(Names.BATTERINGRAM)){
-			
-			units.add(new BatteringRam());
-			units.get(units.size()-1).setPlayer(player);
-			units.get(units.size()-1).setPos(x, y);
-			units.get(units.size()-1).setMap(map);
-		
-		}else if(unitType.equals(Names.LIGHTCHARIOT)){
-			
-			units.add(new LightChariot());
-			units.get(units.size()-1).setPlayer(player);
-			units.get(units.size()-1).setPos(x, y);
-			units.get(units.size()-1).setMap(map);
-			
-		}else if(unitType.equals(Names.HEAVYCHARIOT)){
-			
-			units.add(new HeavyChariot());
-			units.get(units.size()-1).setPlayer(player);
-			units.get(units.size()-1).setPos(x, y);
-			units.get(units.size()-1).setMap(map);
-			
-		}else if(unitType.equals(Names.HEAVYARCHER)){
-			
-			units.add(new HeavyArcher());
-			units.get(units.size()-1).setPlayer(player);
-			units.get(units.size()-1).setPos(x, y);
-			units.get(units.size()-1).setMap(map);
-			
-		}else if(unitType.equals(Names.HEAVYBATTERINGRAM)){
-			
-			units.add(new HeavyBatteringRam());
-			units.get(units.size()-1).setPlayer(player);
-			units.get(units.size()-1).setPos(x, y);
-			units.get(units.size()-1).setMap(map);
-			
-		}else if(unitType.equals(Names.SERVANT)){
-			
-			units.add(new Servant());
-			units.get(units.size()-1).setPlayer(player);
-			units.get(units.size()-1).setPos(x, y);
-			units.get(units.size()-1).setMap(map);
-			
-		}else if(unitType.equals(Names.SLAVE)){
-			
-			//System.out.println("add slave");
-			units.add(new Slave());
-			units.get(units.size()-1).setPlayer(player);
-			units.get(units.size()-1).setPos(x, y);
-			units.get(units.size()-1).setMap(map);
-			
 		}else if(unitType.equals(Names.SPEARMAN)){
 			
 			units.add(new Spearman());
-			units.get(units.size()-1).setPlayer(player);
-			units.get(units.size()-1).setPos(x, y);
-			units.get(units.size()-1).setMap(map);
 			
 		}else if(unitType.equals(Names.SWORDSMAN)){
 			
 			units.add(new Swordsman());
-			units.get(units.size()-1).setPlayer(player);
-			units.get(units.size()-1).setPos(x, y);
-			units.get(units.size()-1).setMap(map);
+			
+		}else if(unitType.equals(Names.WORKER)){
+			
+			units.add(new Worker());
+		
+		}else if(unitType.equals(Names.GIANT)){
+			
+			units.add(new Giant());
+		
+		}else if(unitType.equals(Names.HOUND)){
+			
+			units.add(new Hound());
+		
 		}
+		
+		units.get(units.size()-1).setPlayer(player);
+		units.get(units.size()-1).setPos(x, y);
+		units.get(units.size()-1).setMap(map);
 		
 		if(units.size() > 0){
 		

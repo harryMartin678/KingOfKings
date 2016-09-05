@@ -18,7 +18,7 @@ public class Colour {
 	}
 	
 	public void postLine(String line){
-		
+			
 		//ambient coefficient
 		if(line.charAt(0) == 'K' && line.charAt(1) == 'a'){
 			

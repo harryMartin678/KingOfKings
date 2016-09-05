@@ -5,21 +5,27 @@ import java.util.ArrayList;
 
 public class BuildingModel extends Model{
 
+	public BuildingModel(String filename, String folder, int noOfFrames,boolean isSite)
+			throws IOException {
+		
+		super(filename, folder, noOfFrames,3);
+		// TODO Auto-generated constructor stub
+	}
+	
 	public BuildingModel(String filename, String folder, int noOfFrames)
 			throws IOException {
-		super(filename, folder, noOfFrames,1);
-		// TODO Auto-generated constructor stub
+		super(filename, folder, noOfFrames,2);
 	}
 	
 	public String[] getTexturePaths(){
 		
-		ArrayList<Colour> colours = frames.get(0).getMaterials();
+		Colour[] colours = (Colour[]) still.getMaterials().values().toArray();
 		
-		String[] texturePaths = new String[colours.size()];
+		String[] texturePaths = new String[colours.length];
 		
-		for(int i = 0; i < colours.size(); i++){
+		for(int i = 0; i < colours.length; i++){
 			
-			texturePaths[i] = colours.get(i).getTexturePath();
+			texturePaths[i] = colours[i].getTexturePath();
 		}
 		
 		return texturePaths;

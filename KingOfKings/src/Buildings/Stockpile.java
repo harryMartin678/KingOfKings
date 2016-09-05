@@ -25,16 +25,16 @@ public class Stockpile extends UnitCreator {
 		return super.getBuildTime()+100;
 	}
 	
-	public String getUnitBuild(){
-		
-		return Names.SLAVE + ";" + Names.SERVANT;
-	}
-	
-	@Override
-	public String unitcreated() {
-		// TODO Auto-generated method stub
-		return super.unitcreated() + Names.SLAVE + ";" + Names.SERVANT;
-	}
+//	public String getUnitBuild(){
+//		
+//		return Names.SLAVE + ";" + Names.SERVANT;
+//	}
+//	
+//	@Override
+//	public String unitcreated() {
+//		// TODO Auto-generated method stub
+//		return super.unitcreated() + Names.SLAVE + ";" + Names.SERVANT;
+//	}
 	
 	@Override
 	public int getSizeX() {

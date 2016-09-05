@@ -7,6 +7,11 @@ public class VertexTex extends Info {
 		// TODO Auto-generated constructor stub
 	}
 	
+	public VertexTex(){
+		
+		super(true);
+	}
+	
 	public float getX(){
 		
 		return pts.get(0).floatValue();

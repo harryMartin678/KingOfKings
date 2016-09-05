@@ -11,26 +11,28 @@ import GameGraphics.Building;
 import GameGraphics.BuildingModel;
 import GameGraphics.Colour;
 import GameGraphics.Face;
+import GameGraphics.IBoundingBoxes;
+import GameGraphics.Model;
 import GameGraphics.Unit;
 import GameGraphics.Vertex;
 import GameGraphics.VertexTex;
 import Map.Map;
 
-public class BuildingModelList {
+public class BuildingModelList implements IBoundingBoxes {
 	
 	private BuildingModel archeryTower;
 	private BuildingModel ballisticTower;
-	private BuildingModel barrack;
 	private BuildingModel castle;
-	private BuildingModel dock;
 	private BuildingModel farm;
-	private BuildingModel fort;
 	private BuildingModel royalPalace;
-	private BuildingModel stable;
 	private BuildingModel stockpile;
 	private BuildingModel wall;
 	private BuildingModel mine;
 	private BuildingModel site;
+	private BuildingModel giantLiar;
+	private BuildingModel swordsSmith;
+	private BuildingModel spearYard;
+	private BuildingModel houndPit;
 	
 	private BuildingModel tree;
 	private BuildingModel gold;
@@ -56,51 +58,51 @@ public class BuildingModelList {
 		this.textures = textures;
 		//this.buttons = buttons;
 		
-		site = new BuildingModel(Names.SITE,"Models",1);
-		site.setSize(0.075f,0.025f, 0.075f);
+		site = new BuildingModel(Names.SITE,"Models",1,true);
+		site.setSize(2.0f, 2.0f, 2.0f);
 		archeryTower = new BuildingModel(Names.ARCHERYTOWER,"Models",1);
-		archeryTower.setSize(0.25f, 0.25f, 0.25f);
-		archeryTower.setTrans(0.1f, 0.1f);
+		archeryTower.setSize(2.0f, 2.0f, 2.0f);
+		//archeryTower.setTrans(0.1f, 0.1f);
 		ballisticTower = new BuildingModel(Names.BALLISTICTOWER,"Models",1);
-		ballisticTower.setSize(0.25f, 0.25f, 0.25f);
-		ballisticTower.setTrans(0.2f, 0.2f);
-		barrack = new BuildingModel(Names.BARRACK,"Models",1); //2 2
-		barrack.setSize(0.25f, 0.25f, 0.25f);
-		barrack.setTrans(0.1f, -0.175f);
-		castle = new BuildingModel(Names.CASTLE,"Models",1);//3 3
-		castle.setSize(0.095f, 0.12f, 0.1f);
-		castle.setTrans(0.25f, 0.65f);
-		dock = new BuildingModel(Names.DOCK,"Models",1);//2 2
-		dock.setSize(0.075f, 0.075f, 0.075f);
-		farm = new BuildingModel(Names.FARM,"Models",1);//2 2
-		farm.setSize(0.25f, 0.24f, 0.24f);
-		farm.setTrans(0.18f, 0.05f);
-		fort = new BuildingModel(Names.FORT,"Models",1);//3 3
-		fort.setSize(0.35f, 0.37f, 0.35f);
-		fort.setTrans(-1.7f, -1.6f);
-		royalPalace = new BuildingModel(Names.ROYALPALACE,"Models",1);//4 4
-		royalPalace.setSize(0.45f, 0.4f, 0.38f);
-		royalPalace.setTrans(0.4f, 0.55f);
-		stable = new BuildingModel(Names.STABLE,"Models",1); //2 2
-		stable.setTrans(0.2f, -1.0f);
-		stable.setSize(0.32f, 0.32f, 0.32f);
+		ballisticTower.setSize(2.0f, 2.0f, 2.0f);
+		//ballisticTower.setTrans(0.2f, 0.2f);
+		castle = new BuildingModel(Names.CASTLE, "Models", 1,true);
+		castle.setSize(4.0f, 4.0f, 4.0f);
+		//castle.setTrans(0.25f, 0.65f);
+		farm = new BuildingModel(Names.FARM,"Models",1,true);//2 2
+		farm.setSize(2.0f,2.0f, 2.0f);
+		//farm.setTrans(0.18f, 0.05f);
+		royalPalace = new BuildingModel(Names.ROYALPALACE,"Models",1,true);//4 4
+		royalPalace.setSize(4.0f,4.0f,4.0f);
+		//royalPalace.setAngle(45.0f);
+		//royalPalace.setTrans(0.4f, 0.55f);
 		stockpile = new BuildingModel(Names.STOCKPILE,"Models",1);//2 2
-		stockpile.setTrans(0.15f, 0.05f);
-		stockpile.setSize(0.32f, 0.32f, 0.32f);
-		wall = new BuildingModel(Names.WALL,"Models",1);//1 1
-		wall.setSize(0.15f, 0.15f, 0.1f);
+		//stockpile.setTrans(0.15f, 0.05f);
+		stockpile.setSize(2.0f,2.0f,2.0f);
+		wall = new BuildingModel(Names.WALL,"Models",1,true);//1 1
+		wall.setSize(0.1f, 0.1f, 0.1f);
 		//wall.setTrans(-5.0f, -5.0f);
 		//wall.setAngle(90.0f);
-		mine = new BuildingModel(Names.MINE,"Models",1);//1 1
-		mine.setSize(0.15f, 0.15f, 0.15f);
-		mine.setTrans(0.1f, 0.0f);
+		mine = new BuildingModel(Names.MINE,"Models",1,true);//1 1
+		mine.setSize(1.0f, 1.0f, 1.0f);
+		//mine.setTrans(0.1f, 0.0f);
 		
-		tree = new BuildingModel("tree1","Models",3);
-		gold = new BuildingModel("gold","Models",1);
+		giantLiar = new BuildingModel(Names.GIANTLIAR, "Models", 1);
+		giantLiar.setSize(2.0f, 2.0f, 2.0f);
+		spearYard = new BuildingModel(Names.SPEARYARD, "Models", 1);
+		spearYard.setSize(2.0f, 2.0f, 2.0f);
+		swordsSmith = new BuildingModel(Names.SWORDSSMITH, "Models", 1);
+		swordsSmith.setSize(2.0f, 2.0f, 2.0f);
+		houndPit = new BuildingModel(Names.HOUNDPIT, "Models", 1);
+		houndPit.setSize(2.0f, 2.0f, 2.0f);
+		
+		
+		tree = new BuildingModel("tree1","Models",3,true);
+		gold = new BuildingModel("gold","Models",1,true);
 		gold.setSize(0.3f, 0.3f, 0.3f);
-		rock = new BuildingModel("rocks","Models",1);
+		rock = new BuildingModel("rocks","Models",1,true);
 		rock.setSize(0.35f, 0.35f, 0.35f);
-		flag = new BuildingModel("flag","Models",1);
+		flag = new BuildingModel("flag","Models",1,true);
 		flag.setSize(0.3f,0.3f, 0.3f);
 		
 		CreateBuildingIcons();
@@ -126,25 +128,25 @@ public class BuildingModelList {
 										//2.0 , 1.0
 		Building archTower = new Building(x, y, Names.ARCHERYTOWER,-1,0);
 		Building ballisTower = new Building(x + xConst, y, Names.BALLISTICTOWER,-1,0);
-		Building barr = new Building(x + 2*xConst, y, Names.BARRACK,-1,0);
+		Building glia = new Building(x + 2*xConst, y, Names.GIANTLIAR,-1,0);
 		Building cast = new Building(x + 3*xConst, y, Names.CASTLE,-1,0);
-		Building doc = new Building(x + 4*xConst, y, Names.DOCK,-1,0);
+		Building hound = new Building(x + 4*xConst, y, Names.HOUNDPIT,-1,0);
 		Building far = new Building(x + 5*xConst, y, Names.FARM,-1,0);
-		Building fortb = new Building(x  + 6*xConst, y, Names.FORT,-1,0);
-		Building stab = new Building(x + 7*xConst, y, Names.STABLE,-1,0);
+		Building fortb = new Building(x  + 6*xConst, y, Names.SPEARYARD,-1,0);
+		Building sword = new Building(x + 7*xConst, y, Names.SWORDSSMITH,-1,0);
 		Building stock = new Building(x + 8*xConst, y, Names.STOCKPILE,-1,0);
 		Building wal = new Building(x + 2*xConst, y - yConst, Names.WALL,-1,0);
 		Building min = new Building(x + 6*xConst, y - yConst, Names.MINE,-1,0);
 		
 		buildingIcons.put(Names.ARCHERYTOWER, archTower);
 		buildingIcons.put(Names.BALLISTICTOWER, ballisTower);
-		buildingIcons.put(Names.BARRACK, barr);
+		buildingIcons.put(Names.GIANTLIAR, glia);
 		buildingIcons.put(Names.CASTLE, cast);
-		buildingIcons.put(Names.DOCK, doc);
+		buildingIcons.put(Names.HOUNDPIT, hound);
 		buildingIcons.put(Names.FARM, far);
-		buildingIcons.put(Names.FORT, fortb);
+		buildingIcons.put(Names.SPEARYARD, fortb);
 		buildingIcons.put(Names.ROYALPALACE, royalPala);
-		buildingIcons.put(Names.STABLE, stab);
+		buildingIcons.put(Names.SWORDSSMITH, sword);
 		buildingIcons.put(Names.STOCKPILE, stock);
 		buildingIcons.put(Names.WALL, wal);
 		buildingIcons.put(Names.MINE, min);
@@ -160,33 +162,33 @@ public class BuildingModelList {
     		
     		return ballisticTower;
     		
-    	}else if(building.getName().equals(Names.BARRACK)){
+    	}else if(building.getName().equals(Names.GIANTLIAR)){
     		
-    		return barrack;
+    		return giantLiar;
     		
     	}else if(building.getName().equals(Names.CASTLE)){
     		
     		return castle;
     		
-    	}else if(building.getName().equals(Names.DOCK)){
+    	}else if(building.getName().equals(Names.SWORDSSMITH)){
     		
-    		return dock;
+    		return swordsSmith;
     		
     	}else if(building.getName().equals(Names.FARM)){
     		
     		return farm;
     		
-    	}else if(building.getName().equals(Names.FORT)){
+    	}else if(building.getName().equals(Names.SPEARYARD)){
     		
-    		return fort;
+    		return spearYard;
     		
     	}else if(building.getName().equals(Names.ROYALPALACE)){
     		
     		return royalPalace;
     		
-    	}else if(building.getName().equals(Names.STABLE)){
+    	}else if(building.getName().equals(Names.HOUNDPIT)){
     		
-    		return stable;
+    		return houndPit;
     		
     	}else if(building.getName().equals(Names.STOCKPILE)){
     		
@@ -246,7 +248,7 @@ public class BuildingModelList {
 
 		draw.glLoadIdentity();
 
-		draw.glEnable(draw.GL_TEXTURE_2D);
+		//draw.glEnable(draw.GL_TEXTURE_2D);
 		if(onMap) draw.glTranslatef(building.getX()-width-frameX + model.getTransX(),
 				building.getY()-height-frameY + model.getTransY(), z);
 		else draw.glTranslatef(building.getX() ,building.getY(), z);
@@ -263,14 +265,22 @@ public class BuildingModelList {
 				draw.glColor3f(1.0f, 0.0f, 0.0f);
 			else{ 
 				Colour colour = model.getColour(0,0);
+				
+				float[] vertexColour = colour.getDiffuse();
+				
 				texturePath = colour.getTexturePath();
 				if(next.IsTextured() && texturePath != null){
 					
 					draw.glColor3f(1.0f,1.0f,1.0f);
 					draw.glBindTexture(draw.GL_TEXTURE_2D, textures.getTexture(texturePath));
+				}else if(vertexColour[0] == 0.098400f && vertexColour[1] == 0.098400f
+						&& vertexColour[2] == 0.098400f){
+				
+					draw.glColor3fv(Display.getPlayerColour(building.getPlayer()));
+					
 				}else{
 					
-					draw.glColor3fv(FloatBuffer.wrap(colour.getDiffuse()));
+					draw.glColor3fv(FloatBuffer.wrap(vertexColour));
 				}
 				
 			}
@@ -291,7 +301,7 @@ public class BuildingModelList {
 					
 					if(next.IsTextured() && texturePath != null){
 						
-						VertexTex vertexT = model.getVertexTex(next.getTextureFace(i)-1,0,0);
+						VertexTex vertexT = model.getVertexTex(next.getTextureFace(i)-1,0);
 						draw.glTexCoord2f(vertexT.getX(), vertexT.getY());
 					}
 					Vertex vertex = model.getVertex(next.getFace(i)-1,0,0);
@@ -309,7 +319,7 @@ public class BuildingModelList {
 			
 		}
 		
-		draw.glDisable(draw.GL_TEXTURE_2D);
+		//draw.glDisable(draw.GL_TEXTURE_2D);
 	}
 	
 	public void drawTiles(GL2 draw,UnitModelList models,Map map,int x, int y,
@@ -395,14 +405,14 @@ public class BuildingModelList {
 	//	drawButton.DrawButton(draw,group.GetButton(Names.BALLISTICTOWER),z);
 		
 		//Building barr = new Building(x + 4.0f, y - 1.0f, Names.BARRACK,-1,0);
-		Building barr = buildingIcons.get(Names.BARRACK);
-		
-		SetEnoughRes(barr, gold, food);
-		
-		if(!isHoverPanel || dontShowIndex != 2){
-			drawBuildingModel(barrack, draw,barr,
-					WIDTH_CONST,HEIGHT_CONST,z,false,0.2f,frameX,frameY);
-		}
+//		Building glia = buildingIcons.get(Names.GIANTLIAR);
+//		
+//		SetEnoughRes(glia, gold, food);
+//		
+//		if(!isHoverPanel || dontShowIndex != 2){
+//			drawBuildingModel(giantLiar, draw,glia,
+//					WIDTH_CONST,HEIGHT_CONST,z,false,0.2f,frameX,frameY);
+//		}
 		
 		//drawButton.DrawButton(draw,group.GetButton(Names.BARRACK),z);
 		
@@ -421,12 +431,12 @@ public class BuildingModelList {
 		//drawButton.DrawButton(draw,group.GetButton(Names.CASTLE),z);
 		
 		//Building doc = new Building(x + 3.0f, y + 0.30f, Names.DOCK,-1,0);
-		Building doc = buildingIcons.get(Names.DOCK);
+		Building spear = buildingIcons.get(Names.SPEARYARD);
 		
-		SetEnoughRes(doc, gold, food);
+		SetEnoughRes(spear, gold, food);
 		
 		if(!isHoverPanel || dontShowIndex != 4){
-			drawBuildingModel(dock, draw,doc,
+			drawBuildingModel(spearYard, draw,spear,
 					WIDTH_CONST,HEIGHT_CONST,z,false,0.2f,frameX,frameY);
 		}
 		
@@ -445,12 +455,12 @@ public class BuildingModelList {
 		//drawButton.DrawButton(draw,group.GetButton(Names.FARM),z);
 		
 		//Building fortb = new Building(x + 1.5f, y + 1.5f, Names.FORT,-1,0);
-		Building fortb = buildingIcons.get(Names.FORT);
+		Building sword = buildingIcons.get(Names.SWORDSSMITH);
 		
-		SetEnoughRes(fortb, gold, food);
+		SetEnoughRes(sword, gold, food);
 		
 		if(!isHoverPanel || dontShowIndex != 6){
-			drawBuildingModel(fort, draw,fortb,
+			drawBuildingModel(swordsSmith, draw,sword,
 					WIDTH_CONST,HEIGHT_CONST,z,false,0.133f,frameX,frameY);
 		}
 		
@@ -465,12 +475,12 @@ public class BuildingModelList {
 //				WIDTH_CONST,HEIGHT_CONST,z,false,0.1f,frameX,frameY);
 		
 		//Building stab = new Building(x + 4.0f, y + 1.5f, Names.STABLE,-1,0);
-		Building stab = buildingIcons.get(Names.STABLE);
+		Building hound = buildingIcons.get(Names.HOUNDPIT);
 		
-		SetEnoughRes(stab, gold, food);
+		SetEnoughRes(hound, gold, food);
 		
 		if(!isHoverPanel || dontShowIndex != 7){
-			drawBuildingModel(stable, draw,stab,
+			drawBuildingModel(houndPit, draw,hound,
 					WIDTH_CONST,HEIGHT_CONST,z,false,0.2f,frameX,frameY);
 		}
 		
@@ -545,6 +555,71 @@ public class BuildingModelList {
 	public void setHoverPanel(boolean isHoverPanel){
 		
 		this.isHoverPanel = isHoverPanel;
+	}
+	
+	public float[] getModel(String type,int state){
+		
+		if(Names.ARCHERYTOWER.equals(type)){
+			
+			return archeryTower.getBB(state);
+			
+		}else if(Names.BALLISTICTOWER.equals(type)){
+			
+			return ballisticTower.getBB(state);
+			
+		}else if(Names.CASTLE.equals(type)){
+			
+			return castle.getBB(state);
+			
+		}else if(Names.FARM.equals(type)){
+			
+			return farm.getBB(state);
+			
+		}else if(Names.ROYALPALACE.equals(type)){
+			
+			return royalPalace.getBB(state);
+			
+		}else if(Names.STOCKPILE.equals(type)){
+			
+			return stockpile.getBB(state);
+			
+		}else if(Names.WALL.equals(type)){
+			
+			return wall.getBB(state);
+			
+		}else if(Names.MINE.equals(type)){
+			
+			return mine.getBB(state);
+			
+		}else if(Names.SITE.equals(type)){
+			
+			return site.getBB(state);
+			
+		}else if(Names.GIANTLIAR.equals(type)){
+			
+			return giantLiar.getBB(state);
+			
+		}else if(Names.SWORDSMAN.equals(type)){
+			
+			return swordsSmith.getBB(state);
+			
+		}else if(Names.SPEARYARD.equals(type)){
+			
+			return spearYard.getBB(state);
+			
+		}else if(Names.HOUNDPIT.equals(type)){
+			
+			return houndPit.getBB(state);
+			
+		}
+		
+		return null;
+	}
+
+	@Override
+	public float[] GetBoundingBox(String type, int state) {
+		// TODO Auto-generated method stub
+		return getModel(type, state);
 	}
 
 

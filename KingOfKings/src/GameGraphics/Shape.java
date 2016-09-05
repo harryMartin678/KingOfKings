@@ -8,22 +8,25 @@ public class Shape {
 	private ArrayList<VertexTex> verticesTex;
 	private ArrayList<Vertex> vertices;
 	private ArrayList<Face> faces;
-	private ArrayList<int[]> materials;
+	private ArrayList<String[]> materials;
 	private ArrayList<Colour> colours;
-	private int lastIndex;
-	private int lastTexIndex;
 	private int currentColour;
 	
-	public Shape(String name, int lastIndex,int lastTexIndex){
+	private float maxX;
+	private float minX;
+	private float maxY;
+	private float minY;
+	private float maxZ;
+	private float minZ;
+	
+	public Shape(String name){
 		
 		this.name = name;
 		verticesTex = new ArrayList<VertexTex>();
 		vertices = new ArrayList<Vertex>();
 		faces = new ArrayList<Face>();
-		materials = new ArrayList<int[]>();
+		materials = new ArrayList<String[]>();
 		colours = new ArrayList<Colour>();
-		this.lastIndex = lastIndex;
-		this.lastTexIndex = lastTexIndex;
 		currentColour = 0;
 	}
 	
@@ -31,7 +34,7 @@ public class Shape {
 		
 		
 		//vertices 
-		if(line.charAt(0) == 'v'){
+		if(line.charAt(0) == 'v' && line.charAt(1) != 'n'){
 			
 			if(line.charAt(1) == 't'){
 				
@@ -50,10 +53,11 @@ public class Shape {
 		//material description
 		}else if(line.charAt(0) == 'u'){
 			
-			int[] mat = new int[2];
+			String[] mat = new String[2];
 			
-			mat[0] = new Integer(line.substring(line.length()-3,line.length())).intValue()-1;
-			mat[1] = faces.size();
+			mat[0] = line.substring(7,line.length());
+
+			mat[1] = Integer.toString(faces.size());
 			
 			materials.add(mat);
 		
@@ -66,7 +70,7 @@ public class Shape {
 		return name;
 	}
 	
-	public int[] getMaterial(int index){
+	public String[] getMaterial(int index){
 		
 		return materials.get(index);
 	}
@@ -127,13 +131,14 @@ public class Shape {
 
 	public Vertex getVertex(int index) {
 		
-		return vertices.get(index-lastIndex);
+		return vertices.get(index);
 		
 	}
 	
 	public VertexTex getVertexTex(int index) {
 		// TODO Auto-generated method stub
-		return verticesTex.get(index-lastTexIndex);
+		
+		return verticesTex.get(index);
 	}
 
 	public Face getFace(int index) {
@@ -151,16 +156,21 @@ public class Shape {
 		this.currentColour = 0;
 	}
 	
-	public int getColour(int index){
+	public String getColour(int index){
 
-		if(currentColour < materials.size() - 1){
+		if(index == 0){
 			
-			int[] material = this.getMaterial(currentColour+1);
+			currentColour = 0;
+		}
+		
+		if(currentColour + 1 < materials.size()){
 			
-			if(index >= material[1]){
+			String[] next = this.getMaterial(currentColour + 1);
+			
+			if(index >= Integer.parseInt(next[1])){
 				
 				currentColour++;
-				return material[0];
+				return next[0];
 				
 			}else{
 
@@ -174,7 +184,27 @@ public class Shape {
 		}
 	}
 
+	public int vertexNo() {
+		// TODO Auto-generated method stub
+		return vertices.size();
+	}
 	
+	public void CreateAABB(){
+		
+		for(int v = 0; v < vertices.size(); v++){
+			
+			maxX = Math.max(vertices.get(v).getX(),maxX);
+			minX = Math.min(vertices.get(v).getX(), minX);
+			maxY = Math.max(vertices.get(v).getY(), maxY);
+			minY = Math.min(vertices.get(v).getY(), minY);
+			maxZ = Math.max(vertices.get(v).getZ(), maxZ);
+			minZ = Math.min(vertices.get(v).getZ(), minZ);
+		}
+	}
 	
+	public float[] getBB(){
+		
+		return new float[]{maxX,minX,maxY,minY,maxZ,minZ};
+	}
 
 }

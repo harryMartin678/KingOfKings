@@ -4,16 +4,16 @@ import java.util.ArrayList;
 
 import Buildings.ArcheryTower;
 import Buildings.BallistaTower;
-import Buildings.Barrack;
 import Buildings.Castle;
-import Buildings.Dock;
 import Buildings.Farm;
-import Buildings.Fort;
+import Buildings.GiantLiar;
+import Buildings.HoundPit;
 import Buildings.Mine;
 import Buildings.Names;
 import Buildings.RoyalPalace;
-import Buildings.Stable;
+import Buildings.Spearyard;
 import Buildings.Stockpile;
+import Buildings.SwordsSmith;
 import Map.CollisionMap;
 import Map.GraphicsCollisionMap;
 
@@ -199,48 +199,22 @@ public class Building {
 	
 	public static Buildings.Building GetBuildingClass(String name,int buildingNo){
 		
-		//System.out.println(name + " Building");
 		Buildings.Building check = null;
-		
-		if(name.equals(Names.ARCHERYTOWER)){
-			
-			check  = new ArcheryTower(buildingNo);
-		
-		}else if(name.equals(Names.BALLISTICTOWER)){
-			
-			check = new BallistaTower(buildingNo);
-		
-		}else if(name.equals(Names.CASTLE)){
+		if(name.equals(Names.CASTLE)){
 			
 			check = new Castle(buildingNo);
-		
-		}else if(name.equals(Names.DOCK)){
-			
-			check = new Dock(buildingNo);
 		
 		}else if(name.equals(Names.FARM)){
 			
 			check = new Farm(buildingNo);
 		
-		}else if(name.equals(Names.FORT)){
-			
-			check = new Fort(buildingNo);
-		
 		}else if(name.equals(Names.ROYALPALACE)){
 			
 			check = new RoyalPalace(buildingNo);
 		
-		}else if(name.equals(Names.STABLE)){
-			
-			check = new Stable(buildingNo);
-		
 		}else if(name.equals(Names.CASTLE)){
 			
 			check = new Castle(buildingNo);
-		
-		}else if(name.equals(Names.DOCK)){
-			
-			check = new Dock(buildingNo);
 		
 		}else if(name.equals(Names.FARM)){
 			
@@ -258,13 +232,25 @@ public class Building {
 			
 			check = new BallistaTower(buildingNo);
 		
-		}else if(name.equals(Names.BARRACK)){
-			
-			check = new Barrack(buildingNo);
-		
 		}else if(name.equals(Names.STOCKPILE)){
 			
 			check = new Stockpile(buildingNo);
+		
+		}else if(name.equals(Names.GIANTLIAR)){
+			
+			check = new GiantLiar(buildingNo);
+		
+		}else if(name.equals(Names.SPEARYARD)){
+			
+			check = new Spearyard(buildingNo);
+		
+		}else if(name.equals(Names.HOUNDPIT)){
+			
+			check = new HoundPit(buildingNo);
+		
+		}else if(name.equals(Names.SWORDSSMITH)){
+			
+			check = new SwordsSmith(buildingNo);
 		}
 		
 		if(check == null){

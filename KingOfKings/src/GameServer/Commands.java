@@ -5,7 +5,6 @@ import java.util.ArrayList;
 public interface Commands {
 	
 	public void moveUnit(int unitNo, int targetX, int targetY, int targetMap,boolean follow);
-	public void unitInBoat(int unitNo, int boatNo);
 	public void setWayPoints(int unitNo, int[] targetX, int[] targetY, int[] targetMap);
 	public void groupMovement(int[] unitNo, int targetX, int targetY, int targetMap);
 	public void groupWayPointsMovement(int[] unitNo,int[] targetX, int[] targetY,int[] targetMap);

@@ -5,10 +5,12 @@ import java.util.HashMap;
 import java.util.concurrent.Semaphore;
 
 import Buildings.Names;
+import GameGraphics.GameScreenComposition.Display;
 import GameGraphics.GameScreenComposition.IComUnitListDisplay;
 import GameGraphics.GameScreenComposition.IComUnitListFrameProcess;
 import GameGraphics.GameScreenComposition.IComUnitListMouseKeyboard;
 import Map.GraphicsCollisionMap;
+import Util.Vector3;
 
 public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,
 IComUnitListFrameProcess {
@@ -176,7 +178,7 @@ IComUnitListFrameProcess {
 	}
 
 	@Override
-	public boolean inFrame(int unitNo, int frameX, int frameY,
+	public boolean outOfFrame(int unitNo, int frameX, int frameY,
 			int FRAME_X_SIZE, int FRAME_Y_SIZE) {
 		// TODO Auto-generated method stub
 		return !(units.get(unitNo).getX() >= frameX 
@@ -246,8 +248,7 @@ IComUnitListFrameProcess {
 
 				SelectedUnit su = new SelectedUnit();
 				su.unitNo = units.get(u).getUnitNo();
-				su.isWorker = units.get(u).getUnitType().equals(Names.SLAVE)
-						|| units.get(u).getUnitType().equals(Names.SERVANT);
+				su.isWorker = units.get(u).getUnitType().equals(Names.WORKER);
 				
 				selectedUnits.add(su);
 				
@@ -256,38 +257,72 @@ IComUnitListFrameProcess {
 	}
 
 	@Override
-	public void addSelectedUnit(int[] click) {
+	public void addSelectedUnit(int unit) {
 		// TODO Auto-generated method stub
-		for(int u = 0; u < units.size(); u++){
-			  
-			  if(ClickInUnit(click,units.get(u)) && units.get(u).getPlayer() == this.myPlayerNumber){
-				
-				  
-				  SelectedUnit su = new SelectedUnit();
-					su.unitNo = units.get(u).getUnitNo();
-					su.isWorker = units.get(u).getUnitType().equals(Names.SLAVE)
-							|| units.get(u).getUnitType().equals(Names.SERVANT);
-					su.distance = Math.abs(units.get(u).getX() - click[0]) 
-							+ Math.abs(units.get(u).getY() - click[1]) + ((double)click[2]/1000.0);
-				  selectedUnits.add(su);
-			  	}
-		  }
 		
-		if(selectedUnits.size() > 0){
-			int selected = 0;
-			for(int s = 1; s < selectedUnits.size(); s++){
+		if(unit > -1){
+			int unitNo = 0;
+			
+			for(int u = 0; u < units.size(); u++){
 				
-				if(selectedUnits.get(selected).distance > selectedUnits.get(s).distance){
+				if(units.get(u).getUnitNo() == unit){
 					
-					selected = s;
+					unitNo = u;
 				}
 			}
-		
-	
-			SelectedUnit select = selectedUnits.get(selected);
+			
+			SelectedUnit su = new SelectedUnit();
+			su.unitNo = unit;
+			su.isWorker = units.get(unitNo).getUnitType().equals(Names.WORKER);
+			
 			selectedUnits.clear();
-			selectedUnits.add(select);
+			selectedUnits.add(su);
 		}
+		
+//		MousePicking picking = new MousePicking(new float[]{(float)click[0],(float)click[1]}
+//					,ScreenWidth, ScreenHeight);
+//		
+//		for(int u = 0; u < units.size(); u++){
+//			
+//			if(picking.IsSelected(boxes.GetBoundingBox(units.get(u).getUnitType(),
+//					units.get(u).getCurrentFrame()))){
+//				
+//				SelectedUnit su = new SelectedUnit();
+//				su.unitNo = units.get(u).getUnitNo();
+//				su.isWorker = units.get(u).getUnitType().equals(Names.WORKER);
+//				selectedUnits.clear();
+//				selectedUnits.add(su);
+//			}
+//		}
+//		for(int u = 0; u < units.size(); u++){
+//			  
+//			  if(ClickInUnit(click,units.get(u)) && units.get(u).getPlayer() == this.myPlayerNumber){
+//				
+//				  
+//				  SelectedUnit su = new SelectedUnit();
+//					su.unitNo = units.get(u).getUnitNo();
+//					su.isWorker = units.get(u).getUnitType().equals(Names.WORKER);
+//					su.distance = Math.abs(units.get(u).getX() - click[0]) 
+//							+ Math.abs(units.get(u).getY() - click[1]) + ((double)click[2]/1000.0);
+//				  selectedUnits.add(su);
+//			  	}
+//		  }
+//		
+//		if(selectedUnits.size() > 0){
+//			int selected = 0;
+//			for(int s = 1; s < selectedUnits.size(); s++){
+//				
+//				if(selectedUnits.get(selected).distance > selectedUnits.get(s).distance){
+//					
+//					selected = s;
+//				}
+//			}
+//		
+//	
+//			SelectedUnit select = selectedUnits.get(selected);
+//			selectedUnits.clear();
+//			selectedUnits.add(select);
+//		}
 	}
 	
 	private boolean ClickInUnit(int[] click, Unit unit){
@@ -466,35 +501,37 @@ IComUnitListFrameProcess {
 	}
 
 	@Override
-	public int getUnitAtttack(int[] click) {
+	public int getUnitAtttack(double x, double y, int ScreenWidth, int ScreenHeight,
+			IBoundingBoxes boxes,int frameX,int frameY) {
 		// TODO Auto-generated method stub
-		ArrayList<SelectedUnit> unitsToAttack = new ArrayList<SelectedUnit>();
-		int selected = 0;
-		for(int u = 0; u < units.size(); u++){
-			
-			if(ClickInUnit(click, units.get(u)) && units.get(u).getPlayer() != this.myPlayerNumber){
-				
-				SelectedUnit su = new SelectedUnit();
-				su.unitNo = units.get(u).getUnitNo();
-				su.isWorker = units.get(u).getUnitType().equals(Names.SLAVE)
-						|| units.get(u).getUnitType().equals(Names.SERVANT);
-				su.distance = Math.abs(units.get(u).getX() - click[0]) 
-						+ Math.abs(units.get(u).getY() - click[1]) + ((double)click[2]/1000.0);
-				unitsToAttack.add(su);
-			}
-		}
-		if(unitsToAttack.size() > 0){
-			
-			for(int s = 1; s < unitsToAttack.size(); s++){
-				
-				if(unitsToAttack.get(selected).distance > unitsToAttack.get(s).distance){
-					
-					selected = s;
-				}
-			}
-		}
 		
-		return unitsToAttack.get(selected).unitNo;
+		return getSelectedUnit(x, y, ScreenWidth, ScreenHeight, boxes, frameX, frameY);
+//		ArrayList<SelectedUnit> unitsToAttack = new ArrayList<SelectedUnit>();
+//		int selected = 0;
+//		for(int u = 0; u < units.size(); u++){
+//			
+//			if(ClickInUnit(click, units.get(u)) && units.get(u).getPlayer() != this.myPlayerNumber){
+//				
+//				SelectedUnit su = new SelectedUnit();
+//				su.unitNo = units.get(u).getUnitNo();
+//				su.isWorker = units.get(u).getUnitType().equals(Names.WORKER);
+//				su.distance = Math.abs(units.get(u).getX() - click[0]) 
+//						+ Math.abs(units.get(u).getY() - click[1]) + ((double)click[2]/1000.0);
+//				unitsToAttack.add(su);
+//			}
+//		}
+//		if(unitsToAttack.size() > 0){
+//			
+//			for(int s = 1; s < unitsToAttack.size(); s++){
+//				
+//				if(unitsToAttack.get(selected).distance > unitsToAttack.get(s).distance){
+//					
+//					selected = s;
+//				}
+//			}
+//		}
+//		
+//		return unitsToAttack.get(selected).unitNo;
 	}
 
 	@Override
@@ -525,5 +562,31 @@ IComUnitListFrameProcess {
 		}
 		
 	}
+
+
+	@Override
+	public int getSelectedUnit(double x, double y, int ScreenWidth, int ScreenHeight,
+			IBoundingBoxes boxes,int frameX,int frameY) {
+		// TODO Auto-generated method stub
+		
+		x = x * ScreenWidth;
+		y = y * ScreenHeight;
+		MousePicker picking = new MousePicker();
+		Vector3 ray = picking.CalculateMouseRay((int)x, (int)y, ScreenWidth, ScreenHeight);
+
+		for(int u = 0; u < units.size(); u++){
+		
+			if(picking.IsSelected(boxes.GetBoundingBox(units.get(u).getUnitType(),
+					units.get(u).getCurrentFrame()),ray,units.get(u).getX() - Display.WIDTH_CONST - frameX,
+					units.get(u).getY() - Display.HEIGHT_CONST - frameY)){
+				
+				return units.get(u).getUnitNo();
+				
+			}
+		
+		}
+		return -1;
+	}
+
 
 }

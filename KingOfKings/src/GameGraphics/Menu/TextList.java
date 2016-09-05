@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.util.awt.TextRenderer;
 
+import GameGraphics.GameScreenComposition.TextureRepo;
+
 public class TextList {
 	
 	private float Left;
@@ -32,9 +34,9 @@ public class TextList {
 		SelectedText = -1;
 		
 		UpArrow = new Rectangle(Left + SizeX - 0.025f, Bottom + (SizeY/2),
-				0.025f, 0.05f, 0.0f, 1.0f, 0.0f, 0);
+				0.025f, 0.05f, 0.0f, 1.0f, 0.0f, 0,null);
 		DownArrow = new Rectangle(Left + SizeX - 0.025f, Bottom + ((SizeY/2) - 0.1f),
-				0.025f, 0.05f, 0.0f, 1.0f, 0.0f, 0);
+				0.025f, 0.05f, 0.0f, 1.0f, 0.0f, 0,null);
 		
 		ScrollIndexStart = 0;
 		
@@ -48,10 +50,10 @@ public class TextList {
 		Items.add(text);
 	}
 	
-	public void DrawTextList(GL2 draw, int ScreenWidth, int ScreenHeight){
+	public void DrawTextList(GL2 draw, int ScreenWidth, int ScreenHeight,TextureRepo textures){
 		
 		new Rectangle().DrawWithoutCreation(draw, ScreenWidth, ScreenHeight,
-				Left, Bottom, SizeX, SizeY,0.75f,0.75f,1.0f, true);
+				Left, Bottom, SizeX, SizeY,0.75f,0.75f,1.0f, true,textures);
 		
 		
 //		System.out.println(ScrollIndexStart + " " +
@@ -63,15 +65,15 @@ public class TextList {
 				
 				new Rectangle().DrawWithoutCreation(draw, ScreenWidth, ScreenHeight,
 						textLeft - 0.025f,(textTop - 0.025f) - ((t-ScrollIndexStart) * 0.05f),
-						SizeX,0.05f,0.0f,0.0f,1.0f, false);
+						SizeX,0.05f,0.0f,0.0f,1.0f, false,textures);
 			}
 			
 			DrawText(draw,ScreenWidth,ScreenHeight,Items.get(t),
 					textLeft,textTop - ((t-ScrollIndexStart) * 0.05f));
 		}
 		
-		UpArrow.Draw(draw, ScreenWidth, ScreenHeight);
-		DownArrow.Draw(draw, ScreenWidth, ScreenHeight);
+		UpArrow.Draw(draw, ScreenWidth, ScreenHeight,textures);
+		DownArrow.Draw(draw, ScreenWidth, ScreenHeight,textures);
 	}
 
 	private void DrawText(GL2 draw, int ScreenWidth, int ScreenHeight, String text,
@@ -108,7 +110,7 @@ public class TextList {
 		for(int t = ScrollIndexStart; t < getLimit(); t++){
 			
 			Rectangle inT = new Rectangle(textLeft - 0.025f,(textTop - 0.025f) - ((t-ScrollIndexStart) * 0.05f),
-					SizeX,0.05f,0.0f,0.0f,1.0f,0);
+					SizeX,0.05f,0.0f,0.0f,1.0f,0,null);
 			
 			if(inT.InMouse(x, y)){
 				

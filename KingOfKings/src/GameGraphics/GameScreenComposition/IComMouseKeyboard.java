@@ -1,5 +1,7 @@
 package GameGraphics.GameScreenComposition;
 
+import GameGraphics.IBoundingBoxes;
+
 public interface IComMouseKeyboard {
 
 	

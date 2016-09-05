@@ -89,10 +89,6 @@ public class MethodCallup implements Commands {
 			
 			this.followUnit(parameters.unitNo, parameters.unitFollow);
 			
-		}else if(methodName.equals(UNITINBOAT)){
-			
-			this.unitInBoat(parameters.unitNo, parameters.boatNo);
-			
 		}else if(methodName.equals(SETWAYPOINTS)){
 			
 			this.setWayPoints(parameters.unitNo, parameters.targetXs, 
@@ -254,11 +250,6 @@ public class MethodCallup implements Commands {
 		
 	}
 	
-	@Override
-	public void unitInBoat(int unitNo, int boatNo) {
-		// TODO Auto-generated method stub
-		context.units.addUnitToBoat(unitNo, boatNo);
-	}
 
 	@Override
 	public void setWayPoints(int unitNo, int[] targetX, int[] targetY, int[] targetMap) {

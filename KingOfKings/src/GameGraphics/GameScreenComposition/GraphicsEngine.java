@@ -14,6 +14,7 @@ import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.gl2.GLUT;
 
 import GameGraphics.BuildingList;
+import GameGraphics.Unit;
 import GameGraphics.UnitList;
 import GameGraphics.Menu.Menu;
 import Map.GraphicsCollisionMap;
@@ -66,7 +67,7 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 
 		mouseKeyboard.setUpMouseKeyboard((IComUnitListMouseKeyboard)units,
 				(IComBuildingListMouseKeyboard)buildings,(IComDisplayMouseKeyboard) display, 
-				map, myPlayerNumber, cmsg);
+				map, myPlayerNumber, cmsg,display.getUnitBBoxes(),display.getBuildingBBoxes());
 		buildings.SetUpBuildingList(mouseKeyboard);
 
 		//GraphicsCollisionMap.RefreshCollisionMap(this.map.getMap().toArray());
@@ -109,7 +110,7 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 	public void AllReadyStart() throws IOException{
 		
 		processFrame.start();
-		animation.start();
+		//animation.start();
 	}
 	
 	public void Start(){
@@ -119,6 +120,7 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 	
 	public void display(GLAutoDrawable drawable,GLU glu, GLUT glut){
 		
+		mouseKeyboard.moveMap();
 		display.display(drawable, glu, glut);
 
 	}
@@ -184,72 +186,79 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 	}
 
 	//deals with animations 
-	Thread animation = new Thread(new Runnable(){
-
-		@Override
-		public void run() {
-			// TODO Auto-generated method stub
-			
-			while(true){
-				
-				long startTime = System.currentTimeMillis();
-				
-				units.begin();
-			    //buildings.begin();
-				//deal with mouse input 
-				mouseKeyboard.regulateMouse(display.getFrameX(), display.getFrameY(),
-						display.getFrameXSize(), display.getFrameYSize(), map.getViewedMap());
-				//buildings.end();
-				for(int i = 0; i < units.getUnitListSize(); i++){
-					
-//					if(i >= units.getUnitListSize()){
+//	Thread animation = new Thread(new Runnable(){
+//
+//		@Override
+//		public void run() {
+//			// TODO Auto-generated method stub
+//			//int beat = 0;
+//			
+//			while(true){
+//				
+//				long startTime = System.currentTimeMillis();
+//				
+//				units.begin();
+//			    //buildings.begin();
+//				//deal with mouse input 
+////				if(beat == 5){
+////					mouseKeyboard.regulateMouse(display.getFrameX(), display.getFrameY(),
+////							display.getFrameXSize(), display.getFrameYSize(), map.getViewedMap());
+////					beat = 0;
+////				}
+//				
+//				mouseKeyboard.moveMap();
+//				//buildings.end();
+////				for(int i = 0; i < units.getUnitListSize(); i++){
+////					
+//////					if(i >= units.getUnitListSize()){
+//////						
+//////						try {
+//////							Thread.sleep(1);
+//////						} catch (InterruptedException e) {
+//////							// TODO Auto-generated catch block
+//////							e.printStackTrace();
+//////						}
+//////					}
+////					
+////					units.changeCurrentFrame(i);
+////				}
+//				Unit.AnimateUnits();
+//				units.end();
+//
+//				/*
+//				treeTime ++;
+//				
+//				if(treeTime > 4){
+//					
+//					treeUn.changeCurrentFrame();
+//					
+//					if(treeTime == 8){
 //						
-//						try {
-//							Thread.sleep(1);
-//						} catch (InterruptedException e) {
-//							// TODO Auto-generated catch block
-//							e.printStackTrace();
-//						}
+//						treeTime = 0;
 //					}
-					
-					units.changeCurrentFrame(i);
-				}
-				units.end();
-
-				/*
-				treeTime ++;
-				
-				if(treeTime > 4){
-					
-					treeUn.changeCurrentFrame();
-					
-					if(treeTime == 8){
-						
-						treeTime = 0;
-					}
-				}*/
-				
-				try {
-					
-					long sleepTime = 200 - (System.currentTimeMillis() - startTime);
-					
-					if(sleepTime < 5){
-						
-						System.out.println("No Time Animation GraphicsEngine");
-						sleepTime = 5;
-					}
-					
-					Thread.sleep(sleepTime);
-					
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-
-		}
-
-	});
+//				}*/
+//				
+//				try {
+//					
+//					long sleepTime = 200 - (System.currentTimeMillis() - startTime);
+//					
+//					if(sleepTime < 5){
+//						
+//						System.out.println("No Time Animation GraphicsEngine");
+//						sleepTime = 20;
+//					}
+//					
+//					Thread.sleep(sleepTime);
+//					
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
+//
+//		}
+//
+//	});
 			
 	public MouseMotionListener getMouseMotionListener(){
 		
@@ -259,7 +268,8 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 			public void mouseDragged(MouseEvent e) {
 				// TODO Auto-generated method stub
 				
-				mouseKeyboard.handleMouseDragged(e);
+				mouseKeyboard.handleMouseDragged(e,display.getFrameX(),display.getFrameY(),
+						display.getFrameSizeX(),display.getFrameSizeY(),map.getViewedMap());
 			}
 
 			@Override
@@ -267,6 +277,8 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 				// TODO Auto-generated method stub
 				//System.out.println(e.getX() + " " + e.getY() + " GraphicsEngine");
 				mouseKeyboard.handleHover(e);
+						//,display.getFrameX(),display.getFrameY(),
+						//display.getFrameSizeX(),display.getFrameSizeY(),map.getViewedMap());
 			}
 			
 			
@@ -280,7 +292,8 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				// TODO Auto-generated method stub
-				mouseKeyboard.handleMouseClicked(e);
+				mouseKeyboard.handleMouseClicked(e,display.getFrameX(),display.getFrameY(),
+						display.getFrameSizeX(),display.getFrameSizeY(),map.getViewedMap());
 			}
 
 			@Override
@@ -305,7 +318,8 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				// TODO Auto-generated method stub
-				mouseKeyboard.handleReleasedMouse(e);
+				mouseKeyboard.handleReleasedMouse(e,display.getFrameX(),display.getFrameY(),
+						display.getFrameSizeX(),display.getFrameSizeY(),map.getViewedMap());
 			}
 			
 			

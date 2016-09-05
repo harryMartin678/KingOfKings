@@ -12,6 +12,7 @@ import GameGraphics.GameScreenComposition.IComBuildingListMouseKeyboard;
 import GameGraphics.GameScreenComposition.IComMapDisplay;
 import GameGraphics.GameScreenComposition.IComMapMouseKeyboard;
 import GameGraphics.GameScreenComposition.IComUnitListDisplay;
+import GameGraphics.GameScreenComposition.TextureRepo;
 import Map.GraphicsCollisionMap;
 
 
@@ -26,6 +27,8 @@ public class Menu {
 	private HoverPanel hoverPanel;
 	private PopupInfoBox box;
 	private SaveGameDialog saveGame;
+	private TextureRepo textures;
+	private boolean first = true;
 	
 	public Menu(){
 		
@@ -35,6 +38,7 @@ public class Menu {
 		UnitIcons = new ArrayList<MenuShape>();
 		BuildingIcons = new ArrayList<MenuShape>();
 		TopIcons = new ArrayList<MenuShape>();
+		
 		//saveGame = new SaveGameDialog();
 //		CreatePopup("Test Popup", "This is a text popup. This is meant as a text. \n "
 //				+ "It should allow for multiple lines. It should also be in the center of \n"
@@ -49,6 +53,13 @@ public class Menu {
 			IComBuildingListDisplay buildings,IComMapDisplay map,int myPlayer
 			,int FRAME_X_SIZE,int FRAME_Y_SIZE,int FrameX,int FrameY){
 		
+		if(first){
+
+			textures = new TextureRepo();
+			textures.LoadTextures(new String[]{"panel1.png","panel2.png","panel3.png","panel4.png",
+					"panel5.png","panel6.png","panel7.png"});
+			first = false;
+		}
 		
 		StartMenu(draw,ScreenWidth,ScreenHeight,true);
 		DrawShapes(draw, ScreenWidth, ScreenHeight);
@@ -72,17 +83,17 @@ public class Menu {
 		
 		miniMap.DrawMinimap(draw,ScreenWidth, ScreenHeight, buildings,units
 				,map.getWidth(),map.getHeight(),myPlayer,FRAME_X_SIZE,FRAME_Y_SIZE
-				,FrameX,FrameY);
+				,FrameX,FrameY,textures);
 		mapDiagram.DrawMapDiagram(draw, map, ScreenWidth, ScreenHeight);
 		
 		if(box != null){
 			
-			box.DrawPopupInfo(draw, ScreenWidth, ScreenHeight);
+			box.DrawPopupInfo(draw, ScreenWidth, ScreenHeight,textures);
 		}
 		
 		if(saveGame != null){
 			
-			saveGame.DrawSaveGameDialog(draw, ScreenWidth, ScreenHeight);
+			saveGame.DrawSaveGameDialog(draw, ScreenWidth, ScreenHeight,textures);
 		}
 		
 		
@@ -90,7 +101,7 @@ public class Menu {
 		StartMenu(draw, ScreenWidth, ScreenHeight, false);
 		if(hoverPanel != null){
 			
-			hoverPanel.DrawHoverPanel(draw,ScreenWidth,ScreenHeight);
+			hoverPanel.DrawHoverPanel(draw,ScreenWidth,ScreenHeight,textures);
 		}
 		EndMenu(draw, ScreenWidth, ScreenHeight, false);
 	}
@@ -194,16 +205,16 @@ public class Menu {
 	private String getBuildingName(int index) {
 		// TODO Auto-generated method stub
 
-		return new String[]{Names.ARCHERYTOWER,Names.BALLISTICTOWER,Names.BARRACK,Names.CASTLE
-				,Names.DOCK,Names.FARM,Names.FORT,Names.STABLE,Names.STOCKPILE,Names.WALL,
-				Names.MINE}[index];
+		return new String[]{Names.ARCHERYTOWER,Names.BALLISTICTOWER,Names.GIANTLIAR,Names.CASTLE
+				,Names.SPEARYARD,Names.FARM,Names.SWORDSSMITH,Names.HOUNDPIT,
+				Names.STOCKPILE,Names.WALL,Names.MINE}[index];
 	}
 
 	private void DrawShapes(GL2 draw,int ScreenWidth, int ScreenHeight){
 		
 		for(int s = 0; s < Shapes.size(); s++){
 			
-			Shapes.get(s).Draw(draw, ScreenWidth, ScreenHeight);
+			Shapes.get(s).Draw(draw, ScreenWidth, ScreenHeight,textures);
 		}
 	}
 	
@@ -212,7 +223,7 @@ public class Menu {
 		for(int b = 0; b < BuildingIcons.size(); b++){
 			
 			BuildingIcons.get(b).IsDrawn();
-			BuildingIcons.get(b).Draw(draw, ScreenWidth, ScreenHeight);
+			BuildingIcons.get(b).Draw(draw, ScreenWidth, ScreenHeight,textures);
 		}
 	}
 	
@@ -222,7 +233,7 @@ public class Menu {
 		for(int u = 0; u < UnitIcons.size(); u++){
 			
 			UnitIcons.get(u).IsDrawn();
-			UnitIcons.get(u).Draw(draw, ScreenWidth, ScreenHeight);
+			UnitIcons.get(u).Draw(draw, ScreenWidth, ScreenHeight,textures);
 		}
 	}
 	
@@ -231,7 +242,7 @@ public class Menu {
 		for(int t = 0; t < TopIcons.size(); t++){
 			
 			TopIcons.get(t).IsDrawn();
-			TopIcons.get(t).Draw(draw, ScreenWidth, ScreenHeight);
+			TopIcons.get(t).Draw(draw, ScreenWidth, ScreenHeight,textures);
 			
 		}
 	}
@@ -239,60 +250,61 @@ public class Menu {
 		
 		for(int u = 0; u < unitNo; u++){
 			
-			UnitIcons.add(new Rectangle(0.06f + (u*0.04f),0.14f,0.025f,0.05f,1.0f,0.0f,0.0f,u));
+			UnitIcons.add(new Rectangle(0.06f + (u*0.04f),0.14f,0.025f,0.05f,1.0f,0.0f,0.0f,u,null));
 		}
 	}
 	
 	public void AddBuildingIcons(){
 		
 		//ARCHERYTOWER (0.05f,0.05f,0.4f,0.15f,1.0f,1.0f,0.0f)
-		BuildingIcons.add(new Rectangle(0.06f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,0));
+		BuildingIcons.add(new Rectangle(0.06f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,0,null));
 		//BALLISTICTOWER
-		BuildingIcons.add(new Rectangle(0.1f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,1));
+		BuildingIcons.add(new Rectangle(0.1f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,1,null));
 		//BARRACK
-		BuildingIcons.add(new Rectangle(0.14f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,2));
+		BuildingIcons.add(new Rectangle(0.14f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,2,null));
 		//CASTLE
-		BuildingIcons.add(new Rectangle(0.18f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,3));
+		BuildingIcons.add(new Rectangle(0.18f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,3,null));
 		//DOCK
-		BuildingIcons.add(new Rectangle(0.22f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,4));
+		BuildingIcons.add(new Rectangle(0.22f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,4,null));
 		//FARM
-		BuildingIcons.add(new Rectangle(0.26f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,5));
+		BuildingIcons.add(new Rectangle(0.26f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,5,null));
 		//FORT
-		BuildingIcons.add(new Rectangle(0.30f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,6));
+		BuildingIcons.add(new Rectangle(0.30f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,6,null));
 		//STABLE
-		BuildingIcons.add(new Rectangle(0.34f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,7));
+		BuildingIcons.add(new Rectangle(0.34f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,7,null));
 		//STOCKPILE
-		BuildingIcons.add(new Rectangle(0.38f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,8));
+		BuildingIcons.add(new Rectangle(0.38f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,8,null));
 		//WALL
-		BuildingIcons.add(new Rectangle(0.14f,0.07f,0.025f,0.05f,0.0f,1.0f,0.0f,9));
+		BuildingIcons.add(new Rectangle(0.14f,0.07f,0.025f,0.05f,0.0f,1.0f,0.0f,9,null));
 		//MINE
-		BuildingIcons.add(new Rectangle(0.30f,0.07f,0.025f,0.05f,0.0f,1.0f,0.0f,10));
+		BuildingIcons.add(new Rectangle(0.30f,0.07f,0.025f,0.05f,0.0f,1.0f,0.0f,10,null));
 	}
 	
 	public void AddMainPanels(){
 		
 		//top panel
-		Shapes.add(new Rectangle(0.0f,0.965f,1.0f,0.035f,1.0f,1.0f,1.0f,0));
+		Shapes.add(new Rectangle(0.0f,0.965f,1.0f,0.035f,1.0f,1.0f,1.0f,0,"panel7.png"));
 		//bottom panel
-		Shapes.add(new Rectangle(0.0f,0.0f,1.0f,0.22f,1.0f,1.0f,1.0f,0));
+		Shapes.add(new Rectangle(0.0f,0.0f,1.0f,0.22f,1.0f,1.0f,1.0f,0,"panel2.png"));
 		//left bottom panel
-		Shapes.add(new Rectangle(0.05f,0.05f,0.4f,0.15f,1.0f,1.0f,0.0f,0));
+		Shapes.add(new Rectangle(0.05f,0.05f,0.4f,0.15f,1.0f,1.0f,0.0f,0,"panel5.png"));
 		//middle bottom panel
-		Shapes.add(new Rectangle(0.49f,0.04f,0.12f,0.17f,1.0f,1.0f,0.0f,0));
+		Shapes.add(new Rectangle(0.49f,0.04f,0.12f,0.17f,1.0f,1.0f,0.0f,0,"panel4.png"));
 		//right bottom panel
-		Shapes.add(new Rectangle(0.625f,0.04f,0.175f,0.17f,1.0f,1.0f,0.0f,0));
+		Shapes.add(new Rectangle(0.625f,0.04f,0.175f,0.17f,1.0f,1.0f,0.0f,0,"panel3.png"));
 		//far right bottom panel
-		Shapes.add(new Rectangle(0.825f,0.05f,0.15f,0.15f,1.0f,1.0f,0.0f,0));
+		Shapes.add(new Rectangle(0.825f,0.05f,0.15f,0.15f,1.0f,1.0f,1.0f,0,"panel1.png"));
+		
 	}
 	
 	public void AddTopPanel(){
 		
 		//quit button
-		TopIcons.add(new Rectangle(0.025f,0.975f,0.015f,0.02f,1.0f,0.0f,0.0f,0));
+		TopIcons.add(new Rectangle(0.025f,0.975f,0.015f,0.02f,1.0f,0.0f,0.0f,0,null));
 		//save button
-		TopIcons.add(new Rectangle(0.075f,0.975f,0.015f,0.02f,1.0f,0.0f,0.0f,0));
+		TopIcons.add(new Rectangle(0.075f,0.975f,0.015f,0.02f,1.0f,0.0f,0.0f,0,null));
 		//Pause button
-		TopIcons.add(new Rectangle(0.125f,0.975f,0.015f,0.02f,1.0f,0.0f,0.0f,0));
+		TopIcons.add(new Rectangle(0.125f,0.975f,0.015f,0.02f,1.0f,0.0f,0.0f,0,null));
 	}
 	
 	

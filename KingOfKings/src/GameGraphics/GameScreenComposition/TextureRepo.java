@@ -23,6 +23,7 @@ public class TextureRepo {
 			
 			try{
 				File file = new File("ImageBank/"+textureFiles[t]);
+
 				Texture tex = TextureIO.newTexture(file,true);
 				textures.put(textureFiles[t],tex.getTextureObject());
 			}catch(IOException e){
@@ -35,7 +36,6 @@ public class TextureRepo {
 	}
 	
 	public int getTexture(String textureName){
-		
 		return textures.get(textureName);
 	}
 }

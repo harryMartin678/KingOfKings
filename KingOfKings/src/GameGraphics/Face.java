@@ -9,7 +9,14 @@ public class Face extends Info {
 	
 	public Face(String information) {
 		super(true);
-		if(information.contains("/")){
+		if(information.contains("//")){
+			
+			information = RemoveNormalInfo(information);
+			IsTextured = false;
+			super.DoConstructor(information);
+			
+		}else if(information.contains("/")){
+			
 			IsTextured = true;
 			TextureVertices = new ArrayList<Integer>();
 			pts = new ArrayList<Float>();
@@ -19,9 +26,23 @@ public class Face extends Info {
 			IsTextured = false;
 			super.DoConstructor(information);
 		}
+		
+	}
+	
+	private String RemoveNormalInfo(String information){
+		
+		String[] split = information.split(" ");
+		
+		String[] correct = new String[split.length];
+		
+		correct[0] = split[0];
+		
+		for(int s = 1; s < split.length; s++){
 			
-		
-		
+			correct[s] = split[s].split("//")[0];
+		}
+
+		return String.join(" ", correct);
 	}
 	
 	private void AddTexturedPoints(String info) {

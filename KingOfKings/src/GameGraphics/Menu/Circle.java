@@ -2,14 +2,17 @@ package GameGraphics.Menu;
 
 import com.jogamp.opengl.GL2;
 
+import GameGraphics.GameScreenComposition.TextureRepo;
+
 public class Circle extends MenuShape {
 	
 	private boolean Fill;
 	private float radius;
 
 	public Circle(float CenterX, float CenterY, float SizeX, float SizeY,
-			float Red, float Green, float Blue,boolean Fill,float radius) {
-		super(CenterX, CenterY, SizeX, SizeY, Red, Green, Blue,0);
+			float Red, float Green, float Blue,boolean Fill,float radius,
+			String texturePath) {
+		super(CenterX, CenterY, SizeX, SizeY, Red, Green, Blue,0,texturePath);
 		// TODO Auto-generated constructor stub
 		this.Fill = Fill;
 		this.radius = radius;
@@ -21,9 +24,9 @@ public class Circle extends MenuShape {
 	}
 
 	@Override
-	public void Draw(GL2 draw,int ScreenWidth,int ScreenHeight) {
+	public void Draw(GL2 draw,int ScreenWidth,int ScreenHeight,TextureRepo texture) {
 		// TODO Auto-generated method stub
-		super.Draw(draw,ScreenWidth,ScreenHeight);
+		super.Draw(draw,ScreenWidth,ScreenHeight,texture);
 		DrawCircle(draw,ScreenWidth,ScreenHeight);
 	}
 	

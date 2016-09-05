@@ -96,7 +96,7 @@ public class Unit {
 		int[] pos = addUnit.getFreeSpace(map, (int)this.x, (int)this.y, 
 				new ArrayList<int[]>(isTaken.values()));
 		isTaken.put(unitNo, pos);
-		System.out.println(pos[0] + " " + pos[1] + " Unit");
+		//System.out.println(pos[0] + " " + pos[1] + " Unit");
 		return pos;
 	}
 	
@@ -496,7 +496,7 @@ public class Unit {
 				
 				if(isUnitInFront != -1 && !units.get(isUnitInFront).dead()){
 					
-					System.out.println(isUnitInFront + " IsUnitInFront Unit");
+					//System.out.println(isUnitInFront + " IsUnitInFront Unit");
 					if(isUnitInFront == ownNo){
 						
 						System.out.println(((path.get(1)[0] - path.get(0)[0])) + " " +
@@ -504,7 +504,7 @@ public class Unit {
 						System.out.println(path.get(1)[0] + " " + path.get(0)[0] + " xs Unit");
 						System.out.println(path.get(1)[1] + " " + path.get(0)[1] + " ys Unit");
 					}
-					System.out.println(isUnitInFront + " InFront Unit");
+					//System.out.println(isUnitInFront + " InFront Unit");
 					if(units.get(isUnitInFront).getMoving()){
 						
 						stop = true;
@@ -705,46 +705,6 @@ public class Unit {
 			
 			return new Archer();
 			
-		}else if(Names.AXEMAN.equals(name)){
-			
-			return new Axeman();
-			
-		}else if(Names.FISHINGBOAT.equals(name)){
-			
-			return new FishingBoat();
-			
-		}else if(Names.FLAGSHIP.equals(name)){
-			
-			return new Flagship();
-			
-		}else if(Names.HEAVYARCHER.equals(name)){
-			
-			return new HeavyArcher();
-			
-		}else if(Names.BATTERINGRAM.equals(name)){
-		
-			return new BatteringRam();
-			
-		}else if(Names.HEAVYBATTERINGRAM.equals(name)){
-			
-			return new HeavyBatteringRam();
-			
-		}else if(Names.HEAVYCHARIOT.equals(name)){
-			
-			return new HeavyChariot();
-			
-		}else if(Names.LIGHTCHARIOT.equals(name)){
-			
-			return new LightChariot();
-			
-		}else if(Names.SERVANT.equals(name)){
-			
-			return new Servant();
-			
-		}else if(Names.SLAVE.equals(name)){
-			
-			return new Slave();
-			
 		}else if(Names.SPEARMAN.equals(name)){
 			
 			return new Spearman();
@@ -753,10 +713,13 @@ public class Unit {
 			
 			return new Swordsman();
 			
-		}else if(Names.WARSHIP.equals(name)){
+		}else if(Names.GIANT.equals(name)){
 			
-			return new Warship();
+			return new Giant();
+		
+		}else if(Names.HOUND.equals(name)){
 			
+			return new Hound();
 		}
 		
 		return new Unit();

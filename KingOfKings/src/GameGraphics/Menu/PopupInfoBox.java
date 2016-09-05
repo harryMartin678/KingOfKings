@@ -5,6 +5,8 @@ import java.awt.Font;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.util.awt.TextRenderer;
 
+import GameGraphics.GameScreenComposition.TextureRepo;
+
 public class PopupInfoBox {
 	
 	private float CenterX;
@@ -28,13 +30,13 @@ public class PopupInfoBox {
 		font = new TextRenderer(new Font("Arial",Font.BOLD,20));
 		
 		exitButton = new Rectangle(CenterX + (17*(SizeX/18)),CenterY+(17*(SizeY/18)),
-				0.015f,0.03f,  1.0f, 0.0f,0.0f,0);
+				0.015f,0.03f,  1.0f, 0.0f,0.0f,0,null);
 	}
 	
-	public void DrawPopupInfo(GL2 draw,int ScreenWidth,int ScreenHeight){
+	public void DrawPopupInfo(GL2 draw,int ScreenWidth,int ScreenHeight,TextureRepo textures){
 		
 		new Rectangle().DrawWithoutCreation(draw, ScreenWidth, ScreenHeight, CenterX, CenterY,
-				SizeX, SizeY, 1.0f, 1.0f, 1.0f, true);
+				SizeX, SizeY, 1.0f, 1.0f, 1.0f, true,textures);
 		
 		
 		
@@ -55,7 +57,7 @@ public class PopupInfoBox {
 //		new Rectangle().DrawWithoutCreation(draw,ScreenWidth, ScreenHeight,
 //				CenterX + (17*(SizeX/18)),CenterY+(17*(SizeY/18)), 0.015f,0.03f,  1.0f, 0.0f,
 //				0.0f, true);
-		exitButton.Draw(draw, ScreenWidth, ScreenHeight);
+		exitButton.Draw(draw, ScreenWidth, ScreenHeight,textures);
 		
 		
 	}

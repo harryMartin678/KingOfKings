@@ -1,5 +1,7 @@
 package GameGraphics.GameScreenComposition;
 
+import GameGraphics.IBoundingBoxes;
+
 public interface IComUnitListMouseKeyboard extends IComUnitList {
 
 	public int getBaseSelectedUnit();
@@ -20,7 +22,7 @@ public interface IComUnitListMouseKeyboard extends IComUnitList {
 //	}
 	public void addSelectedUnits(int[] startDB,int[] lastDB);
 	//method in monolith
-	public void addSelectedUnit(int[] click);
+	public void addSelectedUnit(int unitNo);
 	public int getSelectedUnitsSize();
 	public boolean areWayPointSetting();
 	public void clearSelectedUnits();
@@ -68,5 +70,8 @@ public interface IComUnitListMouseKeyboard extends IComUnitList {
 	public boolean isWorkerSelected();
 	public void clearNonAttackSelectedUnits();
 	public void clearAttackSelectedUnits();
-	public int getUnitAtttack(int[] click);
+	public int getUnitAtttack(double x, double y, int ScreenWidth, int ScreenHeight,
+			IBoundingBoxes boxes,int frameX,int frameY);
+	public int getSelectedUnit(double x, double y, int width, int height,
+			IBoundingBoxes box,int frameX,int frameY);
 }
