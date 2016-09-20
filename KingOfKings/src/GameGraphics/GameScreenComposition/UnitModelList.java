@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Random;
 
 import com.jogamp.opengl.GL2;
 
@@ -59,17 +60,19 @@ public class UnitModelList implements IBoundingBoxes {
 		arrowAnim = new ArrayList<ArrowAnimation>();
 		
 		swordsman = new Model(Names.SWORDSMAN,"Models",3,0);
+		swordsman.setSize(1.0f, 1.0f, 1.0f);
 		spearman = new Model(Names.SPEARMAN,"Models",3,0);
+		spearman.setSize(1.0f, 1.0f, 1.0f);
 		archer = new Model(Names.ARCHER,"Models",3,0);
 		archer.setSize(1.0f, 1.0f, 1.0f);
 		worker = new Model(Names.WORKER, "Models", 3, 0);
 		//worker.setAngle(45);
 		worker.setSize(1.0f, 1.0f, 1.0f);
-		worker.setTrans(0.0f, 0.0f);
 		giant = new Model(Names.GIANT, "Models", 3,0);
+		giant.setSize(1.0f, 1.0f, 3.0f);
+		giant.setTrans(0.0f, 0.0f, 1.0f);
 		hound = new Model(Names.HOUND, "Models", 3,0);
 		hound.setSize(1.0f, 1.0f, 1.0f);
-		hound.setTrans(0.0f, 0.0f);
 
 		arrow = new Model(Names.ARROW,"Models",1,3);
 		arrow.setSize(0.075f, 0.075f, 0.075f);
@@ -181,16 +184,25 @@ public class UnitModelList implements IBoundingBoxes {
 			,int frameX, int frameY,float z,float extraScalefactor,boolean cantAfford){
 		
 		Face next;
+		
+//		Random random = new Random(unit.getUnitNo());
+//		FloatBuffer cBuffer = FloatBuffer.wrap(new float[]{random.nextFloat(),random.nextFloat(),
+//				random.nextFloat()});
 
 		draw.glLoadIdentity();
 
 		//move the unit in relation to the width and height of the map, and the frame position
-		draw.glTranslatef(unit.getX()-width-frameX, unit.getY()-height-frameY, z); //-35
+		draw.glTranslatef(unit.getX()-width-frameX, unit.getY()-height-frameY, z + model.getTransZ()); //-35
 		//scales the model's size
 		draw.glScalef(model.sizeX()*scaleFactor*extraScalefactor, model.sizeY()*scaleFactor*extraScalefactor,
 				model.sizeZ()*scaleFactor*extraScalefactor);
 		draw.glRotatef(90, 1, 0, 0);
 		draw.glRotatef((float) unit.getAngle(), 0, 1, 0);
+		
+//		if(unit.checkAnimBroken()){
+//			
+//			System.out.println("BROKEN ANIM UNITMODELLIST");
+//		}
 		
 		//gets the frame and state of a unit 
 		int currentFrame = unit.getCurrentFrame();
@@ -222,6 +234,7 @@ public class UnitModelList implements IBoundingBoxes {
 				
 			}else{
 				draw.glColor3fv(FloatBuffer.wrap(colour.getDiffuse()));
+				//draw.glColor3fv(cBuffer);
 			}
 
 			draw.glBegin(draw.GL_POLYGON);
@@ -419,7 +432,7 @@ public class UnitModelList implements IBoundingBoxes {
 					
 					break outerLoop;
 				}
-				
+
 				Model model = models.get(selectedBuilding.getUnitFromQueue(queueNo));
 				//System.out.println(selectedBuilding.getUnitFromQueue(queueNo) + " UnitModelList");
 				Unit unit = new Unit((float) x + (ux*0.5f),(float) y + (-uy*0.5f),

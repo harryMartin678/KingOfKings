@@ -1,6 +1,7 @@
 package GameGraphics;
 
 import java.util.ArrayList;
+import java.util.concurrent.Semaphore;
 
 import Buildings.ArcheryTower;
 import Buildings.BallistaTower;
@@ -14,6 +15,8 @@ import Buildings.RoyalPalace;
 import Buildings.Spearyard;
 import Buildings.Stockpile;
 import Buildings.SwordsSmith;
+import Buildings.Wall;
+import Buildings.WallTower;
 import Map.CollisionMap;
 import Map.GraphicsCollisionMap;
 
@@ -33,6 +36,7 @@ public class Building {
 	private int attackY;
 	
 	private ArrayList<String> unitQueue;
+	private Semaphore lock;
 	
 	public Building(String name,int player){
 		
@@ -40,6 +44,8 @@ public class Building {
 		this.name = name;
 		cantBuild = false;
 		unitQueue = new ArrayList<String>();
+		lock = new Semaphore(2);
+		
 	}
 
 	public Building(float x, float y, String name,int buildingNo,int player){
@@ -51,6 +57,7 @@ public class Building {
 		unitQueue = new ArrayList<String>();
 		
 		this.name = name;
+		lock = new Semaphore(2);
 	}
 	
 	public void setProgress(int progress){
@@ -82,17 +89,40 @@ public class Building {
 //		}
 //		System.out.println("BUILDING QUEUE END BUILDING");
 		
-		return unitQueue.get(no);
+		try {
+			lock.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String unit = unitQueue.get(no);
+		lock.release();
+		
+		return unit;
 	}
 	
 	public void addUnitQueue(String unit){
 		
+		try {
+			lock.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		unitQueue.add(unit);
+		lock.release();
 	}
 	
 	public void clearUnitQueue(){
 		
+		try {
+			lock.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		unitQueue.clear();
+		lock.release();
 	}
 	
 	public int getBuildingNo(){
@@ -204,10 +234,6 @@ public class Building {
 			
 			check = new Castle(buildingNo);
 		
-		}else if(name.equals(Names.FARM)){
-			
-			check = new Farm(buildingNo);
-		
 		}else if(name.equals(Names.ROYALPALACE)){
 			
 			check = new RoyalPalace(buildingNo);
@@ -251,6 +277,14 @@ public class Building {
 		}else if(name.equals(Names.SWORDSSMITH)){
 			
 			check = new SwordsSmith(buildingNo);
+		
+		}else if(name.equals(Names.WALL)){
+			
+			check = new Wall(buildingNo);
+		
+		}else if(name.equals(Names.WALLTOWER)){
+			
+			check = new WallTower(buildingNo);
 		}
 		
 		if(check == null){
@@ -269,6 +303,11 @@ public class Building {
 	public boolean isSite() {
 		// TODO Auto-generated method stub
 		return site;
+	}
+
+	public boolean isWall() {
+		// TODO Auto-generated method stub
+		return name.equals(Names.WALL);
 	}
 
 

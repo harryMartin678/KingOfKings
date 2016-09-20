@@ -161,7 +161,7 @@ public class Building {
 		
 		unitQueue.get(0).progress();
 		
-		System.out.println(unitQueue.get(0).getProgress() + " Building");
+		//System.out.println(unitQueue.get(0).getProgress() + " Building");
 		
 		return unitQueue.get(0).finished();
 		

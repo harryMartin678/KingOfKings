@@ -26,13 +26,14 @@ public class BuildingModelList implements IBoundingBoxes {
 	private BuildingModel farm;
 	private BuildingModel royalPalace;
 	private BuildingModel stockpile;
-	private BuildingModel wall;
 	private BuildingModel mine;
 	private BuildingModel site;
 	private BuildingModel giantLiar;
 	private BuildingModel swordsSmith;
 	private BuildingModel spearYard;
 	private BuildingModel houndPit;
+	private BuildingModel wallTower;
+	private BuildingModel wall;
 	
 	private BuildingModel tree;
 	private BuildingModel gold;
@@ -59,7 +60,7 @@ public class BuildingModelList implements IBoundingBoxes {
 		//this.buttons = buttons;
 		
 		site = new BuildingModel(Names.SITE,"Models",1,true);
-		site.setSize(2.0f, 2.0f, 2.0f);
+		site.setSize(1.0f, 1.0f, 1.0f);
 		archeryTower = new BuildingModel(Names.ARCHERYTOWER,"Models",1);
 		archeryTower.setSize(2.0f, 2.0f, 2.0f);
 		//archeryTower.setTrans(0.1f, 0.1f);
@@ -79,8 +80,10 @@ public class BuildingModelList implements IBoundingBoxes {
 		stockpile = new BuildingModel(Names.STOCKPILE,"Models",1);//2 2
 		//stockpile.setTrans(0.15f, 0.05f);
 		stockpile.setSize(2.0f,2.0f,2.0f);
-		wall = new BuildingModel(Names.WALL,"Models",1,true);//1 1
-		wall.setSize(0.1f, 0.1f, 0.1f);
+		wall = new BuildingModel(Names.WALL,"Models",1);//1 1
+		wall.setSize(1.0f, 1.0f, 1.0f);
+		wallTower = new BuildingModel(Names.WALLTOWER, "Models", 1);
+		wallTower.setSize(1.0f, 1.0f, 1.0f);
 		//wall.setTrans(-5.0f, -5.0f);
 		//wall.setAngle(90.0f);
 		mine = new BuildingModel(Names.MINE,"Models",1,true);//1 1
@@ -135,7 +138,7 @@ public class BuildingModelList implements IBoundingBoxes {
 		Building fortb = new Building(x  + 6*xConst, y, Names.SPEARYARD,-1,0);
 		Building sword = new Building(x + 7*xConst, y, Names.SWORDSSMITH,-1,0);
 		Building stock = new Building(x + 8*xConst, y, Names.STOCKPILE,-1,0);
-		Building wal = new Building(x + 2*xConst, y - yConst, Names.WALL,-1,0);
+		Building wal = new Building(x + 2*xConst, y - yConst, Names.WALLTOWER,-1,0);
 		Building min = new Building(x + 6*xConst, y - yConst, Names.MINE,-1,0);
 		
 		buildingIcons.put(Names.ARCHERYTOWER, archTower);

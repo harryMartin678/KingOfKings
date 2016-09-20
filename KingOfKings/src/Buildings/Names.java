@@ -16,6 +16,7 @@ public class Names {
 	public static String HOUNDPIT = "houndpit";
 	public static String CASTLE = "castle";
 	public static String WALL = "wall";
+	public static String WALLTOWER = "walltower";
 	public static String SITE = "site";
 	
 	//unit names

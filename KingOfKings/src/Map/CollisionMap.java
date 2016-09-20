@@ -3,6 +3,8 @@ package Map;
 import java.util.HashMap;
 import java.util.concurrent.Semaphore;
 
+import Units.UnitList;
+
 public class CollisionMap {
 
 	public int[][] CollisionMap;
@@ -52,22 +54,30 @@ public class CollisionMap {
 		
 		int[] pos = UnitToPos.get(unitNo);
 //		System.out.println("Start Remove CollisionMap " + unitNo);
-//		for(int u = 0; u < PosToUnit.size(); u++){
+//		for(int u = 0; u < UnitToPos.size(); u++){
 //			
-//			System.out.println(PosToUnit.values().toArray()[u] + " CollisionMap");
+//			System.out.println(UnitToPos.keySet().toArray()[u] + " CollisionMap");
 //		}
 //		System.out.println("End Remove CollisionMap");
-		UnitToPos.remove(unitNo);
-		PosToUnit.remove(GetUniqueNo(pos));
-		
-		CollisionMap[pos[0]][pos[1]] = 0;
+		if(pos != null){
+			UnitToPos.remove(unitNo);
+			PosToUnit.remove(GetUniqueNo(pos));
+			
+			CollisionMap[pos[0]][pos[1]] = 0;
+		}else{
+			
+			System.out.println("ERROR NULL POS IN REMOVE UNIT COLLISION MAP: " + unitNo);
+		}
 	}
 	
 	public void moveUnit(int unitNo,int newX,int newY){
 		
 		int[] pos = UnitToPos.get(unitNo);
 		
-		if(!(pos[0] == newX && pos[1] == newY)){
+		if(pos == null){
+			
+			
+		}else if(!(pos[0] == newX && pos[1] == newY)){
 			
 			CollisionMap[pos[0]][pos[1]] = 0;
 			
@@ -159,7 +169,17 @@ public class CollisionMap {
 		
 		int[] pos = UnitToPos.get(ignoreUnit);
 		
-		copy[pos[0]][pos[1]] = 0;
+//		if(pos == null){
+//			
+//			for(int u = 0; u < UnitToPos.size(); u++){
+//				
+//				System.out.println(UnitToPos.keySet().toArray()[u] + " CollisionMap");
+//			}
+//		}
+		
+		if(pos != null){
+			copy[pos[0]][pos[1]] = 0;
+		}
 		
 		return copy;
 	}
@@ -167,6 +187,11 @@ public class CollisionMap {
 	public int IsUnitInFront(int unitNo,int[] direction) {
 		// TODO Auto-generated method stub
 		int[] pos = UnitToPos.get(unitNo);
+		
+		if(pos == null){
+			
+			return -1;
+		}
 		
 		//System.out.println(CollisionMap[pos[0] + direction[0]][pos[0] + direction[1]]
 			//	+ " CollisionMap");
@@ -220,5 +245,46 @@ public class CollisionMap {
 	public int getHeight() {
 		// TODO Auto-generated method stub
 		return CollisionMap[0].length;
+	}
+
+	public int FindEnemy(int unitNo, UnitList units) {
+		// TODO Auto-generated method stub
+		
+		int unitX = Math.round(units.getUnitX(unitNo));
+		int unitY = Math.round(units.getUnitY(unitNo));
+		
+		int enemyNo = -1;
+		int distance = Integer.MAX_VALUE;
+		
+		for(int x = unitX - 25; x < unitX + 25; x++){
+			for(int y = unitY - 25; y < unitY + 25; y++){
+				
+				if(x < 0 || x >= CollisionMap.length || y < 0 || y >= CollisionMap[0].length
+						|| (x == unitX && y == unitY)){
+					
+					continue;
+				}
+				
+				if(PosToUnit.containsKey(GetUniqueNo(new int[]{x,y}))){
+					
+					int found = PosToUnit.get(GetUniqueNo(new int[]{x,y}));
+					
+					if(units.getUnitPlayer(found) != units.getUnitPlayer(unitNo)
+							&& Math.abs(x) + Math.abs(y) < distance){
+						
+//						System.out.println("FOUND ENEMY: " + unitNo + " " + units.getUnitPlayer(unitNo) 
+//						+ " " + units.getUnits(unitNo).getName() + " " + found + " " +
+//								units.getUnitPlayer(found) + " " + units.getUnits(found).getName() + 
+//								" " + unitX + " " + unitY + " " + x + " " + y + " CollisionMap");
+						enemyNo = found;
+						distance = Math.abs(x) + Math.abs(y);
+					}
+				}
+			}
+		}
+		
+		//System.out.println(units.getUnits(enemyNo).getName() + " " + units.getUnits(unitNo).getName()
+			//	+ " CollisionMap");
+		return enemyNo;
 	}
 }

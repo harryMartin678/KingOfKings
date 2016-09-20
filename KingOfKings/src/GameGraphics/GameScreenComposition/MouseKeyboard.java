@@ -12,6 +12,8 @@ import GameGraphics.IBoundingBoxes;
 import GameGraphics.IComMouseKeyboardBuildingList;
 import GameGraphics.Menu.IComMouseKeyboardMenu;
 import GameGraphics.Menu.Menu;
+import IntermediateAI.WallCreator;
+import Util.Point;
 
 public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,
 	IComMouseKeyboardMenu,IComMouseKeyboardBuildingList {
@@ -25,6 +27,8 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,
 	private int height;
 	private boolean fDown;
 	private boolean shiftDown;
+	private boolean space;
+	private ArrayList<Point> wallSpaces;
 	
 	private IComUnitListMouseKeyboard units;
 	private IComBuildingListMouseKeyboard buildings;
@@ -45,6 +49,7 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,
 	public MouseKeyboard(Menu menu){
 		
 		this.menu = menu;
+		wallSpaces = new ArrayList<Point>();
 	}
 	
 	public void setUpMouseKeyboard(IComUnitListMouseKeyboard units,
@@ -62,7 +67,7 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,
 		
 		this.playerNumber = playerNumber;
 		
-		move = new MoveUnit(units,map,cmsg);
+		move = new MoveUnit(units,map,cmsg,unitBoxes);
 	}
 	
 	public void SetHeight(int height){
@@ -75,9 +80,9 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,
 		this.width = width;
 	}
 	
-	public void moveUnit(int tx, int ty,int difference){
+	public void moveUnit(int tx, int ty){
 		
-		move.moveUnit(tx, ty,difference, fDown, shiftDown);
+		move.moveUnit(tx, ty);
 	}
 	
 	private void RegulateHovering(int x, int y) {
@@ -106,31 +111,117 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,
 		//buttons.GetGroup("UnitIcons").AreDrawn();
 	    if (mouse != null)
 	    {
+	    	double x = (double)mouse.getX()/(double)width, y = (double)mouse.getY()/(double)height;
 	      
 	      if(mouse.getButton() == MouseEvent.BUTTON1){
 	    	  
-	    	  double x = (double)mouse.getX()/(double)width, y = (double)mouse.getY()/(double)height;
 	    	  
-//	    	  System.out.println(x + "," + y + " MouseKeyboard");
-//	    	  System.out.println("////////////////////////////");
 
 		      if(!selectMenu(x, y,food,gold,false)){	
 
-		    	  int[] click = selectMap(x,y);
-
-		    	  if(units.getSelectedUnitsSize() > 0 && !buildings.isBuildingGhost()){
+		    	  //unit move
+		    	  	//group
+		    	  	//single
+		    	  //unit attack
+		    	  	//group
+		    	  	//single
+		    	  //follow 
+		    	  //way point
+		    	  //attack building
+		    	  //build building 
+		    	  //rebuild building
+		    	  
+		    	  int unitNo;
+		    	  int buildingNo; 
+		    	  
+		    	  
+//		    	  for(int u = 0; u < units.getUnitListSize(); u++){
+//		    		  
+//		    		  System.out.println(units.getUnitPlayer(u));
+//		    	  }
+		    	  
+		    	  //if it's a ghost building
+		    	  if(buildings.isBuildingGhost()){
 		    		  
-		    		  int outcome;
-		    		  if((outcome = buildings.setSelectedBuilding(selectBuilding(x,y,frameX,frameY)
-		    				  ,this.playerNumber)) == 0){
+		    		  if(buildings.canBuildGhostBuilding()){
 		    			  
-		    			//System.out.println(units.getSelectedUnitsSize() + " regulateMouse");
-		    		  	move.moveUnit(click[0],click[1],click[2],fDown,shiftDown);
-		    		  	buildings.clearSelectedBuilding();
+			    		  if(buildings.isBuildingGhostWall()){
+			    		  
+			    			  int[] click = selectMap(x,y);
+		    				  buildings.moveGhostBuilding(click);
+		    				  wallSpaces.add(new Point(click));
+			    			  
+			    			  if(!shiftDown){
+			    				  
+			    				  //WallCreator creator = new WallCreator(wallSpaces, viewedMap);
+			    				  //ArrayList<int[]> walls = creator.getWallRoute();
+			    				  
+			    				  String msg = "bw ";
+			    				  
+			    				  for(int w = 0; w < wallSpaces.size(); w++){
+			    					  
+			    					  msg += wallSpaces.get(w).x + " " + wallSpaces.get(w).y + " ";
+			    				  }
+			    				  msg += "u " + units.getUnitsSelectedString();
+			    				  
+			    				  msg += viewedMap + " " + playerNumber;
+			    				  
+			    				  cmsg.addMessage(msg);
+			    				  
+			    				  wallSpaces.clear();
+			    			  }
+			    			  
+			    		  }else{
+			    			  
+			    			  
+			    			  int[] click = selectMap(x,y);
+			    			  buildings.moveGhostBuilding(click);
+			    			  
+			    			  units.clearAttackSelectedUnits();
+				    		  //buildings.begin();
+				    		 // System.out.println(units.getUnitsSelectedString() + " MouseKeyboard");
+				    		  cmsg.addMessage("bb " + buildings.getGhostBuildingX() + " " 
+				    				  	+ buildings.getGhostBuildingY()+ " " + viewedMap + " " + 
+				    				    playerNumber + " " + units.getUnitsSelectedString() 
+				    				    + buildings.getGhostBuildingName());
+				    		  
+				    		  
+				    		  buildings.removeGhostBuilding();
+				    		  buildings.endGhostBuildingSession();
+			    		  }
+		    		  }
 		    		  
-		    		  }else if(outcome == 1){
+		    	  //unit selected
+		    	  }else if((unitNo = selectUnit(x, y, frameX, frameY)) != -1){
+		    		  
+//		    		  System.out.println(unitNo + " " + units.getUnitPlayer(unitNo) + " " 
+//		    		  + this.playerNumber + " MouseKeyboard");
+		    		  if(units.getUnitPlayerByUnitNo(unitNo) == this.playerNumber){
+		    			  
+		    		  	  units.addSelectedUnit(unitNo);
+		    		  }
+		    		  
+		    		  if(buildings.selectedBuildingIsTower()){
+		    				 
+	    				 cmsg.addMessage("taku " + unitNo + " " + buildings.getSelectedBuildingNo());
+	    				 
+	    			 }else if(!move.InteractWithOtherUnit(x, y, unitNo, fDown, shiftDown,height,width,
+	    					  frameX,frameY,units.getUnitPlayerByUnitNo(unitNo) != this.playerNumber)){
+		    			  
+		    			  
+		    		  }
+		    		  	
 		    		
-		    			  	units.clearNonAttackSelectedUnits();
+		    	  //building select
+		    	  }else if((buildingNo = selectBuilding(x, y, frameX, frameY)) != -1){
+		    		  
+		    		  
+		    		  int outcome = buildings.setSelectedBuilding(buildingNo, this.playerNumber);
+		    		  
+		    		  //1 - Attack building with selected unit 
+		    		  if(outcome == 1){
+		    			  
+		    			  units.clearNonAttackSelectedUnits();
 		    			  	
 		    			  	if(units.getSelectedUnitsSize() > 0){
 		    			  		
@@ -139,88 +230,74 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,
 		    			  		cmsg.addMessage("atbl " + units.getUnitsSelectedString() + 
 		    			  				buildings.getAttackBuildingNo());
 		    			  	}
-		    		  
-		    		  }else if(outcome == 3){
+		    		  }
+		    		  //2 - Select building 
+		    		  else if(outcome == 2){
 		    			  
-		    			  units.clearAttackSelectedUnits();
+		    			  units.clearSelectedUnits();
+		    			  
+		    		  }
+		    		  //3 - Is site hence build with selected unit
+		    		  else if(outcome == 3){
+		    			  
+		    			  
+			    			  
+	    				  units.clearAttackSelectedUnits();
 		    			  if(units.getSelectedUnitsSize() > 0){
 			    			  cmsg.addMessage("wnbb " + units.getUnitsSelectedString() +
 			    					  buildings.getBuildBuildingBuildingNo());
 		    			  }
 		    			  
-		    		  }else{
-		    			  
-		    			  
-		    			  units.clearSelectedUnits();
 		    		  }
-
-		    		  //ClearBuildingIconsButtonGroup();
 		    		  
-		    	  }else if(buildings.isBuildingGhost() && buildings.canBuildGhostBuilding()){
-		    		  
-		    		  units.clearAttackSelectedUnits();
-		    		  //buildings.begin();
-		    		 // System.out.println(units.getUnitsSelectedString() + " MouseKeyboard");
-		    		  cmsg.addMessage("bb " + buildings.getGhostBuildingX() + " " + buildings.getGhostBuildingY()
-		    				   + " " + viewedMap + " " + playerNumber + " " + units.getUnitsSelectedString() 
-		    				   + buildings.getGhostBuildingName());
-		    		  
-		    		  
-		    		  buildings.removeGhostBuilding();
-		    		  buildings.endGhostBuildingSession();
-		    		 // buildings.end();
-		    	  
+		    	  //if the map is just being selected
 		    	  }else{
-		    	  
-		    		  if(buildings.setSelectedBuilding(selectBuilding(x,y,frameX,frameY), 
-		    				  this.playerNumber) == 0){
-		    			 
-		    			 if(buildings.selectedBuildingIsTower()){
-		    				 
-		    				 int unitNo = units.getUnitAtttack(x,y,width,height,unitBoxes,frameX,frameY);
-		    				 cmsg.addMessage("taku " + unitNo + " " + buildings.getSelectedBuildingNo());
-		    				 
-		    			 }else{
-
-		    				 
-		    				 units.addSelectedUnit(selectUnit(x,y,frameX,frameY));
-			    			 buildings.clearSelectedBuilding();
-		    			 }
-		    			 
-		    			 
-		    			 
-		    		  }else{
-		    			  menu.ClearUnitIcons();
-		    			 // ClearUnitIconsButtonGroup();
-		    		  }
 		    		  
+		    		  	int[] click = selectMap(x,y);
 		    		  
-		    		  //ClearBuildingIconsButtonGroup();
+		    		  	if(units.areWayPointSetting()){
+		    			  
+		    			  move.setWayPoints(click[0], click[1], shiftDown);
+		    			  
+		    		  	}else if(units.getSelectedUnitsSize() > 0){
+			    			  
+			    			 move.moveUnit(click[0],click[1]);
+		    		  	}
+		    		  	
+		    		  	
 		    	  }
-		       }
-	    	   mouse = null;
-	     
-	      }else if(mouse.getButton() == MouseEvent.BUTTON3){
-	    		  
-	    	  if(buildings.isBuildingGhost()){
-	    		  
-	    		  buildings.removeGhostBuilding();
-	    		  buildings.endGhostBuildingSession();
-	    		  
-	    	  }else{
-	    		  
-	    		  buildings.clearSelectedBuilding();
-		    	  units.clearSelectedUnits();
-	    	  }
-	    	  
-	    	  ClearBuildingIconsButtonGroup();
-	    	  mouse = null;
-	      }
-	      
-	    }
+		    	  
+		    	  mouse = null;
+
+
 	    
-	    //deal with dragging the mouse 
-	    if(drag){
+	    	
+		  }
+	    }else if(mouse.getButton() == MouseEvent.BUTTON3){
+		  
+			  if(buildings.isBuildingGhost()){
+				  
+				  buildings.removeGhostBuilding();
+				  buildings.endGhostBuildingSession();
+				  
+			  }else{
+				  
+				  buildings.clearSelectedBuilding();
+		    	  units.clearSelectedUnits();
+			  }
+			  
+			  ClearBuildingIconsButtonGroup();
+			  mouse = null;
+		  }
+	     
+	      if(buildings.isBuildingGhost()){
+	         int[] click = selectMap(x,y);
+		  	 buildings.moveGhostBuilding(click);
+	      }
+	   } 
+	    
+	   //deal with dragging the mouse 
+	   if(drag){
 	    	
 	    	if(inRect(0.8631039261817932,0.6014184355735779,0.9546120166778564,
 	    			0.8978723287582397,lx,ly)){
@@ -239,14 +316,13 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,
 	    	
 	    		drag = false;
 	    	}
+	    	
+	    	
 	    
 	    }
-	    	
+		
+		
 	    
-	    	
-		
-		
-		//buildings.moveGhostBuilding(square);
 	   
 	}
 	
@@ -257,7 +333,17 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,
 
 	private int selectUnit(double x, double y,int frameX,int frameY) {
 		// TODO Auto-generated method stub
+		
 		return units.getSelectedUnit(x,y,width,height,unitBoxes,frameX,frameY);
+		
+//		if(unitNo == -1 || units.getUnitPlayer(unitNo) != playerNumber){
+//			
+//			return -1;
+//		
+//		}else{
+//			
+//			return unitNo;
+//		}
 	}
 
 	public void moveMap(){
@@ -373,19 +459,27 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,
 //			}
 //		}
 		
-		int x = (int)(mx / 0.01756954938);
-		int y = (int)((0.748221906116643 - my)/0.03475177288);
+		//0.013048016701461378,0.7567567567567568 MouseKeyboard
+		//////////////////////////////
+		//0.029749478079331943,0.7237237237237237 MouseKeyboard
+		//////////////////////////////
+		//diffX = 0.01670146138  diffY = -0.033033033033
+		//0.01756954938
+		//0.748221906116643   0.03475177288
+		
+		int x = (int)((mx-0.003653444679) / 0.01670146138);
+		int y = (int)((0.789789789789789 - my)/0.033033033033);
 		
 		if(x >= display.getFrameSizeX() || y >= display.getFrameSizeY()){
 			
 			return new int[]{-1,-1,-1};
 		}
 		
-		int difference = (int)(Math.abs((mx - 0.145 + (x*(0.03513909876/2.0)))) +
-				Math.abs((my - 0.955 + (y*(0.06950354576/2.0))))) * 1000;
+//		int difference = (int)(Math.abs((mx - 0.145 + (x*(0.03513909876/2.0)))) +
+//				Math.abs((my - 0.955 + (y*(0.06950354576/2.0))))) * 1000;
 		
 		
-		return display.getFrameAdjustedPos(new int[]{x,y,difference});
+		return display.getFrameAdjustedPos(new int[]{x,y});
 		
 	}
 	
@@ -495,7 +589,7 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,
 
 	public void handleKeyboardPressed(KeyEvent e){
 		
-		System.out.println(e.getKeyChar() + " pressed");
+		//System.out.println(e.getKeyChar() + " pressed");
 		//System.out.println("MOUSEKEYBOARD KEY PRESSED: " + e.getKeyChar() + " " + e.isShiftDown());
 		if(e.isShiftDown()){
 			
@@ -513,7 +607,7 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,
 	
 	public void handleKeyboardReleased(KeyEvent e){
 		
-		System.out.println(e.getKeyChar() + " released");
+		//System.out.println(e.getKeyChar() + " released");
 		if(!e.isShiftDown()){
 			
 			shiftDown = false;
@@ -524,6 +618,7 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,
 			
 			fDown = false;
 		}
+
 	}
 
 	@Override
@@ -601,5 +696,107 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,
 //		display.CreateUnitIcons();
 //	}
 	
+//	  if(units.getSelectedUnitsSize() > 0 && !buildings.isBuildingGhost()){
+//	  
+//	  int outcome;
+//	  if((outcome = buildings.setSelectedBuilding(selectBuilding(x,y,frameX,frameY)
+//			  ,this.playerNumber)) == 0){
+//		  
+//		//System.out.println(units.getSelectedUnitsSize() + " regulateMouse");
+//	  	move.moveUnit(click[0],click[1],this.selectUnit(x, y, frameX, frameY)
+//	  			,fDown,shiftDown);
+//	  	buildings.clearSelectedBuilding();
+//	  
+//	  }else if(outcome == 1){
+//	
+//		  	units.clearNonAttackSelectedUnits();
+//		  	
+//		  	if(units.getSelectedUnitsSize() > 0){
+//		  		
+//		  		//String msg = "atbl " + units.getUnitsSelectedString();
+//		  		
+//		  		cmsg.addMessage("atbl " + units.getUnitsSelectedString() + 
+//		  				buildings.getAttackBuildingNo());
+//		  	}
+//	  
+//	  }else if(outcome == 3){
+//		  
+//		  units.clearAttackSelectedUnits();
+//		  if(units.getSelectedUnitsSize() > 0){
+//			  cmsg.addMessage("wnbb " + units.getUnitsSelectedString() +
+//					  buildings.getBuildBuildingBuildingNo());
+//		  }
+//		  
+//	  }else{
+//		  
+//		  
+//		  units.clearSelectedUnits();
+//	  }
+//
+//	  //ClearBuildingIconsButtonGroup();
+//	  
+//}else if(buildings.isBuildingGhost() && buildings.canBuildGhostBuilding()){
+//	  
+//	  units.clearAttackSelectedUnits();
+//	  //buildings.begin();
+//	 // System.out.println(units.getUnitsSelectedString() + " MouseKeyboard");
+//	  cmsg.addMessage("bb " + buildings.getGhostBuildingX() + " " + buildings.getGhostBuildingY()
+//			   + " " + viewedMap + " " + playerNumber + " " + units.getUnitsSelectedString() 
+//			   + buildings.getGhostBuildingName());
+//	  
+//	  
+//	  buildings.removeGhostBuilding();
+//	  buildings.endGhostBuildingSession();
+//	 // buildings.end();
+//
+//}else{
+//
+//	  if(buildings.setSelectedBuilding(selectBuilding(x,y,frameX,frameY), 
+//			  this.playerNumber) == 0){
+//		 
+//		 if(buildings.selectedBuildingIsTower()){
+//			 
+//			 int unitNo = units.getUnitAtttack(x,y,width,height,unitBoxes,frameX,frameY);
+//			 cmsg.addMessage("taku " + unitNo + " " + buildings.getSelectedBuildingNo());
+//			 
+//		 }else{
+//
+//			 int unitNo = selectUnit(x,y,frameX,frameY);
+//			 System.out.println(unitNo + " MouseKeyboard");
+//			 units.addSelectedUnit(unitNo);
+//			 buildings.clearSelectedBuilding();
+//		 }
+//		 
+//		 
+//		 
+//	  }else{
+//		  menu.ClearUnitIcons();
+//		 // ClearUnitIconsButtonGroup();
+//	  }
+//	  
+//	  
+//	  //ClearBuildingIconsButtonGroup();
+//}
+//}
+//mouse = null;
+//
+//}else if(mouse.getButton() == MouseEvent.BUTTON3){
+//
+//if(buildings.isBuildingGhost()){
+//
+//buildings.removeGhostBuilding();
+//buildings.endGhostBuildingSession();
+//
+//}else{
+//
+//buildings.clearSelectedBuilding();
+//units.clearSelectedUnits();
+//}
+//
+//ClearBuildingIconsButtonGroup();
+//mouse = null;
+//}
+
+//    }
 
 }

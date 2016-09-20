@@ -118,9 +118,9 @@ public class CreateVectorObj {
 		}
 	}
 	
-//	public static void main(String[] args) {
-//		
-//		new CreateVectorObj("bin/ModelEditor/SwordsSmithxd", 3);
-//	}
+	public static void main(String[] args) {
+		
+		new CreateVectorObj("bin/ModelEditor/wallTowerxd", 2);
+	}
 
 }

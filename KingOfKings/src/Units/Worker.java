@@ -31,7 +31,7 @@ public class Worker extends Unit {
 	@Override
 	public int getSpeed() {
 		// TODO Auto-generated method stub
-		return super.getSpeed() + 5;
+		return super.getSpeed() + 3;
 	}
 	
 	@Override

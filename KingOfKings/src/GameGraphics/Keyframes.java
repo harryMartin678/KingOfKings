@@ -38,8 +38,14 @@ public class Keyframes {
 		
 		for(int f = 0; f < keyframes.size(); f++){
 			
-			System.out.println(keyframes.get(f)[0] + " " + keyframes.get(f)[1]
-					+ " " + keyframes.get(f)[2]);
+//			System.out.println(keyframes.get(f)[0] + " " + keyframes.get(f)[1]
+//					+ " " + keyframes.get(f)[2]);
+			for(int v = 0; v < keyframes.get(f).length; v++){
+				
+				System.out.print(keyframes.get(f)[v] + " ");
+			}
+			
+			System.out.println();
 		}
 	}
 	
@@ -51,9 +57,15 @@ public class Keyframes {
 		int offset = animNo - (chosenKf*segSize); 
 		float per = (float)offset / (float)segSize;
 		
+		if(chosenKf >= keyframes.size()){
+			
+			System.out.println(animNo + " Keyframe");
+		}
+		
 		if(keyframes.get(chosenKf).length < 3){
 			
-			System.out.println(keyframes.get(chosenKf).length + " Keyframes");
+			System.out.println(keyframes.get(chosenKf).length + " " + chosenKf + " Keyframes");
+			PrintKeyframes();
 		}
 		 
 		return new float[]{keyframes.get(chosenKf)[0] * per, 

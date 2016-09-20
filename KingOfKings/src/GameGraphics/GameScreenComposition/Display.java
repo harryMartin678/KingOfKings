@@ -58,6 +58,17 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	
 	private BuildingModelList buildingModels;
 	private UnitModelList unitModels;
+	
+	public enum TileState{
+		
+		None,
+		Selected,
+		Empty,
+		White,
+		Black,
+		Center
+	}
+	
 	//private ButtonList buttons;
 	
 	//private HoverPanelGraphic hoverPanel;
@@ -140,43 +151,52 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    				x < 0 || y < 0){
 	    			
 	    			drawTile(draw,(float) x,(float) y,
-	    					0.0f,0.0f,0.0f,WIDTH_CONST,HEIGHT_CONST);
-	    		}else{
+	    					TileState.Empty,WIDTH_CONST,HEIGHT_CONST);
+	    		}
+	    		//}else{
 	    			
 	    			//0.93f,0.68f,0.79f
-	    		if(mouseKeyboard.isInDragBox(x,y)){
+	    		else if(mouseKeyboard.isInDragBox(x,y)){
 	    			
 	    			drawTile(draw,(float) x,(float) y
-    						,0.0f,0.0f,1.0f,WIDTH_CONST,HEIGHT_CONST);
+    						,TileState.Selected,WIDTH_CONST,HEIGHT_CONST);
 	    			
 	    		}else{
 		    		//0.93f,0.68f,0.79f
-		    		drawTile(draw,(float) x,(float) y,0.52f,0.45f,0.32f,WIDTH_CONST,HEIGHT_CONST);
 	    			
+	    			if(GraphicsCollisionMap.getTile(x, y) == 0){
+	    			
+		    			drawTile(draw,(float) x,(float) y,TileState.None,WIDTH_CONST,HEIGHT_CONST);
+		    			
+	    			}else{
+	    				
+	    				drawTile(draw,(float) x,(float) y,TileState.Center,WIDTH_CONST,HEIGHT_CONST);
+	    			}
+//	    			
 //	    			if(x == map.getWidth()/2 && y == map.getHeight()/2){
 //	    				
-//	    				drawTile(draw,(float)x,(float)y
-//	    						,1.0f,0.0f,0.0f,WIDTH_CONST,HEIGHT_CONST);
+//	    				drawTile(draw,(float)x,(float)y,
+//	    						TileState.Center,WIDTH_CONST,HEIGHT_CONST);
 //	    			}else{
 //	    			
 //		    			if(checked){
 //			    			drawTile(draw,(float) x,(float) y
-//					    			,0.0f,0.0f,0.0f,WIDTH_CONST,HEIGHT_CONST);
+//					    			,TileState.Black,WIDTH_CONST,HEIGHT_CONST);
 //		    			}else{
 //			    					
 //			    			drawTile(draw,(float) x,(float) y
-//			    					,1.0f,1.0f,1.0f,WIDTH_CONST,HEIGHT_CONST);
-//		    			}
-//	    			}
-//		    			
+//			    					,TileState.White,WIDTH_CONST,HEIGHT_CONST);
+		    			}
 	    			}
+//		    			
+	    			//}
 	    			
-	    			checked =! checked;
+	    			//checked =! checked;
 	    		}
-	    	}
+//	    	}
 	    	
 	    	//checked =! checked;
-	    }
+	  //  }
 	}
 	
 	private void drawMapFeatures(GL2 draw){
@@ -263,19 +283,20 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    	}
 	    	
 	    	if(buildings.isSelectedBuilding(buildings.get(b))){
+	    		
 	    		Buildings.Building type = Building.GetBuildingClass(buildings.get(b).getName());
 	    		draw.glLoadIdentity();
 	    		draw.glTranslatef(buildings.get(b).getX()-(WIDTH_CONST)-frameX, 
-	    				buildings.get(b).getY()-(HEIGHT_CONST)-frameY, -33.0f);
+	    				buildings.get(b).getY()-(HEIGHT_CONST)-frameY, -34.9f);
 	    		draw.glColor3f(0.0f, 0.0f, 1.0f);
-	    		draw.glScalef(type.getSizeX(), type.getSizeY(), 1.0f);
+	    		draw.glScalef(type.getSizeX(),type.getSizeY(), 1.0f);
 	    		
 	    		
 	    		draw.glBegin(draw.GL_LINE_LOOP);
-	    			draw.glVertex3f(1.0f, 1.0f, -1.0f); //bottom face
-	    			draw.glVertex3f(-1.0f, 1.0f, -1.0f);
-	    			draw.glVertex3f(-1.0f, -1.0f, -1.0f);
-	    			draw.glVertex3f(1.0f, -1.0f, -1.0f);
+	    			draw.glVertex3f(1.0f, 1.0f, 0.0f); //bottom face
+	    			draw.glVertex3f(-1.0f, 1.0f, 0.0f);
+	    			draw.glVertex3f(-1.0f, -1.0f, 0.0f);
+	    			draw.glVertex3f(1.0f, -1.0f, 0.0f);
 	    		draw.glEnd();
 	    	}
 	    	
@@ -341,7 +362,20 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    		LookAtMatrix[1][0], LookAtMatrix[1][1], LookAtMatrix[1][2], 
 	    		LookAtMatrix[2][0], LookAtMatrix[2][1], LookAtMatrix[2][2]);
 	    
-	    Unit.AnimateUnits();
+	    Unit.AnimateUnits(units);
+	    
+//	    for(int m = 0; m < Unit.MovingUnits.size(); m++){
+//			
+//			System.out.println(Unit.MovingUnits.get(m).getCurrentFrame() +
+//					" " + Unit.MovingUnits.size() + " Display");
+//		}
+	    
+//	    for(int u = 0; u < units.getUnitListSize(); u++){
+//	    	
+//	    	if(units.get(u).getCurrentFrame() != 0){
+//	    		System.out.println(units.get(u).getCurrentFrame());
+//	    	}
+//	    }
 	    //draw.glDisable(draw.GL_LIGHTING);
 	    
 	    draw.glEnable(draw.GL_LIGHTING);
@@ -402,7 +436,8 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    menu.DrawMenu(draw, (int)this.getScreenWidth(), (int)this.getScreenHeight(),
 	    		new UnitIconSelection(buildings.isUnitCreatorSelected(),
 	    				buildings.getUnitQueueSize()),units.workSelected(),
-	    		units,buildings,map,playerNumber,FRAME_X_SIZE,FRAME_Y_SIZE,frameX,frameY);
+	    		units,buildings,map,playerNumber,FRAME_X_SIZE,FRAME_Y_SIZE,frameX,frameY,
+	    		food,gold);
 	    
 	    draw.glDisable(draw.GL_LIGHTING);
 	    menuModels.drawUnitIcons(-15.1f,-5.0f,-18.0f, draw, playerNumber, 
@@ -482,18 +517,37 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 		return FloatBuffer.wrap(new float[]{0.0f,0.0f,0.0f});
 	}
 	
-	private void drawTile(GL2 draw,float x, float y, float red, float green, float blue,
+	private void drawTile(GL2 draw,float x, float y, TileState state,
 			float width, float height){
 		
 		draw.glLoadIdentity();
 		
-		
-		draw.glColor3f(1.0f, 1.0f, 1.0f);
+		if(state == TileState.None || state == TileState.White){
+			
+			draw.glColor3f(1.0f, 1.0f, 1.0f);
+			
+		}else if(state == TileState.Selected){
+			
+			draw.glColor3f(0.0f, 0.0f, 1.0f);
+			
+		}else if(state == TileState.Empty){
+			
+			draw.glColor3f(0.0f, 0.0f, 0.0f);
+			
+		}else if(state == TileState.Center){
+			
+			draw.glColor3f(1.0f, 0.0f, 0.0f);
+			
+		}else if(state == TileState.Black){
+			
+			draw.glColor3f(0.0f, 0.0f, 0.0f);
+			
+		}
 		draw.glEnable(draw.GL_TEXTURE_2D);
 		//draw.glDisable(draw.GL_LIGHTING);
 		draw.glBindTexture(draw.GL_TEXTURE_2D, textures.getTexture("floortile.png"));
 		
-		draw.glTranslatef(x-width-frameX, y-height-frameY, -35f);
+		draw.glTranslatef(x-width-frameX, y-height-frameY, -35.0f);
 		draw.glScalef(0.75f, 0.75f, 0.75f);
 		draw.glRotatef(90.0f, 1, 0, 0);
 		//draw.glColor3f(red, green, blue);
@@ -636,7 +690,7 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	@Override
 	public int[] getFrameAdjustedPos(int[] pos) {
 		// TODO Auto-generated method stub
-		return new int[]{pos[0]+frameX,pos[1]+frameY,pos[2]};
+		return new int[]{pos[0]+frameX,pos[1]+frameY};
 	}
 
 	@Override
@@ -646,7 +700,7 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 		
 		if(units.getSelectedUnitSize() > 0){
 			
-			mouseKeyboard.moveUnit(squareX,squareY,0);
+			mouseKeyboard.moveUnit(squareX,squareY);
 		
 		}else{
 		

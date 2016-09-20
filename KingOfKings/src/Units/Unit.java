@@ -1,16 +1,12 @@
 package Units;
 
 import java.util.ArrayList;
-import java.util.Dictionary;
 import java.util.HashMap;
 
 import Buildings.Mine;
 import Buildings.Names;
-import GameClient.ParseText;
 import GameServer.AddUnitModule;
-import Map.CollisionMap;
 import Map.GameEngineCollisionMap;
-import Map.GraphicsCollisionMap;
 
 public class Unit {
 	
@@ -27,6 +23,7 @@ public class Unit {
 	private boolean isAttack;
 	private int delayAttack;
 	private int delayRetreat;
+	private boolean deathReported;
 	
 	//private boolean changed;
 	
@@ -72,11 +69,18 @@ public class Unit {
 //		changed = true;
 //	}
 	
+	
+	public boolean idle(){
+		
+		return !isAttack && !moving && !dead();
+	}
+	
 	public void attack(int ax, int ay){
 		
 		//if(delayAttack == 10){
 			//System.out.println(x + " " + y + " " + ax + " " + ay + " Unit");
 			this.setOrientation(this.x,this.y, ax, ay);
+			//System.out.println(this.x + " " + this.y + " " + ax + " " + ay + " Unit");
 			isAttack = true;
 		//	delayAttack = 0;
 		//}else{
@@ -85,18 +89,41 @@ public class Unit {
 		
 	}
 	
-	public int[] getFreeSpace(int unitNo){
+	public int[] getFreeSpace(float attackX,float attackY){
 		
 		//this shouldn't look like this
 		//or maybe it should
 		Mine hack = new Mine(0);
-		hack.setPos((int)this.x, (int)this.y);
+		//if(path.size() <= 1){
+			hack.setPos(Math.round(this.x), Math.round(this.y));
+//		}else{
+//			hack.setPos((int)path.get(1)[0], (int)path.get(1)[1]);
+//		}
 		addUnit.setBuilding(hack);
+		ArrayList<int[]> takenList = new ArrayList<int[]>(isTaken.values());
 		
-		int[] pos = addUnit.getFreeSpace(map, (int)this.x, (int)this.y, 
-				new ArrayList<int[]>(isTaken.values()));
+//		if(path.size() > 1){
+//			
+//			takenList.add(new int[]{(int)path.get(1)[0],(int)path.get(1)[1]});
+//		}
+		
+		int[] pos = addUnit.getFreeSpace(map, Math.round(attackX), Math.round(attackY), 
+				takenList);
 		isTaken.put(unitNo, pos);
-		//System.out.println(pos[0] + " " + pos[1] + " Unit");
+		
+//		float nextstepx = attackX;
+//		float nextstepy = attackY;
+//		
+//		if(path.size() > 1){
+//			
+//			nextstepx = path.get(1)[0];
+//			nextstepy = path.get(1)[1];
+//		}
+//		
+//		//system.out.println(pos[0] + " " + pos[1] + " unit");
+//		System.out.println("attacker pos: " + this.x + " " + this.y + " victim space: " + hack.getX() 
+//				+ " " + hack.getY()+ " next step: " + nextstepx + " " + nextstepy + " position: " 
+//				+ pos[0] + " " + pos[1] + " " + this.getName());
 		return pos;
 	}
 	
@@ -126,6 +153,7 @@ public class Unit {
 	
 	public void setRetreat(boolean retreat,boolean delay){
 		if(delayRetreat == 5 || !delay){
+			//System.out.println(retreat + " " + this.getName() + " retreat Unit");
 			this.retreat = retreat;
 			delayRetreat = 0;
 		}else{
@@ -146,6 +174,7 @@ public class Unit {
 	public void stopFollow(){
 		
 		follow = -1;
+		//System.out.println("STOP FOLLOW " + this.getName() + " Unit");
 	}
 	
 	public void follow(int unitNo, int followX, int followY, int followMap){
@@ -278,22 +307,34 @@ public class Unit {
 		this.player = player;
 	}
 	
+	public boolean exitBattle(){
+		
+		return follow == -1 && path.size() > 0 && !isAttacking();
+	}
+	
 	public void removeHealth(int hit){
 		
-		//System.out.println(unitNo + " unitNo " + health + " remove health");
-		if(health > hit){
-			health -= hit;
-		}else{
-			health = 0;
-		}
-		
-		if(dead()){
+		//System.out.println(unitNo + " unitNo " + health + " remove health unit");
+		if(!dead()){
+			if(health > hit){
+				health -= hit;
+			}else{
+				health = 0;
+			}
 			
-			GameEngineCollisionMap.removeUnit(this.unitNo, this.map);
+			if(dead()){
+				
+				GameEngineCollisionMap.removeUnit(this.unitNo, this.map);
+			}
 		}
 	}
 	
 	public void setPath(ArrayList<int[]> path){
+		
+		if(this.follow == -1){
+			
+			isAttack = false;
+		}
 		
 		this.path.clear();
 		this.path.add(new float[]{x,y});
@@ -308,12 +349,12 @@ public class Unit {
 		
 		isTaken.clear();
 		
-		System.out.println("START////////");
-		for(int i = 0; i < path.size(); i++){
-			
-			System.out.println(this.path.get(i)[0] + " " + this.path.get(i)[1]);
-		}
-		System.out.println("END//////");
+//		System.out.println("START//////// " + this.getName());
+//		for(int i = 0; i < path.size(); i++){
+//			
+//			System.out.println(this.path.get(i)[0] + " " + this.path.get(i)[1]);
+//		}
+//		System.out.println("END//////");
 		
 	}
 	
@@ -462,14 +503,11 @@ public class Unit {
 		}
 	}
 	
-	
-	
+
 	public int getRecalculate(){
 		
 		return recalculate;
 	}
-	
-	
 	
 	//gets a unit to follow an path 
 	public void followPath(ArrayList<Unit> units, int ownNo){
@@ -497,13 +535,13 @@ public class Unit {
 				if(isUnitInFront != -1 && !units.get(isUnitInFront).dead()){
 					
 					//System.out.println(isUnitInFront + " IsUnitInFront Unit");
-					if(isUnitInFront == ownNo){
-						
-						System.out.println(((path.get(1)[0] - path.get(0)[0])) + " " +
-								(path.get(1)[1] - path.get(0)[1]) + " IsOwn Unit");
-						System.out.println(path.get(1)[0] + " " + path.get(0)[0] + " xs Unit");
-						System.out.println(path.get(1)[1] + " " + path.get(0)[1] + " ys Unit");
-					}
+//					if(isUnitInFront == ownNo){
+//						
+//						System.out.println(((path.get(1)[0] - path.get(0)[0])) + " " +
+//								(path.get(1)[1] - path.get(0)[1]) + " IsOwn Unit");
+//						System.out.println(path.get(1)[0] + " " + path.get(0)[0] + " xs Unit");
+//						System.out.println(path.get(1)[1] + " " + path.get(0)[1] + " ys Unit");
+//					}
 					//System.out.println(isUnitInFront + " InFront Unit");
 					if(units.get(isUnitInFront).getMoving()){
 						
@@ -639,17 +677,16 @@ public class Unit {
 					
 				}
 	
+			  }
 			}
-		}
-		
+			
 		if(!stop || retreat){
-			GameEngineCollisionMap.moveUnit(ownNo, (int)x, (int)y, map);
+			GameEngineCollisionMap.moveUnit(ownNo, Math.round(x), Math.round(y), map);
 		}
 	}
 	
 	//CollisionMap map,
 	public void Retreat(float rx,float ry){
-		
 		
 		//int[][] areaCanWalk = map.getCollisionMap();
 		float[] directions = new float[]{0,1,0,-1,1,0,-1,0,-1,-1,1,-1,-1,1,1,1};
@@ -662,9 +699,12 @@ public class Unit {
 			float tempDist = (float) Math.sqrt(Math.abs(((int)this.getX() + (int)directions[d])-rx)
 					 + Math.abs(((int)this.getY() + (int)directions[d+1]) - ry));
 			
-			;
-			if(GameEngineCollisionMap.getTile((int)this.getX() + (int)directions[d+1],
-					(int)this.getY() + (int)directions[d],this.map) == 0
+			int nx = (int)this.getX() + (int)directions[d];
+			int ny = (int)this.getY() + (int)directions[d+1];
+			
+			if(nx >= 0 && ny >= 0 && nx < GameEngineCollisionMap.getSizeX(this.map) &&
+					ny < GameEngineCollisionMap.getSizeY(this.map) &&
+					GameEngineCollisionMap.getTile(nx,ny,this.map) == 0
 					&& tempDist > distance){
 				
 				distance = tempDist;
@@ -674,13 +714,15 @@ public class Unit {
 		}
 		
 		if(directionIndex != -1){
+			
 			float speed = ((float) this.getSpeed()/SPEED_CONSTANT);
 			
-			x = x + directions[directionIndex] * speed;
-			y = y + directions[directionIndex+1] * speed;
+			x = x + (directions[directionIndex] * speed);
+			y = y + (directions[directionIndex+1] * speed);
 			
 			retreat = true;
 		}
+		
 	}
 	
 	public int goldNeeded(){
@@ -723,6 +765,43 @@ public class Unit {
 		}
 		
 		return new Unit();
+	}
+
+	public void chase(float targetX, float targetY) {
+		// TODO Auto-generated method stub
+		
+		this.setOrientation(x, y, targetX, targetY);
+		float directX = targetX - x;
+		float directY = targetY - y;
+		float speed = ((float) this.getSpeed()/SPEED_CONSTANT);
+
+			
+		float vectorX = (float) (directX * (speed / Math.sqrt(Math.pow(directX,2) + Math.pow(directY,2))));
+		float vectorY = (float) (directY * (speed / Math.sqrt(Math.pow(directX,2) + Math.pow(directY,2))));
+		
+		//float limitX = x + (directX / )
+		
+//		if(Math.abs((x + vectorX) - targetX) > 1 ||
+//				Math.abs((y + vectorY) - targetY) > 1){
+//			
+//			
+//		}
+
+	}
+
+	public boolean isWorker() {
+		// TODO Auto-generated method stub
+		return this.getName().equals("Unit:"+Names.WORKER);
+	}
+
+	public void reportedDeath() {
+		// TODO Auto-generated method stub
+		deathReported = true;
+	}
+
+	public boolean deathReported() {
+		// TODO Auto-generated method stub
+		return deathReported;
 	}
 	
 

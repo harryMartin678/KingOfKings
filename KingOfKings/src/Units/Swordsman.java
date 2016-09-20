@@ -13,7 +13,7 @@ public class Swordsman extends Unit {
 	@Override
 	public int getMaxHealth() {
 		// TODO Auto-generated method stub
-		return super.getMaxHealth() + 100;
+		return super.getMaxHealth() + 500;
 	}
 	
 	@Override

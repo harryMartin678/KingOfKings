@@ -1,6 +1,7 @@
 package Units;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import Buildings.Names;
 import GameGraphics.IUnitList;
@@ -55,6 +56,16 @@ public class UnitList implements Cloneable,IUnitList {
 	public void stopAttack(int unitNo){
 		
 		units.get(unitNo).stopAttack(false);
+	}
+	
+	public void setDeathReported(int unitNo){
+		
+		units.get(unitNo).reportedDeath();
+	}
+	
+	public boolean hasDeathBeenReported(int unitNo){
+		
+		return units.get(unitNo).deathReported();
 	}
 	
 	public void stopAttack(int unitNo,boolean delay){
@@ -144,6 +155,8 @@ public class UnitList implements Cloneable,IUnitList {
 
 	public void setFollow(int unitNo, int unitFollow){
 		
+		//System.out.println(unitNo + " " + this.getUnitName(unitNo) +
+			//	" " + unitFollow + " Follow GameEngine");
 		units.get(unitNo).setFollow(unitFollow);
 	}
 	
@@ -157,15 +170,12 @@ public class UnitList implements Cloneable,IUnitList {
 		return units.get(unitNo).getFollow();
 	}
 	
-	public void remove(int unitNo){
-		
-		this.units.remove(unitNo);
-	}
-	
-
+//	public void remove(int unitNo){
+//		
+//		this.units.remove(unitNo);
+//	}
 	
 	public void addPathToUnit(int unitNo,ArrayList<int[]> path,boolean cutEndOff){
-		
 		
 		if(cutEndOff){
 			
@@ -236,7 +246,6 @@ public class UnitList implements Cloneable,IUnitList {
 		
 		return generalCollision(one,two,range);
 
-		
 	}
 	
 	public boolean getStopped(int unitNo){
@@ -305,6 +314,11 @@ public class UnitList implements Cloneable,IUnitList {
 		}
 	}
 	
+	private boolean IsDead(int follow) {
+		// TODO Auto-generated method stub
+		return units.get(follow).dead();
+	}
+
 	public boolean getUnitStop(int unitNo){
 		
 		return units.get(unitNo).getStop();
@@ -341,6 +355,21 @@ public class UnitList implements Cloneable,IUnitList {
 	public void cancelFollow(int unitFollow,int unitNo) {
 		// TODO Auto-generated method stub
 		units.get(unitFollow).unRegisterFollow(unitNo);
+	}
+
+	public boolean getUnitIsIdle(int unitNo) {
+		// TODO Auto-generated method stub
+		return units.get(unitNo).idle();
+	}
+
+	public boolean isWorker(int unitNo) {
+		// TODO Auto-generated method stub
+		return units.get(unitNo).isWorker();
+	}
+
+	public boolean isRetreating(int unitFollow) {
+		// TODO Auto-generated method stub
+		return units.get(unitFollow).getRetreat();
 	}
 
 	

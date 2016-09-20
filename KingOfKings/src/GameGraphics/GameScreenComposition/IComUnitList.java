@@ -11,6 +11,8 @@ public interface IComUnitList extends IUnitList {
 	public void end();
 	public Unit get(int unitNo);
 	public void remove(int unitNo);
+	public Unit getUnitByUnitNo(int unitNo);
+	public int getUnitPlayerByUnitNo(int unitNo);
 	
 	
 	

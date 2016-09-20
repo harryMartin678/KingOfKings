@@ -5,11 +5,15 @@ import java.util.ArrayList;
 
 import Buildings.Building;
 import Buildings.BuildingSite;
+import Buildings.Names;
 import Buildings.Tower;
 import IntermediateAI.MapRouteFinder;
+import IntermediateAI.WallCreator;
 import Map.CollisionMap;
+import Map.GameEngineCollisionMap;
 import Units.Unit;
 import Units.Worker;
+import Util.Point;
 
 public class MethodCallup implements Commands {
 
@@ -43,6 +47,7 @@ public class MethodCallup implements Commands {
 	public static String ATWAR = "atWar";
 	public static String ADDWORKERTOSITE = "addWordToSite";
 	public static String TOWERATTACKUNIT = "towerAttackUnit";
+	public static String BUILDWALLS = "buildwall";
 	
 	private MethodParameter parameters;
 	private int CommunicationTurnNo;
@@ -180,6 +185,11 @@ public class MethodCallup implements Commands {
 		}else if(methodName.equals(TOWERATTACKUNIT)){
 			
 			this.towerAttackUnit(parameters.unitNo,parameters.buildingNo);
+		
+		}else if(methodName.equals(BUILDWALLS)){
+			
+			this.buildWalls(parameters.wallSections,parameters.unitNos , parameters.map,
+					parameters.playerNo);
 		}
 		
 	}
@@ -243,8 +253,13 @@ public class MethodCallup implements Commands {
 //				context.maps.getMap(context.units.getUnitMap(unitFollow)),
 //				context.units.getUnitMap(unitFollow))
 		context.units.setFollow(unitNo,unitFollow);
-		int[] target = context.units.getUnits(unitFollow).getFreeSpace(unitNo);
-		System.out.println(target[0] + " " + target[1] + " MethodCallup");
+		int[] target = context.units.getUnits(unitFollow).getFreeSpace(context.units.getUnitX(unitNo),
+				context.units.getUnitY(unitNo));
+		
+		//System.out.println(GameEngineCollisionMap.getTile(target[0], target[1], 
+				//context.units.getUnitMap(unitFollow)) + " MethodCallup FollowUnit");
+		//System.out.println(target[0] + " " + target[1] + " " + context.units.getUnits(unitNo).getName()
+			//	+ " MethodCallup followUnit");
 		this.moveUnit(unitNo, target[0], target[1],
 				context.units.getUnitMap(unitFollow),true);
 		
@@ -553,6 +568,32 @@ public class MethodCallup implements Commands {
 			Worker worker = (Worker) context.units.getUnits(unitNos[u]);
 			worker.build(buildingNo);
 			context.sites.addWorker(worker);
+		}
+	}
+
+	@Override
+	public void buildWalls(ArrayList<Point> pts, int[] workers, int mapNo, int playerNumber) {
+		// TODO Auto-generated method stub
+		WallCreator creator = new WallCreator(pts,mapNo);
+		
+		ArrayList<int[]> path = creator.getWallRoute();
+		path.add(0,new int[]{pts.get(0).x,pts.get(0).y});
+		int currentPoint = 0;
+		
+		for(int p = 0; p < path.size(); p++){
+			
+			if(currentPoint < pts.size() && path.get(p)[0] == pts.get(currentPoint).x
+					&& path.get(p)[1] == pts.get(currentPoint).y){
+				
+				buildBuilding(path.get(p)[0], path.get(p)[1],
+						mapNo, playerNumber, Names.WALLTOWER, workers);
+				currentPoint++;
+			
+			}else{
+				
+				buildBuilding(path.get(p)[0], path.get(p)[1],
+						mapNo, playerNumber, Names.WALL, workers);
+			}
 		}
 	}
 

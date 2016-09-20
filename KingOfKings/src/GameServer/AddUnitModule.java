@@ -45,15 +45,16 @@ public class AddUnitModule {
 		this.building = building;
 	}
 	
+	
 	//not working needs debugging, only shows two sides of a building
 	public int[] getFreeSpace(int mapNo,int unitX, int unitY,ArrayList<int[]> taken){
 		
-		
+
 		//the corners of the building 
-		int[] corners = new int[]{building.getX() - building.getSizeX(), building.getY()
-				- building.getSizeY(),
-				building.getX() + building.getSizeX(),building.getY() - building.getSizeY()
-				,building.getX() + building.getSizeX(),building.getY() + building.getSizeY(),
+		int[] corners = new int[]{
+				building.getX() - building.getSizeX(), building.getY()- building.getSizeY(),
+				building.getX() + building.getSizeX(),building.getY() - building.getSizeY(),
+				building.getX() + building.getSizeX(),building.getY() + building.getSizeY(),
 				building.getX() - building.getSizeX(),building.getY() + building.getSizeY()};
 		
 		//the directions between the corners 
@@ -66,14 +67,13 @@ public class AddUnitModule {
 		int[][] mapArray = GameEngineCollisionMap.toArray(mapNo);
 		ArrayList<int[]> onMap = new ArrayList<int[]>();
 		
-		
-		
 		//go though each corner
 		for(int c = 0; c < corners.length; c+=2){
 			//Abs(directions[c] + direction[c+1]) <= 1 
 			//travel between corners checking for the closet free square as you go 
 			for(int l = 0; Math.abs(l) < Math.abs((directions[c] * (building.getSizeX())))
-					+ Math.abs((directions[c+1] * (building.getSizeY()))); l+= directions[c] + directions[c+1]){
+					+ Math.abs((directions[c+1] * (building.getSizeY()))); l+= directions[c] 
+							+ directions[c+1]){
 				
 				//calculates the currently checked square 
 				int cx = corners[c] + (Math.abs(directions[c]) * l);
@@ -84,7 +84,7 @@ public class AddUnitModule {
 				
 				//if this square is free and on the map
 				if(cx >= 0 && cy >= 0 && cx < mapArray.length && cy < mapArray[0].length &&
-						mapArray[cy][cx] == 0 ){
+						mapArray[cx][cy] == 0 ){
 					int distance = Math.abs(cx - unitX) + Math.abs(cy - unitY);
 					//if it is the closest so far seen then set it as the current closet point
 					if(distance < closestDistance && !OnTakenList(taken,new int[]{cx,cy})){
@@ -109,6 +109,7 @@ public class AddUnitModule {
 //		System.out.println("ADDUNITMODULE END//////");
 		
 		return closestPos;
+			
 	}
 		
 	public static boolean OnTakenList(ArrayList<int[]> list,int[] obj){

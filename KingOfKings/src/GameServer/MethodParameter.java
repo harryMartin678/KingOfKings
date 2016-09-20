@@ -1,5 +1,9 @@
 package GameServer;
 
+import java.util.ArrayList;
+
+import Util.Point;
+
 public class MethodParameter {
 	
 	//move unit
@@ -57,6 +61,9 @@ public class MethodParameter {
 	//alliance
 	public int player1;
 	public int player2;
+	
+	//build walls
+	public ArrayList<Point> wallSections;
 	
 	public void SetMoveUnit(int unitNo, int targetX, int targetY, int targetMap){
 		
@@ -159,6 +166,15 @@ public class MethodParameter {
 		// TODO Auto-generated method stub
 		this.unitNo = unitNo;
 		this.buildingNo = buildingNo;
+	}
+
+	public void setBuildWall(ArrayList<Point> wallSec, int[] workers, int mapNo, int playerNumber) {
+		// TODO Auto-generated method stub
+		this.mapNo = mapNo;
+		this.playerNo = playerNumber;
+		this.unitNos = workers;
+		this.wallSections = wallSec;
+		
 	}
 	
 

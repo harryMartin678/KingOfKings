@@ -99,8 +99,8 @@ IComBuildingListFrameProcess {
 	public synchronized void addUnitToBuildingQueue(int building,String unit){
 		
 		//System.out.println("add selected unit " + building + " " + unit);
-		Building toAdd = this.getBuildingByBuildingNo(building);
-		toAdd.addUnitQueue(unit);
+//		Building toAdd = this.getBuildingByBuildingNo(building);
+//		toAdd.addUnitQueue(unit);
 		
 		if(SelectedBuilding != -1 && SelectedBuilding == building){
 			
@@ -220,7 +220,7 @@ IComBuildingListFrameProcess {
 		// TODO Auto-generated method stub
 		if(ghostBuilding != null && square[0] != -1 && square[1] != -1){
 		
-			ghostBuilding.setXY(square[0], square[1] + 2);
+			ghostBuilding.setXY(square[0], square[1]);
 		}
 	}
 
@@ -266,6 +266,7 @@ IComBuildingListFrameProcess {
 					return 3;
 					
 				}else{
+					
 					SelectedBuilding = buildingNo;
 					this.end();
 					return 2;
@@ -273,6 +274,7 @@ IComBuildingListFrameProcess {
 				
 				
 			}else{
+				
 				AttackBuilding = buildingNo;
 				this.end();
 				return 1;
@@ -527,6 +529,12 @@ IComBuildingListFrameProcess {
 		}
 		
 		return -1;
+	}
+
+	@Override
+	public boolean isBuildingGhostWall() {
+		// TODO Auto-generated method stub
+		return ghostBuilding.isWall();
 	}
 
 

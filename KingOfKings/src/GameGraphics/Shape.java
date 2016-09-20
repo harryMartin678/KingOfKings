@@ -18,6 +18,7 @@ public class Shape {
 	private float minY;
 	private float maxZ;
 	private float minZ;
+	private float offsetZ;
 	
 	public Shape(String name){
 		
@@ -200,6 +201,7 @@ public class Shape {
 			maxZ = Math.max(vertices.get(v).getZ(), maxZ);
 			minZ = Math.min(vertices.get(v).getZ(), minZ);
 		}
+		
 	}
 	
 	public float[] getBB(){

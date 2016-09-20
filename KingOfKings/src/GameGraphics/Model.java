@@ -19,6 +19,7 @@ public class Model {
 	protected float angle;
 	protected float transX;
 	protected float transY;
+	protected float transZ;
 	protected String name;
 	
 	public Model(String filename, String folder, int noOfFrames, int modelType) 
@@ -80,10 +81,11 @@ public class Model {
 		return name;
 	}
 	
-	public void setTrans(float x,float y){
+	public void setTrans(float x,float y,float z){
 		
 		this.transX = x;
 		this.transY = y;
+		this.transZ = z;
 	}
 	
 	
@@ -119,6 +121,11 @@ public class Model {
 		return transY;
 	}
 	
+	public float getTransZ(){
+		
+		return transZ;
+	}
+	
 	public void setAngle(float angle){
 		
 		this.angle = angle;
@@ -140,17 +147,36 @@ public class Model {
 		
 		if(animNo == 0){
 			
-			return still.getBB(sizeX,sizeY,sizeZ,transX,transY);
+			return still.getBB(sizeX,sizeY,sizeZ,transX,transY,transZ);
 		
 		}else if(animNo == 1){
 			
-			return fire.getBB(sizeX,sizeY,sizeZ,transX,transY);
+			return fire.getBB(sizeX,sizeY,sizeZ,transX,transY,transZ);
 		
 		}else{
 			
-			return death.getBB(sizeX,sizeY,sizeZ,transX,transY);
+			return death.getBB(sizeX,sizeY,sizeZ,transX,transY,transZ);
 		}
 	}
+	
+//	public float getZOffSet(int animNo){
+//		
+//		float[] bbox;
+//		if(animNo == 0){
+//			
+//			bbox = still.getBB(sizeX,sizeY,sizeZ,transX,transY);
+//		
+//		}else if(animNo == 1){
+//			
+//			bbox = fire.getBB(sizeX,sizeY,sizeZ,transX,transY);
+//		
+//		}else{
+//			
+//			bbox = death.getBB(sizeX,sizeY,sizeZ,transX,transY);
+//		}
+//		
+//		return (Math.abs(bbox[4]) +  Math.abs(bbox[5]))/2;
+//	}
 	
 	public Face popFaceBody(int currentFrame,Frame frame){
 		

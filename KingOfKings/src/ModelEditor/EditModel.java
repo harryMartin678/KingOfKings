@@ -277,7 +277,7 @@ public class EditModel {
 //			
 //			new EditModel("bin/ModelEditor/" + objs[b]);
 //		}
-		new EditModel("bin/ModelEditor/Stockpile");
+		new EditModel("bin/ModelEditor/wallTower");
 	}
 
 }

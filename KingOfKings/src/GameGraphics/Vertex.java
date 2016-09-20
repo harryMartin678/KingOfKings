@@ -28,5 +28,6 @@ public class Vertex extends VertexTex {
 		return new Vertex(pts.get(0) + offset[0],pts.get(1) + offset[1],
 				pts.get(2) + offset[2]);
 	}
+	
 
 }

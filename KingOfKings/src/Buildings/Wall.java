@@ -41,6 +41,6 @@ public class Wall extends Defence {
 	public int FoodNeeded() {
 		// TODO Auto-generated method stub
 		//turn down later
-		return super.FoodNeeded()+20000;
+		return super.FoodNeeded()+10;
 	}
 }

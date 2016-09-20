@@ -22,6 +22,8 @@ public class Menu {
 	private ArrayList<MenuShape> UnitIcons;
 	private ArrayList<MenuShape> BuildingIcons;
 	private ArrayList<MenuShape> TopIcons;
+	private ResourcePanel foodPanel;
+	private ResourcePanel goldPanel;
 	private Minimap miniMap;
 	private MapDiagram mapDiagram;
 	private HoverPanel hoverPanel;
@@ -51,7 +53,7 @@ public class Menu {
 	public void DrawMenu(GL2 draw,int ScreenWidth,int ScreenHeight,UnitIconSelection unitIconSel,
 			boolean DrawBuildingIcons,IComUnitListDisplay units,
 			IComBuildingListDisplay buildings,IComMapDisplay map,int myPlayer
-			,int FRAME_X_SIZE,int FRAME_Y_SIZE,int FrameX,int FrameY){
+			,int FRAME_X_SIZE,int FRAME_Y_SIZE,int FrameX,int FrameY,int food,int gold){
 		
 		if(first){
 
@@ -96,6 +98,8 @@ public class Menu {
 			saveGame.DrawSaveGameDialog(draw, ScreenWidth, ScreenHeight,textures);
 		}
 		
+		foodPanel.DrawPanel(draw, ScreenWidth, ScreenHeight, textures,food);
+		goldPanel.DrawPanel(draw, ScreenWidth, ScreenHeight, textures,gold);
 		
 		EndMenu(draw,ScreenWidth,ScreenHeight,true);
 		StartMenu(draw, ScreenWidth, ScreenHeight, false);
@@ -305,6 +309,9 @@ public class Menu {
 		TopIcons.add(new Rectangle(0.075f,0.975f,0.015f,0.02f,1.0f,0.0f,0.0f,0,null));
 		//Pause button
 		TopIcons.add(new Rectangle(0.125f,0.975f,0.015f,0.02f,1.0f,0.0f,0.0f,0,null));
+		
+		foodPanel = new ResourcePanel(0.25f, 0.97f, null);
+		goldPanel = new ResourcePanel(0.75f,0.97f,null);
 	}
 	
 	

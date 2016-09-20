@@ -77,7 +77,7 @@ public class ServerMessages {
 			
 			engine.parseGroupAttack(inpt.substring(5),communicationTurn);
 		
-		}else if(inpt.substring(0, 2).equals("bb")){
+		}else if(inpt.substring(0,2).equals("bb")){
 			
 			engine.parseBuildings(inpt.substring(3),communicationTurn);
 		
@@ -96,6 +96,10 @@ public class ServerMessages {
 		}else if(inpt.substring(0,4).equals("taku")){
 			
 			engine.parseTowerAttackUnit(inpt.substring(5),communicationTurn);
+		
+		}else if(inpt.substring(0,2).equals("bw")){
+			
+			engine.parseBuildWall(inpt.substring(3),communicationTurn);
 		}
 	}
 	

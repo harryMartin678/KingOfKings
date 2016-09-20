@@ -22,6 +22,7 @@ IComUnitListFrameProcess {
 	private int myPlayerNumber;
 	private boolean wayPointSetting;
 	private Semaphore lock;
+	private HashMap<Integer,Integer> unitNoToIndex;
 	
 	//private Thread currentThread;
 	
@@ -32,6 +33,7 @@ IComUnitListFrameProcess {
 		
 		wayPoints = new ArrayList<int[]>();
 		selectedUnits = new ArrayList<SelectedUnit>();
+		unitNoToIndex = new HashMap<Integer, Integer>();
 		lock = new Semaphore(1);
 	}
 	
@@ -90,31 +92,66 @@ IComUnitListFrameProcess {
 		
 	}
 	
+	public int getUnitPlayerByUnitNo(int unitNo){
+
+		return units.get(unitNoToIndex.get(unitNo)).getPlayer();
+	}
+	
 	public void removeByUnitNo(int unitNo){
 
-		for(int r = 0; r < units.size(); r++){
-			
-			//System.out.println("remove " + unitNo + " " + units.get(r).getUnitNo() + " " + r);
-			if(unitNo == units.get(r).getUnitNo()){
-				
-				units.remove(r);
-				break;
-			}
-		}
+//		for(int r = 0; r < units.size(); r++){
+//			
+//			//System.out.println("remove " + unitNo + " " + units.get(r).getUnitNo() + " " + r);
+//			if(unitNo == units.get(r).getUnitNo()){
+//				
+//				units.remove(r);
+//				GraphicsCollisionMap.removeUnit(unitNo);
+//				break;
+//			}
+//		}
+		//System.out.println(units.get(unitNoToIndex.get(unitNo)).getUnitNo() + " " + unitNo  + " UnitList");
+		//System.out.println(units.size() + " UnitList Before");
+		units.remove((int)unitNoToIndex.get(unitNo));
+		unitNoToIndex.remove(unitNo);
+		GraphicsCollisionMap.removeUnit(unitNo);
+		//System.out.println(units.size() + " UnitList After");
 		
 	}
 	
 	public Unit getUnitByUnitNo(int unitNo){
 		
-		for(int a = 0; a < units.size(); a++){
-			
-			if(unitNo == units.get(a).getUnitNo()){
-				
-				return units.get(a);
-			}
-		}
+//		for(int a = 0; a < units.size(); a++){
+//			
+//			if(unitNo == units.get(a).getUnitNo()){
+//				
+//				return units.get(a);
+//			}
+//		}
+//		
+//		return null;
 		
-		return null;
+//		if(!unitNoToIndex.containsKey(unitNo)){
+//			
+//			System.out.println("Start UnitList ///////" + unitNo);
+//			
+//			for(int u = 0; u < unitNoToIndex.size(); u++){
+//				
+//				System.out.println(unitNoToIndex.keySet().toArray()[u]);
+//			}
+//			
+//			System.out.println("End UnitList ///////");
+//		}
+		
+		if(!unitNoToIndex.containsKey(unitNo)){
+			
+			return null;
+		}
+		return units.get(unitNoToIndex.get(unitNo));
+		
+//		}else{
+//			
+//			return null;
+//		}
 	}
 	
 	public int size(){
@@ -124,8 +161,9 @@ IComUnitListFrameProcess {
 	
 	public void add(Unit unit){
 		
-		GraphicsCollisionMap.addUnit((int)unit.getX(), (int)unit.getY(), unit.getUnitNo());
+		GraphicsCollisionMap.addUnit(Math.round(unit.getX()), Math.round(unit.getY()), unit.getUnitNo());
 		units.add(unit);
+		unitNoToIndex.put(unit.getUnitNo(),units.size()-1);
 	}
 	
 	public void end(){
@@ -365,14 +403,14 @@ IComUnitListFrameProcess {
 		return selectedUnits.get(0).unitNo;
 	}
 
-	@Override
-	public boolean canAttackUnit(int[] click, int unitNo) {
-		// TODO Auto-generated method stub
-		return ((int) units.get(unitNo).getX()) == click[0] 
-		  && ((int) units.get(unitNo).getY()) == click[1]
-				  && units.get(unitNo).getPlayer() != this.myPlayerNumber;
-		
-	}
+//	@Override
+//	public boolean canAttackUnit(int[] click, int unitNo) {
+//		// TODO Auto-generated method stub
+//		return ((int) units.get(unitNo).getX()) == click[0] 
+//		  && ((int) units.get(unitNo).getY()) == click[1]
+//				  && units.get(unitNo).getPlayer() != this.myPlayerNumber;
+//		
+//	}
 
 	@Override
 	public void removeBaseUnit() {
@@ -427,10 +465,10 @@ IComUnitListFrameProcess {
 	}
 	
 	//units.get(i).changeCurrentFrame();
-	public void changeCurrentFrame(int unitNo){
-		
-		units.get(unitNo).changeCurrentFrame();
-	}
+//	public void changeCurrentFrame(int unitNo){
+//		
+//		units.get(unitNo).changeCurrentFrame();
+//	}
 
 	@Override
 	public int getSelectedUnitSize() {
@@ -543,13 +581,17 @@ IComUnitListFrameProcess {
 	@Override
 	public void setUnits(ArrayList<Unit> units,boolean isMapRefresh) {
 		// TODO Auto-generated method stub
+		HashMap<Integer,Unit.GraphicalState> graphicalstates = new HashMap<Integer, Unit.GraphicalState>();
+		
 		if(isMapRefresh){
 			
 			this.clear();
+			
 		}else{
 			
 			while(this.units.size() > 0){
 				
+				graphicalstates.put(this.units.get(0).getUnitNo(), this.units.get(0).getGraphicalState());
 				this.remove(0);
 			}
 		}
@@ -559,6 +601,13 @@ IComUnitListFrameProcess {
 		for(int n = 0; n < units.size(); n++){
 			
 			this.add(units.get(n));
+			
+			if(graphicalstates.containsKey(this.units.get(this.units.size()-1).getUnitNo())){
+				this.units.get(this.units.size()-1).setGraphicalState(
+						graphicalstates.get(this.units.get(this.units.size()-1).getUnitNo()));
+			}else{
+				this.units.get(this.units.size()-1).updateState();
+			}
 		}
 		
 	}
@@ -586,6 +635,12 @@ IComUnitListFrameProcess {
 		
 		}
 		return -1;
+	}
+
+	@Override
+	public boolean canAttackUnit(int[] click, int unitNo) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 

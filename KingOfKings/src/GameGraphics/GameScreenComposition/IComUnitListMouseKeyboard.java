@@ -74,4 +74,5 @@ public interface IComUnitListMouseKeyboard extends IComUnitList {
 			IBoundingBoxes boxes,int frameX,int frameY);
 	public int getSelectedUnit(double x, double y, int width, int height,
 			IBoundingBoxes box,int frameX,int frameY);
+	public int getUnitPlayer(int unitNo);
 }

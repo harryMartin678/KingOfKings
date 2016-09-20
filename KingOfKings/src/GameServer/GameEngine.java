@@ -27,6 +27,7 @@ import Units.Unit;
 import Units.UnitBattleList;
 import Units.UnitList;
 import Units.Worker;
+import Util.Point;
 
 
 //composition:
@@ -84,6 +85,22 @@ public class GameEngine{
 		//context.maps.getMap(1).setPlayer(0);
 		//context.players.setPlayerViewedMap(0, 1);
 		
+//		context.units.addUnit(Names.SWORDSMAN, 0, 50, 50, 0);
+//		context.units.addUnit(Names.SWORDSMAN, 0, 51, 50, 0);
+//		context.units.addUnit(Names.SWORDSMAN, 0, 50, 51, 0);
+//		context.units.addUnit(Names.SWORDSMAN, 0, 52, 50, 0);
+//		context.units.addUnit(Names.SWORDSMAN, 0, 54, 53, 1);
+//		context.units.addUnit(Names.SWORDSMAN, 0, 55, 55, 1);
+//		context.units.addUnit(Names.SWORDSMAN, 0, 54, 54, 1);
+//		context.units.addUnit(Names.SWORDSMAN, 0, 55, 54, 1);
+//		context.units.addUnit(Names.SWORDSMAN, 0, 54, 55, 1);
+		
+		context.units.addUnit(Names.WORKER, 0, (context.maps.getMapWidth(0)/2)-6, 
+				(context.maps.getMapHeight(0)/2)-2, 0);
+
+//		context.units.addUnit(Names.HOUND, 0, 
+//				(context.maps.getMapWidth(0)/2)-11, (context.maps.getMapHeight(0)/2)-10, 2);
+
 		
 		for(int i = 0; i < context.maps.getSize(); i++){
 			
@@ -101,11 +118,10 @@ public class GameEngine{
 //					(context.maps.getMapHeight(i)/2),Names.MINE);
 			
 			//context.units.addUnit(Names.ARCHER, i, (context.maps.getMapWidth(i)/2)-6, (context.maps.getMapHeight(i)/2)-6, context.maps.getPlayer(i));
-			context.units.addUnit(Names.ARCHER, i, (context.maps.getMapWidth(i)/2)-5, (context.maps.getMapHeight(i)/2)-3, context.maps.getPlayer(i));
-			context.units.addUnit(Names.HOUND, i, (context.maps.getMapWidth(i)/2)-11, (context.maps.getMapHeight(i)/2)-10, 2);
+			//context.units.addUnit(Names.GIANT, i, (context.maps.getMapWidth(i)/2)-5, (context.maps.getMapHeight(i)/2)-3, context.maps.getPlayer(i));
+			//context.units.addUnit(Names.HOUND, i, (context.maps.getMapWidth(i)/2)-11, (context.maps.getMapHeight(i)/2)-10, 2);
 			//context.units.addUnit(Names.AXEMAN, i, (context.maps.getMapWidth(i)/2)-9, (context.maps.getMapHeight(i)/2)-7, context.maps.getPlayer(i));
 			//context.units.addUnit(Names.AXEMAN, i, (context.maps.getMapWidth(i)/2)-11, (context.maps.getMapHeight(i)/2)-7, context.maps.getPlayer(i));
-			context.units.addUnit(Names.WORKER, i, (context.maps.getMapWidth(i)/2)-6, (context.maps.getMapHeight(i)/2)-2, context.maps.getPlayer(i));
 		}
 
 		
@@ -178,22 +194,23 @@ public class GameEngine{
 				CommunicationTurn();
 			}
 			
-			
-			//move units
-			context.units.moveUnits();
-			
 			//System.out.println(units.getUnitX(5) + " " + units.getUnitY(5) + " " 
 		///	+ units.getUnitMap(5));
+			
+			//System.out.println(context.units.getUnitListSize() + " GameEngine");
 			
 			//reveal map 
 			//revealMap();
 			//progress unit fights
-			context.battles.simulateHit(context.buildings,context.maps);
+			context.battles.simulateHit();
 			
 			//progress unit to tower fights
 			context.battles.simulateTowerHit();
 			
 			context.buildingAttackList.simulateDestruction();
+			
+			//move units
+			context.units.moveUnits();
 			
 			//increment building unit queues progress
 			for(int b = 0; b < context.buildings.getBuildingsSize(); b++){
@@ -204,16 +221,19 @@ public class GameEngine{
 				}
 			}
 			
-			int[] com;
+	//		int[] com;
 			
-			while((com = context.battles.getUnitsToFollow()) != null){
-				
-				MethodParameter parameters = new MethodParameter();
-				parameters.setUnitFollow(com[0], com[1]);
-				//System.out.println(parameters.unitNo + "  " + parameters.unitFollow);
-				commands.add(MethodCallup.FOLLOWUNIT, parameters, communicationTurn);
-				//this.followUnit(com[0], com[1]);
-			}
+//			while((com = context.battles.getUnitsToFollow()) != null){
+//				
+//				if(!context.units.getUnits(com[0]).isAttacking() && 
+//						!context.units.getUnits(com[0]).getRetreat()){
+//					MethodParameter parameters = new MethodParameter();
+//					parameters.setUnitFollow(com[0], com[1]);
+//					//System.out.println(parameters.unitNo + "  " + parameters.unitFollow);
+//					commands.add(MethodCallup.FOLLOWUNIT, parameters, communicationTurn);
+//					//this.followUnit(com[0], com[1]);
+//				}
+//			}
 			
 			//add resources from farms and mines 
 			if(beat == 10){
@@ -256,7 +276,8 @@ public class GameEngine{
 						
 						int unitFollow = context.units.getFollow(f);
 						
-						if(context.units.getMoving(unitFollow)){
+						if(context.units.getMoving(unitFollow) ||
+								context.units.isRetreating(unitFollow)){
 							
 							//System.out.println("RE Follow " + unitFollow);
 							MethodParameter parameters = new MethodParameter();
@@ -307,6 +328,18 @@ public class GameEngine{
 			}
 			//increment building build progress 
 			context.sites.checkSites(context.buildings);
+			
+			if(communicationTurn > 1){
+				ArrayList<int[]> newBattles = context.battles.createBattles();
+				
+				for(int b = 0; b < newBattles.size(); b++){
+					
+					//System.out.println(newBattles.get(b)[0] + " " + newBattles.get(b)[1] + " GameEngine");
+					MethodParameter parameters = new MethodParameter();
+					parameters.setUnitAttack(newBattles.get(b)[0], newBattles.get(b)[1]);
+					commands.add(MethodCallup.ATTACKUNIT, parameters, communicationTurn);
+				}
+			}
 			
 			beat++;
 		}
@@ -447,9 +480,10 @@ public class GameEngine{
 							+ attacking + " " + context.units.getFollow(u) + "\n";
 					
 					
-				}else{
+				}else if(!context.units.hasDeathBeenReported(u)){
 					
 					info += u + " die\n";
+					context.units.setDeathReported(u);
 				}
 			}
 		}
@@ -891,6 +925,42 @@ public class GameEngine{
 		}else{
 			commands.add(MethodCallup.TOWERATTACKUNIT, parameters, passedCommunicationTurn);
 		}
+	}
+
+	public void parseBuildWall(String inpt, int passedCommunicationTurn) {
+		// TODO Auto-generated method stub
+		
+		String[] parts = inpt.split("u");
+		String[] points = parts[0].split(" ");
+		String[] units = parts[1].split(" ");
+		
+		int playerNumber = new Integer(units[units.length-1]);
+		int mapNo = new Integer(units[units.length-2]);
+		
+		ArrayList<Point> wallSec = new ArrayList<Point>();
+		
+		for(int p = 0; p < points.length-1; p++){
+			
+			//System.out.println(points[p] + " " + points[p+1] + " GameEngine");
+			wallSec.add(new Point(new Integer(points[p]),new Integer(points[p+1])));
+		}
+		
+		int[] workers = new int[units.length-3];
+
+		for(int w = 1; w < workers.length; w++){
+			
+			workers[w] = new Integer(units[w]);
+		}
+		
+		MethodParameter parameters = new MethodParameter();
+		parameters.setBuildWall(wallSec,workers,mapNo,playerNumber);
+		
+		if(passedCommunicationTurn != -1){
+			commands.add(MethodCallup.BUILDWALLS, parameters, communicationTurn);
+		}else{
+			commands.add(MethodCallup.BUILDWALLS, parameters, passedCommunicationTurn);
+		}
+		
 	}
 	
 }

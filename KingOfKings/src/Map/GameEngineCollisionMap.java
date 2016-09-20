@@ -1,5 +1,7 @@
 package Map;
 
+import Units.UnitList;
+
 public class GameEngineCollisionMap {
 
 	public static CollisionMap[] maps;
@@ -64,4 +66,20 @@ public class GameEngineCollisionMap {
 		// TODO Auto-generated method stub
 		return GameEngineCollisionMap.maps[mapNo].IsUnitInFront(unitNo, direction);
 	}
+	
+	public static int FindEnemy(int unitNo, UnitList units){
+		
+		return GameEngineCollisionMap.maps[units.getUnitMap(unitNo)].FindEnemy(unitNo,units);
+	}
+
+	public static int getSizeX(int mapNo) {
+		// TODO Auto-generated method stub
+		return GameEngineCollisionMap.maps[mapNo].getWidth();
+	}
+
+	public static int getSizeY(int mapNo) {
+		// TODO Auto-generated method stub
+		return GameEngineCollisionMap.maps[mapNo].getHeight();
+	}
+
 }

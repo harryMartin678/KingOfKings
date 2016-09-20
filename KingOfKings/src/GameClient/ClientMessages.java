@@ -3,6 +3,11 @@ package GameClient;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+
 import GameServer.IGotToTurn;
 
 import GameServer.Server;
@@ -14,10 +19,13 @@ public class ClientMessages implements IGotToTurn{
 	private Client client;
 	private boolean everyoneReady;
 	private boolean gameStarted;
+	private ArrayList<String> messages;
+	private Semaphore lock;
 	
 	public ClientMessages(){
 		
-		
+		lock = new Semaphore(2);
+		messages = new ArrayList<String>();
 		
 	}
 	
@@ -53,10 +61,34 @@ public class ClientMessages implements IGotToTurn{
 				while(true){
 					
 					try {
+						
+						try {
+							lock.acquire();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 	
 						String msg = client.getMessage();
 						if(msg != null){
+							
 							inputs.add(msg);
+
+						}
+						
+						try {
+							
+							for(int m = 0; m < messages.size(); m++){
+								
+								client.sendMessage(messages.get(m));
+							}
+							
+							messages.clear();
+							
+							lock.release();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
 						
 //						if(inputs.get(inputs.size()-1).equals("AllREADY")){
@@ -85,13 +117,14 @@ public class ClientMessages implements IGotToTurn{
 	}
 	
 	public void addMessage(String message){
-		
 		try {
-			client.sendMessage(message);
-		} catch (IOException e) {
+			lock.acquire();
+		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		messages.add(message);
+		lock.release();
 	}
 	
 	//To implement: only one thread should be able to remove or add
@@ -112,7 +145,13 @@ public class ClientMessages implements IGotToTurn{
 	
 	public void putBackMessage(String msg){
 		client.start();
-		inputs.add(msg);
+		try{
+			inputs.add(msg);
+		}catch(ArrayIndexOutOfBoundsException e){
+			
+			client.end();
+			putBackMessage(msg);
+		}
 		client.end();
 	}
 	

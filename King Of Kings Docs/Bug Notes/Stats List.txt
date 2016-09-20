@@ -1,0 +1,165 @@
+Archer
+
+Speed: 10
+Attack: 2
+Defence: 2
+Range: 5
+Max Health: 300
+Gold Needed: 200
+Food Needed: 300
+Hits Per Turn: 2
+
+Giant
+
+Speed: 5
+Attack: 15
+Defence: 7
+Range: 1
+Max Health: 1000
+Gold Needed: 750
+Food Needed: 750
+Hits Per Turn: 3
+
+Hound
+
+Speed: 15
+Attack: 4
+Defence: 4
+Range: 1
+Max Health: 600
+Gold Needed: 400
+Food Needed: 500
+Hits Per Turn: 2
+
+Spearman
+
+Speed: 6
+Attack: 4
+Defence: 10
+Range: 1
+Max Health: 800
+Gold Needed: 350
+Food Needed: 200
+Hits Per Turn: 2
+
+Swordsman
+
+Speed: 8
+Attack: 4
+Defence: 6
+Range: 1
+Max Health: 500
+Gold Needed: 200
+Food Needed: 200
+Hits Per Turn: 1
+
+Worker
+
+Speed: 8
+Attack: 0
+Defence: 2
+Range: 1
+Max Health: 200
+Gold Needed:
+Food Needed:
+Hits Per Turn: 1
+
+
+
+
+Archery Tower
+
+Attack: 5
+Max Hitpoint: 2000
+Build Time: 600
+Gold Needed: 1500
+Food Needed: 2000
+
+Ballista Tower
+
+Attack: 10
+Max Hitpoint: 2000
+Build Time: 900
+Gold Needed: 2000
+Food Needed: 3000
+
+Castle
+
+Attack: 20
+Max Hitpoint: 4000
+Build Time: 1800
+Gold Needed: 5000
+Food Needed: 10000
+
+Farm
+
+Attack: 0
+Max Hitpoint: 400
+Build Time: 300
+Gold Needed: 250
+Food Needed: 500
+
+Giant Liar
+
+Attack: 0
+Max Hitpoint: 750
+Build Time: 600
+Gold Needed: 2000
+Food Needed: 3000
+
+Hound Pit
+
+Attack: 0
+Max Hitpoint: 750
+Build Time: 600
+Gold Needed: 1500
+Food Needed: 3000
+
+Mine
+
+Attack: 0
+Max Hitpoint: 400
+Build Time: 300
+Gold Needed: 300
+Food Needed: 400
+
+Royal Palace
+
+Attack: 0
+Max Hitpoint: 2500
+Build Time: 0
+Gold Needed: 0
+Food Needed: 0
+
+Spear yard 
+
+Attack: 0
+Max Hitpoint: 750
+Build Time: 600
+Gold Needed: 1000
+Food Needed: 2000
+
+Stockpile
+
+Attack: 0
+Max Hitpoint: 1000
+Build Time: 900
+Gold Needed:
+Food Needed:
+
+Swords Smith
+
+Attack: 0
+Max Hitpoint: 750
+Build Time: 600
+Gold Needed: 1000
+Food Needed: 1500
+
+Wall 
+
+Attack: 0
+Max Hitpoint: 1000
+Build Time: 100
+Gold Needed: 10
+Food Needed: 25
+

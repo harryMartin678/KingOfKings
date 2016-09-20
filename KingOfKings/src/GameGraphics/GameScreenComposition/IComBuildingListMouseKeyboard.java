@@ -30,4 +30,5 @@ public interface IComBuildingListMouseKeyboard extends IComBuildingList {
 	public boolean isUnitCreatorSelected();
 	public int getSelectedBuilding(double x, double y, int width,
 			int height, IBoundingBoxes boxes, int frameX,int frameY);
+	public boolean isBuildingGhostWall();
 }

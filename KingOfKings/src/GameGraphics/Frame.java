@@ -102,13 +102,13 @@ public class Frame {
 	}
 	
 	public float[] getBB(float sizeX,float sizeY,float sizeZ,
-			float transX,float transY){
+			float transX,float transY,float transZ){
 		
 		float[] bb = shape.getBB();
 
-		return new float[]{(bb[0] + transX) * sizeX,(bb[1] + transX) * sizeX,
-				(bb[2] + transY) * sizeY,(bb[3] + transY) * sizeY,
-				bb[4] * sizeZ, bb[5] * sizeZ};
+		return new float[]{(bb[0] * sizeX) + transX,(bb[1] * sizeX) + transX,
+				(bb[2] * sizeY)  + transY,(bb[3]  * sizeY) + transY,
+				(bb[4] * sizeZ) + transZ, (bb[5]  * sizeZ)+ transZ};
 	}
 
 

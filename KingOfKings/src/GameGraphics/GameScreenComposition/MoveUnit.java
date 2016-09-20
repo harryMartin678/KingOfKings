@@ -1,18 +1,21 @@
 package GameGraphics.GameScreenComposition;
 
+import GameGraphics.IBoundingBoxes;
 
 public class MoveUnit {
 	
 	private IComUnitListMouseKeyboard units;
 	private IComMapMouseKeyboard map;
 	private ClientWrapper cmsg;
+	private IBoundingBoxes boxes;
 	
 	public MoveUnit(IComUnitListMouseKeyboard units,IComMapMouseKeyboard map,
-			ClientWrapper cmsg){
+			ClientWrapper cmsg,IBoundingBoxes boxes){
 		
 		this.units = units;
 		this.map = map;
 		this.cmsg = cmsg;
+		this.boxes = boxes;
 	}
 	
 	private void singleFollow(int unitNo){
@@ -36,25 +39,37 @@ public class MoveUnit {
 		}
 	}
 	
-	private void singleAttack(int tx, int ty){
+	private void singleAttack(int unitAttack){
 		
-		 int unitAttack;
+//		 int unitAttack;
+//		 
+//		 System.out.println("ATTACK UNIT MOVEUNIT");
+//		  
+//		  if((unitAttack = getSelectedUnitToAttack(tx,ty,ScreenHeight,ScreenWidth,frameX,frameY)) != -1){
+//			  
+//		    
+		  cmsg.addMessage("utak " + units.getBaseSelectedUnit() + " " +
+				  unitAttack);
+		  units.removeBaseUnit();
 		  
-		  if((unitAttack = getSelectedUnitToAttack(new int[]{tx,ty})) != -1){
-			  
-			  
-			  cmsg.addMessage("utak " + units.getBaseSelectedUnit() + " " +
-					  unitAttack);
-			  units.removeBaseUnit();
-		  
-		  }else{
-		  
-			  cmsg.addMessage("utat " + units.getBaseSelectedUnit() + " "
-	  				  + tx + " " + ty + " " + map.getViewedMap());
-			  units.removeBaseUnit();
-		  }
+//		  }else{
+//			  
+//			  return false;
+//		  }
+//		  else{
+//		  
+//			  cmsg.addMessage("utat " + units.getBaseSelectedUnit() + " "
+//	  				  + tx + " " + ty + " " + map.getViewedMap());
+//			  units.removeBaseUnit();
+//		  }
 	}
 	
+	private int getSelectedUnitToAttack(double tx, double ty,int ScreenWidth,int ScreenHeight,int frameX,
+			int frameY) {
+		// TODO Auto-generated method stub
+		return units.getUnitAtttack(tx, ty, ScreenWidth, ScreenHeight, boxes, frameX, frameY);
+	}
+
 	private void singleWayPoint(int tx, int ty,boolean shiftDown){
 		
 		units.addWayPoints(new int[]{tx,ty,map.getViewedMap()});
@@ -89,26 +104,32 @@ public class MoveUnit {
 		  }
 	}
 	
-	private void groupAttack(int tx, int ty){
+	private boolean groupAttack(double tx, double ty,int ScreenHeight,int ScreenWidth,int frameX,int frameY){
 		
 		int unitAttack;
 		  
-		  if((unitAttack = getSelectedUnitToAttack(new int[]{tx,ty})) != -1){
+		  if((unitAttack = getSelectedUnitToAttack(tx,ty,ScreenHeight,ScreenWidth,frameX,frameY)) != -1){
 			  
 			  cmsg.addMessage("gtak " + units.getUnitsSelectedString() +
 					  unitAttack);
+			  units.clearSelectedUnits();
+			  
+			  return true;
 		  
-		  }else{
-		  
-			  	String unitList = units.getUnitsSelectedString();
-			  	unitList = unitList.substring(0, unitList.length()-1);
-			
-				cmsg.addMessage("gtat "+ tx + " " + ty + " " + map.getViewedMap() + " " 
-				+ unitList);
-				
 		  }
 		  
-		  units.clearSelectedUnits();
+		  return false;
+//		  else{
+//		  
+//			  	String unitList = units.getUnitsSelectedString();
+//			  	unitList = unitList.substring(0, unitList.length()-1);
+//			
+//				cmsg.addMessage("gtat "+ tx + " " + ty + " " + map.getViewedMap() + " " 
+//				+ unitList);
+//				
+//		  }
+		  
+		  
 	}
 	
 	private void groupWayPoints(int tx, int ty,boolean shiftDown){
@@ -129,64 +150,107 @@ public class MoveUnit {
 		}
 	}
 	
-	public void moveUnit(int tx, int ty,int unitNo,boolean fDown,boolean shiftDown){
+	public boolean InteractWithOtherUnit(double tx, double ty,int unitNo,boolean fDown,boolean shiftDown,
+			int ScreenHeight,int ScreenWidth,int frameX,int frameY,boolean isEnemy){
 
-		//System.out.println(tx + " " + ty + " " + fDown + " " + shiftDown + " "
-			//	+ units.areWayPointSetting() + " moveUnit ");
+//		System.out.println(tx + " " + ty + " " + fDown + " " + shiftDown + " "
+//				+ units.areWayPointSetting() + " moveUnit ");
 		if(units.getSelectedUnitsSize() == 1){
 			
 			if(!units.areWayPointSetting()){
 				
-				if(fDown){
+				if(fDown && !isEnemy){
 					 
 					//System.out.println("FOLLOW");
 					singleFollow(unitNo);
+					return true;
 					  
-				  }else{
+				  }else if(isEnemy){
 					  
-					 singleAttack(tx,ty);
+					singleAttack(unitNo);
+					return true;
 				  }
 	  		  
-			}else{
-				  
-				  singleWayPoint(tx,ty,shiftDown);
-				  
-			  }
+			}
+//			else{
+//				  
+//				  singleWayPoint(tx,ty,shiftDown);
+//				  
+//			 }
 			
-		}else{
+			
+		}else if(units.getSelectedUnitsSize() > 1){
 			
 
 			if(!units.areWayPointSetting()){
 				
-				if(fDown){
+				if(fDown && !isEnemy){
 					  groupFollow(unitNo);
+					  return true;
 					  
-				  }else{
+				  }else if(isEnemy){
 					  
-					  groupAttack(tx,ty);
+					  return groupAttack(tx,ty,ScreenHeight,ScreenWidth,frameX,frameY);
 				  }
 				
-			}else{
-				
-				groupWayPoints(tx,ty,shiftDown);
-				
 			}
+//			else{
+//				
+//				groupWayPoints(tx,ty,shiftDown);
+//				
+//			}
 
+		}
+		
+		return false;
+	}
+	
+	public void setWayPoints(int tx,int ty, boolean shiftDown){
+		
+		if(units.getSelectedUnitsSize() == 1){
+			
+			singleWayPoint(tx,ty,shiftDown);
+		
+		}else{
+			
+			groupWayPoints(tx,ty,shiftDown);
+		}
+		
+	}
+
+	public void moveUnit(int tx, int ty) {
+		// TODO Auto-generated method stub
+		if(units.getSelectedUnitsSize() == 1){
+			
+			  cmsg.addMessage("utat " + units.getBaseSelectedUnit() + " "
+			  + tx + " " + ty + " " + map.getViewedMap());
+			  units.removeBaseUnit();
+			
+		}else{
+			
+			System.out.println(units.getSelectedUnitsSize() + " MoveUnit");
+		  	String unitList = units.getUnitsSelectedString();
+		  	unitList = unitList.substring(0, unitList.length()-1);
+		
+			cmsg.addMessage("gtat "+ tx + " " + ty + " " + map.getViewedMap() + " " 
+			+ unitList);
 		}
 	}
 	
-	private int getSelectedUnitToAttack(int[] click){
+//	private int getSelectedUnitToAttack(double x, double y){
+//		
+//		
 		
-		for(int u = 0; u < units.size(); u++){
-			  
-			  if(units.canAttackUnit(click,u)){
-				  	
-				  	return units.get(u).getUnitNo();
-			  }
-			  
-		}
-		
-		return -1;
-	}
+//		for(int u = 0; u < units.size(); u++){
+//			  
+//			  if(units.canAttackUnit(click,u)){
+//				  	
+//				  	return units.get(u).getUnitNo();
+//			  }
+//			  
+//		}
+//		
+//		return -1;
+	//}
 
 }

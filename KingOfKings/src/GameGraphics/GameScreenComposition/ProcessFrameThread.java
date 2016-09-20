@@ -222,7 +222,12 @@ public class ProcessFrameThread {
 			
 			if(unitName.equals("die")){
 				
+				//Unit.removeUnit(units.getUnitByUnitNo(new Integer(numbers.get(0)).intValue()));
+				System.out.println("die " + new Integer(numbers.get(0)).intValue() + " ProcessFrameThread");
+				//System.out.println(units.getUnitListSize() + " PROCESSFRAMETHREAD BEFORE");
 				units.removeByUnitNo(new Integer(numbers.get(0)).intValue());
+				//System.out.println(units.getUnitListSize() + " PROCESSFRAMETHREAD AFTER");
+				
 				m++;
 				continue;
 			}
@@ -243,17 +248,25 @@ public class ProcessFrameThread {
 						new Float(numbers.get(2)).floatValue()
 						,unitName,
 						new Integer(numbers.get(3)).intValue(),new Integer(numbers.get(0)).intValue());
+				//System.out.println(new Integer(numbers.get(0)).intValue() + " " + 
+						//	new Integer(numbers.get(3)).intValue() 
+							//+ " ProcessFrameThread");
 				
 				
 				if(new Integer(numbers.get(4)).intValue() == 1){
 					
-					unit.moving();
+					unit.setDelayedMoving();
 				
 				}
 				
+//				if(numbers.size() < 7){
+//					
+//					System.out.println(msg + " ProcessFrameThread");
+//				}
+				
 				if(new Integer(numbers.get(6)).intValue() == 1){
 					
-					unit.setFiring();
+					unit.setDelayedFiring();
 					unit.setAttack(new Integer(numbers.get(7)).intValue());
 					
 				}
@@ -268,6 +281,7 @@ public class ProcessFrameThread {
 				//}
 				//units.add(unit);
 				TempUnits.add(unit);
+			
 			//}
 				
 			m++;
@@ -344,9 +358,8 @@ public class ProcessFrameThread {
 				m++;
 				continue;
 			}
-			//System.out.println(msgs.get(m) + "|||| building Queue");
+			//System.out.println(msgs.get(m) + "|||| building Queue ProcessFrameThread");
 			String[] queueInfo = msgs.get(m).split(" ");
-		
 			Building building = buildings.getBuildingByBuildingNo(new Integer(queueInfo[0]).intValue());
 			
 			if(building != null){
@@ -358,7 +371,7 @@ public class ProcessFrameThread {
 				
 				//System.out.println(building.getSize() + " before");
 				for(int u = 2; u < queueInfo.length; u++){
-					//System.out.println(queueInfo.length + " queueInfo");
+
 					buildings.addUnitToBuildingQueue(new Integer(queueInfo[0]).intValue(), queueInfo[u]);
 					//buildings.get(new Integer(queueInfo[0]).intValue()).addUnitQueue(queueInfo[u]);
 				}

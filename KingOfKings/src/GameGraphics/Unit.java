@@ -3,6 +3,8 @@ package GameGraphics;
 import java.util.ArrayList;
 
 import Buildings.Names;
+import GameGraphics.Unit.GraphicalState;
+import GameGraphics.GameScreenComposition.IComUnitList;
 
 public class Unit {
 	
@@ -10,31 +12,42 @@ public class Unit {
 	private float y;
 	private String unitType;
 	private boolean moving;
+	private boolean delayedMoving;
+	private boolean delayedFiring;
 	private int currentFrame;
 	private boolean forward;
-	protected int state;
+	private boolean firing;
+	private boolean dieing;
 	private int player;
 	private int unitNo;
 	private int angle;
 	private int attackingUnit;
-	private static ArrayList<Unit> MovingUnits = new ArrayList<Unit>();
+	public static ArrayList<Integer> MovingUnits = new ArrayList<Integer>();
 	
 	public static void addUnit(Unit unit){
 		
-		MovingUnits.add(unit);
+		MovingUnits.add(unit.getUnitNo());
 	}
 	
 	public static void removeUnit(Unit unit){
 		
-		MovingUnits.remove(unit);
+		MovingUnits.remove(new Integer(unit.getUnitNo()));
 	}
 	
-	public static void AnimateUnits(){
+	public static void AnimateUnits(IComUnitList units){
 		
+		units.begin();
 		for(int m = 0; m < MovingUnits.size(); m++){
 			
-			MovingUnits.get(m).changeCurrentFrame();
+			Unit unit = units.getUnitByUnitNo(MovingUnits.get(m));
+			
+			if(unit != null){
+				
+				unit.changeCurrentFrame();
+			}
+
 		}
+		units.end();
 	}
 	
 	public Unit(float x, float y,String unitType, int player, int unitNo){
@@ -43,7 +56,6 @@ public class Unit {
 		this.y = y;
 		currentFrame = 0;
 		forward = true;
-		state = 0;
 		this.unitType = unitType;
 		this.player = player;
 		this.unitNo = unitNo;
@@ -53,7 +65,7 @@ public class Unit {
 	
 	public boolean fireArrow(){
 		
-		return (state == 1 && unitType.equals(Names.ARCHER));
+		return (firing && unitType.equals(Names.ARCHER));
 	}
 	
 	public void setAngle(int angle){
@@ -83,31 +95,53 @@ public class Unit {
 	
 	public void setFiring(){
 		
-		this.Animating();
-		state = 1;
+		if(!firing){
+			
+			addUnit(this);
+			firing = true;
+		}
+		
 	}
 	
 	public void stopFiring(){
 		
-		state = 0;
-		this.StopAnimating();
+		if(firing){
+			
+			this.StopAnimating();
+		}
+		firing = false;
+		//currentFrame = 0;
+		
 	}
 	
 	public void die(){
 		
 		//this.Animating();
-		state = 2;
+		//state = 2;
 	}
 	
-	public int getState(){
+//	public int getState(){
+//		
+//		return state;
+//	}
+	
+	public void setDelayedMoving(){
 		
-		return state;
+		delayedMoving = true;
+	}
+	
+	public void setDelayedFiring(){
+		
+		delayedFiring = true;
 	}
 	
 	public void moving(){
-		
-	    this.Animating();
-		moving = true;
+
+		if(!moving){
+			
+			Unit.addUnit(this);
+			moving = true;
+		}
 	}
 	
 	public boolean getMove(){
@@ -117,8 +151,10 @@ public class Unit {
 	
 	public void stopMoving(){
 		
+		if(moving){
+			this.StopAnimating();
+		}
 		moving = false;
-		this.StopAnimating();
 	}
 	
 	public void setAttack(int unitToAttack){
@@ -131,20 +167,12 @@ public class Unit {
 		return this.attackingUnit;
 	}
 	
-	private void Animating(){
-		
-		if(state == 0 && !moving){
-			
-			Unit.addUnit(this);
-		}
-	}
+
 	
 	private void StopAnimating(){
 		
-		if(state == 0 && !moving){
-			
-			Unit.removeUnit(this);
-		}
+		currentFrame = 0;
+		Unit.removeUnit(this);
 	}
 	
 	public boolean inUnit(int x, int y){
@@ -154,26 +182,40 @@ public class Unit {
 	
 	public void changeCurrentFrame(){
 		
-		if(moving || state > 0){
-			
-			if(currentFrame >= 100){
+		if(moving || firing){
+
+			if(currentFrame == 90){
 				
 				forward = false;
 			
 			}else if(currentFrame == 0){
 				
 				forward = true;
+				
 			}
 
-			
 			if(forward) {
-				currentFrame += 2;
+				currentFrame += 10;
 			}
-			else {
-				currentFrame -= 2;
+			else{
+				currentFrame -= 10;
 			}
 			
 		}
+	}
+	
+	public int getState(){
+		
+		if(firing){
+			
+			return 1;
+			
+		}else if(dieing){
+			
+			return 2;
+		}
+		
+		return 0;
 	}
 	
 	public int getCurrentFrame(){
@@ -194,6 +236,76 @@ public class Unit {
 	public String getUnitType(){
 		
 		return unitType;
+	}
+
+	
+	public class GraphicalState{
+		
+		public int CurrentFrame;
+		public boolean Moving;
+		public boolean Firing;
+		public boolean Dieing;
+		public int LastCurrentFrame;
+		public boolean Forward;
+	}
+
+	public GraphicalState getGraphicalState() {
+		// TODO Auto-generated method stub
+		GraphicalState gState = new GraphicalState();
+		gState.CurrentFrame = currentFrame;
+		gState.Firing = firing;
+		gState.Dieing = dieing;
+		gState.Moving = moving;
+		gState.Forward = forward;
+		return gState;
+	}
+	
+	public void setGraphicalState(GraphicalState gState){
+		
+		currentFrame = gState.CurrentFrame;
+		gState.Firing = firing;
+		gState.Dieing = dieing;
+		moving = gState.Moving;
+		forward = gState.Forward;
+		
+		if(delayedMoving){
+			
+			this.moving();
+		
+		}else{
+			
+			this.stopMoving();
+		}
+		
+		if(delayedFiring){
+			
+			this.setFiring();
+		
+		}else{
+			
+			this.stopFiring();
+		}
+	}
+
+	public void updateState() {
+		// TODO Auto-generated method stub
+		if(delayedMoving){
+			
+			this.moving();
+		
+		}else{
+			
+			this.stopMoving();
+		}
+		
+		if(delayedFiring){
+			
+			this.setFiring();
+		
+		}else{
+			
+			this.stopFiring();
+		}
 	}
 
 }

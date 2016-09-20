@@ -2,6 +2,8 @@ package GameServer;
 
 import java.util.ArrayList;
 
+import Util.Point;
+
 public interface Commands {
 	
 	public void moveUnit(int unitNo, int targetX, int targetY, int targetMap,boolean follow);
@@ -16,6 +18,7 @@ public interface Commands {
 	public void towerAttackUnit(int unitNo, int buildingNo);
 	
 	public void buildBuilding(int x, int y,int player,int map, String buildingType,int unitNo[]);
+	public void buildWalls(ArrayList<Point> pts, int[] workers,int mapNo,int playerNumber);
 	public void addWorkerToSite(int buildingNo, int[] unitNo);
 	public void destroyBuilding(int buildingNo);
 	public void addUnitToBuildingQueue(int buildingNo, String unitType,int player);

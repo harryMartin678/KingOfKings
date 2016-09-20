@@ -61,6 +61,11 @@ public class GraphicsCollisionMap {
 		
 		return ret;
 	}
+	
+	public static int[][] toArray(int mapNo){
+		
+		return GameEngineCollisionMap.maps[mapNo].ToArray();
+	}
 
 	public static void printMap(int fromX,int toX,int fromY,int toY) {
 		// TODO Auto-generated method stub
