@@ -17,6 +17,7 @@ import Buildings.Stockpile;
 import Buildings.SwordsSmith;
 import Buildings.Wall;
 import Buildings.WallTower;
+import GameGraphics.GameScreenComposition.IComBuildingList;
 import Map.CollisionMap;
 import Map.GraphicsCollisionMap;
 
@@ -29,11 +30,16 @@ public class Building {
 	private boolean cantBuild;
 	private boolean site;
 	private int player;
-	private int progress;
-	private boolean dead;
 	private int attack;
 	private int attackX;
 	private int attackY;
+	private int progress;
+	
+	private int currentFrame;
+	private boolean collapsed;
+	//private boolean delayedCollapsed;
+	private int finishedCollapse;
+	private static ArrayList<Integer> CollapsingBuilding = new ArrayList<Integer>();
 	
 	private ArrayList<String> unitQueue;
 	private Semaphore lock;
@@ -60,15 +66,42 @@ public class Building {
 		lock = new Semaphore(2);
 	}
 	
+	public static void addCollapsingBuilding(Building building){
+		
+		CollapsingBuilding.add(building.getBuildingNo());
+	}
+	
+	public static void removeCollapsingBuilding(Building building){
+		
+		CollapsingBuilding.remove(building.getBuildingNo());
+	}
+	
+	public static void AnimateBuilding(IComBuildingList buildings){
+		
+		buildings.begin();
+		
+		for(int b = 0; b < CollapsingBuilding.size(); b++){
+			
+			Building building = buildings.getBuildingByBuildingNo(CollapsingBuilding.get(b));
+			
+			if(building != null){
+				
+				building.changeCurrentFrame();
+			}
+		}
+		
+		buildings.end();
+	}
+	
 	public void setProgress(int progress){
 		
 		this.progress = progress;
 	}
-	
-	public void setDead(boolean dead){
-		
-		this.dead = dead;
-	}
+//	
+//	public void setDead(boolean dead){
+//		
+//		this.dead = dead;
+//	}
 	
 	public int getSize(){
 		
@@ -308,6 +341,108 @@ public class Building {
 	public boolean isWall() {
 		// TODO Auto-generated method stub
 		return name.equals(Names.WALL);
+	}
+	
+	public void collapse(){
+		
+		if(!collapsed){
+			
+			Building.addCollapsingBuilding(this);
+		}
+		
+		collapsed = true;
+	}
+	
+	public int getCurrentFrame(){
+		
+		return currentFrame;
+	}
+	
+	public int getState(){
+		
+		if(collapsed){
+			
+			return 2;
+		
+		}else{
+			
+			return 0;
+		}
+	}
+	
+	public void changeCurrentFrame(){
+		
+		if(collapsed && finishedCollapse == 0){
+			
+			if(currentFrame == 90){
+				
+				finishedCollapse ++;
+		
+			}else{
+				
+				currentFrame += 10;
+			}
+			
+			
+		
+		}else{
+			
+			finishedCollapse ++;
+			
+			if(finishedCollapse == 5){
+				
+				Building.removeCollapsingBuilding(this);
+			}
+			
+		}
+	}
+	
+	public class GraphicalState{
+		
+		public int currentFrame;
+		public boolean collapsing;
+	}
+	
+	public void setGraphicalState(GraphicalState state){
+		
+		this.currentFrame = state.currentFrame;
+		this.collapsed = state.collapsing;
+		
+//		if(delayedCollapsed){
+//			
+//			collapsed = true;
+//			
+//		}
+	}
+	
+	public GraphicalState getGraphicalState(){
+		
+		GraphicalState state = new GraphicalState();
+		state.currentFrame = this.currentFrame;
+		state.collapsing = this.collapsed;
+		
+		return state;
+	}
+
+	public boolean hasCollapaseAnimationFinished() {
+		// TODO Auto-generated method stub
+		return finishedCollapse == 5;
+	}
+	
+//	public void setDelayedCollapsed(){
+//		
+//		delayedCollapsed = true;
+//	}
+
+	public boolean hasCollapsed() {
+		// TODO Auto-generated method stub
+		return collapsed;
+	}
+
+	public void updateState() {
+		// TODO Auto-generated method stub
+		
+
 	}
 
 

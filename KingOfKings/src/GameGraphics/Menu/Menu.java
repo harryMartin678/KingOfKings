@@ -191,6 +191,12 @@ public class Menu {
 			if(TopIcons.get(t).InMouse((float)x, (float)y)){
 				
 				TopIcons.get(t).SetSelected();
+				
+				if(TopIcons.get(t).getIndex() == 22){
+					
+					System.out.println("Save Menu");
+					saveGame = new SaveGameDialog();
+				}
 				return true;
 			}
 		}
@@ -304,11 +310,11 @@ public class Menu {
 	public void AddTopPanel(){
 		
 		//quit button
-		TopIcons.add(new Rectangle(0.025f,0.975f,0.015f,0.02f,1.0f,0.0f,0.0f,0,null));
+		TopIcons.add(new Rectangle(0.025f,0.975f,0.015f,0.02f,1.0f,0.0f,0.0f,20,null));
 		//save button
-		TopIcons.add(new Rectangle(0.075f,0.975f,0.015f,0.02f,1.0f,0.0f,0.0f,0,null));
+		TopIcons.add(new Rectangle(0.075f,0.975f,0.015f,0.02f,1.0f,0.0f,0.0f,21,null));
 		//Pause button
-		TopIcons.add(new Rectangle(0.125f,0.975f,0.015f,0.02f,1.0f,0.0f,0.0f,0,null));
+		TopIcons.add(new Rectangle(0.125f,0.975f,0.015f,0.02f,1.0f,0.0f,0.0f,22,null));
 		
 		foodPanel = new ResourcePanel(0.25f, 0.97f, null);
 		goldPanel = new ResourcePanel(0.75f,0.97f,null);
@@ -407,6 +413,19 @@ public class Menu {
 		if(!isHover){
 			
 			hoverPanel = null;
+		}
+	}
+
+	public void SaveGameMenu() {
+		// TODO Auto-generated method stub
+		saveGame = new SaveGameDialog();
+	}
+
+	public void RegisterKeyStroke(char key) {
+		// TODO Auto-generated method stub
+		if(saveGame != null){
+			
+			saveGame.RegisterKeyStroke(key);
 		}
 	}
 

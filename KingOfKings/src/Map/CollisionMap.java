@@ -1,5 +1,6 @@
 package Map;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.Semaphore;
 
@@ -7,30 +8,59 @@ import Units.UnitList;
 
 public class CollisionMap {
 
-	public int[][] CollisionMap;
+	private int[][] CollisionMap;
+	private boolean[][] VisibleMap;
 	private HashMap<Integer,int[]> UnitToPos;
 	private HashMap<Integer,Integer> PosToUnit;
 	private HashMap<Integer,int[]> BuildingToPos;
+	private HashMap<Integer,Boolean> visibilityCheck;
 	private Semaphore lock;
+	private boolean fogOfWar;
+	private int mapNo;
 	
 	
-	public CollisionMap(){
+	public CollisionMap(boolean fogOfWar,int mapNo){
 		
 		lock = new Semaphore(3);
 		UnitToPos = new HashMap<Integer, int[]>();
 		PosToUnit = new HashMap<Integer, Integer>();
 		BuildingToPos = new HashMap<Integer, int[]>();
+		visibilityCheck = new HashMap<Integer, Boolean>();
+		this.fogOfWar = fogOfWar;
+		this.mapNo = mapNo;
+		
 	}
 	
-	public void RefreshCollisionMap(int[][] map){
+	public int getMapNo(){
 		
-		System.out.println("REFRESH COLLISIONMAP");
+		return mapNo;
+	}
+	
+	public void RefreshCollisionMap(int[][] map,boolean[][] VisibleMap){
+		
+		//System.out.println("REFRESH COLLISIONMAP");
 		CollisionMap = new int[map.length][map[0].length];
 		
 		for(int x = 0; x < map.length; x++){
 			for(int y = 0; y < map[x].length; y++){
 				
 				CollisionMap[x][y] = map[x][y];
+			}
+		}
+		
+		if(fogOfWar){
+			if(VisibleMap == null){
+				
+				this.VisibleMap = new boolean[CollisionMap.length][CollisionMap[0].length];
+			
+			}else{
+				
+				for(int x = 0; x < VisibleMap.length; x++){
+					for(int y = 0; y < VisibleMap[x].length; y++){
+						
+						this.VisibleMap[x][y] = VisibleMap[x][y];
+					}
+				}
 			}
 		}
 	}
@@ -48,6 +78,28 @@ public class CollisionMap {
 	public void End(){
 		
 		lock.release();
+	}
+	
+	public boolean inFog(int x, int y){
+		
+		return VisibleMap == null || VisibleMap[x][y];
+	}
+	
+	public void addVisiblilty(int newX,int newY){
+		
+		if(!visibilityCheck.containsKey(new int[]{newX,newY})){
+			for(int x = newX - 10; x < newX + 10; x++){
+				for(int y = newY - 10; y < newY + 10; y++){
+					
+					if(x >= 0 && y >=0 && x < VisibleMap.length && y < VisibleMap[0].length){
+						VisibleMap[x][y] = true;
+					}
+					
+				}
+			}
+			
+			visibilityCheck.put(GetUniqueNo(new int[]{newX,newY}),true);
+		}
 	}
 	
 	public void RemoveUnit(int unitNo){
@@ -70,14 +122,11 @@ public class CollisionMap {
 		}
 	}
 	
-	public void moveUnit(int unitNo,int newX,int newY){
+	public void moveUnit(int unitNo,int newX,int newY,boolean isWorker){
 		
 		int[] pos = UnitToPos.get(unitNo);
 		
-		if(pos == null){
-			
-			
-		}else if(!(pos[0] == newX && pos[1] == newY)){
+		if(!(pos[0] == newX && pos[1] == newY) && pos != null){
 			
 			CollisionMap[pos[0]][pos[1]] = 0;
 			
@@ -85,7 +134,21 @@ public class CollisionMap {
 			PosToUnit.remove(GetUniqueNo(pos));
 			PosToUnit.put(GetUniqueNo(new int[]{newX,newY}), unitNo);
 			
-			CollisionMap[newX][newY] = 7;
+			if(isWorker){
+				
+				CollisionMap[newX][newY] = 9;
+				
+			}else{
+				
+				CollisionMap[newX][newY] = 7;
+				
+			}
+			
+			if(fogOfWar){
+				
+				addVisiblilty(newX, newY);
+				
+			}
 		}
 	}
 	
@@ -104,12 +167,16 @@ public class CollisionMap {
 //		}
 
 		CollisionMap[x][y] = 7;
+		
+		if(fogOfWar){
+			
+			addVisiblilty(x, y);
+		}
 	}
 	
 	public void addBuilding(int x, int y,int SizeX, int SizeY,int buildingNo){
 		
 		BuildingToPos.put(buildingNo, new int[]{x,y});
-		
 		
 		for(int mx = -SizeX + x; mx < SizeX + x; mx++){
 			for(int my = -SizeY + y; my < SizeY + y; my++){
@@ -117,14 +184,23 @@ public class CollisionMap {
 				CollisionMap[mx][my] = 8;
 			}
 		}
+		if(fogOfWar){
+			//System.out.println("ADD BUILDING VISIBILITY COLLISIONMAP");
+			addVisiblilty(x, y);
+		}
 	}
 	
-	public void removeBuilding(int buildingNo){
+	public void removeBuilding(int buildingNo,int SizeX,int SizeY){
 		
 		int[] pos = BuildingToPos.get(buildingNo);
 		BuildingToPos.remove(buildingNo);
 		
-		CollisionMap[pos[0]][pos[1]] = 0;
+		for(int mx = -SizeX + pos[0]; mx < SizeX + pos[0]; mx++){
+			for(int my = -SizeY + pos[1]; my < SizeY + pos[1]; my++){
+				
+				CollisionMap[mx][my] = 0;
+			}
+		}
 	}
 	
 	public int getTile(int x,int y){
@@ -143,7 +219,7 @@ public class CollisionMap {
 		for(int ay = -SizeY + y; ay <= SizeY + y; ay++){
 			for(int ax = -SizeX + x; ax <= SizeX + x; ax++){
 			
-				if(CollisionMap[ax][ay] != 0){
+				if(CollisionMap[ax][ay] != 0 || (fogOfWar && !VisibleMap[ax][ay])){
 					
 					return true;
 				}
@@ -286,5 +362,32 @@ public class CollisionMap {
 		//System.out.println(units.getUnits(enemyNo).getName() + " " + units.getUnits(unitNo).getName()
 			//	+ " CollisionMap");
 		return enemyNo;
+	}
+
+	public ArrayList<Integer> FindWorkers(int sx, int sy, int sizeX, int sizeY) {
+		// TODO Auto-generated method stub
+		ArrayList<Integer> workers = new ArrayList<Integer>();
+		
+		for(int x = sx - sizeX - 25; x < sx + sizeX + 25; x++){
+			for(int y = sy - sizeY - 25; y < sy + sizeY + 25; y++){
+				
+				if(x < 0 || x >= CollisionMap.length || y < 0 || y >= CollisionMap[0].length
+						|| (x == sx && y == sy)){
+					
+					continue;
+				}
+				
+				if(CollisionMap[x][y] == 9){
+					
+					workers.add(PosToUnit.get(new int[]{x,y}));
+				}
+			}
+		}
+		return workers;
+	}
+
+	public boolean[][] getVisibleMap() {
+		// TODO Auto-generated method stub
+		return VisibleMap;
 	}
 }

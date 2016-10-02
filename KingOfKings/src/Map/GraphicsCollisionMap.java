@@ -3,6 +3,8 @@ package Map;
 public class GraphicsCollisionMap {
 
 	public static CollisionMap map;
+	private static FogMapCache fogMaps = new FogMapCache();
+	public static boolean fogOfWar;
 	
 	
 	public static void Begin(){
@@ -15,10 +17,19 @@ public class GraphicsCollisionMap {
 		GraphicsCollisionMap.map.End();
 	}
 	
-	public static void RefreshCollisionMap(int[][] map){
+	public static void addVisiblilty(int x, int y){
 		
-		GraphicsCollisionMap.map = new CollisionMap();
-		GraphicsCollisionMap.map.RefreshCollisionMap(map);
+		GraphicsCollisionMap.map.addVisiblilty(x, y);
+	}
+	
+	public static void RefreshCollisionMap(int[][] map,int mapNo){
+		
+		if(GraphicsCollisionMap.map != null){
+			fogMaps.setVisibleMap(GraphicsCollisionMap.map.getMapNo(),
+					GraphicsCollisionMap.map.getVisibleMap());
+		}
+		GraphicsCollisionMap.map = new CollisionMap(fogOfWar,mapNo);
+		GraphicsCollisionMap.map.RefreshCollisionMap(map,fogMaps.getMap(mapNo));
 	}
 	
 	public static void addUnit(int x, int y,int unitNo){
@@ -35,12 +46,13 @@ public class GraphicsCollisionMap {
 	
 	public static void addBuilding(int x, int y,int SizeX,int SizeY,int buildingNo){
 		
-		GraphicsCollisionMap.map.addBuilding(x, y,SizeX,SizeY,buildingNo);
+		//System.out.println("ADD BUILDING " + fogOfWar + " GraphicsCollisionMap");
+		GraphicsCollisionMap.map.addBuilding(x, y,SizeX/2,SizeY/2,buildingNo);
 	}
 	
-	public static void removeBuilding(int buildingNo){
+	public static void removeBuilding(int buildingNo,int sizeX,int sizeY){
 		
-		GraphicsCollisionMap.map.removeBuilding(buildingNo);
+		GraphicsCollisionMap.map.removeBuilding(buildingNo,sizeX,sizeY);
 	}
 	
 	public static int getTile(int x,int y){
@@ -51,6 +63,11 @@ public class GraphicsCollisionMap {
 	public static boolean InArea(int x, int y, int SizeX, int SizeY){
 		
 		return GraphicsCollisionMap.map.InArea(x,y, SizeX, SizeY);
+	}
+	
+	public static boolean inFog(int x, int y){
+		
+		return GraphicsCollisionMap.map.inFog(x, y);
 	}
 
 	public static int IsUnitInFront(int unitNo,int[] direction) {

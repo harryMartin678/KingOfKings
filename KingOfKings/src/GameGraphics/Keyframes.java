@@ -49,7 +49,7 @@ public class Keyframes {
 		}
 	}
 	
-	public float[] GetOffSet(int animNo){
+	public float[] GetOffSet(int animNo,String filename){
 		
 		int segSize = 100 / keyframes.size();
 		
@@ -59,11 +59,13 @@ public class Keyframes {
 		
 		if(chosenKf >= keyframes.size()){
 			
+			System.out.println(filename + " Keyframes");
 			System.out.println(animNo + " Keyframe");
 		}
 		
 		if(keyframes.get(chosenKf).length < 3){
 			
+			System.out.println(filename + " Keyframes"); 
 			System.out.println(keyframes.get(chosenKf).length + " " + chosenKf + " Keyframes");
 			PrintKeyframes();
 		}

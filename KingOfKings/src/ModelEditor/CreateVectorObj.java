@@ -120,7 +120,7 @@ public class CreateVectorObj {
 	
 	public static void main(String[] args) {
 		
-		new CreateVectorObj("bin/ModelEditor/wallTowerxd", 2);
+		new CreateVectorObj("bin/ModelEditor/stockpilexd", 3);
 	}
 
 }

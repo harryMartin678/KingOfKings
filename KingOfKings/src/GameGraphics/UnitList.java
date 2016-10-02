@@ -16,7 +16,7 @@ public class UnitList implements IComUnitListDisplay,IComUnitListMouseKeyboard,
 IComUnitListFrameProcess {
 	
 	private ArrayList<Unit> units;
-	private boolean used;
+	//private boolean used;
 	private ArrayList<int[]> wayPoints;
 	private ArrayList<SelectedUnit> selectedUnits;
 	private int myPlayerNumber;
@@ -29,7 +29,7 @@ IComUnitListFrameProcess {
 	public UnitList(){
 		
 		units = new ArrayList<Unit>();
-		used = false;
+		//used = false;
 		
 		wayPoints = new ArrayList<int[]>();
 		selectedUnits = new ArrayList<SelectedUnit>();
@@ -179,6 +179,18 @@ IComUnitListFrameProcess {
 		// TODO Auto-generated method stub
 		return size();
 	}
+	
+//	public void createVisiblity(int playerNumber){
+//		
+//		for(int u = 0; u < units.size(); u++){
+//			
+//			if(units.get(u).getPlayer() == playerNumber){
+//				
+//				GraphicsCollisionMap.addVisiblilty(Math.round(units.get(u).getX()),
+//						Math.round(units.get(u).getY()));
+//			}
+//		}
+//	}
 
 	@Override
 	public boolean checkInUnit(int x, int y,int unitNo) {
@@ -588,11 +600,18 @@ IComUnitListFrameProcess {
 			this.clear();
 			
 		}else{
-			
-			while(this.units.size() > 0){
+			int unitRemove = 0;
+			while(this.units.size() > unitRemove){
 				
-				graphicalstates.put(this.units.get(0).getUnitNo(), this.units.get(0).getGraphicalState());
-				this.remove(0);
+				if(this.get(unitRemove).hasDied() && !this.get(unitRemove).getDieingFinished()){
+					
+					unitRemove++;
+					
+				}
+				
+				graphicalstates.put(this.units.get(unitRemove).getUnitNo(),
+						this.units.get(unitRemove).getGraphicalState());
+				this.remove(unitRemove);
 			}
 		}
 			
@@ -641,6 +660,12 @@ IComUnitListFrameProcess {
 	public boolean canAttackUnit(int[] click, int unitNo) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public void killByUnitNo(int unitNo) {
+		// TODO Auto-generated method stub
+		units.get(unitNoToIndex.get(unitNo)).die();
 	}
 
 

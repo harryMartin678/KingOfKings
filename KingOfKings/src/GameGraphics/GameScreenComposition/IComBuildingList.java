@@ -11,7 +11,7 @@ public interface IComBuildingList extends IBuildingList {
 	public int size();
 	public void add(Building building);
 	public Building get(int index);
-	
 	public boolean isBuildingGhost();
 	public boolean canBuildGhost();
+	public Building getBuildingByBuildingNo(int buildingNo);
 }

@@ -272,9 +272,9 @@ public class Communication {
 	
 	//send user commands to players who didn't send that user command 
 	
-	public static void main(String[] args) throws IOException {
-		
-		new Communication();
-	}
+//	public static void main(String[] args) throws IOException {
+//		
+//		new Communication();
+//	}
 
 }

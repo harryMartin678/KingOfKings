@@ -18,6 +18,7 @@ public class Unit {
 	private boolean forward;
 	private boolean firing;
 	private boolean dieing;
+	private int finishedDieing;
 	private int player;
 	private int unitNo;
 	private int angle;
@@ -116,8 +117,18 @@ public class Unit {
 	
 	public void die(){
 		
+		if(!dieing){
+			
+			addUnit(this);
+			dieing = true;
+		}
 		//this.Animating();
 		//state = 2;
+	}
+	
+	public boolean getDieingFinished(){
+		
+		return finishedDieing == 5;
 	}
 	
 //	public int getState(){
@@ -182,7 +193,7 @@ public class Unit {
 	
 	public void changeCurrentFrame(){
 		
-		if(moving || firing){
+		if((moving || firing || dieing) && finishedDieing == 0){
 
 			if(currentFrame == 90){
 				
@@ -190,17 +201,29 @@ public class Unit {
 			
 			}else if(currentFrame == 0){
 				
+				if(dieing){
+					
+					finishedDieing ++;
+				}
+				
 				forward = true;
 				
 			}
 
-			if(forward) {
-				currentFrame += 10;
-			}
-			else{
-				currentFrame -= 10;
+			if(finishedDieing == 0){
+				if(forward) {
+
+					currentFrame += 10;
+				}
+				else{
+
+					currentFrame -= 10;
+				}
 			}
 			
+		}else{
+			
+			finishedDieing ++;
 		}
 	}
 	
@@ -306,6 +329,11 @@ public class Unit {
 			
 			this.stopFiring();
 		}
+	}
+
+	public boolean hasDied() {
+		// TODO Auto-generated method stub
+		return dieing;
 	}
 
 }

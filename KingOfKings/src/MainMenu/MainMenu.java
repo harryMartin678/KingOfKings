@@ -3,8 +3,12 @@ package MainMenu;
 import java.awt.Container;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.io.IOException;
 
 import javax.swing.JFrame;
+
+import GameCommunicationServer.Communication;
+import GameGraphics.Graphics;
 
 public class MainMenu {
 	
@@ -39,10 +43,41 @@ public class MainMenu {
 					String check = mm.getButtonPressed();
 					
 					//Checks whether the new game button has been pressed 
-					if(!check.equals("None") && check.equals("newGame")){
+					if(check.equals(MainMenuGUI.STARTGAME)){
+						
+						new Thread(new Runnable(){
+
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								try {
+									new Communication();
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}
+							
+						}).start();
 						
 						pane.removeAll();
 						frame.repaint();
+						new Graphics(frame,true);
+						break;
+					
+					}else if(check.equals(MainMenuGUI.JOINGAME)){
+						
+						pane.removeAll();
+						frame.repaint();
+						new Graphics(frame,false);
+						break;
+					
+					}else if(check.equals(MainMenuGUI.RESTOREGAME)){
+						
+						pane.removeAll();
+						frame.repaint();
+						pane.add(new RestoreGameGUI());
+						frame.revalidate();
 						break;
 					}
 					
@@ -72,6 +107,7 @@ public class MainMenu {
 		
 		
 	}
+	
 	
 	public static void main(String[] args) {
 		

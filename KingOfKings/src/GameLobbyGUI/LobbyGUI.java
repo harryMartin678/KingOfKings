@@ -41,10 +41,12 @@ public class LobbyGUI extends JPanel implements MouseListener {
 	private int bsyIdtX;
 	private int bsyIdtY;
 	private double angle;
+
+	private boolean isHost;
 	
 	private JFrame frame;
 	
-	public LobbyGUI(ClientMessages cmsg,final JFrame frame){
+	public LobbyGUI(ClientMessages cmsg,final JFrame frame,boolean isHost){
 		
 		this.cmsg = cmsg;
 		readyBtn = new ImageIcon(filepath + "ReadyButton.png");
@@ -58,6 +60,8 @@ public class LobbyGUI extends JPanel implements MouseListener {
 		loading = false;
 		thisPlayer = -1;
 		this.addMouseListener(this);
+		
+		this.isHost = isHost;
 		
 		this.frame = frame;
 		
@@ -101,9 +105,11 @@ public class LobbyGUI extends JPanel implements MouseListener {
 		text = new TextField();
 		this.add(text);
 		
-		ipText = new TextField();
-		this.add(ipText);
-		ipText.setText("127.0.0.1");
+		if(!isHost){
+			ipText = new TextField();
+			this.add(ipText);
+			ipText.setText("127.0.0.1");
+		}
 				
 	}
 	
@@ -302,9 +308,11 @@ public class LobbyGUI extends JPanel implements MouseListener {
 		text.setLocation((this.getWidth()/2) - text.getWidth()/2, 
 				(this.getHeight()/2) - (this.getHeight()/20));
 		
-		ipText.setSize(this.getWidth()/3, this.getHeight()/25);
-		ipText.setLocation(((this.getWidth()/2) - ipText.getWidth()/2), 
-				(this.getHeight()/2) + (this.getHeight()/20));
+		if(!isHost){
+			ipText.setSize(this.getWidth()/3, this.getHeight()/25);
+			ipText.setLocation(((this.getWidth()/2) - ipText.getWidth()/2), 
+					(this.getHeight()/2) + (this.getHeight()/20));
+		}
 		
 		double playerListWidth = (20*this.getWidth())/100;
 		double playerListHeight = (20 * this.getHeight())/100;
@@ -357,14 +365,23 @@ public class LobbyGUI extends JPanel implements MouseListener {
 		if(inRect(0.40043923865300146,0.649645390070922,0.5988286969253295,
 				0.8439716312056738,x,y) && text.getText().length() > 0){
 			
-			cmsg.startClient(ipText.getText());
-			startGetPlayers();
-			cmsg.addMessage("name " + text.getText());
-			writePlayerName = false;
-			text.setVisible(false);
-			ipText.setVisible(false);
-			
+			enterLobby();
 		}
+	}
+	
+	private void enterLobby(){
+		
+		if(isHost){
+			cmsg.startClient("127.0.0.1");
+		}else{
+			cmsg.startClient(ipText.getText());
+			ipText.setVisible(false);
+		}
+		startGetPlayers();
+		cmsg.addMessage("name " + text.getText());
+		writePlayerName = false;
+		text.setVisible(false);
+		
 	}
 	
 	private void mouseGameLobby(double x, double y) {

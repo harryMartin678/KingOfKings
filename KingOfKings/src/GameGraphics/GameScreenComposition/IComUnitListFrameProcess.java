@@ -10,5 +10,6 @@ public interface IComUnitListFrameProcess extends IComUnitList {
 	public void removeByUnitNo(int unitNo);
 	public void add(Unit unit);
 	public void setUnits(ArrayList<Unit> units,boolean isMapRefresh);
+	public void killByUnitNo(int unitNo);
 	
 }

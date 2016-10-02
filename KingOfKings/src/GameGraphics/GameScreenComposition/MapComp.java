@@ -112,7 +112,7 @@ public class MapComp implements IComMapMouseKeyboard, IComMapDisplay, IComFrameP
 		this.viewedMap = viewedMap;
 		map = maps.getMap(viewedMap);
 		
-		GraphicsCollisionMap.RefreshCollisionMap(map.toArray());
+		GraphicsCollisionMap.RefreshCollisionMap(map.toArray(),viewedMap);
 		
 		if(firstTimeViewedMapSet){
 			

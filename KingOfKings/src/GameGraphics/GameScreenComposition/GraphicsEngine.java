@@ -36,6 +36,9 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 	
 	public GraphicsEngine(final ClientWrapper cmsg) throws IOException{
 		
+		
+		GraphicsCollisionMap.fogOfWar = true;
+		
 		this.cmsg = cmsg;
 		start = false;
 

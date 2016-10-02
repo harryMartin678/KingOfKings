@@ -1,6 +1,7 @@
 package GameGraphics;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.Semaphore;
 
 import Buildings.Names;
@@ -28,6 +29,7 @@ IComBuildingListFrameProcess {
 	private ClientWrapper cmsgs;
 	private Semaphore lock;
 	private IComMouseKeyboardBuildingList mouseKeyboard;
+	private HashMap<Integer,Integer> buildingNosIndex;
 	
 	public BuildingList(){
 		
@@ -36,7 +38,8 @@ IComBuildingListFrameProcess {
 		AttackBuilding = -1;
 		BuildBuilding = -1;
 		//used = false;
-		lock = new Semaphore(3);
+		lock = new Semaphore(1);
+		buildingNosIndex = new HashMap<Integer, Integer>();
 	}
 	
 	public void SetUpBuildingList(IComMouseKeyboardBuildingList mouseKeyboard){
@@ -78,13 +81,29 @@ IComBuildingListFrameProcess {
 		GraphicsCollisionMap.addBuilding((int)building.getX(), (int)building.getY(),
 				SizeInfo.getSizeX(),SizeInfo.getSizeY(),building.getBuildingNo());
 		buildings.add(building);
+		buildingNosIndex.put(building.getBuildingNo(), buildings.size()-1);
 	}
 	
 	public synchronized void remove(int index){
 		
-		GraphicsCollisionMap.removeBuilding(buildings.get(index).getBuildingNo());
+		Buildings.Building SizeInfo = Building.GetBuildingClass(buildings.get(index).getName());
+		GraphicsCollisionMap.removeBuilding(buildings.get(index).getBuildingNo()
+				,SizeInfo.getSizeX(),SizeInfo.getSizeY());
+		buildingNosIndex.remove(buildings.get(index).getBuildingNo());
 		buildings.remove(index);
+		
 	}
+	
+//	public void createVisiblity(int playerNumber){
+//		
+//		for(int b = 0; b < buildings.size(); b++){
+//			
+//			if(buildings.get(b).getPlayer() == playerNumber){
+//				
+//				GraphicsCollisionMap.addVisiblilty(x, y);
+//			}
+//		}
+//	}
 	
 	public synchronized int size(){
 		
@@ -343,15 +362,17 @@ IComBuildingListFrameProcess {
 	public synchronized GameGraphics.Building getBuildingByBuildingNo(int buildingNo) {
 		// TODO Auto-generated method stub
 		
-		for(int b = 0; b < buildings.size(); b++){
-			
-			if(buildings.get(b).getBuildingNo() == buildingNo){
-				
-				return buildings.get(b);
-			}
-		}
+//		for(int b = 0; b < buildings.size(); b++){
+//			
+//			if(buildings.get(b).getBuildingNo() == buildingNo){
+//				
+//				return buildings.get(b);
+//			}
+//		}
+//		
+//		return null;
 		
-		return null;
+		return buildings.get(buildingNosIndex.get(buildingNo));
 	}
 
 	@Override
@@ -429,9 +450,48 @@ IComBuildingListFrameProcess {
 	}
 
 	@Override
-	public void setBuildings(ArrayList<Building> buildingsTemp) {
+	public void setBuildings(ArrayList<Building> buildingsTemp,boolean isMapRefresh) {
 		// TODO Auto-generated method stub
-		buildings = buildingsTemp;
+		HashMap<Integer,Building.GraphicalState> graphicalstates = new HashMap<Integer,
+					Building.GraphicalState>();
+		
+		//System.out.println(buildingsTemp.size() + " BuildingList");
+		
+		if(isMapRefresh){
+			
+			this.clear();
+		
+		}else{
+			
+			int buildingRemove = 0;
+			
+			while(this.buildings.size() > buildingRemove){
+				
+				if(this.get(buildingRemove).hasCollapsed() && 
+						!this.get(buildingRemove).hasCollapaseAnimationFinished()){
+					
+					buildingRemove++;
+				}
+				
+				graphicalstates.put(this.buildings.get(buildingRemove).getBuildingNo(),
+						this.buildings.get(buildingRemove).getGraphicalState());
+				this.remove(buildingRemove);
+			}
+			
+			
+		}
+		
+		for(int n = 0; n < buildingsTemp.size(); n++){
+			
+			this.add(buildingsTemp.get(n));
+			
+			if(graphicalstates.containsKey(this.buildings.get(this.buildings.size()-1).getBuildingNo())){
+				this.buildings.get(this.buildings.size()-1).setGraphicalState(
+						graphicalstates.get(this.buildings.get(this.buildings.size()-1).getBuildingNo()));
+			}
+			
+		}
+		
 	}
 
 	@Override
@@ -537,7 +597,12 @@ IComBuildingListFrameProcess {
 		return ghostBuilding.isWall();
 	}
 
-
+	@Override
+	public void collapseByBuildingNo(int buildingNo) {
+		// TODO Auto-generated method stub
+		buildings.get(buildingNosIndex.get(buildingNo)).collapse();
+		
+	}
 
 
 }

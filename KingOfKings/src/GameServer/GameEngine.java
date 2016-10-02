@@ -27,6 +27,7 @@ import Units.Unit;
 import Units.UnitBattleList;
 import Units.UnitList;
 import Units.Worker;
+import Util.Matrix;
 import Util.Point;
 
 
@@ -98,8 +99,10 @@ public class GameEngine{
 		context.units.addUnit(Names.WORKER, 0, (context.maps.getMapWidth(0)/2)-6, 
 				(context.maps.getMapHeight(0)/2)-2, 0);
 
-//		context.units.addUnit(Names.HOUND, 0, 
-//				(context.maps.getMapWidth(0)/2)-11, (context.maps.getMapHeight(0)/2)-10, 2);
+		context.units.addUnit(Names.HOUND, 0, 
+				(context.maps.getMapWidth(0)/2)-11, (context.maps.getMapHeight(0)/2)-10, 0);
+		context.buildings.addBuilding(1, 0,(context.maps.getMapWidth(0)/2)-11,
+		(context.maps.getMapHeight(0)/2)-15, Names.STOCKPILE);
 
 		
 		for(int i = 0; i < context.maps.getSize(); i++){
@@ -339,6 +342,17 @@ public class GameEngine{
 					parameters.setUnitAttack(newBattles.get(b)[0], newBattles.get(b)[1]);
 					commands.add(MethodCallup.ATTACKUNIT, parameters, communicationTurn);
 				}
+				
+				ArrayList<int[]> newWorkerSites = context.units.areWorkersIdle(
+						context.sites.findNewBuilds());
+				
+				for(int s = 0; s < newWorkerSites.size(); s++){
+					
+					MethodParameter parameters = new MethodParameter();
+					parameters.setAddWorkerToSite(newWorkerSites.get(s)[0],
+							Matrix.getIntArrayRange(1, newWorkerSites.get(s).length,newWorkerSites.get(s)));
+					commands.add(MethodCallup.ADDWORKERTOSITE, parameters, communicationTurn);
+				}
 			}
 			
 			beat++;
@@ -529,6 +543,12 @@ public class GameEngine{
 						+ " " + buildingAttack
 						+ " " + buildingAttackX 
 						+ " " + buildingAttackY +"\n";
+			
+			}else if(context.buildings.isBuildingDestroyed(b) 
+					&& !context.buildings.getCollapseReported(b)){
+				
+				info += "collapse " + b + "\n";
+				context.buildings.setCollapseReported(b);
 			}
 		}
 		
@@ -939,7 +959,7 @@ public class GameEngine{
 		
 		ArrayList<Point> wallSec = new ArrayList<Point>();
 		
-		for(int p = 0; p < points.length-1; p++){
+		for(int p = 0; p < points.length-1; p+=2){
 			
 			//System.out.println(points[p] + " " + points[p+1] + " GameEngine");
 			wallSec.add(new Point(new Integer(points[p]),new Integer(points[p+1])));

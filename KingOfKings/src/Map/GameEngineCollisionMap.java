@@ -1,5 +1,7 @@
 package Map;
 
+import java.util.ArrayList;
+
 import Units.UnitList;
 
 public class GameEngineCollisionMap {
@@ -12,8 +14,8 @@ public class GameEngineCollisionMap {
 		
 		for(int m = 0; m < mapsList.getSize(); m++){
 			
-			GameEngineCollisionMap.maps[m] = new CollisionMap();
-			GameEngineCollisionMap.maps[m].RefreshCollisionMap(mapsList.getMap(m).toArray());
+			GameEngineCollisionMap.maps[m] = new CollisionMap(false,m);
+			GameEngineCollisionMap.maps[m].RefreshCollisionMap(mapsList.getMap(m).toArray(),null);
 		}
 	}
 	
@@ -32,14 +34,14 @@ public class GameEngineCollisionMap {
 		GameEngineCollisionMap.maps[mapNo].addBuilding(x, y,SizeX,SizeY, buildingNo);
 	}
 	
-	public static void removeBuilding(int buildingNo,int mapNo){
+	public static void removeBuilding(int buildingNo,int mapNo,int sizeX,int sizeY){
 		
-		GameEngineCollisionMap.maps[mapNo].removeBuilding(buildingNo);
+		GameEngineCollisionMap.maps[mapNo].removeBuilding(buildingNo,sizeX,sizeY);
 	}
 	
-	public static void moveUnit(int unitNo,int newX,int newY,int mapNo){
+	public static void moveUnit(int unitNo,int newX,int newY,int mapNo,boolean isWorker){
 		
-		GameEngineCollisionMap.maps[mapNo].moveUnit(unitNo, newX, newY);
+		GameEngineCollisionMap.maps[mapNo].moveUnit(unitNo, newX, newY,isWorker);
 	}
 	
 	public static boolean InArea(int x, int y, int SizeX,int SizeY, int mapNo){
@@ -70,6 +72,12 @@ public class GameEngineCollisionMap {
 	public static int FindEnemy(int unitNo, UnitList units){
 		
 		return GameEngineCollisionMap.maps[units.getUnitMap(unitNo)].FindEnemy(unitNo,units);
+	}
+	
+	
+	public static ArrayList<Integer> FindWorkers(int x, int y, int sizeX,int sizeY,int mapNo){
+		
+		return GameEngineCollisionMap.maps[mapNo].FindWorkers(x,y,sizeX,sizeY);
 	}
 
 	public static int getSizeX(int mapNo) {

@@ -225,9 +225,9 @@ public class ProcessFrameThread {
 				//Unit.removeUnit(units.getUnitByUnitNo(new Integer(numbers.get(0)).intValue()));
 				System.out.println("die " + new Integer(numbers.get(0)).intValue() + " ProcessFrameThread");
 				//System.out.println(units.getUnitListSize() + " PROCESSFRAMETHREAD BEFORE");
-				units.removeByUnitNo(new Integer(numbers.get(0)).intValue());
+				//units.removeByUnitNo(new Integer(numbers.get(0)).intValue());
 				//System.out.println(units.getUnitListSize() + " PROCESSFRAMETHREAD AFTER");
-				
+				units.killByUnitNo(new Integer(numbers.get(0)).intValue());
 				m++;
 				continue;
 			}
@@ -313,14 +313,23 @@ public class ProcessFrameThread {
 			ArrayList<String> numbers = parsed.getNumbers();
 			String building = parsed.getUnitName();
 			
-			//System.out.println(new Integer(numbers.get(3)).intValue() + " player ProcesssFrameThread");
-			buildingsTemp.add(new Building(new Float(numbers.get(1)).floatValue(),
-					new Float(numbers.get(2)).floatValue(),building,
-					new Integer(numbers.get(0)).intValue(),new Integer(numbers.get(3)).intValue()));
-			buildingsTemp.get(buildingsTemp.size()-1).SetSite(false);
-			buildingsTemp.get(buildingsTemp.size()-1).setAttack(new Integer(numbers.get(4)).intValue(),
-					new Integer(numbers.get(5)).intValue(),
-					new Integer(numbers.get(6)).intValue());
+			//System.out.println(msg + " " + building + " ProcessFrameThread");
+			
+			if(building.equals("collapse")){
+				
+				buildings.collapseByBuildingNo(new Integer(numbers.get(0)).intValue());
+				
+			}else{
+			
+				//System.out.println(new Integer(numbers.get(3)).intValue() + " player ProcesssFrameThread");
+				buildingsTemp.add(new Building(new Float(numbers.get(1)).floatValue(),
+						new Float(numbers.get(2)).floatValue(),building,
+						new Integer(numbers.get(0)).intValue(),new Integer(numbers.get(3)).intValue()));
+				buildingsTemp.get(buildingsTemp.size()-1).SetSite(false);
+				buildingsTemp.get(buildingsTemp.size()-1).setAttack(new Integer(numbers.get(4)).intValue(),
+						new Integer(numbers.get(5)).intValue(),
+						new Integer(numbers.get(6)).intValue());
+			}
 			m++;
 		}
 		
@@ -348,7 +357,7 @@ public class ProcessFrameThread {
 		}
 		
 		m++;
-		buildings.setBuildings(buildingsTemp);
+		buildings.setBuildings(buildingsTemp,mapChangedFrame);
 		
 		
 		while(!(m >= msgs.size() || msgs.get(m).equals("resource"))){

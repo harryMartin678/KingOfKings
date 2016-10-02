@@ -20,6 +20,7 @@ public class Building {
 	private int buildingNo;
 	private boolean justBuilt;
 	private AddUnitModule addUnit;
+	private boolean collapseDeath;
 	
 	
 	public Building(int buildingNo){
@@ -226,7 +227,8 @@ public class Building {
 		
 		if(destroyed()){
 			
-			GameEngineCollisionMap.removeBuilding(this.buildingNo, this.map);
+			GameEngineCollisionMap.removeBuilding(this.buildingNo, this.map,
+					this.getSizeX(),this.getSizeY());
 		}
 	}
 	
@@ -345,6 +347,16 @@ public class Building {
 	public void regenerate() {
 		// TODO Auto-generated method stub
 		hitpoints = this.getMaxHitpoint();
+	}
+
+	public void setCollapseReported() {
+		// TODO Auto-generated method stub
+		collapseDeath = true;
+	}
+	
+	public boolean getCollapseReported(){
+		
+		return collapseDeath;
 	}
 	
 	

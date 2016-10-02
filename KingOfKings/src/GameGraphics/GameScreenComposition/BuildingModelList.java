@@ -80,6 +80,7 @@ public class BuildingModelList implements IBoundingBoxes {
 		stockpile = new BuildingModel(Names.STOCKPILE,"Models",1);//2 2
 		//stockpile.setTrans(0.15f, 0.05f);
 		stockpile.setSize(2.0f,2.0f,2.0f);
+		//stockpile.setTrans(0.0f, 0.0f, 20.0f);
 		wall = new BuildingModel(Names.WALL,"Models",1);//1 1
 		wall.setSize(1.0f, 1.0f, 1.0f);
 		wallTower = new BuildingModel(Names.WALLTOWER, "Models", 1);
@@ -260,7 +261,7 @@ public class BuildingModelList implements IBoundingBoxes {
 		draw.glRotatef(90.0f, 1, 0, 0);
 		draw.glRotatef(model.getAngle(), 0, 1, 0);
 
-		while((next = model.popFace(0,0)) != null){
+		while((next = model.popFace(building.getCurrentFrame(),building.getState())) != null){
 			
 			String texturePath = null;
 
@@ -272,10 +273,12 @@ public class BuildingModelList implements IBoundingBoxes {
 				float[] vertexColour = colour.getDiffuse();
 				
 				texturePath = colour.getTexturePath();
+				
 				if(next.IsTextured() && texturePath != null){
 					
 					draw.glColor3f(1.0f,1.0f,1.0f);
 					draw.glBindTexture(draw.GL_TEXTURE_2D, textures.getTexture(texturePath));
+					
 				}else if(vertexColour[0] == 0.098400f && vertexColour[1] == 0.098400f
 						&& vertexColour[2] == 0.098400f){
 				
@@ -297,7 +300,7 @@ public class BuildingModelList implements IBoundingBoxes {
 
 			draw.glBegin(draw.GL_POLYGON);
 
-			float[] normal = Display.getNormal(next,model, 0,0);
+			float[] normal = Display.getNormal(next,model, building.getCurrentFrame(),building.getState());
 			draw.glNormal3f(normal[0],normal[1],normal[2]);
 			
 				for(int i = 0; i < next.getSize(); i++){
@@ -307,7 +310,8 @@ public class BuildingModelList implements IBoundingBoxes {
 						VertexTex vertexT = model.getVertexTex(next.getTextureFace(i)-1,0);
 						draw.glTexCoord2f(vertexT.getX(), vertexT.getY());
 					}
-					Vertex vertex = model.getVertex(next.getFace(i)-1,0,0);
+					Vertex vertex = model.getVertex(next.getFace(i)-1,building.getCurrentFrame(),
+							building.getState());
 					draw.glVertex3f(vertex.getX(),vertex.getY(),vertex.getZ());
 					
 				}

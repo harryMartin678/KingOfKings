@@ -2,7 +2,7 @@ package Buildings;
 
 import java.util.ArrayList;
 
-import Units.UnitList;
+import Map.GameEngineCollisionMap;
 import Units.Worker;
 
 public class BuildingProgress {
@@ -55,6 +55,31 @@ public class BuildingProgress {
 	public int size(){
 		
 		return sites.size();
+	}
+	
+	public ArrayList<int[]> findNewBuilds(){
+		
+		ArrayList<int[]> workerSite = new ArrayList<int[]>();
+		
+		for(int s = 0; s < sites.size(); s++){
+			
+			ArrayList<Integer> workers = GameEngineCollisionMap.FindWorkers(sites.get(s).getBuilding().getX(),
+					sites.get(s).getBuilding().getY(),sites.get(s).getBuilding().getSizeX(), 
+					sites.get(s).getBuilding().getSizeY(),sites.get(s).getBuilding().getMap());
+			
+			workerSite.add(new int[workers.size()+1]);
+			workerSite.get(s)[0] = sites.get(s).getBuilding().getBuildingNo();
+			
+			for(int w = 0; w < workers.size(); w++){
+				
+				//System.out.println(workers.get(w) + " BuildingProgress");
+				if(workers.get(w) != null){
+					workerSite.get(s)[w+1] =  workers.get(w);
+				}
+			}
+		}
+		
+		return workerSite;
 	}
 
 	public boolean inSite(int x, int y) {

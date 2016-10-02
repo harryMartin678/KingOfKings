@@ -15,9 +15,10 @@ public class Graphics{
 	private Container pane;
 	private LobbyGUI lobby;
 
-	public Graphics(){
+	public Graphics(JFrame frame,boolean isHost){
 
-		window = new JFrame();
+		window = frame;
+		
 		//window.setSizet(500,500);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -26,7 +27,7 @@ public class Graphics{
 		pane = window.getContentPane();
 		pane.setLayout(new CardLayout(2,1));
 		cmsg = new ClientMessages();
-		lobby = new LobbyGUI(cmsg,window);
+		lobby = new LobbyGUI(cmsg,window,isHost);
 		pane.add(lobby);
 		
 		window.setVisible(true);
@@ -83,9 +84,9 @@ public class Graphics{
 		
 	//}
 	
-	public static void main(String[] args) {
-		
-		new Graphics();
-	}
+//	public static void main(String[] args) {
+//		
+//		new Graphics(new JFrame(),false);
+//	}
 
 }

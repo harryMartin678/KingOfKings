@@ -64,6 +64,12 @@ public class Worker extends Unit {
 		goingToBuild = false;
 	}
 	
+	@Override
+	public boolean idle() {
+		// TODO Auto-generated method stub
+		return super.idle() && !goingToBuild;
+	}
+	
 	public boolean getGoingToBuild(){
 		
 		return goingToBuild;

@@ -1,5 +1,6 @@
 package Util;
 
+import java.util.ArrayList;
 
 /******************************************************************************
  *  Compilation:  javac Matrix.java
@@ -392,5 +393,29 @@ final public class Matrix {
                 }
             }
         }
+    }
+    
+    public static int[] getIntArrayRange(int start, int end,int[] array){
+    	
+    	int[] subArray = new int[end-start];
+    	
+    	for(int a = start; a < end; a++){
+    		
+    		subArray[a-start] = array[a];
+    	}
+    	
+    	return subArray;
+    }
+    
+    public static int[] ToIntArray(ArrayList<Integer> list){
+    	
+    	int[] array = new int[list.size()];
+    	
+    	for(int a = 0; a < list.size(); a++){
+    		
+    		array[a] = list.get(a);
+    	}
+    	
+    	return array;
     }
 }

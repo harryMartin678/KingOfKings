@@ -27,7 +27,6 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,
 	private int height;
 	private boolean fDown;
 	private boolean shiftDown;
-	private boolean space;
 	private ArrayList<Point> wallSpaces;
 	
 	private IComUnitListMouseKeyboard units;
@@ -148,6 +147,8 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,
 			    		  if(buildings.isBuildingGhostWall()){
 			    		  
 			    			  int[] click = selectMap(x,y);
+			    			  units.clearAttackSelectedUnits();
+			    			  
 		    				  buildings.moveGhostBuilding(click);
 		    				  wallSpaces.add(new Point(click));
 			    			  
@@ -169,6 +170,9 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,
 			    				  cmsg.addMessage(msg);
 			    				  
 			    				  wallSpaces.clear();
+			    				  
+			    				  buildings.removeGhostBuilding();
+					    		  buildings.endGhostBuildingSession();
 			    			  }
 			    			  
 			    		  }else{
@@ -408,7 +412,7 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,
 		}else if(inRect(0.08223201174743025,0.004267425320056899,
 				0.09985315712187959,0.03698435277382646,x,y)){
 			
-			System.out.println("Save");
+			menu.SaveGameMenu();
 			return true;
 		}else{
 			
@@ -589,7 +593,6 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,
 
 	public void handleKeyboardPressed(KeyEvent e){
 		
-		//System.out.println(e.getKeyChar() + " pressed");
 		//System.out.println("MOUSEKEYBOARD KEY PRESSED: " + e.getKeyChar() + " " + e.isShiftDown());
 		if(e.isShiftDown()){
 			
@@ -602,6 +605,8 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,
 			fDown = true;
 
 		}
+		
+		menu.RegisterKeyStroke(e.getKeyChar());
 		
 	}
 	

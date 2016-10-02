@@ -160,4 +160,14 @@ public class BuildingList implements IBuildingList,IComBuildingBATTList {
 		}
 	}
 
+	public void setCollapseReported(int buildingNo) {
+		// TODO Auto-generated method stub
+		buildings.get(buildingNo).setCollapseReported();
+	}
+
+	public boolean getCollapseReported(int buildingNo) {
+		// TODO Auto-generated method stub
+		return buildings.get(buildingNo).getCollapseReported();
+	}
+
 }

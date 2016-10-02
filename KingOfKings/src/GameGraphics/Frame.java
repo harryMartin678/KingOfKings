@@ -50,7 +50,7 @@ public class Frame {
 		}
 		
 		return shape.getVertex(index).OffsetVertex(
-					keyFrames.get(index).GetOffSet(animNo));
+					keyFrames.get(index).GetOffSet(animNo,filename));
 		
 	}
 	

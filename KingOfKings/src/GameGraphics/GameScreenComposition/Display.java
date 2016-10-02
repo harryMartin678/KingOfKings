@@ -97,6 +97,7 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 		this.mouseKeyboard = mouseKeyboard;
 		this.map = map;
 		
+		
 		buildingModels = new BuildingModelList(HEIGHT_CONST,WIDTH_CONST,scaleFactor
 				,textures);
 		unitModels = new UnitModelList(HEIGHT_CONST,WIDTH_CONST,scaleFactor,
@@ -148,7 +149,7 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    	for(int x = frameX; x < frameX+FRAME_X_SIZE; x++){
 	    	
 	    		if(x >= map.getWidth() || y >= map.getHeight() || map.getTile(x,y) == -1 ||
-	    				x < 0 || y < 0){
+	    				x < 0 || y < 0 || !GraphicsCollisionMap.inFog(x, y)){
 	    			
 	    			drawTile(draw,(float) x,(float) y,
 	    					TileState.Empty,WIDTH_CONST,HEIGHT_CONST);
@@ -211,7 +212,10 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    			break;
 	    		}
 	    		
-	    		buildingModels.drawTiles(draw, unitModels, map.getMap(), x,y, frameX, frameY);
+	    		if(GraphicsCollisionMap.inFog(x, y)){
+	    			
+	    			buildingModels.drawTiles(draw, unitModels, map.getMap(), x,y, frameX, frameY);
+	    		}
 	    	}
 
 	    }
@@ -224,7 +228,9 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    for(int u = 0; u < units.size(); u++){
 	    	
 	    	if(units.outOfFrame(u, frameX, frameY, FRAME_X_SIZE, FRAME_Y_SIZE)
-	    			|| map.getTile((int) units.get(u).getX(),(int) units.get(u).getY()) == -1){
+	    			|| map.getTile(Math.round(units.get(u).getX()),Math.round(units.get(u).getY())) == -1
+	    			|| !GraphicsCollisionMap.inFog(Math.round(units.get(u).getX()),
+	    					Math.round(units.get(u).getY()))){
 	    		
 	    		continue;
 	    	}
@@ -277,7 +283,8 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    for(int b = 0; b < buildings.size(); b++){
 
 	    	if( buildings.inFrame(b, frameX, frameY, FRAME_X_SIZE, FRAME_Y_SIZE) 
-	    			|| map.getTile((int) buildings.get(b).getX(),(int) buildings.get(b).getY()) == -1){
+	    			|| map.getTile((int) buildings.get(b).getX(),(int) buildings.get(b).getY()) == -1
+	    			|| !GraphicsCollisionMap.inFog((int) buildings.get(b).getX(),(int) buildings.get(b).getY())){
 	    		
 	    		continue;
 	    	}
@@ -363,6 +370,7 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    		LookAtMatrix[2][0], LookAtMatrix[2][1], LookAtMatrix[2][2]);
 	    
 	    Unit.AnimateUnits(units);
+	    Building.AnimateBuilding(buildings);
 	    
 //	    for(int m = 0; m < Unit.MovingUnits.size(); m++){
 //			

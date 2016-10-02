@@ -6,6 +6,7 @@ import java.util.HashMap;
 import Buildings.Names;
 import GameGraphics.IUnitList;
 import Map.GameEngineCollisionMap;
+import Util.Matrix;
 
 public class UnitList implements Cloneable,IUnitList {
 	
@@ -370,6 +371,29 @@ public class UnitList implements Cloneable,IUnitList {
 	public boolean isRetreating(int unitFollow) {
 		// TODO Auto-generated method stub
 		return units.get(unitFollow).getRetreat();
+	}
+
+	public ArrayList<int[]> areWorkersIdle(ArrayList<int[]> workerSites) {
+		// TODO Auto-generated method stub
+		for(int s = 0; s < workerSites.size(); s++){
+			
+			ArrayList<Integer> idleWorkers = new ArrayList<Integer>();
+			
+			idleWorkers.add(workerSites.get(s)[0]);
+			
+			for(int w = 1; w < workerSites.get(s).length; w++){
+				
+				if(this.getUnitIsIdle(workerSites.get(s)[w])){
+					
+					idleWorkers.add(workerSites.get(s)[w]);
+				}
+			}
+			
+			workerSites.remove(s);
+			workerSites.add(s,Matrix.ToIntArray(idleWorkers));
+		}
+		
+		return workerSites;
 	}
 
 	

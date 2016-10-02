@@ -681,7 +681,7 @@ public class Unit {
 			}
 			
 		if(!stop || retreat){
-			GameEngineCollisionMap.moveUnit(ownNo, Math.round(x), Math.round(y), map);
+			GameEngineCollisionMap.moveUnit(ownNo, Math.round(x), Math.round(y), map,isWorker());
 		}
 	}
 	
