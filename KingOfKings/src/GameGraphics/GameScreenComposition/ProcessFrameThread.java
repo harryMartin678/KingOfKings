@@ -287,7 +287,6 @@ public class ProcessFrameThread {
 			m++;
 		}
 		
-		
 		units.setUnits(TempUnits,mapChangedFrame);
 		
 		units.end();
@@ -347,7 +346,6 @@ public class ProcessFrameThread {
 			ParseText parsed = new ParseText(msgs.get(m));
 			ArrayList<String> numbers = parsed.getNumbers();
 			String building = parsed.getUnitName();
-			
 			buildingsTemp.add(new Building(new Float(numbers.get(1)).intValue(),
 					new Float(numbers.get(2)).intValue(),building,new Float(numbers.get(0)).intValue(),
 					new Integer(numbers.get(3)).intValue()));

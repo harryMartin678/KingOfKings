@@ -13,8 +13,19 @@ public class Battle {
 //	private int reactionOne;
 //	private int reactionTwo;
 
+	//when loading
+	public Battle(Unit one, Unit two,int count){
+		
+		setUpConstructor(one,two,count);
+	}
 	
+	//when starting new battle from stratch
 	public Battle(Unit one, Unit two){
+		
+		setUpConstructor(one,two,0);
+	}
+	
+	private void setUpConstructor(Unit one, Unit two,int count){
 		
 		this.one = one;
 		this.two = two;
@@ -22,7 +33,7 @@ public class Battle {
 		onePullOut = false;
 		twoPullOut = false;
 		
-		count = 0;
+		this.count = count;
 	}
 	
 	public boolean CanAttackOne(){
@@ -63,6 +74,11 @@ public class Battle {
 	public int getTwoID(){
 		
 		return two.getUnitNo();
+	}
+	
+	public int getCount(){
+		
+		return count;
 	}
 	
 	public int[] getUnitPosOne(){

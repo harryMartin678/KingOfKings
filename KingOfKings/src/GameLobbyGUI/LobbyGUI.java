@@ -7,6 +7,11 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -43,12 +48,15 @@ public class LobbyGUI extends JPanel implements MouseListener {
 	private double angle;
 
 	private boolean isHost;
+	private String loadGame;
 	
 	private JFrame frame;
 	
-	public LobbyGUI(ClientMessages cmsg,final JFrame frame,boolean isHost){
+	public LobbyGUI(ClientMessages cmsg,final JFrame frame,boolean isHost,
+			String loadGame){
 		
 		this.cmsg = cmsg;
+		this.loadGame = loadGame;
 		readyBtn = new ImageIcon(filepath + "ReadyButton.png");
 		background = new ImageIcon(filepath + "Background.png");
 		loadingScreen = new ImageIcon(filepath + "LoadingScreen.png");
@@ -64,6 +72,16 @@ public class LobbyGUI extends JPanel implements MouseListener {
 		this.isHost = isHost;
 		
 		this.frame = frame;
+		
+		if(loadGame != null){
+			
+			try {
+				thisPlayer = getPlayerNo(loadGame);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
 		
 		this.addComponentListener(new ComponentListener(){
 
@@ -113,6 +131,13 @@ public class LobbyGUI extends JPanel implements MouseListener {
 				
 	}
 	
+	private int getPlayerNo(String loadGame) throws IOException{
+		// TODO Auto-generated method stub
+		BufferedReader reader = new BufferedReader(new FileReader(new File("SavedGames/"+loadGame+".sav")));
+		reader.readLine();
+		return new Integer(reader.readLine()).intValue();
+	}
+
 	public void setClMsg(ClientMessages cmsg){
 		
 		this.cmsg = cmsg;
@@ -136,7 +161,7 @@ public class LobbyGUI extends JPanel implements MouseListener {
 		
 		//canvas.setFocusable(true);
 		 gs = new GameGraphics.GameScreenComposition.GameScreen(cmsg,thisPlayer
-					,players.size(),frame);
+					,players.size(),frame,loadGame);
 
 		canvas.addMouseListener(gs.getMouseListener());
 		canvas.addMouseMotionListener(gs.getMouseMotionListener());
@@ -221,7 +246,7 @@ public class LobbyGUI extends JPanel implements MouseListener {
 								players.add(playersStr[p]);
 							}
 							
-							if(thisPlayer == -1){
+							if(thisPlayer == -1 && loadGame == null){
 								
 								thisPlayer = players.size()-1;
 							}

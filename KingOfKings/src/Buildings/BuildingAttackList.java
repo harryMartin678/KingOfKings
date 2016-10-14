@@ -50,4 +50,22 @@ public class BuildingAttackList {
 			}
 		}
 	}
+
+	public String getBuildAttackStates() {
+		// TODO Auto-generated method stub
+		String line = "";
+		
+		for(int a = 0; a < buildingDesList.size(); a++){
+			
+			line += buildingDesList.get(a).building.getBuildingNo() + " " 
+					+ buildingDesList.get(a).unit.getUnitNo() + "\n";
+		}
+		
+		return line;
+	}
+
+	public void addAll(ArrayList<BuildingDestruction> destructions) {
+		// TODO Auto-generated method stub
+		this.buildingDesList.addAll(destructions);
+	}
 }

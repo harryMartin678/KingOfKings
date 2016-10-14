@@ -5,9 +5,10 @@ import java.util.ArrayList;
 import GameGraphics.IBuildingList;
 import Map.GameEngineCollisionMap;
 
-public class BuildingList implements IBuildingList,IComBuildingBATTList {
+public class BuildingList implements IBuildingList,IComBuildingBATTList,IGetBuildingNos {
 	
 	private ArrayList<Building> buildings;
+	private int nextBuildingNo;
 	
 	public BuildingList(){
 		
@@ -48,6 +49,16 @@ public class BuildingList implements IBuildingList,IComBuildingBATTList {
 	public Building getBuilding(int index){
 		
 		return buildings.get(index);
+	}
+	
+	public void registerSite(){
+		
+		nextBuildingNo++;
+	}
+	
+	public int getNextBuildingNo(){
+		
+		return nextBuildingNo;
 	}
 	
 	public int getUnitQueueSize(int buildingNo){
@@ -123,6 +134,7 @@ public class BuildingList implements IBuildingList,IComBuildingBATTList {
 		buildings.get(buildings.size()-1).setPlayer(player);
 		buildings.get(buildings.size()-1).SetBuildingNo(buildingNo);
 		
+		nextBuildingNo++;
 		GameEngineCollisionMap.addBuilding(x, y,building.getSizeX(),building.getSizeY(),
 				buildingNo, map);
 		
@@ -133,6 +145,7 @@ public class BuildingList implements IBuildingList,IComBuildingBATTList {
 		
 		//System.out.println("addBuilding");
 		buildings.add(building);
+		nextBuildingNo++;
 		GameEngineCollisionMap.addBuilding(building.getX(), building.getY(),
 				building.getSizeX(),building.getSizeY(),
 				building.getBuildingNo(), building.getMap());
@@ -168,6 +181,37 @@ public class BuildingList implements IBuildingList,IComBuildingBATTList {
 	public boolean getCollapseReported(int buildingNo) {
 		// TODO Auto-generated method stub
 		return buildings.get(buildingNo).getCollapseReported();
+	}
+
+	public void addAll(ArrayList<Building> buildings) {
+		// TODO Auto-generated method stub
+		for(int b = 0; b < buildings.size(); b++){
+			
+			this.addBuilding(buildings.get(b));
+		}
+	}
+	
+	public String getBuildingStates(){
+		
+		
+		String line = "";
+		
+		for(int b = 0; b < this.getBuildingsSize(); b++){
+			
+			 line += b + " " + this.getBuildingType(b) + " " +
+					 this.getBuildingX(b) + " " + this.getBuildingY(b) + " " 
+					 + this.getBuildingMap(b) + " " + this.getBuildingPlayer(b);
+			 
+			 for(int q = 0; q < this.getUnitQueueSize(b); q++){
+				 
+				 line = line + " " + this.getUnitQueueItem(b, q)[0] + " "
+						 + this.getUnitQueueItem(b, q)[1];
+			 }
+			 
+			 line += "\n";
+		}
+		
+		return line;
 	}
 
 }

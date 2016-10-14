@@ -18,7 +18,19 @@ public class Communication {
 	
 	public Communication() throws IOException{
 		
-		server = new Server();
+		server = new Server(null,0);
+		setUpGame();
+	}
+	
+	public Communication(String gameName, int NoOfPlayers) throws IOException{
+		
+		server = new Server(gameName,NoOfPlayers);
+		setUpGame();
+	}
+	
+	private void setUpGame() throws IOException{
+		
+		
 		players = new ArrayList<Integer>();
 		playerNames= new ArrayList<String>();
 		enterGame = false;
@@ -29,7 +41,9 @@ public class Communication {
 		acceptPlayer();
 		enterGame();
 		
+		
 	}
+	
 	
 	public void waitForPlayerNames(){
 		

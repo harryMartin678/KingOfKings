@@ -132,4 +132,30 @@ public class BuildingProgress {
 		// TODO Auto-generated method stub
 		return sites.get(sites.size()-1);
 	}
+
+	public String getSiteStates() {
+		// TODO Auto-generated method stub
+		
+		String line = "";
+		
+		for(int s = 0; s < sites.size(); s++){
+			
+			line += sites.get(s).getBuilding().getType() + " " + sites.get(s).getBuilding().getX() 
+					+ " " + sites.get(s).getBuilding().getY() + " " + sites.get(s).getProgress()
+					+ " " + sites.get(s).getCreatorStates() + "\n";
+			
+		}
+		
+		return line;
+	}
+
+	public void addAll(ArrayList<BuildingSite> sites,IGetBuildingNos buildingNos) {
+		// TODO Auto-generated method stub
+		for(int s = 0; s < sites.size(); s++){
+			
+			buildingNos.registerSite();
+			sites.get(s).getBuilding().SetBuildingNo(buildingNos.getNextBuildingNo());
+			this.addSite(sites.get(s).getBuilding(), sites.get(s).getCreators());
+		}
+	}
 }

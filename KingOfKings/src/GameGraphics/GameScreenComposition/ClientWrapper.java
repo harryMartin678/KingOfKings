@@ -8,10 +8,10 @@ public class ClientWrapper {
 	private ClientMessages cmsg;
 	private ServerMessages server;
 	
-	public ClientWrapper(ClientMessages cmsg,int playerNo,int noOfPlayers){
+	public ClientWrapper(ClientMessages cmsg,int playerNo,int noOfPlayers,String loadGame){
 		
 		this.cmsg = cmsg;
-		server = new ServerMessages(playerNo,noOfPlayers,cmsg);
+		server = new ServerMessages(playerNo,noOfPlayers,cmsg,loadGame);
 		listenToOtherPlayers();
 	}
 	

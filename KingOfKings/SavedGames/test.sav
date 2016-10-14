@@ -1,0 +1,20 @@
+test
+0
+1
+u
+0 Unit:worker 115.79001 124.0 0 0 true -1 false 270 116 124 115 124 114 124 113 124 112 124 111 124
+1 Unit:hound 114.0 115.0 0 0 false -1 false 0
+b
+0 stockpile 114.0 110.0 0 1
+1 royalpalace 125.0 125.0 0 0
+2 giantliar 131.0 131.0 0 0
+3 archeryTower 115.0 115.0 0 0
+4 royalpalace 125.0 125.0 1 0
+5 giantliar 131.0 131.0 1 0
+6 archeryTower 115.0 115.0 1 0
+bt
+bp
+farm 109 122 0 0 
+bk
+p
+0 5000 4850

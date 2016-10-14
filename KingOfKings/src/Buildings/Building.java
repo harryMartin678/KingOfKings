@@ -358,6 +358,11 @@ public class Building {
 		
 		return collapseDeath;
 	}
+
+	public void loadQueueMember(String type, int progress) {
+		// TODO Auto-generated method stub
+		unitQueue.add(new QueueItem(type, progress));
+	}
 	
 	
 

@@ -10,6 +10,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Server {
 	
@@ -17,17 +18,21 @@ public class Server {
 	private ArrayList<BufferedReader> readers;
 	
 	private ArrayList<Integer> playersEntered;
+	private HashMap<Integer,Integer> playerNoToIndex;
 	private boolean start;
 	
 	/*
 	 * Runs a game server
 	 */
-	public Server() throws IOException{
+	public Server(final String gameName, final int NoOfPlayers) throws IOException{
+		
+		final boolean load = gameName != null;
 		
 		final ServerSocket server = new ServerSocket(9999);
 		start = true;
 		
 		playersEntered = new ArrayList<Integer>();
+		playerNoToIndex = new HashMap<Integer, Integer>();
 		
 		writers = new ArrayList<BufferedWriter>();
 		readers = new ArrayList<BufferedReader>();
@@ -53,12 +58,51 @@ public class Server {
 						
 						System.out.println("accept");
 						
-						playersEntered.add(readers.size());
-						
 						if(start){
 							try {
-								readers.add(new BufferedReader(new InputStreamReader(socket.getInputStream())));
-								writers.add(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())));
+								
+								int playerIndex = readers.size();
+								boolean reject = false;
+								
+								BufferedReader reader = new BufferedReader(
+										new InputStreamReader(socket.getInputStream()));
+								BufferedWriter writer = new BufferedWriter(
+										new OutputStreamWriter(socket.getOutputStream()));
+								
+								
+								if(load){
+									
+									String entry = reader.readLine();
+									
+									String[] gamePass = entry.split(" ");
+									
+									playerIndex = new Integer(gamePass[1]).intValue();
+									
+									if(!(playerIndex < NoOfPlayers && gameName.equals(gamePass[0]))){
+										
+//										writers.get(writers.size()-1).write("INVALID\n");
+//										writers.get(writers.size()-1).flush();
+										reject = true;
+										
+										//playersEntered.remove(playersEntered.size()-1);
+									}
+	
+								}
+								
+								if(reject){
+									
+									reader.close();
+									writer.close();
+									socket.close();
+									
+								}else{
+									
+									playersEntered.add(playerIndex);
+									readers.add(reader);
+									writers.add(writer);
+									playerNoToIndex.put(playerIndex, readers.size()-1);
+								}
+								
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -78,6 +122,7 @@ public class Server {
 		
 		serverThread.start();
 	}
+	
 	
 	public void endStart(){
 		
@@ -100,15 +145,15 @@ public class Server {
 	public void sendMessage(int player, String msg) throws IOException{
 		
 		//System.out.println(player + " " + msg + " start");
-		writers.get(player).write(msg + "\n");
-		writers.get(player).flush();
+		writers.get(playerNoToIndex.get(player)).write(msg + "\n");
+		writers.get(playerNoToIndex.get(player)).flush();
 		//System.out.println(player + " " + msg + " end");
 		
 	}
 	
 	public String getMessage(int player) throws IOException{
 		
-		return readers.get(player).readLine();
+		return readers.get(playerNoToIndex.get(player)).readLine();
 	}
 	
 	public boolean messageReady(int player) throws IOException{
@@ -118,7 +163,7 @@ public class Server {
 			return false;
 		}
 		
-		return readers.get(player).ready();
+		return readers.get(playerNoToIndex.get(player)).ready();
 	}
 	
 	public int noOfPlayers(){
@@ -126,14 +171,14 @@ public class Server {
 		return readers.size();
 	}
 	
-	public static void main(String[] args) {
-		
-		try {
-			new Server();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+//	public static void main(String[] args) {
+//		
+//		try {
+//			new Server();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
 
 }

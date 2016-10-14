@@ -32,7 +32,7 @@ public class UnitList implements Cloneable,IUnitList {
 	
 	private void addUnit(Unit unit){
 		
-		unit.setUnit(units.size());
+		unit.setUnitNo(units.size());
 		units.add(unit);
 		
 		GameEngineCollisionMap.addUnit((int)unit.getX(), (int)unit.getY(), unit.getUnitNo(),
@@ -147,7 +147,7 @@ public class UnitList implements Cloneable,IUnitList {
 		
 		if(units.size() > 0){
 		
-			units.get(units.size()-1).setUnit(units.size()-1);
+			units.get(units.size()-1).setUnitNo(units.size()-1);
 		}
 		
 		GameEngineCollisionMap.addUnit((int)x, (int)y, units.size()-1, map);
@@ -394,6 +394,38 @@ public class UnitList implements Cloneable,IUnitList {
 		}
 		
 		return workerSites;
+	}
+
+	public void addAll(ArrayList<Unit> units) {
+		// TODO Auto-generated method stub
+		for(int u = 0; u < units.size(); u++){
+			
+			this.addUnit(units.get(u));
+		}
+	}
+	
+	public String getUnitStates(){
+		
+		String line = ""; 
+		
+		for(int u = 0; u < this.getUnitListSize(); u++){
+			
+			line += u + " " + this.getUnitName(u) + " " + this.getUnitX(u) 
+					+ " " + this.getUnitY(u) + " " + this.getUnitPlayer(u)
+					+ " " + this.getUnitMap(u) + " " + this.getMoving(u)
+					+ " " + this.getFollow(u) + " " + this.isAttacking(u)
+					+ " " + this.getOrientation(u);
+			
+			for(int p = 1; p < this.getUnitPathSize(u); p++){
+				
+				line += " " + this.getUnitPathNode(u, p)[0] + " " + 
+						this.getUnitPathNode(u, p)[1];
+			}
+			
+			line += "\n";
+		}
+		
+		return line;
 	}
 
 	

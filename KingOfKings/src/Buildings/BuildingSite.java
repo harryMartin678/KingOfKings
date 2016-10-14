@@ -14,12 +14,24 @@ public class BuildingSite {
 	private int progress;
 	private HashMap<Integer,int[]> takenSpaces;
 	
+	//for new game
 	public BuildingSite(Building building, ArrayList<Worker> creators){
+		
+		sharedConstructor(building,creators,0);
+	}
+	
+	//for load game
+	public BuildingSite(Building building,int progress, ArrayList<Worker> creators){
+		
+		sharedConstructor(building, creators, progress);
+	}
+	
+	private void sharedConstructor(Building building, ArrayList<Worker> creators,int progress){
 		
 		this.building = building;
 		this.creators = creators;
 		takenSpaces = new HashMap<Integer,int[]>();
-		progress = 0;
+		this.progress = progress;
 	}
 	
 	public Building getBuilding(){
@@ -97,6 +109,38 @@ public class BuildingSite {
 			return false;
 		}
 		
+	}
+
+	public int getProgress() {
+		// TODO Auto-generated method stub
+		return progress;
+	}
+
+	public String getCreatorStates() {
+		// TODO Auto-generated method stub
+		String line = "";
+		
+		for(int c = 0; c < creators.size(); c++){
+			
+			line += creators.get(c).getUnitNo() + " ";
+		}
+		
+//		if(line.length() > 0){
+//			
+//			line = line.substring(0,line.length()-1);
+//		}
+		
+		return line;
+	}
+
+	public void setPos(float x, float y) {
+		// TODO Auto-generated method stub
+		this.getBuilding().setPos((int)x, (int)y);
+	}
+
+	public ArrayList<Worker> getCreators() {
+		// TODO Auto-generated method stub
+		return creators;
 	}
 
 }

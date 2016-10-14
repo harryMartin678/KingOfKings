@@ -178,9 +178,17 @@ public class CollisionMap {
 		
 		BuildingToPos.put(buildingNo, new int[]{x,y});
 		
+		
 		for(int mx = -SizeX + x; mx < SizeX + x; mx++){
 			for(int my = -SizeY + y; my < SizeY + y; my++){
 				
+//				if(mx >= 0 && my >= 0 && mx < CollisionMap.length 
+//						&& my < CollisionMap[mx].length){
+//					
+//					continue;
+//				}
+				
+				//System.out.println(mx + " " + my + " " + buildingNo + " CollisionMap");
 				CollisionMap[mx][my] = 8;
 			}
 		}
@@ -191,7 +199,7 @@ public class CollisionMap {
 	}
 	
 	public void removeBuilding(int buildingNo,int SizeX,int SizeY){
-		
+
 		int[] pos = BuildingToPos.get(buildingNo);
 		BuildingToPos.remove(buildingNo);
 		
@@ -284,6 +292,7 @@ public class CollisionMap {
 			int[] targetPos = new int[]{pos[0] + direction[0],pos[1] + direction[1]};
 
 			return PosToUnit.get(GetUniqueNo(targetPos));
+			
 		}else{
 			return -1;
 		}

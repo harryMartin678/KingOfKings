@@ -16,13 +16,13 @@ public class ServerMessages {
 	private int thisPlayer;
 	
 	
-	public ServerMessages(int thisPlayer,int noOfPlayers,IGotToTurn beacon){
+	public ServerMessages(int thisPlayer,int noOfPlayers,IGotToTurn beacon,String loadGame){
 		
 		playerNo = 0;
 		this.thisPlayer = thisPlayer;
 		this.noOfPlayer = noOfPlayers;
 		start = true;
-		engine = new GameEngine("PlayTest1",noOfPlayer,beacon);
+		engine = new GameEngine("PlayTest1",noOfPlayer,beacon,loadGame);
 		
 	}
 	
@@ -100,6 +100,10 @@ public class ServerMessages {
 		}else if(inpt.substring(0,2).equals("bw")){
 			
 			engine.parseBuildWall(inpt.substring(3),communicationTurn);
+		
+		}else if(inpt.substring(0,4).equals("sgme")){
+			
+			engine.saveGame(inpt.substring(5),communicationTurn,thisPlayer);
 		}
 	}
 	
@@ -153,6 +157,9 @@ public class ServerMessages {
 		output += "buildinglist\n";
 		output += engine.getBuildingOnMap(map);
 		output += "buildingqueue\n";
+		output += engine.getUnitQueues(thisPlayer);
+		output += "resource\n";
+		output += engine.getPlayerResource(thisPlayer);
 		output += "END_LOAD\n";
 		
 		return output;

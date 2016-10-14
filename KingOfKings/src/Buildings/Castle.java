@@ -41,13 +41,13 @@ public class Castle extends Tower {
 	@Override
 	public int getSizeX() {
 		// TODO Auto-generated method stub
-		return super.getSizeX();
+		return super.getSizeX()+3;
 	}
 	
 	@Override
 	public int getSizeY() {
 		// TODO Auto-generated method stub
-		return super.getSizeY();
+		return super.getSizeY()+3;
 	}
 	
 	@Override

@@ -164,7 +164,7 @@ public class MethodCallup implements Commands {
 		
 		}else if(methodName.equals(SAVEGAME)){
 			
-			this.saveGame();
+			this.saveGame(parameters.filename,parameters.player,parameters.noOfPlayers);
 			
 		}else if(methodName.equals(ADDMESSAGETOCHAT)){
 			
@@ -426,8 +426,9 @@ public class MethodCallup implements Commands {
 	public void buildBuilding(int x, int y,int map,int player, String buildingType,int[] unitNos) {
 		// TODO Auto-generated method stub
 		//System.out.println(buildingType + " methodCallup bb");
+		context.buildings.registerSite();
 		Building newBuilding = GameGraphics.Building.GetBuildingClass(buildingType,
-				context.buildings.getBuildingsSize());
+				context.buildings.getNextBuildingNo());
 
 		newBuilding.setPlayer(player);
 		newBuilding.setMap(map);
@@ -453,6 +454,7 @@ public class MethodCallup implements Commands {
 			unitTargets.add(site.getFreeSpace(
 							(int) context.units.getUnitX(unitNos[u]), 
 							(int) context.units.getUnitY(unitNos[u]),unitTargets));
+
 			this.moveUnit(unitNos[u], unitTargets.get(unitTargets.size()-1)[0],
 					unitTargets.get(unitTargets.size()-1)[1], newBuilding.getMap(),false);
 			
@@ -520,10 +522,11 @@ public class MethodCallup implements Commands {
 	}
 
 	@Override
-	public void saveGame() {
+	public void saveGame(String filename,int playerNo,int noOfPlayers) {
 		// TODO Auto-generated method stub
 		try {
-			context.saveGame.save(context.units, context.buildings, context.players, context.gameName);
+			context.saveGame.save(context, filename,
+					playerNo,noOfPlayers);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

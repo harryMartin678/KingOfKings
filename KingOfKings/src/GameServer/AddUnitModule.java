@@ -81,7 +81,6 @@ public class AddUnitModule {
 				
 				//mapArray[cy][cx] = 3;
 				onMap.add(new int[]{cx,cy});
-				
 				//if this square is free and on the map
 				if(cx >= 0 && cy >= 0 && cx < mapArray.length && cy < mapArray[0].length &&
 						mapArray[cx][cy] == 0 ){

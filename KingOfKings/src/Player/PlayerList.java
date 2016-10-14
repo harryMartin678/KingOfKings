@@ -9,6 +9,7 @@ public class PlayerList {
 	private Player[] players;
 	private Diplomacy dip;
 	
+	//new game
 	public PlayerList(int playerNo, int initialFood, int initialGold){
 		
 		players = new Player[playerNo];
@@ -21,6 +22,19 @@ public class PlayerList {
 		}
 	}
 	
+	//load game
+	public PlayerList(ArrayList<Player> players) {
+		// TODO Auto-generated constructor stub
+		this.players = new Player[players.size()];
+		
+		for(int p = 0; p < players.size(); p++){
+			
+			this.players[p] = players.get(p);
+		}
+		
+		dip = new Diplomacy(players.size());
+	}
+
 	public boolean allied(int player1, int player2){
 		
 		return dip.allied(player1, player2);
@@ -79,5 +93,18 @@ public class PlayerList {
 		players[player].changeFood(dFood);
 		players[player].changeGold(dGold);
 	}
+	
+	public String getPlayerStates(){
+		
+		String line = "";
+		
+		for(int p = 0; p < this.getSize(); p++){
+			
+			line += p + " " + this.getPlayersFood(p) + " " + this.getPlayersGold(p) + "\n";
+		}
+		
+		return line;
+	}
+
 
 }

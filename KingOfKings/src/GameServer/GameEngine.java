@@ -42,9 +42,10 @@ public class GameEngine{
 	private UserCommandList commands;
 	private int communicationTurn;
 	private IGotToTurn beacon;
+	private int playerNo;
 	
 	
-	public GameEngine(String mapEntry,int playerNo,IGotToTurn beacon){
+	public GameEngine(String mapEntry,int playerNo,IGotToTurn beacon,String loadGame){
 		
 		context = new GameEngineContext();
 		commands = new UserCommandList(context);
@@ -53,12 +54,13 @@ public class GameEngine{
 		resourceBeat = 0;
 
 		this.beacon = beacon;
+		this.playerNo = playerNo;
 		
 		context.maps = new MapList(mapEntry);
 		context.gameName = mapEntry;
 		context.units = new UnitList();
 		context.buildings = new BuildingList();
-		context.players = new PlayerList(3,5000,5000);
+		//context.players = new PlayerList(3,5000,5000);
 		context.dip = new Diplomacy(playerNo);
 		context.sites = new BuildingProgress();
 		context.battles = new UnitBattleList(context.units);
@@ -67,7 +69,7 @@ public class GameEngine{
 		GameEngineCollisionMap.SetUpCollisionMaps(context.maps);
 		
 		try {
-			context.saveGame = new SavedGame("SavedGames/" + mapEntry);
+			context.saveGame = new SavedGame();
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -75,56 +77,78 @@ public class GameEngine{
 		
 		beat = 0;
 		
-		context.players.showPlayersMaps(context.maps);
+		//context.players.showPlayersMaps(context.maps);
 		
-		for(int i = 0; i < playerNo; i++){
-			context.maps.getMap(i).setPlayer(i);
-			context.players.setPlayerViewedMap(i,i);
-		}
-		
-		//stub
-		//context.maps.getMap(1).setPlayer(0);
-		//context.players.setPlayerViewedMap(0, 1);
-		
-//		context.units.addUnit(Names.SWORDSMAN, 0, 50, 50, 0);
-//		context.units.addUnit(Names.SWORDSMAN, 0, 51, 50, 0);
-//		context.units.addUnit(Names.SWORDSMAN, 0, 50, 51, 0);
-//		context.units.addUnit(Names.SWORDSMAN, 0, 52, 50, 0);
-//		context.units.addUnit(Names.SWORDSMAN, 0, 54, 53, 1);
-//		context.units.addUnit(Names.SWORDSMAN, 0, 55, 55, 1);
-//		context.units.addUnit(Names.SWORDSMAN, 0, 54, 54, 1);
-//		context.units.addUnit(Names.SWORDSMAN, 0, 55, 54, 1);
-//		context.units.addUnit(Names.SWORDSMAN, 0, 54, 55, 1);
-		
-		context.units.addUnit(Names.WORKER, 0, (context.maps.getMapWidth(0)/2)-6, 
-				(context.maps.getMapHeight(0)/2)-2, 0);
-
-		context.units.addUnit(Names.HOUND, 0, 
-				(context.maps.getMapWidth(0)/2)-11, (context.maps.getMapHeight(0)/2)-10, 0);
-		context.buildings.addBuilding(1, 0,(context.maps.getMapWidth(0)/2)-11,
-		(context.maps.getMapHeight(0)/2)-15, Names.STOCKPILE);
-
-		
-		for(int i = 0; i < context.maps.getSize(); i++){
+		if(loadGame == null){
 			
-			//context.maps.getPlayer(i)
-			context.buildings.addBuilding(context.maps.getPlayer(i), i, 
-					context.maps.getMapWidth(i)/2, context.maps.getMapHeight(i)/2,
-					Names.ROYALPALACE);
-			context.buildings.addBuilding(context.maps.getPlayer(i), i, 
-					(context.maps.getMapWidth(i)/2)+6, (context.maps.getMapHeight(i)/2)+6,
-					Names.GIANTLIAR);
-			context.buildings.addBuilding(context.maps.getPlayer(i), i, 
-					(context.maps.getMapWidth(i)/2)-10, (context.maps.getMapHeight(i)/2)-10, Names.ARCHERYTOWER);
-			//context.buildings.addBuilding(1,i,3,3,Names.STOCKPILE);
-//			context.buildings.addBuilding(1,i,(context.maps.getMapWidth(i)/2),
-//					(context.maps.getMapHeight(i)/2),Names.MINE);
 			
-			//context.units.addUnit(Names.ARCHER, i, (context.maps.getMapWidth(i)/2)-6, (context.maps.getMapHeight(i)/2)-6, context.maps.getPlayer(i));
-			//context.units.addUnit(Names.GIANT, i, (context.maps.getMapWidth(i)/2)-5, (context.maps.getMapHeight(i)/2)-3, context.maps.getPlayer(i));
-			//context.units.addUnit(Names.HOUND, i, (context.maps.getMapWidth(i)/2)-11, (context.maps.getMapHeight(i)/2)-10, 2);
-			//context.units.addUnit(Names.AXEMAN, i, (context.maps.getMapWidth(i)/2)-9, (context.maps.getMapHeight(i)/2)-7, context.maps.getPlayer(i));
-			//context.units.addUnit(Names.AXEMAN, i, (context.maps.getMapWidth(i)/2)-11, (context.maps.getMapHeight(i)/2)-7, context.maps.getPlayer(i));
+			context.players = new PlayerList(playerNo,5000,5000);
+			
+			for(int i = 0; i < playerNo; i++){
+				context.maps.getMap(i).setPlayer(i);
+				context.players.setPlayerViewedMap(i,i);
+			}
+			
+			//stub
+			//context.maps.getMap(1).setPlayer(0);
+			//context.players.setPlayerViewedMap(0, 1);
+			
+	//		context.units.addUnit(Names.SWORDSMAN, 0, 50, 50, 0);
+	//		context.units.addUnit(Names.SWORDSMAN, 0, 51, 50, 0);
+	//		context.units.addUnit(Names.SWORDSMAN, 0, 50, 51, 0);
+	//		context.units.addUnit(Names.SWORDSMAN, 0, 52, 50, 0);
+	//		context.units.addUnit(Names.SWORDSMAN, 0, 54, 53, 1);
+	//		context.units.addUnit(Names.SWORDSMAN, 0, 55, 55, 1);
+	//		context.units.addUnit(Names.SWORDSMAN, 0, 54, 54, 1);
+	//		context.units.addUnit(Names.SWORDSMAN, 0, 55, 54, 1);
+	//		context.units.addUnit(Names.SWORDSMAN, 0, 54, 55, 1);
+			
+			context.units.addUnit(Names.WORKER, 0, (context.maps.getMapWidth(0)/2)-6, 
+					(context.maps.getMapHeight(0)/2)-2, 0);
+	
+			context.units.addUnit(Names.HOUND, 0, 
+					(context.maps.getMapWidth(0)/2)-11, (context.maps.getMapHeight(0)/2)-10, 0);
+			context.buildings.addBuilding(1, 0,(context.maps.getMapWidth(0)/2)-11,
+			(context.maps.getMapHeight(0)/2)-15, Names.STOCKPILE);
+	
+			
+			for(int i = 0; i < context.maps.getSize(); i++){
+				
+				//context.maps.getPlayer(i)
+				context.buildings.addBuilding(context.maps.getPlayer(i), i, 
+						context.maps.getMapWidth(i)/2, context.maps.getMapHeight(i)/2,
+						Names.ROYALPALACE);
+				context.buildings.addBuilding(context.maps.getPlayer(i), i, 
+						(context.maps.getMapWidth(i)/2)+6, (context.maps.getMapHeight(i)/2)+6,
+						Names.GIANTLIAR);
+				context.buildings.addBuilding(context.maps.getPlayer(i), i, 
+						(context.maps.getMapWidth(i)/2)-10, (context.maps.getMapHeight(i)/2)-10, Names.ARCHERYTOWER);
+				//context.buildings.addBuilding(1,i,3,3,Names.STOCKPILE);
+	//			context.buildings.addBuilding(1,i,(context.maps.getMapWidth(i)/2),
+	//					(context.maps.getMapHeight(i)/2),Names.MINE);
+				
+				//context.units.addUnit(Names.ARCHER, i, (context.maps.getMapWidth(i)/2)-6, (context.maps.getMapHeight(i)/2)-6, context.maps.getPlayer(i));
+				//context.units.addUnit(Names.GIANT, i, (context.maps.getMapWidth(i)/2)-5, (context.maps.getMapHeight(i)/2)-3, context.maps.getPlayer(i));
+				//context.units.addUnit(Names.HOUND, i, (context.maps.getMapWidth(i)/2)-11, (context.maps.getMapHeight(i)/2)-10, 2);
+				//context.units.addUnit(Names.AXEMAN, i, (context.maps.getMapWidth(i)/2)-9, (context.maps.getMapHeight(i)/2)-7, context.maps.getPlayer(i));
+				//context.units.addUnit(Names.AXEMAN, i, (context.maps.getMapWidth(i)/2)-11, (context.maps.getMapHeight(i)/2)-7, context.maps.getPlayer(i));
+			}
+		
+		}else{
+			
+			try {
+				LoadGame loader = new LoadGame(loadGame);
+				context.units.addAll(loader.getUnits());
+				context.buildings.addAll(loader.getBuildings());
+				context.battles.addAll(loader.getBattles());
+				context.sites.addAll(loader.getSites(),context.buildings);
+				context.buildingAttackList.addAll(loader.getDestructions());
+				context.players = new PlayerList(loader.getPlayers());
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		
@@ -158,8 +182,6 @@ public class GameEngine{
 		});
 		
 		onFrame.start();
-		
-		commands.add(MethodCallup.SAVEGAME, new MethodParameter(), communicationTurn);
 		//this.saveGame();
 		
 	}
@@ -981,6 +1003,19 @@ public class GameEngine{
 			commands.add(MethodCallup.BUILDWALLS, parameters, passedCommunicationTurn);
 		}
 		
+	}
+
+	public void saveGame(String saveGame, int passedCommunicationTurn,int player) {
+		// TODO Auto-generated method stub
+		
+		MethodParameter parameters = new MethodParameter();
+		parameters.setSaveGame(saveGame,player,playerNo);
+		
+		if(passedCommunicationTurn != -1){
+			commands.add(MethodCallup.SAVEGAME, parameters, communicationTurn);
+		}else{
+			commands.add(MethodCallup.SAVEGAME, parameters, passedCommunicationTurn);
+		}
 	}
 	
 }

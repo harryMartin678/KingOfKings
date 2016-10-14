@@ -62,8 +62,13 @@ public class MethodParameter {
 	public int player1;
 	public int player2;
 	
+	public String filename;
+	
 	//build walls
 	public ArrayList<Point> wallSections;
+	
+	//save game
+	public int noOfPlayers;
 	
 	public void SetMoveUnit(int unitNo, int targetX, int targetY, int targetMap){
 		
@@ -175,6 +180,13 @@ public class MethodParameter {
 		this.unitNos = workers;
 		this.wallSections = wallSec;
 		
+	}
+
+	public void setSaveGame(String filename,int playerNo,int noOfPlayers) {
+		// TODO Auto-generated method stub
+		this.filename = filename;
+		this.player = playerNo;
+		this.noOfPlayers = noOfPlayers;
 	}
 	
 

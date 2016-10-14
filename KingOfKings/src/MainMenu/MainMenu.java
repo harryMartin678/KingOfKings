@@ -76,7 +76,7 @@ public class MainMenu {
 						
 						pane.removeAll();
 						frame.repaint();
-						pane.add(new RestoreGameGUI());
+						pane.add(new RestoreGameGUI(frame));
 						frame.revalidate();
 						break;
 					}
@@ -90,7 +90,6 @@ public class MainMenu {
 				}
 			}
 			
-			
 		});
 		
 		mainMenu.start();
@@ -98,14 +97,7 @@ public class MainMenu {
 		pane = frame.getContentPane();
 		pane.add(mm);
 		
-		 
-		
 		frame.setVisible(true);
-	}
-	
-	private void startNewGame(){
-		
-		
 	}
 	
 	

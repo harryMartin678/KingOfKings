@@ -24,9 +24,9 @@ public class GameScreen implements GLEventListener  {
 	private ClientWrapper wrapper;
 	private JFrame frame;
 	
-	public GameScreen(ClientMessages cmsg,int thisPlayer,int noOfPlayer,JFrame frame){
+	public GameScreen(ClientMessages cmsg,int thisPlayer,int noOfPlayer,JFrame frame,String loadGame){
 		
-		wrapper = new ClientWrapper(cmsg,thisPlayer,noOfPlayer);
+		wrapper = new ClientWrapper(cmsg,thisPlayer,noOfPlayer,loadGame);
 		this.cmsg = cmsg;
 		this.frame = frame;
 		

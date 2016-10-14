@@ -22,6 +22,7 @@ public class TextList {
 	private float textLeft;
 	private float textTop;
 	private int SelectedText;
+	private IComChangeSelectionTextList changeSelection = null;
 	
 	public TextList(float Left,float Bottom,float SizeX,float SizeY){
 		
@@ -48,6 +49,11 @@ public class TextList {
 	public void AddText(String text){
 		
 		Items.add(text);
+	}
+	
+	public void SetChangeSelection(IComChangeSelectionTextList changeSelection){
+		
+		this.changeSelection = changeSelection;
 	}
 	
 	public void DrawTextList(GL2 draw, int ScreenWidth, int ScreenHeight,TextureRepo textures){
@@ -105,7 +111,7 @@ public class TextList {
 			return true;
 		}
 		
-	    SelectedText = -1;
+	    
 		
 		for(int t = ScrollIndexStart; t < getLimit(); t++){
 			
@@ -114,14 +120,24 @@ public class TextList {
 			
 			if(inT.InMouse(x, y)){
 				
-				SelectedText = t;
+				ChangeSelection(t);
 				return true;
 			}
 		}
 		
-		
+		ChangeSelection(-1);
 		
 		return false;
+	}
+	
+	private void ChangeSelection(int index){
+		
+		SelectedText = index;
+		
+		if(changeSelection != null && index != -1){
+		
+			changeSelection.ChangeSelection(Items.get(SelectedText));
+		}
 	}
 
 	private int getLimit(){
@@ -140,6 +156,5 @@ public class TextList {
 		
 		return limit;
 	}
-	
 
 }

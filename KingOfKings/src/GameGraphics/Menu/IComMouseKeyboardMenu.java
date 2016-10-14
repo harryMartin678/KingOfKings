@@ -9,5 +9,7 @@ public interface IComMouseKeyboardMenu {
 	public void MoveFrame(int[] frame);
 
 	public void SetViewedMap(int mapNo);
+	
+	public void SaveGame(String fileName);
 
 }

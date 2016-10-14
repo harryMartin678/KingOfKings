@@ -75,6 +75,12 @@ public class Unit {
 		return !isAttack && !moving && !dead();
 	}
 	
+	public void attack(int angle){
+		
+		this.angle = angle;
+		isAttack = true;
+	}
+	
 	public void attack(int ax, int ay){
 		
 		//if(delayAttack == 10){
@@ -166,7 +172,7 @@ public class Unit {
 		return retreat;
 	}
 	
-	public void setUnit(int unitNo){
+	public void setUnitNo(int unitNo){
 		
 		this.unitNo = unitNo;
 	}
@@ -542,7 +548,7 @@ public class Unit {
 //						System.out.println(path.get(1)[0] + " " + path.get(0)[0] + " xs Unit");
 //						System.out.println(path.get(1)[1] + " " + path.get(0)[1] + " ys Unit");
 //					}
-					//System.out.println(isUnitInFront + " InFront Unit");
+					//System.out.println(isUnitInFront + " " + ownNo + " InFront Unit");
 					if(units.get(isUnitInFront).getMoving()){
 						
 						stop = true;
@@ -674,7 +680,6 @@ public class Unit {
 						}
 					}
 					
-					
 				}
 	
 			  }
@@ -762,6 +767,10 @@ public class Unit {
 		}else if(Names.HOUND.equals(name)){
 			
 			return new Hound();
+		
+		}else if(Names.WORKER.equals(name)){
+			
+			return new Worker();
 		}
 		
 		return new Unit();
@@ -802,6 +811,16 @@ public class Unit {
 	public boolean deathReported() {
 		// TODO Auto-generated method stub
 		return deathReported;
+	}
+
+	public void setAngle(int angle) {
+		// TODO Auto-generated method stub
+		this.angle = angle;
+	}
+
+	public void setRecalculate(boolean recaluate) {
+		// TODO Auto-generated method stub
+		this.recalculate = recalculate;
 	}
 	
 

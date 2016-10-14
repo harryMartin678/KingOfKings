@@ -17,6 +17,27 @@ public class Graphics{
 
 	public Graphics(JFrame frame,boolean isHost){
 
+		startGraphics(frame,isHost);
+		
+		lobby = new LobbyGUI(cmsg,window,isHost,null);
+		pane.add(lobby);
+		
+		window.setVisible(true);
+	}
+	
+	public Graphics(JFrame frame,boolean isHost,String gameName,int playerNo){
+		
+		startGraphics(frame,isHost);
+		cmsg.addMessage(gameName + " " + playerNo);
+		
+		lobby = new LobbyGUI(cmsg,window,isHost,gameName);
+		pane.add(lobby);
+		
+		window.setVisible(true);
+	}
+	
+	private void startGraphics(JFrame frame,boolean isHost){
+		
 		window = frame;
 		
 		//window.setSizet(500,500);
@@ -27,10 +48,7 @@ public class Graphics{
 		pane = window.getContentPane();
 		pane.setLayout(new CardLayout(2,1));
 		cmsg = new ClientMessages();
-		lobby = new LobbyGUI(cmsg,window,isHost);
-		pane.add(lobby);
 		
-		window.setVisible(true);
 	}
 	
 	

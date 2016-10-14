@@ -378,4 +378,22 @@ public class UnitBattleList {
 		battles.remove(battleId);
 	}
 
+	public String getBattleStates() {
+		// TODO Auto-generated method stub
+		
+		String line = "";
+		for(int bt = 0; bt < battles.size(); bt++){
+			
+			line += battles.get(bt).getOneID() + " " + battles.get(bt).getTwoID() +
+					" " + battles.get(bt).getCount() + "\n";
+		}
+		
+		return line;
+	}
+
+	public void addAll(ArrayList<Battle> battles) {
+		// TODO Auto-generated method stub
+		this.battles.addAll(battles);
+	}
+
 }

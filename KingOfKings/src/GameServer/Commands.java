@@ -31,7 +31,7 @@ public interface Commands {
 	
 	public void updateGraphicalFramePos(int playerNo, int frameX, int frameY);
 	public void newViewMap(int mapNo,int player);
-	public void saveGame();
+	public void saveGame(String filename,int playerNo,int noOfPlayers);
 	public void addMessageToChat(String message);
 	
 	public void alliance(int player1, int player2);

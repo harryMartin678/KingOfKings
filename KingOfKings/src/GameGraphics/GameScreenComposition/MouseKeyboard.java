@@ -695,6 +695,12 @@ public class MouseKeyboard implements IComMouseKeyboard,IComMouseFrameProcess,
 		// TODO Auto-generated method stub
 		cmsg.addMessage("vwmp "+ mapNo + " " + playerNumber);
 	}
+
+	@Override
+	public void SaveGame(String fileName) {
+		// TODO Auto-generated method stub
+		cmsg.addMessage("sgme " + fileName);
+	}
 	
 //	public void ClearUnitIconsButtonGroup(){
 //		

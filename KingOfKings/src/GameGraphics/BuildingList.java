@@ -77,7 +77,7 @@ IComBuildingListFrameProcess {
 	public synchronized void add(Building building){
 		
 		Buildings.Building SizeInfo = Building.GetBuildingClass(building.getName());
-		
+
 		GraphicsCollisionMap.addBuilding((int)building.getX(), (int)building.getY(),
 				SizeInfo.getSizeX(),SizeInfo.getSizeY(),building.getBuildingNo());
 		buildings.add(building);
@@ -131,6 +131,8 @@ IComBuildingListFrameProcess {
 		
 		buildings.clear();
 	}
+	
+	
 	
 	public synchronized void clearSelectedBuildingQueue(int buildingNo){
 		

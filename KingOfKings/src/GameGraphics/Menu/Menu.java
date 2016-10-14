@@ -13,6 +13,7 @@ import GameGraphics.GameScreenComposition.IComMapDisplay;
 import GameGraphics.GameScreenComposition.IComMapMouseKeyboard;
 import GameGraphics.GameScreenComposition.IComUnitListDisplay;
 import GameGraphics.GameScreenComposition.TextureRepo;
+import GameGraphics.Menu.SaveGameDialog.SaveGameMouseReturn;
 import Map.GraphicsCollisionMap;
 
 
@@ -180,10 +181,26 @@ public class Menu {
 			}
 		}
 		
-		if(saveGame != null && saveGame.RegulateSGDMouse((float)x, (float)y, map.getWidth(),
-				map.getHeight())){
+		if(saveGame != null){
 			
-			return true;
+			SaveGameDialog.SaveGameMouseReturn ret = saveGame.RegulateSGDMouse((float)x, (float)y, 
+					map.getWidth(),map.getHeight());
+			
+			if(ret == SaveGameDialog.SaveGameMouseReturn.DESTROY){
+				
+				saveGame = null;
+			
+			}else if(ret == SaveGameDialog.SaveGameMouseReturn.SAVEGAME){
+				
+				command.SaveGame(saveGame.getText());
+				saveGame = null;
+			
+			}
+			
+			if(ret != SaveGameMouseReturn.NOTSELECTED){
+				
+				return true;
+			}
 		}
 		
 		for(int t = 0; t < TopIcons.size(); t++){
@@ -194,7 +211,6 @@ public class Menu {
 				
 				if(TopIcons.get(t).getIndex() == 22){
 					
-					System.out.println("Save Menu");
 					saveGame = new SaveGameDialog();
 				}
 				return true;
@@ -428,5 +444,6 @@ public class Menu {
 			saveGame.RegisterKeyStroke(key);
 		}
 	}
+
 
 }
