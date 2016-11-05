@@ -7,6 +7,7 @@ import Buildings.Building;
 import Buildings.BuildingSite;
 import Buildings.Names;
 import Buildings.Tower;
+import Buildings.Wall;
 import IntermediateAI.MapRouteFinder;
 import IntermediateAI.WallCreator;
 import Map.CollisionMap;
@@ -188,7 +189,7 @@ public class MethodCallup implements Commands {
 		
 		}else if(methodName.equals(BUILDWALLS)){
 			
-			this.buildWalls(parameters.wallSections,parameters.unitNos , parameters.map,
+			this.buildWalls(parameters.wallCenter,parameters.wallSize,parameters.unitNos , parameters.map,
 					parameters.playerNo);
 		}
 		
@@ -205,6 +206,7 @@ public class MethodCallup implements Commands {
 	public void moveUnit(int unitNo, int targetX, int targetY, int targetMap,boolean follow) {
 		// TODO Auto-generated method stub
 		//add a path to move to the unit 
+		//System.out.println(targetX + " " + targetY + " MoveTO MethodCallup");
 		int unitFollow = context.units.getFollow(unitNo);
 		if(unitFollow != -1 && !follow){
 			
@@ -214,8 +216,8 @@ public class MethodCallup implements Commands {
 		
 		if(targetX >= 0 && targetY >= 0){
 			context.units.addPathToUnit(unitNo, 
-					new MapRouteFinder(context.units, context.buildings, context.maps
-					,context.sites).getPath((int) context.units.getMoveUnitX(unitNo),(int) context.units.getMoveUnitY(unitNo)
+					new MapRouteFinder( context.units.getUnitPlayer(unitNo),context.maps
+					).getPath((int) context.units.getMoveUnitX(unitNo),(int) context.units.getMoveUnitY(unitNo)
 							,targetX, targetY,context.units.getUnitMap(unitNo),targetMap),false);
 		}
 
@@ -226,7 +228,7 @@ public class MethodCallup implements Commands {
 		// TODO Auto-generated method stub
 		//add a path to move to the unit 
 		context.units.addPathToUnit(unitNo, 
-				new MapRouteFinder(context.units, context.buildings, context.maps,ignoreUnit
+				new MapRouteFinder(context.units.getUnitPlayer(unitNo),context.maps,ignoreUnit
 				).getPath((int) context.units.getMoveUnitX(unitNo),(int) context.units.getMoveUnitY(unitNo)
 						,targetX, targetY,context.units.getUnitMap(unitNo),targetMap),true);
 		
@@ -307,8 +309,8 @@ public class MethodCallup implements Commands {
 		//combine paths for each path
 		for(int t = 0; t < mapsNo.length-1; t++){
 		
-			ArrayList<int[]> next = new MapRouteFinder(context.units,context.buildings,
-					context.maps,context.sites).getPath(
+			ArrayList<int[]> next = new MapRouteFinder(context.units.getUnitPlayer(unitNo),
+					context.maps).getPath(
 					pointsX[t],pointsY[t],
 					pointsX[t+1],pointsY[t+1],mapsNo[t],mapsNo[t+1]);
 			
@@ -421,10 +423,9 @@ public class MethodCallup implements Commands {
 		}
 		
 	}
-
-	@Override
-	public void buildBuilding(int x, int y,int map,int player, String buildingType,int[] unitNos) {
-		// TODO Auto-generated method stub
+	
+	public void buildBuilding(int x, int y,int map,int player, String buildingType,int[] unitNos,int angle){
+		
 		//System.out.println(buildingType + " methodCallup bb");
 		context.buildings.registerSite();
 		Building newBuilding = GameGraphics.Building.GetBuildingClass(buildingType,
@@ -433,6 +434,11 @@ public class MethodCallup implements Commands {
 		newBuilding.setPlayer(player);
 		newBuilding.setMap(map);
 		newBuilding.setPos(x, y);
+		
+		if(buildingType == Names.WALL){
+			
+			((Wall)newBuilding).setRotationFromCenter((float)angle);
+		}
 		
 		context.players.addPlayerResource(-newBuilding.FoodNeeded(), -newBuilding.GoldNeeded(), player);
 		
@@ -447,9 +453,9 @@ public class MethodCallup implements Commands {
 		BuildingSite site = context.sites.getLastSite();
 		
 		ArrayList<int[]> unitTargets = new ArrayList<int[]>();
-//		new CollisionMap(context.buildings,
-//				context.units,context.maps.getMap(newBuilding.getMap()),
-//				newBuilding.getMap())
+//				new CollisionMap(context.buildings,
+//						context.units,context.maps.getMap(newBuilding.getMap()),
+//						newBuilding.getMap())
 		for(int u = 0; u < unitNos.length; u++){
 			unitTargets.add(site.getFreeSpace(
 							(int) context.units.getUnitX(unitNos[u]), 
@@ -461,6 +467,12 @@ public class MethodCallup implements Commands {
 			((Worker) context.units.getUnits(unitNos[u])).build(newBuilding.getBuildingNo());
 			
 		} 
+	}
+
+	@Override
+	public void buildBuilding(int x, int y,int map,int player, String buildingType,int[] unitNos) {
+		// TODO Auto-generated method stub
+		buildBuilding(x, y, map, player, buildingType, unitNos,0);
 	}
 
 	@Override
@@ -575,28 +587,46 @@ public class MethodCallup implements Commands {
 	}
 
 	@Override
-	public void buildWalls(ArrayList<Point> pts, int[] workers, int mapNo, int playerNumber) {
+	public void buildWalls(Point center,int size, int[] workers, int mapNo, int playerNumber) {
 		// TODO Auto-generated method stub
-		WallCreator creator = new WallCreator(pts,mapNo);
+		WallCreator creator = new WallCreator(center,size,GameEngineCollisionMap.toArray(mapNo));
 		
 		ArrayList<int[]> path = creator.getWallRoute();
-		path.add(0,new int[]{pts.get(0).x,pts.get(0).y});
-		int currentPoint = 0;
+		//path.add(0,new int[]{pts.get(0).x,pts.get(0).y});
+		int currentAngle = 0;
 		
 		for(int p = 0; p < path.size(); p++){
 			
-			if(currentPoint < pts.size() && path.get(p)[0] == pts.get(currentPoint).x
-					&& path.get(p)[1] == pts.get(currentPoint).y){
+			int temp;
+			boolean isCorner = false;
+			if((temp = creator.isCorner(path.get(p)[0], path.get(p)[1])) != -1){
 				
-				buildBuilding(path.get(p)[0], path.get(p)[1],
-						mapNo, playerNumber, Names.WALLTOWER, workers);
-				currentPoint++;
+				currentAngle = temp;
+				isCorner = true;
+			}
+//			if(currentPoint < pts.size() && path.get(p)[0] == pts.get(currentPoint).x
+//					&& path.get(p)[1] == pts.get(currentPoint).y){
+//				
+//				buildBuilding(path.get(p)[0], path.get(p)[1],
+//						mapNo, playerNumber, Names.WALLTOWER, workers);
+//				currentPoint++;
+//			
+//			}else{
 			
+			String type;
+			
+			if(isCorner){
+				
+				type = Names.WALLTOWER;
+				
 			}else{
 				
-				buildBuilding(path.get(p)[0], path.get(p)[1],
-						mapNo, playerNumber, Names.WALL, workers);
+				type = Names.WALL;
 			}
+				
+			buildBuilding(path.get(p)[0], path.get(p)[1],
+					mapNo, playerNumber, type, new int[]{},currentAngle);
+			//}
 		}
 	}
 

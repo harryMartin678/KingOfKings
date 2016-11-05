@@ -5,6 +5,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -286,6 +288,19 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 			
 			
 		};
+	}
+	
+	public MouseWheelListener getMouseWheelListener(){
+		
+		return new MouseWheelListener() {
+			
+			@Override
+			public void mouseWheelMoved(MouseWheelEvent e) {
+				// TODO Auto-generated method stub
+				mouseKeyboard.handleMouseWheel(e);
+			}
+		};
+		
 	}
 	
 	public MouseListener getMouseListener(){

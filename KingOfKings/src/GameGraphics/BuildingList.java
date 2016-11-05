@@ -31,6 +31,10 @@ IComBuildingListFrameProcess {
 	private IComMouseKeyboardBuildingList mouseKeyboard;
 	private HashMap<Integer,Integer> buildingNosIndex;
 	
+	private ArrayList<Building> ghostWallTowers;
+	private int wallSize;
+	private float[] wallCenter;
+	
 	public BuildingList(){
 		
 		buildings = new ArrayList<Building>();
@@ -40,6 +44,7 @@ IComBuildingListFrameProcess {
 		//used = false;
 		lock = new Semaphore(1);
 		buildingNosIndex = new HashMap<Integer, Integer>();
+		ghostWallTowers = new ArrayList<Building>();
 	}
 	
 	public void SetUpBuildingList(IComMouseKeyboardBuildingList mouseKeyboard){
@@ -87,9 +92,9 @@ IComBuildingListFrameProcess {
 	public synchronized void remove(int index){
 		
 		Buildings.Building SizeInfo = Building.GetBuildingClass(buildings.get(index).getName());
+		//System.out.println(buildings.get(index).getBuildingNo() + " BuildingList");
 		GraphicsCollisionMap.removeBuilding(buildings.get(index).getBuildingNo()
 				,SizeInfo.getSizeX(),SizeInfo.getSizeY());
-		buildingNosIndex.remove(buildings.get(index).getBuildingNo());
 		buildings.remove(index);
 		
 	}
@@ -132,8 +137,56 @@ IComBuildingListFrameProcess {
 		buildings.clear();
 	}
 	
+	public void createWallTowers(int thisPlayer,float x, float y){
+		
+		wallCenter = new float[]{x,y};
+		
+		if(ghostWallTowers.size() == 0){
+			
+			wallSize=0;
+			for(int w = 0; w < 4; w++){
+				
+				this.ghostWallTowers.add(new Building(x,y,
+						Names.WALLTOWER, 0, thisPlayer));
+			}
+			
+			setWallSize(1,x,y);
+		
+		}else{
+			
+			setWallSize(0, x, y);
+		}
+		
+		
+		
+	}
 	
+	private void setWallSize(int delta,float x, float y) {
+		// TODO Auto-generated method stub
+		
+		if(!(wallSize + delta < 0 && wallSize + delta > 150)){
+			
+			wallSize += delta;
+			
+			int[] lc = new int[]{1,1,-1,-1,-1,1,1,-1};
+			
+			for(int w = 0; w < 8; w+=2){
+				
+				this.ghostWallTowers.get(w/2).setXY(
+						x + (lc[w] * wallSize), 
+						y + (lc[w+1] * wallSize));
+			}
+			
+		}
+		
+	}
 	
+	@Override
+	public boolean isWallTowerGhosts() {
+		// TODO Auto-generated method stub
+		return ghostWallTowers.size() > 0;
+	}
+
 	public synchronized void clearSelectedBuildingQueue(int buildingNo){
 		
 		if(SelectedBuilding != -1 && SelectedBuilding == buildingNo){
@@ -215,7 +268,7 @@ IComBuildingListFrameProcess {
 	@Override
 	public synchronized boolean canBuildGhostBuilding() {
 		// TODO Auto-generated method stub
-		return !ghostBuilding.cantBuild();
+		return ghostBuilding != null && !ghostBuilding.cantBuild();
 	}
 
 	@Override
@@ -266,6 +319,8 @@ IComBuildingListFrameProcess {
 			return 0;
 		}
 		
+		int index = buildingNosIndex.get(buildingNo);
+		
 		//this.begin();
 //		for(int b = 0; b < buildings.size(); b++){
 //			
@@ -278,9 +333,9 @@ IComBuildingListFrameProcess {
 //			   ){
 				
 				
-			if(buildings.get(buildingNo).getPlayer() == playerNumber){
+			if(buildings.get(index).getPlayer() == playerNumber){
 				
-				if(buildings.get(buildingNo).isSite()){
+				if(buildings.get(index).isSite()){
 					
 					BuildBuilding = buildingNo;
 					this.end();
@@ -596,7 +651,7 @@ IComBuildingListFrameProcess {
 	@Override
 	public boolean isBuildingGhostWall() {
 		// TODO Auto-generated method stub
-		return ghostBuilding.isWall();
+		return ghostBuilding != null && ghostBuilding.isWall();
 	}
 
 	@Override
@@ -604,6 +659,42 @@ IComBuildingListFrameProcess {
 		// TODO Auto-generated method stub
 		buildings.get(buildingNosIndex.get(buildingNo)).collapse();
 		
+	}
+
+	@Override
+	public int getNoOfWallTowers() {
+		// TODO Auto-generated method stub
+		return ghostWallTowers.size();
+	}
+
+	@Override
+	public Building getGhostWallTower(int index) {
+		// TODO Auto-generated method stub
+		return ghostWallTowers.get(index);
+	}
+
+	@Override
+	public void increaseWallTowerRadius(int size,float x, float y) {
+		// TODO Auto-generated method stub
+		setWallSize(size,x,y);
+	}
+
+	@Override
+	public void clearGhostWalls() {
+		// TODO Auto-generated method stub
+		ghostWallTowers.clear();
+	}
+
+	@Override
+	public int getWallSize() {
+		// TODO Auto-generated method stub
+		return wallSize;
+	}
+
+	@Override
+	public float[] getGhostWallCenter() {
+		// TODO Auto-generated method stub
+		return wallCenter;
 	}
 
 

@@ -42,7 +42,7 @@ public class PathFinderTests {
 				{'.','.','.','.','.','.'},
 				{'.','.','.','.','.','.'}};
 		map = convert(map);
-		Pathfinder pf = new Pathfinder(map);
+		Pathfinder pf = new Pathfinder(map,0);
 		ArrayList<int[]> path = pf.getPath(1,5, 1, 0);
 		
 		assert(pf.foundRoute());
@@ -59,7 +59,7 @@ public class PathFinderTests {
 				{'.','.','.','.','.','.'},
 				{'.','.','.','.','.','.'}};
 		map = convert(map);
-		Pathfinder pf = new Pathfinder(map);
+		Pathfinder pf = new Pathfinder(map,0);
 		ArrayList<int[]> path = pf.getPath(0,0, 5, 5);
 		//for(int i = 0; i < path.size(); i++){
 			
@@ -79,7 +79,7 @@ public class PathFinderTests {
 				{'.','.','.','.','.','.'},
 				{'.','.','.','.','.','.'}};
 		map = convert(map);
-		Pathfinder pf = new Pathfinder(map);
+		Pathfinder pf = new Pathfinder(map,0);
 		ArrayList<int[]> path = pf.getPath(5,5, 0, 0);
 		
 		assert(pf.foundRoute());
@@ -97,7 +97,7 @@ public class PathFinderTests {
 					{'.','.','#','.','.','.'}};
 		map = convert(map);
 		
-		Pathfinder pf = new Pathfinder(map);
+		Pathfinder pf = new Pathfinder(map,0);
 		ArrayList<int[]> path = pf.getPath(5,5, 5, 0);
 		
 		assert(pf.foundRoute());
@@ -114,7 +114,7 @@ public class PathFinderTests {
 				{'.','.','.','.','#','.'},
 				{'.','.','.','.','.','.'}};
 		map = convert(map);
-		Pathfinder pf = new Pathfinder(map);
+		Pathfinder pf = new Pathfinder(map,0);
 		ArrayList<int[]> path = pf.getPath(5,5, 5, 0);
 		
 		assert(pf.foundRoute());
@@ -132,7 +132,7 @@ public class PathFinderTests {
 				{'.','.','.','#','.','.'}};
 		map = convert(map);
 		
-		Pathfinder pf = new Pathfinder(map);
+		Pathfinder pf = new Pathfinder(map,0);
 		ArrayList<int[]> path = pf.getPath(0,0, 5, 5);
 		
 		assert(pf.foundRoute());
@@ -152,7 +152,7 @@ public class PathFinderTests {
 			
 		}
 		map = convert(map);
-		Pathfinder pf = new Pathfinder(map);
+		Pathfinder pf = new Pathfinder(map,0);
 		ArrayList<int[]> path = pf.getPath(0,0, 199, 199);
 		
 		assert(pf.foundRoute());

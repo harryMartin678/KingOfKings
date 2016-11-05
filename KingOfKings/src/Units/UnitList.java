@@ -36,7 +36,7 @@ public class UnitList implements Cloneable,IUnitList {
 		units.add(unit);
 		
 		GameEngineCollisionMap.addUnit((int)unit.getX(), (int)unit.getY(), unit.getUnitNo(),
-				unit.getMap());
+				unit.getMap(),unit.isWorker());
 	}
 	
 //	public void addUnitToBoat(int unitNo, int boatNo){
@@ -150,7 +150,8 @@ public class UnitList implements Cloneable,IUnitList {
 			units.get(units.size()-1).setUnitNo(units.size()-1);
 		}
 		
-		GameEngineCollisionMap.addUnit((int)x, (int)y, units.size()-1, map);
+		GameEngineCollisionMap.addUnit((int)x, (int)y, units.size()-1, map,
+				units.get(units.size()-1).isWorker());
 	}
 	
 
@@ -373,28 +374,28 @@ public class UnitList implements Cloneable,IUnitList {
 		return units.get(unitFollow).getRetreat();
 	}
 
-	public ArrayList<int[]> areWorkersIdle(ArrayList<int[]> workerSites) {
-		// TODO Auto-generated method stub
-		for(int s = 0; s < workerSites.size(); s++){
-			
-			ArrayList<Integer> idleWorkers = new ArrayList<Integer>();
-			
-			idleWorkers.add(workerSites.get(s)[0]);
-			
-			for(int w = 1; w < workerSites.get(s).length; w++){
-				
-				if(this.getUnitIsIdle(workerSites.get(s)[w])){
-					
-					idleWorkers.add(workerSites.get(s)[w]);
-				}
-			}
-			
-			workerSites.remove(s);
-			workerSites.add(s,Matrix.ToIntArray(idleWorkers));
-		}
-		
-		return workerSites;
-	}
+//	public ArrayList<int[]> areWorkersIdle(ArrayList<int[]> workerSites) {
+//		// TODO Auto-generated method stub
+//		for(int s = 0; s < workerSites.size(); s++){
+//			
+//			ArrayList<Integer> idleWorkers = new ArrayList<Integer>();
+//			
+//			idleWorkers.add(workerSites.get(s)[0]);
+//			
+//			for(int w = 1; w < workerSites.get(s).length; w++){
+//				
+//				if(this.getUnitIsIdle(workerSites.get(s)[w])){
+//					
+//					idleWorkers.add(workerSites.get(s)[w]);
+//				}
+//			}
+//			
+//			workerSites.remove(s);
+//			workerSites.add(s,Matrix.ToIntArray(idleWorkers));
+//		}
+//		
+//		return workerSites;
+//	}
 
 	public void addAll(ArrayList<Unit> units) {
 		// TODO Auto-generated method stub

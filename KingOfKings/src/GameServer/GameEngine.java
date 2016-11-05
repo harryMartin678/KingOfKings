@@ -2,16 +2,19 @@ package GameServer;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import Buildings.Building;
 import Buildings.BuildingAttackList;
 import Buildings.BuildingList;
 import Buildings.BuildingProgress;
+import Buildings.BuildingProgress.WorkersSite;
 import Buildings.Castle;
 import Buildings.Farm;
 import Buildings.Names;
 import Buildings.Tower;
 import Buildings.TowerBattles;
+import Buildings.Wall;
 import GameClient.ParseText;
 import IntermediateAI.FormationMovement;
 import IntermediateAI.MapRouteFinder;
@@ -237,14 +240,7 @@ public class GameEngine{
 			//move units
 			context.units.moveUnits();
 			
-			//increment building unit queues progress
-			for(int b = 0; b < context.buildings.getBuildingsSize(); b++){
-				
-				if(!context.buildings.empty(b) && context.buildings.nextUnit(b)){
-					
-					addUnit(context.buildings.getFinishedUnit(b),context.buildings.getBuilding(b));
-				}
-			}
+			
 			
 	//		int[] com;
 			
@@ -350,7 +346,39 @@ public class GameEngine{
 		//						unitsToRecalculate.get(r)[5]);
 					}
 				}
+				
+				ArrayList<WorkersSite> workerSites = context.sites.findWorkers(context.units);
+				HashMap<Integer,int[]> workersWorking = new HashMap<Integer, int[]>();
+				
+				for(int w = 0; w < workerSites.size(); w++){
+					
+					int[] distances = distancesFrom(w,
+							workerSites.get(w).getWorkers());
+					int[] adjWorkers = removeWorkers(workersWorking, workerSites.get(w).getWorkers(),
+							distances,w);
+					if(adjWorkers.length > 0){
+						storeWorkersNowWorking(workersWorking,adjWorkers,distances,w);
+					}
+				}
+				
+				for(int[] worker: workersWorking.values()){
+					
+					MethodParameter parameters = new MethodParameter();
+					parameters.setAddWorkerToSite(workerSites.get(worker[1]).getBuildingNo(), 
+							workerSites.get(worker[1]).getWorkers());
+					commands.add(MethodCallup.ADDWORKERTOSITE, parameters, communicationTurn);
+				}
 			}
+			
+			//increment building unit queues progress
+			for(int b = 0; b < context.buildings.getBuildingsSize(); b++){
+				
+				if(!context.buildings.empty(b) && context.buildings.nextUnit(b)){
+					
+					addUnit(context.buildings.getFinishedUnit(b),context.buildings.getBuilding(b));
+				}
+			}
+			
 			//increment building build progress 
 			context.sites.checkSites(context.buildings);
 			
@@ -365,21 +393,78 @@ public class GameEngine{
 					commands.add(MethodCallup.ATTACKUNIT, parameters, communicationTurn);
 				}
 				
-				ArrayList<int[]> newWorkerSites = context.units.areWorkersIdle(
-						context.sites.findNewBuilds());
 				
-				for(int s = 0; s < newWorkerSites.size(); s++){
-					
-					MethodParameter parameters = new MethodParameter();
-					parameters.setAddWorkerToSite(newWorkerSites.get(s)[0],
-							Matrix.getIntArrayRange(1, newWorkerSites.get(s).length,newWorkerSites.get(s)));
-					commands.add(MethodCallup.ADDWORKERTOSITE, parameters, communicationTurn);
-				}
+				
+				
+//				ArrayList<int[]> newWorkerSites = context.units.areWorkersIdle(
+//						context.sites.findNewBuilds());
+				
+//				for(int s = 0; s < newWorkerSites.size(); s++){
+//					
+//					MethodParameter parameters = new MethodParameter();
+//					parameters.setAddWorkerToSite(newWorkerSites.get(s)[0],
+//							Matrix.getIntArrayRange(1, newWorkerSites.get(s).length,newWorkerSites.get(s)));
+//					commands.add(MethodCallup.ADDWORKERTOSITE, parameters, communicationTurn);
+//				}
 			}
+			
 			
 			beat++;
 		}
 
+	}
+	
+	private int[] distancesFrom(int buildingNo, int[] workers) {
+		// TODO Auto-generated method stub
+		int[] distances = new int[workers.length];
+		
+		for(int d = 0; d < distances.length; d++){
+			
+			distances[d] = (int) (Math.abs(context.sites.getSiteX(buildingNo) 
+					- context.units.getUnitX(workers[d])) + Math.abs(context.sites.getSiteY(buildingNo)
+							- context.units.getUnitY(workers[d])));
+		}
+		
+		return distances;
+	}
+
+	private void storeWorkersNowWorking(HashMap<Integer,int[]> workersWorking,int[] workers,
+			int[] distances,int siteID){
+		
+		for(int w  = 0; w < workers.length; w++){
+			
+			workersWorking.put(workers[w], new int[]{distances[w],siteID});
+		}
+		
+	}
+	
+	private int[] removeWorkers(HashMap<Integer,int[]> workersWorking,int[] workers,int[] distance,
+			int siteID){
+		
+		ArrayList<Integer> adjWorkers = new ArrayList<Integer>();
+		
+		for(int w = 0; w < workers.length; w++){
+			
+			if(!workersWorking.containsKey(workers[w]) || workersWorking.get(workers[w])[0] > distance[w]){
+				adjWorkers.add(workers[w]);
+				
+				if(workersWorking.containsKey(workers[w])){
+					
+					workersWorking.remove(workers[w]);
+					//workersWorking.put(workers[w], new int[]{distance[w],siteID});
+				}
+			}
+		}
+		
+		int[] newWorker = new int[adjWorkers.size()];
+		
+		for(int a = 0; a < adjWorkers.size(); a++){
+			
+			newWorker[a] = adjWorkers.get(a);
+		}
+		
+		return newWorker;
+		
 	}
 	
 	private void addUnit(String unit, Building building){
@@ -558,13 +643,22 @@ public class GameEngine{
 					
 				}
 
-				info += b + " " + context.buildings.getBuildingType(b) + " " 
-						+ context.buildings.getBuildingX(b) + " " +
+				info += context.buildings.getBuildingNo(b) + " " + 
+						context.buildings.getBuildingType(b) + " " + 
+						context.buildings.getBuildingX(b) + " " +
 						context.buildings.getBuildingY(b) +  " " +
 						context.buildings.getBuildingPlayer(b) 
 						+ " " + buildingAttack
 						+ " " + buildingAttackX 
-						+ " " + buildingAttackY +"\n";
+						+ " " + buildingAttackY;
+				
+				if(context.buildings.getBuildingType(b) == Names.WALL){
+					
+					info += " " + new Float(
+							((Wall)context.buildings.getBuilding(b)).getRotationFromCenter()).toString();
+				}
+				
+				info += "\n";
 			
 			}else if(context.buildings.isBuildingDestroyed(b) 
 					&& !context.buildings.getCollapseReported(b)){
@@ -973,19 +1067,19 @@ public class GameEngine{
 		// TODO Auto-generated method stub
 		
 		String[] parts = inpt.split("u");
-		String[] points = parts[0].split(" ");
+		String[] wallInfo = parts[0].split(" ");
 		String[] units = parts[1].split(" ");
 		
 		int playerNumber = new Integer(units[units.length-1]);
 		int mapNo = new Integer(units[units.length-2]);
 		
-		ArrayList<Point> wallSec = new ArrayList<Point>();
-		
-		for(int p = 0; p < points.length-1; p+=2){
-			
-			//System.out.println(points[p] + " " + points[p+1] + " GameEngine");
-			wallSec.add(new Point(new Integer(points[p]),new Integer(points[p+1])));
-		}
+//		ArrayList<Point> wallSec = new ArrayList<Point>();
+//		
+//		for(int p = 0; p < points.length-1; p+=2){
+//			
+//			//System.out.println(points[p] + " " + points[p+1] + " GameEngine");
+//			wallSec.add(new Point(new Integer(points[p]),new Integer(points[p+1])));
+//		}
 		
 		int[] workers = new int[units.length-3];
 
@@ -995,7 +1089,9 @@ public class GameEngine{
 		}
 		
 		MethodParameter parameters = new MethodParameter();
-		parameters.setBuildWall(wallSec,workers,mapNo,playerNumber);
+		parameters.setBuildWall(new Point(new Float(wallInfo[0]).intValue()
+				,new Float(wallInfo[1]).intValue()),new Integer(wallInfo[2]).intValue(),workers,
+				mapNo,playerNumber);
 		
 		if(passedCommunicationTurn != -1){
 			commands.add(MethodCallup.BUILDWALLS, parameters, communicationTurn);

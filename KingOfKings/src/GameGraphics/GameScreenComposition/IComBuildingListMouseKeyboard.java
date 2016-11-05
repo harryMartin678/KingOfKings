@@ -1,5 +1,7 @@
 package GameGraphics.GameScreenComposition;
 
+import java.util.ArrayList;
+
 import GameGraphics.Building;
 import GameGraphics.IBoundingBoxes;
 
@@ -31,4 +33,9 @@ public interface IComBuildingListMouseKeyboard extends IComBuildingList {
 	public int getSelectedBuilding(double x, double y, int width,
 			int height, IBoundingBoxes boxes, int frameX,int frameY);
 	public boolean isBuildingGhostWall();
+	public void createWallTowers(int thisPlayer,float x, float y);
+	public void increaseWallTowerRadius(int size,float x, float y);
+	public void clearGhostWalls();
+	public int getWallSize();
+	public float[] getGhostWallCenter();
 }

@@ -277,6 +277,15 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    	//System.out.println(buildingSelection.cantBuild());
 	    	//buildings.drawGhostBuilding();
 	    	buildingModels.drawBuilding(draw, buildings.getGhostBuilding(), frameX, frameY);
+	    
+	    }
+	    
+	    if(buildings.isWallTowerGhosts()){
+
+	    	for(int b = 0; b < buildings.getNoOfWallTowers(); b++){
+	    		
+	    		buildingModels.drawBuilding(draw, buildings.getGhostWallTower(b), frameX, frameY);
+	    	}
 	    }
 	    
 	    //draw buildings in view

@@ -59,7 +59,7 @@ public class BuildingSite {
 	public String toString() {
 		// TODO Auto-generated method stub
 		
-		return  building.getBuildingNo() + " " + building.getType() 
+		return building.getBuildingNo() + " " + building.getType() 
 				+ " " + ((float)building.getX()) + " " + ((float)building.getY()) 
 				+ " " + building.getPlayer() + "\n";
 		
@@ -100,6 +100,7 @@ public class BuildingSite {
 		
 		}else{
 			
+			//System.out.println("FINISH BUILD BuildingSite");
 			for(int c = 0; c < creators.size(); c++){
 				
 				creators.get(c).stopAttack(false);

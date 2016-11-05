@@ -161,7 +161,8 @@ IComUnitListFrameProcess {
 	
 	public void add(Unit unit){
 		
-		GraphicsCollisionMap.addUnit(Math.round(unit.getX()), Math.round(unit.getY()), unit.getUnitNo());
+		GraphicsCollisionMap.addUnit(Math.round(unit.getX()), Math.round(unit.getY()), unit.getUnitNo(),
+				unit.getUnitType().equals(Names.WORKER));
 		units.add(unit);
 		unitNoToIndex.put(unit.getUnitNo(),units.size()-1);
 	}

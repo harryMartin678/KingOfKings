@@ -2,6 +2,8 @@ package Buildings;
 
 public class Wall extends Defence {
 
+	private float angleFromCenter;
+	
 	public Wall(int buildingNo) {
 		super(buildingNo);
 		// TODO Auto-generated constructor stub
@@ -42,5 +44,26 @@ public class Wall extends Defence {
 		// TODO Auto-generated method stub
 		//turn down later
 		return super.FoodNeeded()+10;
+	}
+	
+//	public void calRotationFromCenter(float cx, float cy){
+//		
+//		float dx = this.getX() - cx;
+//		float dy = this.getY() - cy;
+//		
+//		this.angleFromCenter =  (float)(Math.acos(dx / Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2))) 
+//				* (180.0f/Math.PI));		
+//
+//	}
+	
+	public void setRotationFromCenter(float angle){
+		
+		this.angleFromCenter = angle;
+	}
+	
+
+	public float getRotationFromCenter() {
+		// TODO Auto-generated method stub
+		return angleFromCenter;
 	}
 }

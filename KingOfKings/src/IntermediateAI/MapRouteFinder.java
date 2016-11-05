@@ -12,34 +12,36 @@ import Units.UnitList;
 
 public class MapRouteFinder {
 	
-	private UnitList units;
-	private BuildingList buildings;
+//	private UnitList units;
+//	private BuildingList buildings;
 	private MapList maps;
-	private BuildingProgress sites;
+//	private BuildingProgress sites;
 	private ArrayList<int[]> minPath;
 	private int ignoreUnit;
+	private int playerNo;
 	
 	/*
 	 * use units, buildings and maps to correctly navigate the map 
 	 */
-	public MapRouteFinder(UnitList units, BuildingList buildings, MapList maps,
-			BuildingProgress sites){
+	public MapRouteFinder(int playerNo,MapList maps){
 		
-		this.units = units;
-		this.buildings = buildings;
+//		this.units = units;
+//		this.buildings = buildings;
 		this.maps = maps;
-		this.sites = sites;
+//		this.sites = sites;
 		minPath = new ArrayList<int[]>();
 		ignoreUnit = -1;
+		this.playerNo = playerNo;
 	}
 	
-	public MapRouteFinder(UnitList units, BuildingList buildings, MapList maps,int ignoreUnit){
+	public MapRouteFinder(int playerNo,MapList maps,int ignoreUnit){
 		
-		this.units = units;
-		this.buildings = buildings;
-		this.maps = maps;
+//		this.units = units;
+//		this.buildings = buildings;
+//		this.maps = maps;
 		minPath = new ArrayList<int[]>();
 		this.ignoreUnit = ignoreUnit;
+		this.playerNo = playerNo;
 	}
 	
 	/*
@@ -64,8 +66,8 @@ public class MapRouteFinder {
 //				new CollisionMap(buildings,units
 //						,maps.getMap(currentMap),currentMap).getCollisionMap()
 					path.addAll(reverseList(
-							new Pathfinder(GameEngineCollisionMap.toArray(currentMap)
-							).getPath(startX, startY, targetX, targetY)));
+							new Pathfinder(GameEngineCollisionMap.toArray(currentMap),
+									playerNo).getPath(startX, startY, targetX, targetY)));
 //				}else{
 //					
 //					path.addAll(reverseList(new Pathfinder(new CollisionMap(buildings,units
@@ -78,8 +80,8 @@ public class MapRouteFinder {
 					//	,maps.getMap(currentMap),ignoreUnit,currentMap).getCollisionMap()
 				//find a path to the target node from the transition point 
 				path.addAll(reverseList(
-						new Pathfinder(GameEngineCollisionMap.toArray(currentMap, currentMap)
-						).getPath(startX, startY, targetX, targetY)));
+						new Pathfinder(GameEngineCollisionMap.toArray(currentMap, ignoreUnit),
+								playerNo).getPath(startX, startY, targetX, targetY)));
 				
 			}
 			
@@ -122,8 +124,8 @@ public class MapRouteFinder {
 					//new CollisionMap(buildings,units
 						//	,maps.getMap(currentMap),currentMap).getCollisionMap()
 					path.addAll(reverseList(
-							new Pathfinder(GameEngineCollisionMap.toArray(currentMap)
-					).getPath(startX, startY, 
+							new Pathfinder(GameEngineCollisionMap.toArray(currentMap),
+									playerNo).getPath(startX, startY, 
 							maps.getMap(currentMap).getTransitionPointByIndex(m)[0],
 							maps.getMap(currentMap).getTransitionPointByIndex(m)[1])));
 					

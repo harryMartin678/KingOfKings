@@ -34,6 +34,7 @@ public class Building {
 	private int attackX;
 	private int attackY;
 	private int progress;
+	private float angle;
 	
 	private int currentFrame;
 	private boolean collapsed;
@@ -443,6 +444,17 @@ public class Building {
 		// TODO Auto-generated method stub
 		
 
+	}
+
+	public void setAngle(float angle) {
+		// TODO Auto-generated method stub
+		//System.out.println(angle + " Angle Building Graphics");
+		this.angle = angle;
+	}
+	
+	public float getAngle(){
+		
+		return angle;
 	}
 
 

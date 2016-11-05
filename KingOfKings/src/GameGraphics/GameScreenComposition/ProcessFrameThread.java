@@ -2,6 +2,7 @@ package GameGraphics.GameScreenComposition;
 
 import java.util.ArrayList;
 
+import Buildings.Names;
 import GameClient.ClientMessages;
 import GameClient.ParseText;
 import GameGraphics.Building;
@@ -307,7 +308,7 @@ public class ProcessFrameThread {
 				m++;
 				continue;
 			}
-			//System.out.println(msg);
+			//System.out.println(msg + "|building ProcessFrameThread");
 			ParseText parsed = new ParseText(msg);
 			ArrayList<String> numbers = parsed.getNumbers();
 			String building = parsed.getUnitName();
@@ -328,6 +329,9 @@ public class ProcessFrameThread {
 				buildingsTemp.get(buildingsTemp.size()-1).setAttack(new Integer(numbers.get(4)).intValue(),
 						new Integer(numbers.get(5)).intValue(),
 						new Integer(numbers.get(6)).intValue());
+				if(building.equals(Names.WALL)){
+					buildingsTemp.get(buildingsTemp.size()-1).setAngle(new Float(numbers.get(7)).floatValue());
+				}
 			}
 			m++;
 		}

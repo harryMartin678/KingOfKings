@@ -19,9 +19,9 @@ public class GameEngineCollisionMap {
 		}
 	}
 	
-	public static void addUnit(int x, int y, int unitNo, int mapNo){
+	public static void addUnit(int x, int y, int unitNo, int mapNo,boolean isWorker){
 		
-		GameEngineCollisionMap.maps[mapNo].addUnit(x, y, unitNo,false);
+		GameEngineCollisionMap.maps[mapNo].addUnit(x, y, unitNo,isWorker);
 	}
 	
 	public static void removeUnit(int unitNo, int mapNo){
@@ -29,9 +29,10 @@ public class GameEngineCollisionMap {
 		GameEngineCollisionMap.maps[mapNo].RemoveUnit(unitNo);
 	}
 	
-	public static void addBuilding(int x, int y,int SizeX,int SizeY, int buildingNo, int mapNo){
+	public static void addBuilding(int x, int y,int SizeX,int SizeY, int buildingNo, int mapNo,
+			boolean isWall, int playerNo){
 		
-		GameEngineCollisionMap.maps[mapNo].addBuilding(x, y,SizeX,SizeY, buildingNo);
+		GameEngineCollisionMap.maps[mapNo].addBuilding(x, y,SizeX,SizeY, buildingNo,isWall,playerNo);
 	}
 	
 	public static void removeBuilding(int buildingNo,int mapNo,int sizeX,int sizeY){

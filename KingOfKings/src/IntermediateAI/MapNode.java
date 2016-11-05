@@ -15,8 +15,8 @@ public class MapNode {
 	
 	public MapNode(int startX, int startY, int targetX, int targetY,int mapNo){
 		
-		path = new Pathfinder(GameEngineCollisionMap.toArray(mapNo)
-				).getPath(startX, startY, targetX, targetY);
+		path = new Pathfinder(GameEngineCollisionMap.toArray(mapNo),
+				0).getPath(startX, startY, targetX, targetY);
 		this.mapNo = mapNo;
 	}
 	

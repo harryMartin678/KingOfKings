@@ -18,4 +18,8 @@ public interface IComBuildingListDisplay extends IComBuildingList {
 	public int getUnitQueueSize();
 	public int getBuildingPlayer(int b);
 	public void moveGhostBuildingGraphics();
+	public boolean isWallTowerGhosts();
+	public int getNoOfWallTowers();
+	public Building getGhostWallTower(int b);
+	public boolean isBuildingGhostWall();
 }

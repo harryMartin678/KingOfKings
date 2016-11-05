@@ -136,9 +136,14 @@ public class BuildingList implements IBuildingList,IComBuildingBATTList,IGetBuil
 		
 		nextBuildingNo++;
 		GameEngineCollisionMap.addBuilding(x, y,building.getSizeX(),building.getSizeY(),
-				buildingNo, map);
+				buildingNo, map,isWall(type),player);
 		
 		
+	}
+	
+	private boolean isWall(String type){
+		
+		return (type == Names.WALL || type == Names.WALLTOWER);
 	}
 	
 	public void addBuilding(Building building){
@@ -148,7 +153,8 @@ public class BuildingList implements IBuildingList,IComBuildingBATTList,IGetBuil
 		nextBuildingNo++;
 		GameEngineCollisionMap.addBuilding(building.getX(), building.getY(),
 				building.getSizeX(),building.getSizeY(),
-				building.getBuildingNo(), building.getMap());
+				building.getBuildingNo(), building.getMap(),isWall(building.getType()),
+				building.getPlayer());
 	}
 
 	public int getBuildingQueueSize(int index) {
@@ -212,6 +218,11 @@ public class BuildingList implements IBuildingList,IComBuildingBATTList,IGetBuil
 		}
 		
 		return line;
+	}
+
+	public int getBuildingNo(int index) {
+		// TODO Auto-generated method stub
+		return buildings.get(index).getBuildingNo();
 	}
 
 }

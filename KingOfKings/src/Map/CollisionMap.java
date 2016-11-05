@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.concurrent.Semaphore;
 
 import Units.UnitList;
+import Util.Point;
 
 public class CollisionMap {
 
@@ -14,6 +15,7 @@ public class CollisionMap {
 	private HashMap<Integer,Integer> PosToUnit;
 	private HashMap<Integer,int[]> BuildingToPos;
 	private HashMap<Integer,Boolean> visibilityCheck;
+	private HashMap<Integer,Integer> overlap;
 	private Semaphore lock;
 	private boolean fogOfWar;
 	private int mapNo;
@@ -26,6 +28,7 @@ public class CollisionMap {
 		PosToUnit = new HashMap<Integer, Integer>();
 		BuildingToPos = new HashMap<Integer, int[]>();
 		visibilityCheck = new HashMap<Integer, Boolean>();
+		overlap = new HashMap<Integer, Integer>();
 		this.fogOfWar = fogOfWar;
 		this.mapNo = mapNo;
 		
@@ -98,7 +101,7 @@ public class CollisionMap {
 				}
 			}
 			
-			visibilityCheck.put(GetUniqueNo(new int[]{newX,newY}),true);
+			visibilityCheck.put(Point.GetUniqueNo(new int[]{newX,newY}),true);
 		}
 	}
 	
@@ -113,9 +116,18 @@ public class CollisionMap {
 //		System.out.println("End Remove CollisionMap");
 		if(pos != null){
 			UnitToPos.remove(unitNo);
-			PosToUnit.remove(GetUniqueNo(pos));
+			PosToUnit.remove(Point.GetUniqueNo(pos));
 			
-			CollisionMap[pos[0]][pos[1]] = 0;
+			if(overlap.containsKey(Point.GetUniqueNo(new int[]{pos[0],pos[1]}))){
+				
+				overlap.remove(Point.GetUniqueNo(new int[]{pos[0],pos[1]}));
+				
+			}else{
+				
+				CollisionMap[pos[0]][pos[1]] = 0;
+			}
+			
+			
 		}else{
 			
 			System.out.println("ERROR NULL POS IN REMOVE UNIT COLLISION MAP: " + unitNo);
@@ -128,19 +140,30 @@ public class CollisionMap {
 		
 		if(!(pos[0] == newX && pos[1] == newY) && pos != null){
 			
-			CollisionMap[pos[0]][pos[1]] = 0;
-			
-			UnitToPos.replace(unitNo, new int[]{newX,newY});
-			PosToUnit.remove(GetUniqueNo(pos));
-			PosToUnit.put(GetUniqueNo(new int[]{newX,newY}), unitNo);
-			
-			if(isWorker){
+			if(CollisionMap[pos[0]][pos[1]] == 9 || CollisionMap[pos[0]][pos[1]] == 7){
 				
-				CollisionMap[newX][newY] = 9;
+				CollisionMap[pos[0]][pos[1]] = 0;
 				
 			}else{
 				
-				CollisionMap[newX][newY] = 7;
+				overlap.remove(Point.GetUniqueNo(new int[]{pos[0],pos[1]}));
+			}
+			
+			UnitToPos.replace(unitNo, new int[]{newX,newY});
+			PosToUnit.remove(Point.GetUniqueNo(pos));
+			PosToUnit.put(Point.GetUniqueNo(new int[]{newX,newY}), unitNo);
+			
+			if(CollisionMap[newX][newY] == 0){
+				
+				if(isWorker){
+					
+					CollisionMap[newX][newY] = 9;
+					
+				}else{
+					
+					CollisionMap[newX][newY] = 7;
+					
+				}
 				
 			}
 			
@@ -152,10 +175,10 @@ public class CollisionMap {
 		}
 	}
 	
-	public void addUnit(int x, int y,int unitNo,boolean isGraphics){
+	public void addUnit(int x, int y,int unitNo,boolean isWorker){
 	
 		UnitToPos.put(unitNo, new int[]{x,y});
-		PosToUnit.put(GetUniqueNo(new int[]{x,y}), unitNo);
+		PosToUnit.put(Point.GetUniqueNo(new int[]{x,y}), unitNo);
 		
 //		if(isGraphics){
 //			System.out.println("Start Add CollisionMap " + unitNo);
@@ -166,7 +189,17 @@ public class CollisionMap {
 //			System.out.println("End Add CollisionMap");
 //		}
 
-		CollisionMap[x][y] = 7;
+		if(CollisionMap[x][y] == 0){
+			if(isWorker){
+				
+				CollisionMap[x][y] = 9;
+				
+			}else{
+				
+				CollisionMap[x][y] = 7;
+			}
+		}
+		
 		
 		if(fogOfWar){
 			
@@ -174,8 +207,15 @@ public class CollisionMap {
 		}
 	}
 	
-	public void addBuilding(int x, int y,int SizeX, int SizeY,int buildingNo){
+	public void addBuilding(int x, int y,int SizeX, int SizeY,int buildingNo,
+			boolean isWall,int playerNo){
 		
+//		System.out.println("AddBuilding Start CollisionMap");
+//		for(int b = 0; b < BuildingToPos.size(); b++){
+//			
+//			System.out.println(BuildingToPos.keySet().toArray()[b]);
+//		}
+//		System.out.println("AddBuilding End");
 		BuildingToPos.put(buildingNo, new int[]{x,y});
 		
 		
@@ -189,7 +229,22 @@ public class CollisionMap {
 //				}
 				
 				//System.out.println(mx + " " + my + " " + buildingNo + " CollisionMap");
-				CollisionMap[mx][my] = 8;
+				
+				if(CollisionMap[mx][my] == 7 || CollisionMap[mx][my] == 9){
+				
+					overlap.put(Point.GetUniqueNo(new int[]{mx,my}),CollisionMap[mx][my]);
+				}
+				
+				if(isWall){
+					
+					CollisionMap[mx][my] = new Integer("8"+new Integer(playerNo).toString()).intValue();
+					
+				}else{
+					
+					CollisionMap[mx][my] = 8;
+				}
+				
+				
 			}
 		}
 		if(fogOfWar){
@@ -200,6 +255,7 @@ public class CollisionMap {
 	
 	public void removeBuilding(int buildingNo,int SizeX,int SizeY){
 
+		//System.out.println(buildingNo + " RemoveBuilding CollisionMap");
 		int[] pos = BuildingToPos.get(buildingNo);
 		BuildingToPos.remove(buildingNo);
 		
@@ -291,7 +347,7 @@ public class CollisionMap {
 			
 			int[] targetPos = new int[]{pos[0] + direction[0],pos[1] + direction[1]};
 
-			return PosToUnit.get(GetUniqueNo(targetPos));
+			return PosToUnit.get(Point.GetUniqueNo(targetPos));
 			
 		}else{
 			return -1;
@@ -300,10 +356,7 @@ public class CollisionMap {
 		
 	}
 	
-	private int GetUniqueNo(int[] pos){
-		
-		return (int)((0.5 * (pos[0] + pos[1]) * (pos[0] + pos[1] + 1)) + pos[1]);
-	}
+	
 	
 	public void PrintCollisionMap(){
 		
@@ -350,9 +403,9 @@ public class CollisionMap {
 					continue;
 				}
 				
-				if(PosToUnit.containsKey(GetUniqueNo(new int[]{x,y}))){
+				if(PosToUnit.containsKey(Point.GetUniqueNo(new int[]{x,y}))){
 					
-					int found = PosToUnit.get(GetUniqueNo(new int[]{x,y}));
+					int found = PosToUnit.get(Point.GetUniqueNo(new int[]{x,y}));
 					
 					if(units.getUnitPlayer(found) != units.getUnitPlayer(unitNo)
 							&& Math.abs(x) + Math.abs(y) < distance){
@@ -386,12 +439,15 @@ public class CollisionMap {
 					continue;
 				}
 				
-				if(CollisionMap[x][y] == 9){
+				if(CollisionMap[x][y] == 9 || 
+						(overlap.containsKey(Point.GetUniqueNo(new int[]{x,y})) &&
+								overlap.get(Point.GetUniqueNo(new int[]{x,y})) == 9)){
 					
-					workers.add(PosToUnit.get(new int[]{x,y}));
+					workers.add(PosToUnit.get(Point.GetUniqueNo(new int[]{x,y})));
 				}
 			}
 		}
+		
 		return workers;
 	}
 

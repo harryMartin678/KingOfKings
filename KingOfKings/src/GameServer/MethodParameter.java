@@ -65,7 +65,8 @@ public class MethodParameter {
 	public String filename;
 	
 	//build walls
-	public ArrayList<Point> wallSections;
+	public Point wallCenter;
+	public int wallSize;
 	
 	//save game
 	public int noOfPlayers;
@@ -173,12 +174,13 @@ public class MethodParameter {
 		this.buildingNo = buildingNo;
 	}
 
-	public void setBuildWall(ArrayList<Point> wallSec, int[] workers, int mapNo, int playerNumber) {
+	public void setBuildWall(Point wallCenter,int wallSize, int[] workers, int mapNo, int playerNumber) {
 		// TODO Auto-generated method stub
 		this.mapNo = mapNo;
 		this.playerNo = playerNumber;
 		this.unitNos = workers;
-		this.wallSections = wallSec;
+		this.wallCenter = wallCenter;
+		this.wallSize = wallSize;
 		
 	}
 

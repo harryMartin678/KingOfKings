@@ -3,6 +3,7 @@ package Buildings;
 import java.util.ArrayList;
 
 import Map.GameEngineCollisionMap;
+import Units.UnitList;
 import Units.Worker;
 
 public class BuildingProgress {
@@ -57,30 +58,30 @@ public class BuildingProgress {
 		return sites.size();
 	}
 	
-	public ArrayList<int[]> findNewBuilds(){
-		
-		ArrayList<int[]> workerSite = new ArrayList<int[]>();
-		
-		for(int s = 0; s < sites.size(); s++){
-			
-			ArrayList<Integer> workers = GameEngineCollisionMap.FindWorkers(sites.get(s).getBuilding().getX(),
-					sites.get(s).getBuilding().getY(),sites.get(s).getBuilding().getSizeX(), 
-					sites.get(s).getBuilding().getSizeY(),sites.get(s).getBuilding().getMap());
-			
-			workerSite.add(new int[workers.size()+1]);
-			workerSite.get(s)[0] = sites.get(s).getBuilding().getBuildingNo();
-			
-			for(int w = 0; w < workers.size(); w++){
-				
-				//System.out.println(workers.get(w) + " BuildingProgress");
-				if(workers.get(w) != null){
-					workerSite.get(s)[w+1] =  workers.get(w);
-				}
-			}
-		}
-		
-		return workerSite;
-	}
+//	public ArrayList<int[]> findNewBuilds(){
+//		
+//		ArrayList<int[]> workerSite = new ArrayList<int[]>();
+//		
+//		for(int s = 0; s < sites.size(); s++){
+//			
+//			ArrayList<Integer> workers = GameEngineCollisionMap.FindWorkers(sites.get(s).getBuilding().getX(),
+//					sites.get(s).getBuilding().getY(),sites.get(s).getBuilding().getSizeX(), 
+//					sites.get(s).getBuilding().getSizeY(),sites.get(s).getBuilding().getMap());
+//			
+//			workerSite.add(new int[workers.size()+1]);
+//			workerSite.get(s)[0] = sites.get(s).getBuilding().getBuildingNo();
+//			
+//			for(int w = 0; w < workers.size(); w++){
+//				
+//				//System.out.println(workers.get(w) + " BuildingProgress");
+//				if(workers.get(w) != null){
+//					workerSite.get(s)[w+1] =  workers.get(w);
+//				}
+//			}
+//		}
+//		
+//		return workerSite;
+//	}
 
 	public boolean inSite(int x, int y) {
 		// TODO Auto-generated method stub
@@ -156,6 +157,77 @@ public class BuildingProgress {
 			buildingNos.registerSite();
 			sites.get(s).getBuilding().SetBuildingNo(buildingNos.getNextBuildingNo());
 			this.addSite(sites.get(s).getBuilding(), sites.get(s).getCreators());
+		}
+	}
+
+	public ArrayList<WorkersSite> findWorkers(UnitList units) {
+		// TODO Auto-generated method stub
+		
+		ArrayList<WorkersSite> wSites = new ArrayList<WorkersSite>();
+		for(int s = 0; s < sites.size(); s++){
+			
+			wSites.add(new WorkersSite(GameEngineCollisionMap.FindWorkers(sites.get(s).getBuilding().getX(),
+					sites.get(s).getBuilding().getY(), sites.get(s).getBuilding().getSizeX(),
+					sites.get(s).getBuilding().getSizeY(), sites.get(s).getBuilding().getMap()),
+					sites.get(s).getBuilding().getBuildingNo(),units));
+			
+			if(wSites.get(wSites.size()-1).getEmpty()){
+				
+				wSites.remove(wSites.size()-1);
+			
+			}
+		}
+		
+		return wSites;
+	}
+	
+	public class WorkersSite{
+		
+		private ArrayList<Integer> workers;
+		private int buildingNo;
+		private boolean empty;
+		
+		public WorkersSite(ArrayList<Integer> workers,int buildingNo,UnitList units){
+			
+			this.workers = workers;
+			this.buildingNo = buildingNo;
+			removeBusyWorkers(units);
+			empty = this.workers.size() == 0;
+		}
+		
+		public boolean getEmpty(){
+			
+			return empty;
+		}
+		
+		private void removeBusyWorkers(UnitList units){
+			
+			for(int w = 0; w < workers.size(); w++){
+				
+				if(!units.getUnitIsIdle(workers.get(w))){
+					
+					workers.remove(w);
+					w--;
+				
+				}
+			}
+		}
+		
+		public int[] getWorkers(){
+			
+			int[] workerArray = new int[workers.size()];
+			
+			for(int w = 0; w < workerArray.length; w++){
+				
+				workerArray[w] = workers.get(w);
+			}
+			
+			return workerArray;
+		}
+		
+		public int getBuildingNo(){
+			
+			return buildingNo;
 		}
 	}
 }

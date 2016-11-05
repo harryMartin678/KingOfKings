@@ -3,6 +3,7 @@ package GameGraphics.GameScreenComposition;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelListener;
 import java.io.IOException;
 
 import javax.swing.JFrame;
@@ -156,6 +157,11 @@ public class GameScreen implements GLEventListener  {
 	public MouseListener getMouseListener(){
 		
 		return engine.getMouseListener();
+	}
+	
+	public MouseWheelListener getMouseWheelListener(){
+		
+		return engine.getMouseWheelListener();
 	}
 	
 	public MouseMotionListener getMouseMotionListener(){

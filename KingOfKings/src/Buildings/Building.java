@@ -79,7 +79,7 @@ public class Building {
 		
 		public void progress(){
 			
-			progress++;
+			progress+=5;
 		}
 		
 		public int getProgress(){

@@ -166,6 +166,7 @@ public class LobbyGUI extends JPanel implements MouseListener {
 		canvas.addMouseListener(gs.getMouseListener());
 		canvas.addMouseMotionListener(gs.getMouseMotionListener());
 		canvas.addKeyListener(gs.getKeyboardListener());
+		canvas.addMouseWheelListener(gs.getMouseWheelListener());
 
 		canvas.addGLEventListener(gs);
 		

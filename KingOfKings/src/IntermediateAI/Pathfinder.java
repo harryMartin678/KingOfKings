@@ -11,9 +11,10 @@ public class Pathfinder {
 	private int targetX;
 	private int targetY;
 	private boolean foundRoute;
+	private int playerNo;
 	
 	
-	public Pathfinder(int[][] map){
+	public Pathfinder(int[][] map,int playerNo){
 		
 		closedList = new ArrayList<Node>();
 		openList = new ArrayList<Node>();
@@ -269,10 +270,11 @@ public class Pathfinder {
 			currentNode.calculateG();
 			currentNode.calculateH(targetX, targetY);
 			//walkable
-			if(currentNode.getY() >= map.length || currentNode.getX() >= map[0].length || 
+			if(currentNode.getY() >= map[0].length || currentNode.getX() >= map.length || 
 					currentNode.getX() < 0 ||currentNode.getY() < 0 
 					|| (map[currentNode.getX()][currentNode.getY()] != 0
-							&& map[currentNode.getX()][currentNode.getY()] != 4)){
+							&& map[currentNode.getX()][currentNode.getY()] != 4
+								 && !isOurWall(currentNode.getX(),currentNode.getY()))){
 				
 				closedList.add(currentNode);
 				continue;
@@ -305,6 +307,54 @@ public class Pathfinder {
 		}
 		
 	}
+
+	private boolean isOurWall(int x, int y) {
+		// TODO Auto-generated method stub
+		
+		String num = new Integer(map[x][y]).toString();
+		
+		return num.charAt(0) == '8' && 
+				num.length() > 1 && num.charAt(1) == new Integer(playerNo).toString().charAt(0);
+	}
+	
+//	public static boolean isOnList(int x, int y,ArrayList<int[]> list){
+//		
+//		for(int l = 0; l < list.size(); l++){
+//			
+//			if(list.get(l)[0] == x && list.get(l)[1] == y){
+//				
+//				return true;
+//			}
+//		}
+//		
+//		return false;
+//	}
+//	
+//	public static void main(String[] args) {
+//		
+//		int[][] map = new int[][]{{0,0,0,0,0,0,1,0,0,0,1,1,0,0,1,0,0,0,1,1},
+//								   {1,0,1,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,1,0},
+//								   {0,0,0,0,1,0,0,0,0,1,0,0,1,0,1,0,0,0,0,0},
+//								   {0,1,0,0,0,1,0,1,0,0,0,0,0,1,0,0,1,0,0,0},
+//								   {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
+//		
+//		Pathfinder pf = new Pathfinder(map);
+//		ArrayList<int[]> list = pf.getPath(0, 0, map.length-1, map[0].length-1);
+//		
+//		System.out.println(list.size() + " pathfinder");
+//		for(int x = 0; x < map.length; x++){
+//			for(int y = 0; y < map[0].length; y++){
+//				
+//				if(isOnList(x,y,list)){
+//					System.out.print("X ");
+//				}else{
+//					System.out.print(map[x][y] + " ");
+//				}
+//			}
+//			System.out.println();
+//		}
+//		
+//	}
 	
 
 }

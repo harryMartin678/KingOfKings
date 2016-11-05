@@ -202,6 +202,10 @@ public class BuildingModelList implements IBoundingBoxes {
     		
     		return wall;
     		
+    	}else if(building.getName().equals(Names.WALLTOWER)){
+    	
+    		return wallTower;
+    		
     	}else if(building.getName().equals(Names.MINE)){
     		
     		return mine;
@@ -259,7 +263,7 @@ public class BuildingModelList implements IBoundingBoxes {
 		draw.glScalef(model.sizeX()*scaleFactor*extraScalefactor,
 				model.sizeY()*scaleFactor*extraScalefactor,model.sizeZ()*scaleFactor*extraScalefactor);
 		draw.glRotatef(90.0f, 1, 0, 0);
-		draw.glRotatef(model.getAngle(), 0, 1, 0);
+		draw.glRotatef(model.getAngle() + building.getAngle(), 0, 1, 0);
 
 		while((next = model.popFace(building.getCurrentFrame(),building.getState())) != null){
 			
@@ -593,6 +597,10 @@ public class BuildingModelList implements IBoundingBoxes {
 		}else if(Names.WALL.equals(type)){
 			
 			return wall.getBB(state);
+			
+		}else if(Names.WALLTOWER.equals(type)){
+		
+			return wallTower.getBB(state);
 			
 		}else if(Names.MINE.equals(type)){
 			

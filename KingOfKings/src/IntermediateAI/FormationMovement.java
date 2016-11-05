@@ -79,8 +79,8 @@ public class FormationMovement {
 				//new CollisionMap(buildings, units,
 				//maps.getMap(map),map).getCollisionMap()
 						ArrayList<int[]> newSection = 
-								new Pathfinder(GameEngineCollisionMap.toArray(map)
-										).getPath(orgPath.get(i)[0]
+								new Pathfinder(GameEngineCollisionMap.toArray(map),
+										0).getPath(orgPath.get(i)[0]
 											, orgPath.get(i)[1],orgPath.get(i-1)[0]
 												, orgPath.get(i-1)[1]);
 						

@@ -32,10 +32,10 @@ public class GraphicsCollisionMap {
 		GraphicsCollisionMap.map.RefreshCollisionMap(map,fogMaps.getMap(mapNo));
 	}
 	
-	public static void addUnit(int x, int y,int unitNo){
+	public static void addUnit(int x, int y,int unitNo,boolean isWorker){
 		
 		//System.out.println("Add Unit CollisionMap");
-		GraphicsCollisionMap.map.addUnit(x, y,unitNo,true);
+		GraphicsCollisionMap.map.addUnit(x, y,unitNo, isWorker);
 	}
 	
 	public static void removeUnit(int unitNo){
@@ -47,7 +47,7 @@ public class GraphicsCollisionMap {
 	public static void addBuilding(int x, int y,int SizeX,int SizeY,int buildingNo){
 		
 		//System.out.println("ADD BUILDING " + fogOfWar + " GraphicsCollisionMap");
-		GraphicsCollisionMap.map.addBuilding(x, y,SizeX/2,SizeY/2,buildingNo);
+		GraphicsCollisionMap.map.addBuilding(x, y,SizeX/2,SizeY/2,buildingNo,false,0);
 	}
 	
 	public static void removeBuilding(int buildingNo,int sizeX,int sizeY){

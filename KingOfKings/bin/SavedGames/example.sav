@@ -1,7 +1,0 @@
-//game_name
-u
-//unitNo unit_name x y player map move follow followX followY followMap path
-b
-//buildingNo building_name x y map unit_queue
-p
-//player_number gold food diplomacy 
