@@ -25,6 +25,7 @@ public class FogMapCache {
 			
 		}else{
 			
+			System.out.println("CAN'T FIND MAP FogMapCache");
 			return null;
 		}
 	}

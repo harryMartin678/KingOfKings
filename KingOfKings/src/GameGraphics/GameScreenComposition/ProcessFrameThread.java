@@ -2,6 +2,7 @@ package GameGraphics.GameScreenComposition;
 
 import java.util.ArrayList;
 
+import AI.AIHandler;
 import Buildings.Names;
 import GameClient.ClientMessages;
 import GameClient.ParseText;
@@ -18,11 +19,12 @@ public class ProcessFrameThread {
 	private IComBuildingListFrameProcess buildings;
 	private IComMouseFrameProcess mouse;
 	private boolean mapBeenSet;
+	private AIHandler ais;
 	
 	public ProcessFrameThread(ClientWrapper cmsg,IComFrameProcessMap map,
 			IComFrameProcessDisplay display,IComGameEngineFrameProcess engine,
 			IComUnitListFrameProcess units,IComBuildingListFrameProcess buildings,
-			IComMouseFrameProcess mouse){
+			IComMouseFrameProcess mouse,AIHandler ais){
 		
 		this.cmsg = cmsg;
 		this.map = map;
@@ -31,6 +33,7 @@ public class ProcessFrameThread {
 		this.units = units;
 		this.buildings = buildings;
 		this.mouse = mouse;
+		this.ais = ais;
 	}
 	
 

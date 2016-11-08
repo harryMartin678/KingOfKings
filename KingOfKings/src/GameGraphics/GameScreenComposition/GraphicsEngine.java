@@ -15,6 +15,7 @@ import com.jogamp.opengl.GLException;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.gl2.GLUT;
 
+import AI.AIHandler;
 import GameGraphics.BuildingList;
 import GameGraphics.Unit;
 import GameGraphics.UnitList;
@@ -36,7 +37,7 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 	private boolean start;
 
 	
-	public GraphicsEngine(final ClientWrapper cmsg) throws IOException{
+	public GraphicsEngine(final ClientWrapper cmsg,AIHandler ais) throws IOException{
 		
 		
 		GraphicsCollisionMap.fogOfWar = true;
@@ -64,7 +65,7 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 		processFrame = new ProcessFrameThread(cmsg,(IComFrameProcessMap) map,
 				(IComFrameProcessDisplay) display,(IComGameEngineFrameProcess) this,
 				(IComUnitListFrameProcess) units,(IComBuildingListFrameProcess) buildings,
-				(IComMouseFrameProcess) mouseKeyboard);
+				(IComMouseFrameProcess) mouseKeyboard,ais);
 		
 
 		display.setUpDisplay((IComUnitListDisplay) units, (IComBuildingListDisplay) buildings,

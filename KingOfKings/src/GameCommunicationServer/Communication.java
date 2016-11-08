@@ -11,10 +11,23 @@ public class Communication {
 	private Server server;
 	private boolean enterGame;
 	private ArrayList<Integer> players;
+	private ArrayList<Integer> aiPlayer;
 	private ArrayList<String> playerNames;
 	private int playersEntered;
 	private int playersReady;
 	private int syncUser;
+	private int AINum = 0;
+	
+	private String[] AINAMES = new String[]{
+		
+		"AI_ARNOLD",
+		"AI_STALONE",
+		"AI_STATHAM",
+		"AI_HARRY",
+		"AI_BRUCE",
+		"AI_CHAN",
+		"AI_LEE"
+	};
 	
 	public Communication() throws IOException{
 		
@@ -32,6 +45,7 @@ public class Communication {
 		
 		
 		players = new ArrayList<Integer>();
+		aiPlayer = new ArrayList<Integer>();
 		playerNames= new ArrayList<String>();
 		enterGame = false;
 		playersReady = 0;
@@ -65,20 +79,7 @@ public class Communication {
 								
 								if(msg.substring(0, 4).equals("name")){
 									
-									playerNames.add(msg.substring(5));
-									
-									String playerList = "";
-									
-									for(int s = 0; s < playerNames.size(); s++){
-										
-										playerList += playerNames.get(s) + " ";
-									}
-									
-									for(int pn = 0; pn < players.size(); pn++){
-										
-										server.sendMessage(players.get(pn), playerList);
-										
-									}
+									registerNewPlayer(msg.substring(5));
 									
 								}else if(msg.equals("ENTERGAME")){
 									
@@ -90,6 +91,12 @@ public class Communication {
 										break mainLoop;
 									}
 								
+								}else if(msg.equals("ADDAI")){
+									
+									registerNewPlayer(AINAMES[AINum]);
+									AINum++;
+									aiPlayer.add(playerNames.size()-1);
+									
 								}
 								
 							}
@@ -108,8 +115,26 @@ public class Communication {
 						e.printStackTrace();
 					}
 				}
+			
 			}
 			
+			private void registerNewPlayer(String playerName) throws IOException{
+				
+				playerNames.add(playerName);
+				
+				String playerList = "";
+				
+				for(int s = 0; s < playerNames.size(); s++){
+					
+					playerList += playerNames.get(s) + " ";
+				}
+				
+				for(int pn = 0; pn < players.size(); pn++){
+					
+					server.sendMessage(players.get(pn), playerList);
+					
+				}
+			}
 			
 		}).start();
 	}
@@ -251,6 +276,18 @@ public class Communication {
 					
 					if(playersReady == playersEntered){
 						
+						
+						//assign AI
+						for(int a = 0; a < aiPlayer.size(); a++){
+							
+							try {
+								server.sendMessage(a%players.size(), "AI " + AINAMES[a%AINAMES.length] +
+										" " + new Integer(a).toString());
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
 						
 						for(int p = 0; p < players.size(); p++){
 							

@@ -5,6 +5,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
@@ -14,6 +15,9 @@ import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.gl2.GLUT;
 
+import AI.AIHandler;
+import AI.IAI;
+import AI.InitialAI;
 import GameClient.ClientMessages;
 
 public class GameScreen implements GLEventListener  {
@@ -24,10 +28,12 @@ public class GameScreen implements GLEventListener  {
 	private ClientMessages cmsg;
 	private ClientWrapper wrapper;
 	private JFrame frame;
+	private AIHandler ais;
 	
 	public GameScreen(ClientMessages cmsg,int thisPlayer,int noOfPlayer,JFrame frame,String loadGame){
 		
 		wrapper = new ClientWrapper(cmsg,thisPlayer,noOfPlayer,loadGame);
+		ais = new AIHandler();
 		this.cmsg = cmsg;
 		this.frame = frame;
 		
@@ -37,7 +43,7 @@ public class GameScreen implements GLEventListener  {
 		
 		try {
 			System.out.println("engine start");
-			engine = new GraphicsEngine(wrapper);
+			engine = new GraphicsEngine(wrapper,ais);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -62,7 +68,17 @@ public class GameScreen implements GLEventListener  {
 						System.out.println(message + " message");
 						wrapper.GameStarted();
 						Start();
+						
+						ais.startAIs();
+						
 						break;
+						
+					}else if(message.substring(0, 2).equals("AI")){
+						
+						String[] aimsg = message.split(" ");
+						System.out.println("You have " + aimsg[1] + " GameScreen");
+						ais.newInitialAI(aimsg[1],new Integer(aimsg[2]),cmsg);
+						
 					}else{
 						
 						cmsg.putBackMessage(message);

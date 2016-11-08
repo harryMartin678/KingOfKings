@@ -58,6 +58,11 @@ public class CollisionMap {
 			
 			}else{
 				
+				if(this.VisibleMap == null){
+					
+					this.VisibleMap = new boolean[CollisionMap.length][CollisionMap[0].length];
+				}
+				
 				for(int x = 0; x < VisibleMap.length; x++){
 					for(int y = 0; y < VisibleMap[x].length; y++){
 						
