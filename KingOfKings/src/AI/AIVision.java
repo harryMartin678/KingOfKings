@@ -1,8 +1,13 @@
 package AI;
 
-public class AIVision {
+import java.util.ArrayList;
+import java.util.HashMap;
 
-	private int AINum;
+import Buildings.BuildingList;
+import Map.GameEngineCollisionMap;
+import Units.UnitList;
+
+public class AIVision {
 	
 	public enum Type{
 		
@@ -11,65 +16,54 @@ public class AIVision {
 		SITE
 	}
 	
-	public AIVision(int AINum){
+	public UnitList units;
+	
+	public AIVision(UnitList units, BuildingList buildings){
 		
-		this.AINum = AINum;
+		this.units = units;
 	}
 	
+	public int[] getUnitPos(int unitNo){
+		
+		return this.units.getUnits(unitNo).getPos();
+	}
 	
+	public int[] findBuildingSpot(int mapNo,String name){
+		
+		return GameEngineCollisionMap.FindBuildingSpot(mapNo,name);
+	}
 	
-	public class AIObj{
+	public int[] findMineSpot(int mapNo){
 		
-		private int id;
-		private int x; 
-		private int y;
-		private boolean isBusy;
-		private Type type;
-		
-		
-		public AIObj(int id,int x, int y,Type type){
-			
-			this.id = id;
-			this.x = x; 
-			this.y = y;
-			this.type = type;
-		}
-		
-		public void busy(){
-			
-			isBusy = true;
-		}
-		
-		public void idle(){
-			
-			isBusy = false;
-		}
-		
-		public boolean isBusy(){
-			
-			return isBusy;
-		}
-		
-		public int getX(){
-			
-			return x;
-			
-		}
-		
-		public int getY(){
-			
-			return y;
-		}
-		
-		public int getID(){
-			
-			return id;
-		}
-		
-		public Type getType(){
-			
-			return type;
-		}
+		return GameEngineCollisionMap.FindMineSpot(mapNo);
+	}
 
+	public ArrayList<Integer> getWorker(int mapNo,int aiNum) {
+		// TODO Auto-generated method stub
+		ArrayList<Integer> workers = GameEngineCollisionMap.getWorkers(mapNo);
+		
+		for(int w = 0; w < workers.size(); w++){
+			
+			if(units.getUnitPlayer(workers.get(w)) != aiNum || 
+					!units.getUnitIsIdle(workers.get(w))){
+				
+				workers.remove(w);
+				w--;
+			}
+		}
+		
+		return workers;
 	}
+
+	public float getUnitX(int unitNo) {
+		// TODO Auto-generated method stub
+		return this.units.getUnitX(unitNo);
+	}
+	
+	public float getUnitY(int unitNo){
+		
+		return this.units.getUnitY(unitNo);
+	}
+	
+
 }

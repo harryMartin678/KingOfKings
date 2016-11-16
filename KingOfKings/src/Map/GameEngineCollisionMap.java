@@ -91,4 +91,19 @@ public class GameEngineCollisionMap {
 		return GameEngineCollisionMap.maps[mapNo].getHeight();
 	}
 
+	public static int[] FindBuildingSpot(int mapNo,String name) {
+		// TODO Auto-generated method stub
+		return GameEngineCollisionMap.maps[mapNo].FindBuildingSpot(name);
+	}
+
+	public static int[] FindMineSpot(int mapNo) {
+		// TODO Auto-generated method stub
+		return GameEngineCollisionMap.maps[mapNo].FindMineSpot();
+	}
+	
+	public static ArrayList<Integer> getWorkers(int mapNo){
+		
+		return GameEngineCollisionMap.maps[mapNo].getWorkers();
+	}
+
 }

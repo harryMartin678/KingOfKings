@@ -2,8 +2,13 @@ package Map;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.Semaphore;
 
+import Buildings.Building;
+import Buildings.Farm;
 import Units.UnitList;
 import Util.Point;
 
@@ -348,9 +353,12 @@ public class CollisionMap {
 //		System.out.println("end unit");
 		
 		//System.out.println((pos == null) + " " + (direction == null) + " Unit");
-		if(CollisionMap[pos[0] + direction[0]][pos[1] + direction[1]] == 7){
+		int lx = pos[0] + direction[0];
+		int ly = pos[1] + direction[1];
+		if(lx >= 0 && lx < CollisionMap.length && ly >= 0 && ly < CollisionMap[0].length &&
+				CollisionMap[lx][ly] == 7){
 			
-			int[] targetPos = new int[]{pos[0] + direction[0],pos[1] + direction[1]};
+			int[] targetPos = new int[]{lx,ly};
 
 			return PosToUnit.get(Point.GetUniqueNo(targetPos));
 			
@@ -430,6 +438,22 @@ public class CollisionMap {
 			//	+ " CollisionMap");
 		return enemyNo;
 	}
+	
+	public ArrayList<Integer> getWorkers(){
+		
+		ArrayList<Integer> workers = new ArrayList<Integer>();
+		
+		Set<Entry<Integer,int[]>> units = UnitToPos.entrySet();
+		for(Entry<Integer,int[]> unit:units){
+			
+			if(CollisionMap[unit.getValue()[0]][unit.getValue()[1]] == 9){
+				
+				workers.add(unit.getKey());
+			}
+		}
+		
+		return workers;
+	}
 
 	public ArrayList<Integer> FindWorkers(int sx, int sy, int sizeX, int sizeY) {
 		// TODO Auto-generated method stub
@@ -459,5 +483,71 @@ public class CollisionMap {
 	public boolean[][] getVisibleMap() {
 		// TODO Auto-generated method stub
 		return VisibleMap;
+	}
+
+	public int[] FindBuildingSpot(String name) {
+		// TODO Auto-generated method stub
+		int cx;
+		int cy;
+		Random random = new Random();
+		do{
+			
+			cx = (int)(random.nextGaussian() * (CollisionMap.length/2)) + (CollisionMap.length/2);
+			cy = (int)(random.nextGaussian() * (CollisionMap[0].length/2)) + (CollisionMap[0].length/2);
+			
+		}while(!isLegalBuildingSpot(cx,cy,name));
+		
+		return new int[]{cx,cy};
+	}
+	
+	private boolean isLegalBuildingSpot(int x, int y,String name){
+		
+		Building building = GameGraphics.Building.GetBuildingClass(name);
+		return x < CollisionMap.length && x >= 0 && y < CollisionMap[0].length && y >=0
+				&& !InArea(x, y, building.getSizeX(), building.getSizeY());
+	}
+
+	public int[] FindMineSpot() {
+		// TODO Auto-generated method stub
+		
+		int cx = CollisionMap.length/2;
+		int cy = CollisionMap[0].length/2;
+		
+		int ry = 0;
+		int rx = 0;
+		while(true){
+			
+			for(int x = cx - rx; x < cx + rx; x++){
+				for(int y = cy - ry; y < cy + ry; y++){
+					//System.out.print(CollisionMap[x][y] + " ");
+					if(CollisionMap[x][y] == 3){
+						
+						return new int[]{x,y};
+					}
+				}
+				//System.out.println();
+			}
+			
+			boolean xBool = cx - rx >= 0 && cx + rx < CollisionMap.length;
+			if(xBool){
+				
+				rx++;
+			}
+			
+			boolean yBool = cy - ry >= 0 && cy + ry < CollisionMap[0].length;
+			if(yBool){
+				
+				ry ++;
+			}
+			
+			
+			if(!xBool && !yBool){
+				
+				break;
+			}
+			
+		}
+		
+		return new int[]{-1,-1};
 	}
 }

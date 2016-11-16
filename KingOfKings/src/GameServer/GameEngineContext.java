@@ -1,5 +1,6 @@
 package GameServer;
 
+import AI.AIHandler;
 import Buildings.BuildingAttackList;
 import Buildings.BuildingList;
 import Buildings.BuildingProgress;
@@ -24,6 +25,7 @@ public class GameEngineContext {
 	public SavedGame saveGame;
 	public String gameName;
 	public BuildingAttackList buildingAttackList;
+	public AIHandler ais;
 	//public TowerBattles towerBattles;
 
 }

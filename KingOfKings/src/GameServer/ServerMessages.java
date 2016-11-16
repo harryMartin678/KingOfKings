@@ -104,6 +104,10 @@ public class ServerMessages {
 		}else if(inpt.substring(0,4).equals("sgme")){
 			
 			engine.saveGame(inpt.substring(5),communicationTurn,thisPlayer);
+		
+		}else if(inpt.substring(0,2).equals("AI")){
+			
+			engine.addAI(inpt.substring(3),communicationTurn);
 		}
 	}
 	

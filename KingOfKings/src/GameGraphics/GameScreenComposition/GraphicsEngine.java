@@ -37,7 +37,7 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 	private boolean start;
 
 	
-	public GraphicsEngine(final ClientWrapper cmsg,AIHandler ais) throws IOException{
+	public GraphicsEngine(final ClientWrapper cmsg) throws IOException{
 		
 		
 		GraphicsCollisionMap.fogOfWar = true;
@@ -65,7 +65,7 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 		processFrame = new ProcessFrameThread(cmsg,(IComFrameProcessMap) map,
 				(IComFrameProcessDisplay) display,(IComGameEngineFrameProcess) this,
 				(IComUnitListFrameProcess) units,(IComBuildingListFrameProcess) buildings,
-				(IComMouseFrameProcess) mouseKeyboard,ais);
+				(IComMouseFrameProcess) mouseKeyboard);
 		
 
 		display.setUpDisplay((IComUnitListDisplay) units, (IComBuildingListDisplay) buildings,

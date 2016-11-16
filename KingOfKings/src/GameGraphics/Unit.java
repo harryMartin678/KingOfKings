@@ -336,4 +336,9 @@ public class Unit {
 		return dieing;
 	}
 
+	public boolean isBusy() {
+		// TODO Auto-generated method stub
+		return !(moving || firing || dieing);
+	}
+
 }

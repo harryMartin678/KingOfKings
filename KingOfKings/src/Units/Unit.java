@@ -3,12 +3,13 @@ package Units;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import AI.IAIUnit;
 import Buildings.Mine;
 import Buildings.Names;
 import GameServer.AddUnitModule;
 import Map.GameEngineCollisionMap;
 
-public class Unit {
+public class Unit implements IAIUnit{
 	
 	private float x;
 	private float y;
@@ -821,6 +822,12 @@ public class Unit {
 	public void setRecalculate(boolean recaluate) {
 		// TODO Auto-generated method stub
 		this.recalculate = recalculate;
+	}
+
+	@Override
+	public int[] getPos() {
+		// TODO Auto-generated method stub
+		return new int[]{Math.round(x),Math.round(y)};
 	}
 	
 

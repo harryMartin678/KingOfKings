@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import AI.AIHandler;
 import Buildings.Building;
 import Buildings.BuildingAttackList;
 import Buildings.BuildingList;
@@ -68,6 +69,7 @@ public class GameEngine{
 		context.sites = new BuildingProgress();
 		context.battles = new UnitBattleList(context.units);
 		context.buildingAttackList = new BuildingAttackList(context.maps,context.buildings);
+		context.ais = new AIHandler(context.units,context.buildings,context.maps);
 		
 		GameEngineCollisionMap.SetUpCollisionMaps(context.maps);
 		
@@ -106,17 +108,19 @@ public class GameEngine{
 	//		context.units.addUnit(Names.SWORDSMAN, 0, 55, 54, 1);
 	//		context.units.addUnit(Names.SWORDSMAN, 0, 54, 55, 1);
 			
-			context.units.addUnit(Names.WORKER, 0, (context.maps.getMapWidth(0)/2)-6, 
-					(context.maps.getMapHeight(0)/2)-2, 0);
-	
-			context.units.addUnit(Names.HOUND, 0, 
-					(context.maps.getMapWidth(0)/2)-11, (context.maps.getMapHeight(0)/2)-10, 0);
-			context.buildings.addBuilding(1, 0,(context.maps.getMapWidth(0)/2)-11,
-			(context.maps.getMapHeight(0)/2)-15, Names.STOCKPILE);
+//			context.units.addUnit(Names.WORKER, 0, (context.maps.getMapWidth(0)/2)-6, 
+//					(context.maps.getMapHeight(0)/2)-2, 0);
+//	
+//			context.units.addUnit(Names.HOUND, 0, 
+//					(context.maps.getMapWidth(0)/2)-11, (context.maps.getMapHeight(0)/2)-10, 0);
+//			context.buildings.addBuilding(1, 0,(context.maps.getMapWidth(0)/2)-11,
+//			(context.maps.getMapHeight(0)/2)-15, Names.STOCKPILE);
 	
 			
 			for(int i = 0; i < context.maps.getSize(); i++){
 				
+				context.units.addUnit(Names.WORKER, i, (context.maps.getMapWidth(0)/2)-6, 
+						(context.maps.getMapHeight(0)/2)-2, context.maps.getPlayer(i));
 				//context.maps.getPlayer(i)
 				context.buildings.addBuilding(context.maps.getPlayer(i), i, 
 						context.maps.getMapWidth(i)/2, context.maps.getMapHeight(i)/2,
@@ -393,8 +397,11 @@ public class GameEngine{
 					commands.add(MethodCallup.ATTACKUNIT, parameters, communicationTurn);
 				}
 				
-				
-				
+				if(context.ais.areAIs()){
+					
+					context.ais.updateAIs(context.units);
+					context.ais.doAICommands(commands,communicationTurn);
+				}
 				
 //				ArrayList<int[]> newWorkerSites = context.units.areWorkersIdle(
 //						context.sites.findNewBuilds());
@@ -1112,6 +1119,35 @@ public class GameEngine{
 		}else{
 			commands.add(MethodCallup.SAVEGAME, parameters, passedCommunicationTurn);
 		}
+	}
+
+	public void addAI(String inpt, int passedCommunicationTurn) {
+		// TODO Auto-generated method stub
+		//System.out.println(inpt + " GameEngine");
+		String[] ais = inpt.split(":");
+		for(int p = 0; p < ais.length; p++){
+			
+			System.out.println(ais[p] + " GameEngine");
+		}
+		//System.out.println(ais.length + " GameEngine");
+		for(int a = 0; a < ais.length; a++){
+			
+			System.out.println(ais[a] + " GameEngine");
+			String[] aiInfo = ais[a].split(" ");
+			for(int i = 0; i < aiInfo.length; i++){
+				
+				System.out.println(aiInfo[i] + " GameEngine");
+			}
+			MethodParameter parameters = new MethodParameter();
+			parameters.setAddAI(new Integer(aiInfo[0]), aiInfo[1]);
+			
+			if(passedCommunicationTurn != -1){
+				commands.add(MethodCallup.ADDAI, parameters, communicationTurn);
+			}else{
+				commands.add(MethodCallup.ADDAI, parameters, passedCommunicationTurn);
+			}
+		}
+		
 	}
 	
 }

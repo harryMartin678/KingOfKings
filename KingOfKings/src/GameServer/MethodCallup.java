@@ -49,6 +49,7 @@ public class MethodCallup implements Commands {
 	public static String ADDWORKERTOSITE = "addWordToSite";
 	public static String TOWERATTACKUNIT = "towerAttackUnit";
 	public static String BUILDWALLS = "buildwall";
+	public static String ADDAI = "addai";
 	
 	private MethodParameter parameters;
 	private int CommunicationTurnNo;
@@ -191,6 +192,10 @@ public class MethodCallup implements Commands {
 			
 			this.buildWalls(parameters.wallCenter,parameters.wallSize,parameters.unitNos , parameters.map,
 					parameters.playerNo);
+		
+		}else if(methodName.equals(ADDAI)){
+			
+			this.addAI(parameters.AINum, parameters.AIName);
 		}
 		
 	}
@@ -628,6 +633,12 @@ public class MethodCallup implements Commands {
 					mapNo, playerNumber, type, new int[]{},currentAngle);
 			//}
 		}
+	}
+
+	@Override
+	public void addAI(int AINum, String AIName) {
+		// TODO Auto-generated method stub
+		context.ais.newInitialAI(AIName, AINum);
 	}
 
 }

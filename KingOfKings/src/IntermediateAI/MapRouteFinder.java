@@ -111,14 +111,14 @@ public class MapRouteFinder {
 				
 				//finds the next transition point 
 				int mapTo = maps.getMap(currentMap).getTransitionPointByIndex(m)[2]-1;
-				System.out.println(mapTo + " mapRouteFinder");
-				for(int c = 0; c < closedList.size(); c++){
-					
-					System.out.println(closedList.get(c).intValue() + " MapRouteFinder ClosedList");
-				}
+				//System.out.println(mapTo + " mapRouteFinder");
+//				for(int c = 0; c < closedList.size(); c++){
+//					
+//					System.out.println(closedList.get(c).intValue() + " MapRouteFinder ClosedList");
+//				}
 				//-not into a map on the closedlist 
 				if(!onClosedList(closedList,mapTo)){
-					System.out.println(mapTo + " mapRouteFinder");
+					//System.out.println(mapTo + " mapRouteFinder");
 					//find a path from the start transition point to the transition point 
 					//of the next map
 					//new CollisionMap(buildings,units

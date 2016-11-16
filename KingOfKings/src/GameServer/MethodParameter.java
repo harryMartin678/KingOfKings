@@ -71,6 +71,10 @@ public class MethodParameter {
 	//save game
 	public int noOfPlayers;
 	
+	//AI parameters
+	public int AINum;
+	public String AIName;
+	
 	public void SetMoveUnit(int unitNo, int targetX, int targetY, int targetMap){
 		
 		this.unitNo = unitNo;
@@ -191,5 +195,10 @@ public class MethodParameter {
 		this.noOfPlayers = noOfPlayers;
 	}
 	
+	public void setAddAI(int AINum, String AIName){
+		
+		this.AINum = AINum;
+		this.AIName = AIName;
+	}
 
 }

@@ -107,7 +107,7 @@ public class MapComp implements IComMapMouseKeyboard, IComMapDisplay, IComFrameP
 	public void setViewedMap(int viewedMap) {
 		// TODO Auto-generated method stub
 		
-		//System.out.println("Set ViewedMap MapComp " + viewedMap);
+		System.out.println("Set ViewedMap MapComp " + viewedMap);
 		
 		this.viewedMap = viewedMap;
 		map = maps.getMap(viewedMap);

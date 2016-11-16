@@ -277,16 +277,10 @@ public class Communication {
 					if(playersReady == playersEntered){
 						
 						
-						//assign AI
+						String ais = "AI ";
 						for(int a = 0; a < aiPlayer.size(); a++){
 							
-							try {
-								server.sendMessage(a%players.size(), "AI " + AINAMES[a%AINAMES.length] +
-										" " + new Integer(a).toString());
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
+							ais += aiPlayer.get(a) + " " + AINAMES[a] + ":";
 						}
 						
 						for(int p = 0; p < players.size(); p++){
@@ -294,6 +288,7 @@ public class Communication {
 							try {
 								//System.out.println(players.get(p) + " players");
 								server.sendMessage(p, "ALLREADY");
+								server.sendMessage(p, ais);
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();

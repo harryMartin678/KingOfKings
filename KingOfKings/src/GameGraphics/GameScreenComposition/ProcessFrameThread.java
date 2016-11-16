@@ -19,12 +19,11 @@ public class ProcessFrameThread {
 	private IComBuildingListFrameProcess buildings;
 	private IComMouseFrameProcess mouse;
 	private boolean mapBeenSet;
-	private AIHandler ais;
 	
 	public ProcessFrameThread(ClientWrapper cmsg,IComFrameProcessMap map,
 			IComFrameProcessDisplay display,IComGameEngineFrameProcess engine,
 			IComUnitListFrameProcess units,IComBuildingListFrameProcess buildings,
-			IComMouseFrameProcess mouse,AIHandler ais){
+			IComMouseFrameProcess mouse){
 		
 		this.cmsg = cmsg;
 		this.map = map;
@@ -33,7 +32,6 @@ public class ProcessFrameThread {
 		this.units = units;
 		this.buildings = buildings;
 		this.mouse = mouse;
-		this.ais = ais;
 	}
 	
 

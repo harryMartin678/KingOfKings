@@ -110,7 +110,7 @@ IComUnitListFrameProcess {
 //			}
 //		}
 		//System.out.println(units.get(unitNoToIndex.get(unitNo)).getUnitNo() + " " + unitNo  + " UnitList");
-		//System.out.println(units.size() + " UnitList Before");
+		System.out.println("Remove units UnitList");
 		units.remove((int)unitNoToIndex.get(unitNo));
 		unitNoToIndex.remove(unitNo);
 		GraphicsCollisionMap.removeUnit(unitNo);

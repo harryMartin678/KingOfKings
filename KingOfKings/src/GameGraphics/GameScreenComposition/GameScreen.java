@@ -28,12 +28,10 @@ public class GameScreen implements GLEventListener  {
 	private ClientMessages cmsg;
 	private ClientWrapper wrapper;
 	private JFrame frame;
-	private AIHandler ais;
 	
 	public GameScreen(ClientMessages cmsg,int thisPlayer,int noOfPlayer,JFrame frame,String loadGame){
 		
 		wrapper = new ClientWrapper(cmsg,thisPlayer,noOfPlayer,loadGame);
-		ais = new AIHandler();
 		this.cmsg = cmsg;
 		this.frame = frame;
 		
@@ -43,7 +41,7 @@ public class GameScreen implements GLEventListener  {
 		
 		try {
 			System.out.println("engine start");
-			engine = new GraphicsEngine(wrapper,ais);
+			engine = new GraphicsEngine(wrapper);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -69,15 +67,7 @@ public class GameScreen implements GLEventListener  {
 						wrapper.GameStarted();
 						Start();
 						
-						ais.startAIs();
-						
 						break;
-						
-					}else if(message.substring(0, 2).equals("AI")){
-						
-						String[] aimsg = message.split(" ");
-						System.out.println("You have " + aimsg[1] + " GameScreen");
-						ais.newInitialAI(aimsg[1],new Integer(aimsg[2]),cmsg);
 						
 					}else{
 						
