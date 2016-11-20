@@ -57,6 +57,7 @@ public class InitialAI extends IAI {
 		ArrayList<Integer> workers = vision.getWorker(mapNo,AINum);
 		
 		if(workers.size() > 0){
+			
 			int[] pos = vision.findMineSpot(mapNo);
 			
 			int minDist = Integer.MAX_VALUE;
@@ -74,11 +75,10 @@ public class InitialAI extends IAI {
 			AICommand command = new AICommand();
 			command.command = MethodCallup.BUILDBUILDING;
 			MethodParameter parameters = new MethodParameter();
-			parameters.setBuildBuilding(Math.round(vision.getUnitX(workerNo)),
-					Math.round(vision.getUnitY(workerNo)), mapNo, AINum,
+			parameters.setBuildBuilding(pos[0],pos[1], mapNo, AINum,
 					Names.MINE, new int[]{workerNo});
 			command.parameters = parameters;
-			
+			System.out.println("Assign Worker: " + workerNo + " " + pos[0] + " " + pos[1] + " IntialAI");
 			return command;
 			
 		}else{

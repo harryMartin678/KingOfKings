@@ -168,7 +168,7 @@ public class GameEngine{
 				while(true){
 					
 					long time = System.currentTimeMillis();
-					doOnFrame();
+					gameLoop();
 					
 					long waitTime = 200 - time;
 					
@@ -217,7 +217,7 @@ public class GameEngine{
 		communicationTurn++;
 	}
 	
-	public void doOnFrame(){
+	public void gameLoop(){
 
 		if(beacon.gameStarted() && context.maps.NoWinner()){
 		
@@ -397,7 +397,7 @@ public class GameEngine{
 					commands.add(MethodCallup.ATTACKUNIT, parameters, communicationTurn);
 				}
 				
-				if(context.ais.areAIs()){
+				if(beat % 5 == 0 && context.ais.areAIs()){
 					
 					context.ais.updateAIs(context.units);
 					context.ais.doAICommands(commands,communicationTurn);

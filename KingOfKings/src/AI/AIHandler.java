@@ -47,6 +47,7 @@ public class AIHandler {
 
 	public void updateAIs(UnitList units) {
 		// TODO Auto-generated method stub
+		//System.out.println("START UDPDATE AIHandler");
 		for(int m = 0; m < maps.getSize(); m++){
 			
 			if(aiNumToIndex.containsKey(maps.getPlayer(m))){
@@ -55,6 +56,8 @@ public class AIHandler {
 				ais.get(aiNumToIndex.get(maps.getPlayer(m))).UpdateForMap(m);
 			}
 		}
+		
+		//System.out.println("END UDPDATE AIHandler");
 	}
 
 	public void doAICommands(UserCommandList commands,int communicationTurnNo) {

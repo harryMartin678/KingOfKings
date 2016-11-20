@@ -42,8 +42,10 @@ public class AIVision {
 		// TODO Auto-generated method stub
 		ArrayList<Integer> workers = GameEngineCollisionMap.getWorkers(mapNo);
 		
+		//System.out.println(workers.size() + " AIVision");
+		units.begin();
 		for(int w = 0; w < workers.size(); w++){
-			
+
 			if(units.getUnitPlayer(workers.get(w)) != aiNum || 
 					!units.getUnitIsIdle(workers.get(w))){
 				
@@ -51,6 +53,7 @@ public class AIVision {
 				w--;
 			}
 		}
+		units.end();
 		
 		return workers;
 	}

@@ -21,6 +21,8 @@ public class CollisionMap {
 	private HashMap<Integer,int[]> BuildingToPos;
 	private HashMap<Integer,Boolean> visibilityCheck;
 	private HashMap<Integer,Integer> overlap;
+	private HashMap<Integer,int[]> buildingNoToMineSpot;
+	private HashMap<Integer,Integer> mineSpotToBuildingNo;
 	private Semaphore lock;
 	private boolean fogOfWar;
 	private int mapNo;
@@ -32,6 +34,8 @@ public class CollisionMap {
 		UnitToPos = new HashMap<Integer, int[]>();
 		PosToUnit = new HashMap<Integer, Integer>();
 		BuildingToPos = new HashMap<Integer, int[]>();
+		mineSpotToBuildingNo = new HashMap<Integer, Integer>();
+		buildingNoToMineSpot = new HashMap<Integer,int[]>();
 		visibilityCheck = new HashMap<Integer, Boolean>();
 		overlap = new HashMap<Integer, Integer>();
 		this.fogOfWar = fogOfWar;
@@ -243,7 +247,15 @@ public class CollisionMap {
 				if(CollisionMap[mx][my] == 7 || CollisionMap[mx][my] == 9){
 				
 					overlap.put(Point.GetUniqueNo(new int[]{mx,my}),CollisionMap[mx][my]);
+					
+				}else if(CollisionMap[mx][my] == 3){
+					
+					//takenMineSpots.put(buildingNo, Point.GetUniqueNo(new int[]{mx,my}));
+					System.out.println("mine at: " + mx + " " + my + " CollisionMap");
+					buildingNoToMineSpot.put(buildingNo, new int[]{mx,my});
+					mineSpotToBuildingNo.put(Point.GetUniqueNo(new int[]{mx,my}), buildingNo);
 				}
+			
 				
 				if(isWall){
 					
@@ -268,6 +280,13 @@ public class CollisionMap {
 		//System.out.println(buildingNo + " RemoveBuilding CollisionMap");
 		int[] pos = BuildingToPos.get(buildingNo);
 		BuildingToPos.remove(buildingNo);
+		
+		if(buildingNoToMineSpot.containsKey(buildingNo)){
+			
+			int[] minPos = buildingNoToMineSpot.get(buildingNo);
+			buildingNoToMineSpot.remove(buildingNo);
+			mineSpotToBuildingNo.remove(Point.GetUniqueNo(minPos));
+		}
 		
 		for(int mx = -SizeX + pos[0]; mx < SizeX + pos[0]; mx++){
 			for(int my = -SizeY + pos[1]; my < SizeY + pos[1]; my++){
@@ -446,7 +465,10 @@ public class CollisionMap {
 		Set<Entry<Integer,int[]>> units = UnitToPos.entrySet();
 		for(Entry<Integer,int[]> unit:units){
 			
-			if(CollisionMap[unit.getValue()[0]][unit.getValue()[1]] == 9){
+			int x = unit.getValue()[0];
+			int y = unit.getValue()[1];
+			if(CollisionMap[x][y] == 9 || (overlap.containsKey(Point.GetUniqueNo(new int[]{x,y})) &&
+							overlap.get(Point.GetUniqueNo(new int[]{x,y})) == 9)){
 				
 				workers.add(unit.getKey());
 			}
@@ -513,6 +535,12 @@ public class CollisionMap {
 		int cx = CollisionMap.length/2;
 		int cy = CollisionMap[0].length/2;
 		
+//		for(int buildingNo : buildingNoToMineSpot.keySet()){
+//			
+//			System.out.println(buildingNo + " " + buildingNoToMineSpot.get(buildingNo)[0] + " "
+//			+ buildingNoToMineSpot.get(buildingNo)[1] + " CollisionMap");
+//		}
+//		
 		int ry = 0;
 		int rx = 0;
 		while(true){
@@ -520,7 +548,8 @@ public class CollisionMap {
 			for(int x = cx - rx; x < cx + rx; x++){
 				for(int y = cy - ry; y < cy + ry; y++){
 					//System.out.print(CollisionMap[x][y] + " ");
-					if(CollisionMap[x][y] == 3){
+					if(CollisionMap[x][y] == 3 && 
+							!mineSpotToBuildingNo.containsKey(Point.GetUniqueNo(new int[]{x,y}))){
 						
 						return new int[]{x,y};
 					}
