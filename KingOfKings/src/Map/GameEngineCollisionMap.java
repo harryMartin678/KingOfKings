@@ -1,8 +1,11 @@
 package Map;
 
 import java.util.ArrayList;
+import java.util.Random;
+import java.util.Set;
 
 import Units.UnitList;
+import Util.Point;
 
 public class GameEngineCollisionMap {
 
@@ -50,6 +53,11 @@ public class GameEngineCollisionMap {
 		return GameEngineCollisionMap.maps[mapNo].InArea(x, y, SizeX, SizeY);
 	}
 	
+	public static int getRequiredWallSize(int mapNo){
+		
+		return GameEngineCollisionMap.maps[mapNo].getRequiredWallSize();
+	}
+	
 	public static int getTile(int x, int y,int mapNo){
 		
 		return GameEngineCollisionMap.maps[mapNo].getTile(x, y);
@@ -80,6 +88,11 @@ public class GameEngineCollisionMap {
 		
 		return GameEngineCollisionMap.maps[mapNo].FindWorkers(x,y,sizeX,sizeY);
 	}
+	
+	public static ArrayList<Integer> getBuildings(int mapNo){
+		
+		return GameEngineCollisionMap.maps[mapNo].FindBuildings();
+	}
 
 	public static int getSizeX(int mapNo) {
 		// TODO Auto-generated method stub
@@ -91,9 +104,9 @@ public class GameEngineCollisionMap {
 		return GameEngineCollisionMap.maps[mapNo].getHeight();
 	}
 
-	public static int[] FindBuildingSpot(int mapNo,String name) {
+	public static int[] FindBuildingSpot(int mapNo,String name,Random generator) {
 		// TODO Auto-generated method stub
-		return GameEngineCollisionMap.maps[mapNo].FindBuildingSpot(name);
+		return GameEngineCollisionMap.maps[mapNo].FindBuildingSpot(name,generator);
 	}
 
 	public static int[] FindMineSpot(int mapNo) {
@@ -104,6 +117,11 @@ public class GameEngineCollisionMap {
 	public static ArrayList<Integer> getWorkers(int mapNo){
 		
 		return GameEngineCollisionMap.maps[mapNo].getWorkers();
+	}
+
+	public static Point getMapCenter(int mapNo) {
+		// TODO Auto-generated method stub
+		return Point.GetPoint(GameEngineCollisionMap.maps[mapNo].getCenter());
 	}
 
 }

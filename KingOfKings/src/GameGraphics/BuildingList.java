@@ -128,7 +128,7 @@ IComBuildingListFrameProcess {
 		
 		if(SelectedBuilding != -1 && SelectedBuilding == building){
 			
-			buildings.get(SelectedBuilding).addUnitQueue(unit);
+			buildings.get(buildingNosIndex.get(SelectedBuilding)).addUnitQueue(unit);
 		}
 	}
 	
@@ -190,7 +190,7 @@ IComBuildingListFrameProcess {
 	public synchronized void clearSelectedBuildingQueue(int buildingNo){
 		
 		if(SelectedBuilding != -1 && SelectedBuilding == buildingNo){
-			buildings.get(SelectedBuilding).clearUnitQueue();
+			buildings.get(buildingNosIndex.get(SelectedBuilding)).clearUnitQueue();
 		}
 	}
 	
@@ -382,7 +382,7 @@ IComBuildingListFrameProcess {
 			
 			return null;
 		}
-		return buildings.get(SelectedBuilding);
+		return buildings.get(buildingNosIndex.get(SelectedBuilding));
 	}
 
 	@Override
@@ -395,7 +395,8 @@ IComBuildingListFrameProcess {
 	@Override
 	public synchronized void unitIconSelected(int selected,int food,int gold) {
 		// TODO Auto-generated method stub
-		UnitCreator type = (UnitCreator) Building.GetBuildingClass(buildings.get(SelectedBuilding).getName());
+		UnitCreator type = (UnitCreator) Building.GetBuildingClass(
+				buildings.get(buildingNosIndex.get(SelectedBuilding)).getName());
 		String[] listOfUnits = type.unitcreated().split(";");
 		
 		Units.Unit unitDes = Units.Unit.GetUnit(listOfUnits[selected]);
@@ -403,7 +404,7 @@ IComBuildingListFrameProcess {
 		if(selected < listOfUnits.length && unitDes.goldNeeded() <= gold && unitDes.foodNeeded() <= food){
 			
 			cmsgs.addMessage("auq " + SelectedBuilding + " " + listOfUnits[selected]
-					 + " " +  buildings.get(SelectedBuilding).getPlayer());
+					 + " " +  buildings.get(buildingNosIndex.get(SelectedBuilding)).getPlayer());
 		}
 
 	}
@@ -411,7 +412,8 @@ IComBuildingListFrameProcess {
 	@Override
 	public String getUnitType(int index) {
 		// TODO Auto-generated method stub
-		UnitCreator type = (UnitCreator) Building.GetBuildingClass(buildings.get(SelectedBuilding).getName());
+		UnitCreator type = (UnitCreator) Building.GetBuildingClass(buildings.get(
+				buildingNosIndex.get(SelectedBuilding)).getName());
 		return type.unitcreated().split(";")[index];
 	}
 
@@ -435,13 +437,13 @@ IComBuildingListFrameProcess {
 	@Override
 	public synchronized int getGhostBuildingSelected() {
 		// TODO Auto-generated method stub
-		return buildings.get(SelectedBuilding).getBuildingNo();
+		return buildings.get(buildingNosIndex.get(SelectedBuilding)).getBuildingNo();
 	}
 
 	@Override
 	public synchronized int getAttackBuildingNo() {
 		// TODO Auto-generated method stub
-		return buildings.get(AttackBuilding).getBuildingNo();
+		return buildings.get(buildingNosIndex.get(AttackBuilding)).getBuildingNo();
 	}
 
 	@Override
@@ -547,6 +549,7 @@ IComBuildingListFrameProcess {
 						graphicalstates.get(this.buildings.get(this.buildings.size()-1).getBuildingNo()));
 			}
 			
+			
 		}
 		
 	}
@@ -568,8 +571,8 @@ IComBuildingListFrameProcess {
 		}else{
 			
 			//System.out.println((SelectedBuilding.getName() == Names.ARCHERYTOWER) + " BuildingList");
-			return buildings.get(SelectedBuilding).getName().equals(Names.ARCHERYTOWER)
-					|| buildings.get(SelectedBuilding).getName().equals(Names.BALLISTICTOWER);
+			return buildings.get(buildingNosIndex.get(SelectedBuilding)).getName().equals(Names.ARCHERYTOWER)
+					|| buildings.get(buildingNosIndex.get(SelectedBuilding)).getName().equals(Names.BALLISTICTOWER);
 			
 		}
 	}
@@ -590,7 +593,7 @@ IComBuildingListFrameProcess {
 	public boolean isUnitCreatorSelected() {
 		// TODO Auto-generated method stub
 		return SelectedBuilding != -1 && 
-				Building.GetBuildingClass(buildings.get(SelectedBuilding).getName()) 
+				Building.GetBuildingClass(buildings.get(buildingNosIndex.get(SelectedBuilding)).getName()) 
 				instanceof UnitCreator;
 	}
 
@@ -599,14 +602,14 @@ IComBuildingListFrameProcess {
 		// TODO Auto-generated method stub
 		
 		if(SelectedBuilding == -1 || 
-				!(Building.GetBuildingClass(buildings.get(SelectedBuilding).getName())
+				!(Building.GetBuildingClass(buildings.get(buildingNosIndex.get(SelectedBuilding)).getName())
 						instanceof UnitCreator)){
 			
 			return 0;
 		}
 		
 		UnitCreator type = (UnitCreator)Building.GetBuildingClass(
-				buildings.get(SelectedBuilding).getName());
+				buildings.get(buildingNosIndex.get(SelectedBuilding)).getName());
 		String unitsPossible = type.unitcreated();
 		
 		return unitsPossible.split(";").length;

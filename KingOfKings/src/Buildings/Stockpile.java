@@ -37,6 +37,12 @@ public class Stockpile extends UnitCreator {
 //	}
 	
 	@Override
+	public String unitcreated() {
+		// TODO Auto-generated method stub
+		return Names.WORKER;
+	}
+	
+	@Override
 	public int getSizeX() {
 		// TODO Auto-generated method stub
 		return super.getSizeX()+2;

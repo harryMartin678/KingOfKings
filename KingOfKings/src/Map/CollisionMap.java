@@ -458,6 +458,27 @@ public class CollisionMap {
 		return enemyNo;
 	}
 	
+	public int getRequiredWallSize(){
+		
+		int centerX = CollisionMap.length/2;
+		int centerY = CollisionMap[0].length/2;
+		int[] center = new int[]{centerX,centerY};
+		
+		int furthestPoint = 0;
+		
+		for(int[] position : BuildingToPos.values()){
+			
+			furthestPoint = Math.max(furthestPoint, getStraightDis(center,position));
+		}
+		
+		return furthestPoint;
+	}
+	
+	private int getStraightDis(int[] center, int[] pos){
+		
+		return (int) Math.round(Math.sqrt(Math.pow(center[0] - pos[0], 2) + Math.pow(center[1] - pos[1], 2)));
+	}
+	
 	public ArrayList<Integer> getWorkers(){
 		
 		ArrayList<Integer> workers = new ArrayList<Integer>();
@@ -475,6 +496,11 @@ public class CollisionMap {
 		}
 		
 		return workers;
+	}
+	
+	public ArrayList<Integer> FindBuildings(){
+		
+		return new ArrayList<Integer>(BuildingToPos.keySet());
 	}
 
 	public ArrayList<Integer> FindWorkers(int sx, int sy, int sizeX, int sizeY) {
@@ -507,15 +533,14 @@ public class CollisionMap {
 		return VisibleMap;
 	}
 
-	public int[] FindBuildingSpot(String name) {
+	public int[] FindBuildingSpot(String name,Random generator) {
 		// TODO Auto-generated method stub
 		int cx;
 		int cy;
-		Random random = new Random();
 		do{
 			
-			cx = (int)(random.nextGaussian() * (CollisionMap.length/2)) + (CollisionMap.length/2);
-			cy = (int)(random.nextGaussian() * (CollisionMap[0].length/2)) + (CollisionMap[0].length/2);
+			cx = (int)(generator.nextGaussian() * 8) + (CollisionMap.length/2);
+			cy = (int)(generator.nextGaussian() * 8) + (CollisionMap[0].length/2);
 			
 		}while(!isLegalBuildingSpot(cx,cy,name));
 		
@@ -578,5 +603,10 @@ public class CollisionMap {
 		}
 		
 		return new int[]{-1,-1};
+	}
+
+	public int[] getCenter() {
+		// TODO Auto-generated method stub
+		return new int[]{CollisionMap.length/2,CollisionMap[0].length/2};
 	}
 }

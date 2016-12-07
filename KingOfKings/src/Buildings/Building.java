@@ -1,6 +1,7 @@
 package Buildings;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import GameGraphics.UnitList;
 import GameServer.AddUnitModule;
@@ -36,7 +37,7 @@ public class Building {
 	
 	public boolean destroyed(){
 		
-		return (hitpoints <= 0);
+		return (hitpoints <= 0) && getType() != Names.RESERVATION;
 	}
 	
 	public void SetBuildingNo(int buildingNo){
@@ -116,7 +117,7 @@ public class Building {
 		return temp;
 	}
 	
-	public int[] getFreeSpace(int unitX, int unitY,ArrayList<int[]> taken){
+	public int[] getFreeSpace(int unitX, int unitY,HashMap<Integer,int[]> taken){
 		
 		return addUnit.getFreeSpace(map,unitX, unitY,taken);
 	}

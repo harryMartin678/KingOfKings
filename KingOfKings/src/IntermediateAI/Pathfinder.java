@@ -1,11 +1,15 @@
 package IntermediateAI;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import Util.Point;
 
 public class Pathfinder {
 	
-	private ArrayList<Node> closedList;
-	private ArrayList<Node> openList;
+	private HashMap<Integer,Node> closedList;
+	private HashMap<Integer,Node> openList;
+	private Node smallestNode;
 	private ArrayList<Node> path;
 	private int[][] map;
 	private int targetX;
@@ -16,8 +20,8 @@ public class Pathfinder {
 	
 	public Pathfinder(int[][] map,int playerNo){
 		
-		closedList = new ArrayList<Node>();
-		openList = new ArrayList<Node>();
+		closedList = new HashMap<Integer,Node>();
+		openList = new HashMap<Integer,Node>();
 		path = new ArrayList<Node>();
 		this.map = map;
 	}
@@ -146,26 +150,38 @@ public class Pathfinder {
 	 */
 	public Node getSmallestNode(){
 		
-		int index = 0;
-		int lowest = Integer.MAX_VALUE;
+//		int index = 0;
+//		int lowest = Integer.MAX_VALUE;
+//		
+//		//if there is no route
+//		if(openList.size() == 0){
+//			
+//			return null;
+//		}
 		
-		//if there is no route
-		if(openList.size() == 0){
-			
-			return null;
-		}
+//		for(int i = 0; i < openList.size(); i++){
+//
+//			if(openList.get(i).getF() < lowest){
+//				
+//				index = i;
+//				lowest = openList.get(i).getF();
+//			}
+//			
+//		}
 		
-		for(int i = 0; i < openList.size(); i++){
-
-			if(openList.get(i).getF() < lowest){
-				
-				index = i;
-				lowest = openList.get(i).getF();
-			}
-			
-		}
-		
-		return openList.get(index);
+//		for(Node node : openList.values()){
+//			
+//			if(node.getF() < lowest){
+//				
+//				index = node.getIndex();
+//				lowest = node.getF();
+//			}
+//		}
+//		
+//		return openList.get(index);
+		Node ret = smallestNode;
+		smallestNode = null;
+		return ret;
 		
 	}
 	
@@ -184,6 +200,7 @@ public class Pathfinder {
 //			System.out.println();
 //		}
 //		System.out.println("end pathfinder");
+		smallestNode = null;
 		if((startX == targetX && startY == targetY)
 				|| (map[targetX][targetY] != 0 && map[targetX][targetY] != 4)){
 		
@@ -203,10 +220,13 @@ public class Pathfinder {
 		this.targetY = targetY;
 		
 		//add the start node
-		openList.add(start);
+		openList.put(start.getIndex(), start);
+		//openList.add(start);
 		path.add(getSmallestNode());
-		closedList.add(start);
-		openList.remove(start);
+		//closedList.add(start);
+		closedList.put(start.getIndex(), start);
+		//openList.remove(start);
+		openList.remove(start.getIndex());
 		
 		Node node = start;
 		
@@ -217,21 +237,26 @@ public class Pathfinder {
 			//adds the nodes around the current node to openlist 
 			addNodes(node);
 			//adds current node to the openlist 
-			openList.remove(node);
+			//openList.remove(node);
+			openList.remove(node.getIndex());
 			//gets the node with the smallest F score 
 			node = getSmallestNode();
 			//adds the new current node to the closedList
-			closedList.add(node);
+			//closedList.add(node);
+			if(node != null){
+				closedList.put(node.getIndex(), node);
+			}
 				
 			//if there is not route 
 			if(node == null){
 				
 				foundRoute = false;
-				break;
+				return new ArrayList<int[]>();
 			
 			//keep looking for a node in till the target node has been added to the closed list
-			}else if(closedList.get(closedList.size()-1).getX() == targetX 
-					&& closedList.get(closedList.size()-1).getY() == targetY){
+			//}else if(closedList.get(closedList.size()-1).getX() == targetX 
+			//		&& closedList.get(closedList.size()-1).getY() == targetY){
+			}else if(closedList.containsKey(Point.GetUniqueNo(new int[]{targetX,targetY}))){
 				
 				foundRoute = true;
 				break;
@@ -242,9 +267,9 @@ public class Pathfinder {
 		}
 		
 		//if there is a route, find it 
-		if(foundRoute){
-			createPath(closedList.get(closedList.size()-1));
-		}
+		//if(foundRoute){
+			createPath(closedList.get(Point.GetUniqueNo(new int[]{targetX,targetY})));
+		//}
 		
 		//return path as list on int[] 
 		return nodeListToIntList(path);				
@@ -276,36 +301,47 @@ public class Pathfinder {
 							&& map[currentNode.getX()][currentNode.getY()] != 4
 								 && !isOurWall(currentNode.getX(),currentNode.getY()))){
 				
-				closedList.add(currentNode);
+				//closedList.add(currentNode);
+				closedList.put(currentNode.getIndex(), currentNode);
 				continue;
 			
 		    //is the node on the closed list 
-			}else if(onList(currentNode,closedList)){
+			}else if(closedList.containsKey(currentNode.getIndex())){
 
 				continue;
-			}else{
 				
-				int index; 
-
+			}else{
 				//if the node is already on the openList 
-				if((index = onListIndex(currentNode,openList)) != -1){
+				if(openList.containsKey(currentNode.getIndex())){
 					
 					//if the currentNode has a lower F score
-					if(currentNode.getF() < openList.get(index).getF()){
+					if(currentNode.getF() < openList.get(currentNode.getIndex()).getF()){
 						
 						//if so then change the parent
-						openList.get(index).changeParent(currentNode.getParent());
+						openList.get(currentNode.getIndex()).changeParent(currentNode.getParent());
+						
 					}
 				//else just add it to the openList
 				}else{
 					
-					openList.add(currentNode);
+					//openList.add(currentNode);
+					openList.put(currentNode.getIndex(), currentNode);
 				}
+				
+				isSmallestNode(currentNode);
 			}
 			
 			
 		}
 		
+	}
+	
+	private void isSmallestNode(Node node){
+		
+		if(smallestNode == null || node.getF() < smallestNode.getF()){
+			
+			smallestNode = node;
+		}
 	}
 
 	private boolean isOurWall(int x, int y) {

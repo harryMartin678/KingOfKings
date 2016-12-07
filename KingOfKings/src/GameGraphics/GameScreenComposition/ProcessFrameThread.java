@@ -205,6 +205,7 @@ public class ProcessFrameThread {
 		
 		units.begin();
 		
+		Unit.ClearAnimateUnits();
 		//units.clear();
 		
 		ArrayList<Unit> TempUnits = new ArrayList<Unit>();

@@ -29,5 +29,6 @@ public class Names {
 	
 	
 	public static final String ARROW = "arrow";
+	public static final String RESERVATION = "reservation";
 
 }

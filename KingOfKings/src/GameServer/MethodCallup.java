@@ -2,6 +2,7 @@ package GameServer;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import Buildings.Building;
 import Buildings.BuildingSite;
@@ -195,7 +196,7 @@ public class MethodCallup implements Commands {
 		
 		}else if(methodName.equals(ADDAI)){
 			
-			this.addAI(parameters.AINum, parameters.AIName);
+			this.addAI(parameters.AINum, parameters.AIName, parameters.Seed);
 		}
 		
 	}
@@ -408,7 +409,7 @@ public class MethodCallup implements Commands {
 		// TODO Auto-generated method stub
 		Building toAttack = context.buildings.getBuilding(buildingNo);
 		
-		ArrayList<int[]> taken = new ArrayList<int[]>();
+		HashMap<Integer,int[]> taken = new HashMap<Integer,int[]>();
 //		CollisionMap map = new CollisionMap(context.buildings,context.units,
 //				context.maps.getMap(toAttack.getMap()),toAttack.getMap());
 		for(int u = 0; u < unitNos.length; u++){
@@ -417,7 +418,7 @@ public class MethodCallup implements Commands {
 					(int)context.units.getUnitX(unitNos[u]),
 					(int)context.units.getUnitY(unitNos[u]), taken);
 
-			taken.add(pos);
+			taken.put(Point.GetUniqueNo(pos), pos);
 			
 			this.moveUnit(unitNos[u],pos[0] , pos[1], toAttack.getMap(),false);
 			if(toAttack instanceof Tower){
@@ -431,10 +432,9 @@ public class MethodCallup implements Commands {
 	
 	public void buildBuilding(int x, int y,int map,int player, String buildingType,int[] unitNos,int angle){
 		
-		//System.out.println(buildingType + " methodCallup bb");
-		context.buildings.registerSite();
+		int buildingNo = context.buildings.addReservation();
 		Building newBuilding = GameGraphics.Building.GetBuildingClass(buildingType,
-				context.buildings.getNextBuildingNo());
+				buildingNo);
 
 		newBuilding.setPlayer(player);
 		newBuilding.setMap(map);
@@ -457,19 +457,22 @@ public class MethodCallup implements Commands {
 		context.sites.addSite(newBuilding,workers);
 		BuildingSite site = context.sites.getLastSite();
 		
-		ArrayList<int[]> unitTargets = new ArrayList<int[]>();
+		HashMap<Integer,int[]> unitTargets = new HashMap<Integer,int[]>();
 //				new CollisionMap(context.buildings,
 //						context.units,context.maps.getMap(newBuilding.getMap()),
 //						newBuilding.getMap())
 		for(int u = 0; u < unitNos.length; u++){
-			unitTargets.add(site.getFreeSpace(
+			int[] pos = site.getFreeSpace(
 							(int) context.units.getUnitX(unitNos[u]), 
-							(int) context.units.getUnitY(unitNos[u]),unitTargets));
-
-			this.moveUnit(unitNos[u], unitTargets.get(unitTargets.size()-1)[0],
-					unitTargets.get(unitTargets.size()-1)[1], newBuilding.getMap(),false);
-			
-			((Worker) context.units.getUnits(unitNos[u])).build(newBuilding.getBuildingNo());
+							(int) context.units.getUnitY(unitNos[u]),unitTargets);
+			if(pos[0] != -1){
+				unitTargets.put(Point.GetUniqueNo(pos), pos);
+				this.moveUnit(unitNos[u], pos[0], pos[1], newBuilding.getMap(),false);
+				((Worker) context.units.getUnits(unitNos[u])).build(newBuilding.getBuildingNo());
+			}else{
+				
+				site.removeWorker(unitNos[u]);
+			}
 			
 		} 
 	}
@@ -572,19 +575,19 @@ public class MethodCallup implements Commands {
 	public void addWorkerToSite(int buildingNo, int[] unitNos) {
 		// TODO Auto-generated method stub
 		
-		ArrayList<int[]> unitTargets = new ArrayList<int[]>();	
+		HashMap<Integer,int[]> unitTargets = new HashMap<Integer,int[]>();	
 
-		
 //		new CollisionMap(context.buildings,
 //				context.units,context.maps.getMap(newBuilding.getMap()),newBuilding.getMap()),
 		for(int u = 0; u < unitNos.length; u++){
 			
 			Building newBuilding = context.sites.getBuilding(buildingNo);
-			unitTargets.add(newBuilding.getFreeSpace(
+			int[] pos = newBuilding.getFreeSpace(
 					(int) context.units.getUnitX(unitNos[u]), 
-							(int) context.units.getUnitY(unitNos[u]),unitTargets));
-			this.moveUnit(unitNos[u], unitTargets.get(unitTargets.size()-1)[0],
-					unitTargets.get(unitTargets.size()-1)[1], newBuilding.getMap(),false);
+							(int) context.units.getUnitY(unitNos[u]),unitTargets);
+			unitTargets.put(Point.GetUniqueNo(pos), pos);
+			this.moveUnit(unitNos[u], pos[0],
+					pos[1], newBuilding.getMap(),false);
 			Worker worker = (Worker) context.units.getUnits(unitNos[u]);
 			worker.build(buildingNo);
 			context.sites.addWorker(worker);
@@ -636,9 +639,9 @@ public class MethodCallup implements Commands {
 	}
 
 	@Override
-	public void addAI(int AINum, String AIName) {
+	public void addAI(int AINum, String AIName,long Seed) {
 		// TODO Auto-generated method stub
-		context.ais.newInitialAI(AIName, AINum);
+		context.ais.newInitialAI(AIName, AINum,Seed);
 	}
 
 }

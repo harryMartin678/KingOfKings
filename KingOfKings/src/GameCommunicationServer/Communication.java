@@ -11,7 +11,7 @@ public class Communication {
 	private Server server;
 	private boolean enterGame;
 	private ArrayList<Integer> players;
-	private ArrayList<Integer> aiPlayer;
+	private ArrayList<long[]> aiPlayer;
 	private ArrayList<String> playerNames;
 	private int playersEntered;
 	private int playersReady;
@@ -45,7 +45,7 @@ public class Communication {
 		
 		
 		players = new ArrayList<Integer>();
-		aiPlayer = new ArrayList<Integer>();
+		aiPlayer = new ArrayList<long[]>();
 		playerNames= new ArrayList<String>();
 		enterGame = false;
 		playersReady = 0;
@@ -95,7 +95,8 @@ public class Communication {
 									
 									registerNewPlayer(AINAMES[AINum]);
 									AINum++;
-									aiPlayer.add(playerNames.size()-1);
+									aiPlayer.add(new long[]{playerNames.size()-1,
+											System.currentTimeMillis()});
 									
 								}
 								
@@ -280,7 +281,7 @@ public class Communication {
 						String ais = "AI ";
 						for(int a = 0; a < aiPlayer.size(); a++){
 							
-							ais += aiPlayer.get(a) + " " + AINAMES[a] + ":";
+							ais += aiPlayer.get(a)[0] + " " + aiPlayer.get(a)[1] + " " + AINAMES[a] + ":";
 						}
 						
 						for(int p = 0; p < players.size(); p++){
@@ -288,7 +289,9 @@ public class Communication {
 							try {
 								//System.out.println(players.get(p) + " players");
 								server.sendMessage(p, "ALLREADY");
-								server.sendMessage(p, ais);
+								if(aiPlayer.size() > 0){
+									server.sendMessage(p, ais);
+								}
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();

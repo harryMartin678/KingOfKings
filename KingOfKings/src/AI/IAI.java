@@ -31,7 +31,7 @@ public abstract class IAI {
 		return copy;
 	}
 
-	public abstract void UpdateForMap(int mapNo);
+	public abstract void UpdateForMap(int mapNo,int food,int gold);
 	public int getNoOfCommands() {
 		// TODO Auto-generated method stub
 		return commands.size();

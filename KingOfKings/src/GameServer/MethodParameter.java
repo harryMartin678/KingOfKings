@@ -74,6 +74,7 @@ public class MethodParameter {
 	//AI parameters
 	public int AINum;
 	public String AIName;
+	public long Seed;
 	
 	public void SetMoveUnit(int unitNo, int targetX, int targetY, int targetMap){
 		
@@ -195,10 +196,11 @@ public class MethodParameter {
 		this.noOfPlayers = noOfPlayers;
 	}
 	
-	public void setAddAI(int AINum, String AIName){
+	public void setAddAI(int AINum,long Seed, String AIName){
 		
 		this.AINum = AINum;
 		this.AIName = AIName;
+		this.Seed = Seed;
 	}
 
 }

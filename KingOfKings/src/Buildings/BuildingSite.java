@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import Map.CollisionMap;
 import Units.Worker;
+import Util.Point;
 
 public class BuildingSite {
 	
@@ -39,18 +40,22 @@ public class BuildingSite {
 		return building;
 	}
 	
-	public int[] getFreeSpace(int unitX, int unitY,ArrayList<int[]> taken){
+	public int[] getFreeSpace(int unitX, int unitY,HashMap<Integer,int[]> taken){
 		
-		ArrayList<int[]> com = new ArrayList<int[]>();
-		com.addAll(taken);
-		com.addAll(takenSpaces.values());
-		return building.getFreeSpace(unitX, unitY,com);
+		HashMap<Integer,int[]> combine = new HashMap<Integer, int[]>();
+		if(taken.size() > 0){
+			combine.putAll(taken);
+		}
+		if(takenSpaces.size() > 0){
+			combine.putAll(takenSpaces);
+		}
+		return building.getFreeSpace(unitX, unitY,combine);
 	}
 	
 	public void addWorker(Worker creator){
 		
 		creators.add(creator);
-		takenSpaces.put(creator.getUnitNo(), creator.getTarget());
+		takenSpaces.put(Point.GetUniqueNo(creator.getTarget()), creator.getTarget());
 	}
 //	b + " " + buildings.getBuildingType(b) + " " 
 //	+ buildings.getBuildingX(b) + " " +
@@ -94,6 +99,7 @@ public class BuildingSite {
 		
 		progress = (int) tempProgress;
 
+		//*10
 		if(progress < (building.getBuildTime()*10)){
 			
 			return true;
@@ -105,6 +111,7 @@ public class BuildingSite {
 				
 				creators.get(c).stopAttack(false);
 				creators.get(c).stopBuild();
+				creators.get(c).cancelMovement();
 			}
 			
 			return false;
@@ -142,6 +149,20 @@ public class BuildingSite {
 	public ArrayList<Worker> getCreators() {
 		// TODO Auto-generated method stub
 		return creators;
+	}
+
+	public void removeWorker(int unitNo) {
+		// TODO Auto-generated method stub
+		for(int u = 0; u < creators.size(); u++){
+			
+			if(creators.get(u).getUnitNo() == unitNo){
+				
+				creators.get(u).stopBuild();
+				creators.remove(u);
+				break;
+				
+			}
+		}
 	}
 
 }

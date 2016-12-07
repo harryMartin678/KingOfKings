@@ -37,6 +37,6 @@ public interface Commands {
 	public void alliance(int player1, int player2);
 	public void atWar(int player1, int player2);
 	
-	public void addAI(int AINum,String AIName);
+	public void addAI(int AINum, String AIName,long Seed);
 	
 }

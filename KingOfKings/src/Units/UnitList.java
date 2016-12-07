@@ -356,7 +356,8 @@ public class UnitList implements Cloneable,IUnitList {
 
 	public void cancelFollow(int unitFollow,int unitNo) {
 		// TODO Auto-generated method stub
-		units.get(unitFollow).unRegisterFollow(unitNo);
+		units.get(unitFollow).unRegisterFollow(Math.round(units.get(unitNo).getX())
+				,Math.round(units.get(unitNo).getY()));
 	}
 
 	public boolean getUnitIsIdle(int unitNo) {

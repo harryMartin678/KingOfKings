@@ -12,5 +12,28 @@ public class Spearyard extends UnitCreator{
 		// TODO Auto-generated method stub
 		return Names.SPEARYARD;
 	}
+	
+	public int getSizeX() {
+		// TODO Auto-generated method stub
+		return super.getSizeX() + 2;
+	}
+	
+	@Override
+	public int getMaxHitpoint() {
+		// TODO Auto-generated method stub
+		return super.getMaxHitpoint()+1000;
+	}
+	
+	@Override
+	public int getSizeY() {
+		// TODO Auto-generated method stub
+		return super.getSizeY() + 2;
+	}
+	
+	@Override
+	public int getBuildTime() {
+		// TODO Auto-generated method stub
+		return super.getBuildTime()+200;
+	}
 
 }

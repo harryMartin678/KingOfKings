@@ -59,6 +59,11 @@ public class Node {
 		return y;
 	}
 	
+	public int getIndex(){
+		
+		return (int)((0.5 * (x + y) * (x + y + 1)) + y);
+	}
+	
 	public void foundHigher(){
 		
 		foundHigher = true;

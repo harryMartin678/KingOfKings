@@ -36,9 +36,10 @@ public class BuildingProgress {
 		for(int i = 0; i < sites.size(); i++){
 			
 			if(!sites.get(i).progress()){
-				
-				buildings.addBuilding(sites.get(i).getBuilding());
+				//buildings.addBuilding(sites.get(i).getBuilding());
+				buildings.siteBuilt(sites.get(i).getBuilding());
 				sites.remove(i);
+				i--;
 			}
 		}
 	}
@@ -126,6 +127,14 @@ public class BuildingProgress {
 			}
 		}
 		
+		System.out.println("Building is null BuildingProgress start");
+		for(int t = 0; t < sites.size(); t++){
+			
+			System.out.println(sites.get(t).getBuilding().getBuildingNo() + " " + buildingNo 
+					+ " BuildingProgress");
+		}
+		System.out.println("Building is null BuildingProgress end");
+		
 		return null;
 	}
 
@@ -154,8 +163,8 @@ public class BuildingProgress {
 		// TODO Auto-generated method stub
 		for(int s = 0; s < sites.size(); s++){
 			
-			buildingNos.registerSite();
-			sites.get(s).getBuilding().SetBuildingNo(buildingNos.getNextBuildingNo());
+			//buildingNos.registerSite();
+		//	sites.get(s).getBuilding().SetBuildingNo(buildingNos.getNextBuildingNo());
 			this.addSite(sites.get(s).getBuilding(), sites.get(s).getCreators());
 		}
 	}

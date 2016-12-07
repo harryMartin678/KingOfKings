@@ -35,6 +35,11 @@ public class Unit {
 		MovingUnits.remove(new Integer(unit.getUnitNo()));
 	}
 	
+	public static void ClearAnimateUnits() {
+		// TODO Auto-generated method stub
+		MovingUnits.clear();
+	}
+	
 	public static void AnimateUnits(IComUnitList units){
 		
 		units.begin();
@@ -340,5 +345,7 @@ public class Unit {
 		// TODO Auto-generated method stub
 		return !(moving || firing || dieing);
 	}
+
+	
 
 }

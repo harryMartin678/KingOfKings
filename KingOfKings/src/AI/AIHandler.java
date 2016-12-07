@@ -9,6 +9,7 @@ import GameGraphics.Unit;
 import GameGraphics.GameScreenComposition.MapComp;
 import GameServer.UserCommandList;
 import Map.MapList;
+import Player.PlayerList;
 import Units.UnitList;
 
 public class AIHandler {
@@ -17,18 +18,21 @@ public class AIHandler {
 	private HashMap<Integer,Integer> aiNumToIndex;
 	private AIVision vision;
 	private MapList maps;
+	private PlayerList players;
 	
-	public AIHandler(UnitList units,BuildingList buildings,MapList maps){
+	public AIHandler(UnitList units,BuildingList buildings,
+			MapList maps,PlayerList players){
 		
 		ais = new ArrayList<IAI>();
 		vision = new AIVision(units,buildings);
 		aiNumToIndex = new HashMap<Integer, Integer>();
 		this.maps = maps;
+		this.players = players;
 	}
 	
-	public void newInitialAI(String AIName,int AINum){
+	public void newInitialAI(String AIName,int AINum,long Seed){
 		
-		ais.add(new InitialAI(AIName,AINum,vision));
+		ais.add(new InitialAI(AIName,AINum,vision,Seed));
 		aiNumToIndex.put(AINum, ais.size()-1);
 	}
 
@@ -53,7 +57,8 @@ public class AIHandler {
 			if(aiNumToIndex.containsKey(maps.getPlayer(m))){
 				
 				//System.out.println(m + " " + maps.getPlayer(m) + " AIHandler");
-				ais.get(aiNumToIndex.get(maps.getPlayer(m))).UpdateForMap(m);
+				ais.get(aiNumToIndex.get(maps.getPlayer(m))).UpdateForMap(m,
+						players.getPlayersFood(maps.getPlayer(m)),players.getPlayersGold(maps.getPlayer(m)));
 			}
 		}
 		
@@ -66,7 +71,7 @@ public class AIHandler {
 			for(int c = 0; c < ais.get(a).getNoOfCommands(); c++){
 				
 				AICommand comm = ais.get(a).collectCommand();
-				commands.add(comm.command, comm.parameters, communicationTurnNo);
+				commands.addNextTurn(comm.command, comm.parameters, communicationTurnNo);
 			}
 		}
 	}

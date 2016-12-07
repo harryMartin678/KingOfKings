@@ -8,7 +8,7 @@ import Map.GameEngineCollisionMap;
 public class BuildingList implements IBuildingList,IComBuildingBATTList,IGetBuildingNos {
 	
 	private ArrayList<Building> buildings;
-	private int nextBuildingNo;
+	//private int nextBuildingNo;
 	
 	public BuildingList(){
 		
@@ -51,15 +51,15 @@ public class BuildingList implements IBuildingList,IComBuildingBATTList,IGetBuil
 		return buildings.get(index);
 	}
 	
-	public void registerSite(){
-		
-		nextBuildingNo++;
-	}
-	
-	public int getNextBuildingNo(){
-		
-		return nextBuildingNo;
-	}
+//	public void registerSite(){
+//		
+//		nextBuildingNo++;
+//	}
+//	
+//	public int getNextBuildingNo(){
+//		
+//		return nextBuildingNo;
+//	}
 	
 	public int getUnitQueueSize(int buildingNo){
 		
@@ -110,7 +110,23 @@ public class BuildingList implements IBuildingList,IComBuildingBATTList,IGetBuil
 	
 	public void addUnitToBuildingQueue(int buildingNo, String unitType){
 		
+//		for(int b = 0; b < buildings.size(); b++){
+//			
+//			System.out.println(b  +" " + buildings.get(b).getType() + " " + buildings.get(b).getBuildingNo());
+//		}
+		
 		buildings.get(buildingNo).addToUnitQueue(unitType);
+	}
+	
+	public void siteBuilt(Building newBuilding){
+		
+		buildings.remove(newBuilding.getBuildingNo());
+		buildings.add(newBuilding.getBuildingNo(),newBuilding);
+		
+		GameEngineCollisionMap.addBuilding(newBuilding.getX(), newBuilding.getY(),
+				newBuilding.getSizeX(),newBuilding.getSizeY(),
+				newBuilding.getBuildingNo(), newBuilding.getMap(),isWall(newBuilding.getType()),
+				newBuilding.getPlayer());
 	}
 	
 	public String getBuildingQueue(int buildingNo){
@@ -134,7 +150,7 @@ public class BuildingList implements IBuildingList,IComBuildingBATTList,IGetBuil
 		buildings.get(buildings.size()-1).setPlayer(player);
 		buildings.get(buildings.size()-1).SetBuildingNo(buildingNo);
 		
-		nextBuildingNo++;
+		//nextBuildingNo++;
 		GameEngineCollisionMap.addBuilding(x, y,building.getSizeX(),building.getSizeY(),
 				buildingNo, map,isWall(type),player);
 		
@@ -150,7 +166,7 @@ public class BuildingList implements IBuildingList,IComBuildingBATTList,IGetBuil
 		
 		//System.out.println("addBuilding");
 		buildings.add(building);
-		nextBuildingNo++;
+		//nextBuildingNo++;
 		GameEngineCollisionMap.addBuilding(building.getX(), building.getY(),
 				building.getSizeX(),building.getSizeY(),
 				building.getBuildingNo(), building.getMap(),isWall(building.getType()),
@@ -223,6 +239,25 @@ public class BuildingList implements IBuildingList,IComBuildingBATTList,IGetBuil
 	public int getBuildingNo(int index) {
 		// TODO Auto-generated method stub
 		return buildings.get(index).getBuildingNo();
+	}
+
+	public boolean canCreate(String name,int index) {
+		// TODO Auto-generated method stub
+		//System.out.println(buildings.get(index).getType() + " " + 
+				//buildings.get(index).unitcreated() + " " + name + " "
+				// + (buildings.get(index).unitcreated() == name) + " BuildingList");
+		return buildings.get(index).unitcreated() == name;
+	}
+
+	public int addReservation() {
+		// TODO Auto-generated method stub
+		buildings.add(new SiteReservation(buildings.size()));
+		return buildings.size()-1;
+	}
+
+	public boolean isReservation(int buildingNo) {
+		// TODO Auto-generated method stub
+		return buildings.get(buildingNo).getType() == Names.RESERVATION;
 	}
 
 }

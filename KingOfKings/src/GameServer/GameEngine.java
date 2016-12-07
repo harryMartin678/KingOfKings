@@ -69,7 +69,6 @@ public class GameEngine{
 		context.sites = new BuildingProgress();
 		context.battles = new UnitBattleList(context.units);
 		context.buildingAttackList = new BuildingAttackList(context.maps,context.buildings);
-		context.ais = new AIHandler(context.units,context.buildings,context.maps);
 		
 		GameEngineCollisionMap.SetUpCollisionMaps(context.maps);
 		
@@ -88,6 +87,7 @@ public class GameEngine{
 			
 			
 			context.players = new PlayerList(playerNo,5000,5000);
+			context.ais = new AIHandler(context.units,context.buildings,context.maps,context.players);
 			
 			for(int i = 0; i < playerNo; i++){
 				context.maps.getMap(i).setPlayer(i);
@@ -121,6 +121,8 @@ public class GameEngine{
 				
 				context.units.addUnit(Names.WORKER, i, (context.maps.getMapWidth(0)/2)-6, 
 						(context.maps.getMapHeight(0)/2)-2, context.maps.getPlayer(i));
+				context.units.addUnit(Names.WORKER, i, (context.maps.getMapWidth(0)/2)-6, 
+						(context.maps.getMapHeight(0)/2)-4, context.maps.getPlayer(i));
 				//context.maps.getPlayer(i)
 				context.buildings.addBuilding(context.maps.getPlayer(i), i, 
 						context.maps.getMapWidth(i)/2, context.maps.getMapHeight(i)/2,
@@ -195,7 +197,8 @@ public class GameEngine{
 	
 	private void CommunicationTurn(){
 		
-		commands.callMethods(communicationTurn);
+		//commands.callMethods(communicationTurn);
+		commands.setUpCallMethods(communicationTurn);
 		beacon.ready();
 		
 		while(true){
@@ -221,11 +224,13 @@ public class GameEngine{
 
 		if(beacon.gameStarted() && context.maps.NoWinner()){
 		
+			long start = System.currentTimeMillis();
 			if(beat == 5 || beat == 10){
 				
 				CommunicationTurn();
 			}
 			
+			commands.callMethods(beat%5);
 			//System.out.println(units.getUnitX(5) + " " + units.getUnitY(5) + " " 
 		///	+ units.getUnitMap(5));
 			
@@ -234,15 +239,18 @@ public class GameEngine{
 			//reveal map 
 			//revealMap();
 			//progress unit fights
+			long time1 = System.currentTimeMillis();
 			context.battles.simulateHit();
+			long time2 = System.currentTimeMillis();
 			
 			//progress unit to tower fights
 			context.battles.simulateTowerHit();
-			
+			long time3 = System.currentTimeMillis();
 			context.buildingAttackList.simulateDestruction();
-			
+			long time4 = System.currentTimeMillis();
 			//move units
 			context.units.moveUnits();
+			long time5 = System.currentTimeMillis();
 			
 			
 			
@@ -261,6 +269,7 @@ public class GameEngine{
 //			}
 			
 			//add resources from farms and mines 
+			long time6 = System.currentTimeMillis();
 			if(beat == 10){
 				
 				beat = 0;
@@ -277,11 +286,11 @@ public class GameEngine{
 						if(context.buildings.getBuildingType(b).equals(Names.MINE)
 								&& resourceBeat == 10){
 							
-							playersGold[context.buildings.getBuildingPlayer(b)]++;
+							playersGold[context.buildings.getBuildingPlayer(b)]+=5;
 						
 						}else if(context.buildings.getBuildingType(b).equals(Names.FARM)){
 	
-							playersFood[context.buildings.getBuildingPlayer(b)]++;
+							playersFood[context.buildings.getBuildingPlayer(b)]+=5;
 						}
 					}
 					
@@ -415,9 +424,16 @@ public class GameEngine{
 //				}
 			}
 			
+			long time7 = System.currentTimeMillis();
 			
+			//System.out.println("Loop Time: " + (time1-start) + " " + (time2-time1) + " " + 
+				//	(time3-time2) + " " + (time4-time3) + " " + (time5-time4) + " " + (time6-time5)
+					//		+ " " + (time7-time6) + " GameEngine");
+			//time2, time 4 time 6
 			beat++;
 		}
+		
+		
 
 	}
 	
@@ -631,47 +647,49 @@ public class GameEngine{
 		
 		for(int b = 0; b < context.buildings.getBuildingsSize(); b++){
 			
-			if(context.buildings.getBuildingMap(b) == map && !context.buildings.isBuildingDestroyed(b)){
-				
-				String buildingAttack = "-1";
-				String buildingAttackX = "-1";
-				String buildingAttackY = "-1";
-				
-				if(context.buildings.getBuilding(b) instanceof Tower){
+			if(!context.buildings.isReservation(b)){
+				if(context.buildings.getBuildingMap(b) == map && !context.buildings.isBuildingDestroyed(b)){
 					
-						buildingAttack = new Integer(
-								((Tower)context.buildings.getBuilding(b)).getAttacking()).toString();
-						if(!buildingAttack.equals("-1")){
-							buildingAttackX = new Integer((int)context.units.getUnitX(
-									((Tower)context.buildings.getBuilding(b)).getAttacking())).toString();
-							buildingAttackY = new Integer((int)context.units.getUnitY(
-									((Tower)context.buildings.getBuilding(b)).getAttacking())).toString();
-						}
+					String buildingAttack = "-1";
+					String buildingAttackX = "-1";
+					String buildingAttackY = "-1";
 					
+					if(context.buildings.getBuilding(b) instanceof Tower){
+						
+							buildingAttack = new Integer(
+									((Tower)context.buildings.getBuilding(b)).getAttacking()).toString();
+							if(!buildingAttack.equals("-1")){
+								buildingAttackX = new Integer((int)context.units.getUnitX(
+										((Tower)context.buildings.getBuilding(b)).getAttacking())).toString();
+								buildingAttackY = new Integer((int)context.units.getUnitY(
+										((Tower)context.buildings.getBuilding(b)).getAttacking())).toString();
+							}
+						
+					}
+	
+					info += context.buildings.getBuildingNo(b) + " " + 
+							context.buildings.getBuildingType(b) + " " + 
+							context.buildings.getBuildingX(b) + " " +
+							context.buildings.getBuildingY(b) +  " " +
+							context.buildings.getBuildingPlayer(b) 
+							+ " " + buildingAttack
+							+ " " + buildingAttackX 
+							+ " " + buildingAttackY;
+					
+					if(context.buildings.getBuildingType(b) == Names.WALL){
+						
+						info += " " + new Float(
+								((Wall)context.buildings.getBuilding(b)).getRotationFromCenter()).toString();
+					}
+					
+					info += "\n";
+				
+				}else if(context.buildings.isBuildingDestroyed(b) 
+						&& !context.buildings.getCollapseReported(b)){
+					
+					info += "collapse " + b + "\n";
+					context.buildings.setCollapseReported(b);
 				}
-
-				info += context.buildings.getBuildingNo(b) + " " + 
-						context.buildings.getBuildingType(b) + " " + 
-						context.buildings.getBuildingX(b) + " " +
-						context.buildings.getBuildingY(b) +  " " +
-						context.buildings.getBuildingPlayer(b) 
-						+ " " + buildingAttack
-						+ " " + buildingAttackX 
-						+ " " + buildingAttackY;
-				
-				if(context.buildings.getBuildingType(b) == Names.WALL){
-					
-					info += " " + new Float(
-							((Wall)context.buildings.getBuilding(b)).getRotationFromCenter()).toString();
-				}
-				
-				info += "\n";
-			
-			}else if(context.buildings.isBuildingDestroyed(b) 
-					&& !context.buildings.getCollapseReported(b)){
-				
-				info += "collapse " + b + "\n";
-				context.buildings.setCollapseReported(b);
 			}
 		}
 		
@@ -1132,14 +1150,14 @@ public class GameEngine{
 		//System.out.println(ais.length + " GameEngine");
 		for(int a = 0; a < ais.length; a++){
 			
-			System.out.println(ais[a] + " GameEngine");
+			//System.out.println(ais[a] + " GameEngine");
 			String[] aiInfo = ais[a].split(" ");
-			for(int i = 0; i < aiInfo.length; i++){
-				
-				System.out.println(aiInfo[i] + " GameEngine");
-			}
+//			for(int i = 0; i < aiInfo.length; i++){
+//				
+//				System.out.println(aiInfo[i] + " GameEngine");
+//			}
 			MethodParameter parameters = new MethodParameter();
-			parameters.setAddAI(new Integer(aiInfo[0]), aiInfo[1]);
+			parameters.setAddAI(new Integer(aiInfo[0]),new Long(aiInfo[1]),aiInfo[2]);
 			
 			if(passedCommunicationTurn != -1){
 				commands.add(MethodCallup.ADDAI, parameters, communicationTurn);

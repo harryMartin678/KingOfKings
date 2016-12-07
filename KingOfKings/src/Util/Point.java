@@ -43,4 +43,16 @@ public class Point {
 				" " + Point.GetUniqueNo(new int[]{120,116}));
  	}
 
+	public static Point GetPoint(int[] array) {
+		// TODO Auto-generated method stub
+		return new Point(array[0],array[1]);
+	}
+
+	public void normalize() {
+		// TODO Auto-generated method stub
+		int total = this.x + this.y;
+		this.x = this.x / total;
+		this.y = this.y / total;
+	}
+
 }

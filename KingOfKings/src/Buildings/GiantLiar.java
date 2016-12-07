@@ -26,6 +26,18 @@ public class GiantLiar extends UnitCreator {
 	}
 	
 	@Override
+	public int getMaxHitpoint() {
+		// TODO Auto-generated method stub
+		return super.getMaxHitpoint()+1000;
+	}
+	
+	@Override
+	public int getBuildTime() {
+		// TODO Auto-generated method stub
+		return super.getBuildTime()+200;
+	}
+	
+	@Override
 	public String unitcreated() {
 		// TODO Auto-generated method stub
 		return Names.GIANT;

@@ -8,6 +8,7 @@ import Buildings.Mine;
 import Buildings.Names;
 import GameServer.AddUnitModule;
 import Map.GameEngineCollisionMap;
+import Util.Point;
 
 public class Unit implements IAIUnit{
 	
@@ -18,10 +19,10 @@ public class Unit implements IAIUnit{
 	private int player;
 	private ArrayList<float[]> path;
 	private int angle;
-	private boolean moving;
+	protected boolean moving;
 	private int follow;
 	private int unitNo;
-	private boolean isAttack;
+	protected boolean isAttack;
 	private int delayAttack;
 	private int delayRetreat;
 	private boolean deathReported;
@@ -107,16 +108,15 @@ public class Unit implements IAIUnit{
 //			hack.setPos((int)path.get(1)[0], (int)path.get(1)[1]);
 //		}
 		addUnit.setBuilding(hack);
-		ArrayList<int[]> takenList = new ArrayList<int[]>(isTaken.values());
+		//HashMap<Integer,Boolean> takenList = new HashMap<Integer,Boolean>(isTaken.values());
 		
 //		if(path.size() > 1){
 //			
 //			takenList.add(new int[]{(int)path.get(1)[0],(int)path.get(1)[1]});
 //		}
 		
-		int[] pos = addUnit.getFreeSpace(map, Math.round(attackX), Math.round(attackY), 
-				takenList);
-		isTaken.put(unitNo, pos);
+		int[] pos = addUnit.getFreeSpace(map, Math.round(attackX), Math.round(attackY), isTaken);
+		isTaken.put(Point.GetUniqueNo(pos), pos);
 		
 //		float nextstepx = attackX;
 //		float nextstepy = attackY;
@@ -134,9 +134,9 @@ public class Unit implements IAIUnit{
 		return pos;
 	}
 	
-	public void unRegisterFollow(int unitNo){
+	public void unRegisterFollow(int unitX, int unitY){
 		
-		isTaken.remove(unitNo);
+		isTaken.remove(Point.GetUniqueNo(new int[]{unitX, unitY}));
 	}
 	
 	public void stopAttack(boolean delay){
@@ -334,6 +334,16 @@ public class Unit implements IAIUnit{
 				GameEngineCollisionMap.removeUnit(this.unitNo, this.map);
 			}
 		}
+	}
+	
+	public void cancelMovement() {
+		// TODO Auto-generated method stub
+		path.clear();
+		groupSpeed = -1;
+		
+		recalculate = 0;
+		
+		isTaken.clear();
 	}
 	
 	public void setPath(ArrayList<int[]> path){

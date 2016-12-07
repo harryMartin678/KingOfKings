@@ -53,6 +53,7 @@ public class Worker extends Unit {
 	
 	public void build(int buildingNo){
 		
+		//System.out.println("Build Worker");
 		goingToBuild = true;
 		this.buildingNo = buildingNo;
 	}
@@ -61,12 +62,15 @@ public class Worker extends Unit {
 	public void setPath(ArrayList<int[]> path) {
 		// TODO Auto-generated method stub
 		super.setPath(path);
-		goingToBuild = false;
+		stopBuild();
 	}
 	
 	@Override
 	public boolean idle() {
 		// TODO Auto-generated method stub
+		if(this.getMap() == 1){
+			//System.out.println(!goingToBuild + " " + this.getUnitNo() + " Worker");
+		}
 		return super.idle() && !goingToBuild;
 	}
 	
@@ -77,7 +81,10 @@ public class Worker extends Unit {
 
 	public void stopBuild() {
 		// TODO Auto-generated method stub
+		//System.out.println("Stop Build Worker");
 		goingToBuild = false;
 	}
+
+	
 
 }
