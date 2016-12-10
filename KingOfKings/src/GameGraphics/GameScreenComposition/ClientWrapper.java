@@ -15,9 +15,10 @@ public class ClientWrapper {
 		listenToOtherPlayers();
 	}
 	
-	public void requestFrame(){
+	public String requestFrame(){
 		
-		cmsg.addToInput(server.sendFrame());
+		//cmsg.addToInput(server.sendFrame());
+		return server.sendFrame();
 	}
 	
 	public String getFrameMessage(){

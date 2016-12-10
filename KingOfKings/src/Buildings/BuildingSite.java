@@ -54,8 +54,10 @@ public class BuildingSite {
 	
 	public void addWorker(Worker creator){
 		
-		creators.add(creator);
-		takenSpaces.put(Point.GetUniqueNo(creator.getTarget()), creator.getTarget());
+		if(creator.getTarget() != null){
+			creators.add(creator);
+			takenSpaces.put(Point.GetUniqueNo(creator.getTarget()), creator.getTarget());
+		}
 	}
 //	b + " " + buildings.getBuildingType(b) + " " 
 //	+ buildings.getBuildingX(b) + " " +
@@ -76,9 +78,10 @@ public class BuildingSite {
 		
 		for(int i = 0; i < creators.size(); i++){
 			
-			if(!creators.get(i).getGoingToBuild()){
+			if(!creators.get(i).buildingThisBuilding(building.getBuildingNo())){
 				
-				takenSpaces.remove(creators.get(i).getUnitNo());
+				takenSpaces.remove(Point.GetUniqueNo(new int[]{(int)creators.get(i).getX(),
+						(int)creators.get(i).getY()}));
 				creators.remove(i);
 				i--;
 				continue;
@@ -106,13 +109,14 @@ public class BuildingSite {
 		
 		}else{
 			
-			//System.out.println("FINISH BUILD BuildingSite");
+			System.out.println("FINISH BUILD BuildingSite1: " + creators.size());
 			for(int c = 0; c < creators.size(); c++){
 				
 				creators.get(c).stopAttack(false);
 				creators.get(c).stopBuild();
 				creators.get(c).cancelMovement();
 			}
+			System.out.println("FINISH BUILD BuildingSite2: " + creators.size());
 			
 			return false;
 		}

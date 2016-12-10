@@ -15,9 +15,13 @@ public class BuildingProgress {
 		sites = new ArrayList<BuildingSite>();
 	}
 	
-	public void addSite(Building building, ArrayList<Worker> creators){
+	public void addSite(Building newBuilding, ArrayList<Worker> creators){
 		
-		sites.add(new BuildingSite(building, creators));
+		GameEngineCollisionMap.addBuilding(newBuilding.getX(), newBuilding.getY(),
+				newBuilding.getSizeX(),newBuilding.getSizeY(),
+				newBuilding.getBuildingNo(), newBuilding.getMap(),newBuilding.getType() == Names.WALL
+				|| newBuilding.getType() == Names.WALLTOWER,newBuilding.getPlayer());
+		sites.add(new BuildingSite(newBuilding, creators));
 	}
 	
 	public void addWorker(Worker creator){

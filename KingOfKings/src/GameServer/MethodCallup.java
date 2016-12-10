@@ -451,7 +451,10 @@ public class MethodCallup implements Commands {
 		
 		for(int u = 0; u < unitNos.length; u++){
 			
+			//hack
+			//if(context.units.getUnits(unitNos[u]).isWorker()){
 			workers.add((Worker)context.units.getUnits(unitNos[u]));
+			//}
 		}
 		
 		context.sites.addSite(newBuilding,workers);

@@ -78,6 +78,11 @@ public class Worker extends Unit {
 		
 		return goingToBuild;
 	}
+	
+	public boolean buildingThisBuilding(int buildingNo){
+		
+		return buildingNo == this.buildingNo && goingToBuild;
+	}
 
 	public void stopBuild() {
 		// TODO Auto-generated method stub

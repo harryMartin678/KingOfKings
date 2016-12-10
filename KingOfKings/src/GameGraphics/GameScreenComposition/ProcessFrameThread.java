@@ -48,7 +48,10 @@ public class ProcessFrameThread {
 
 				
 				long time = System.currentTimeMillis();
-				cmsg.requestFrame();
+				long time2 = 0;
+				String[] frame = cmsg.requestFrame().split("\n");
+				
+				processFrame(frame, 0);
 				/*try {
 					Thread.sleep(2);
 				} catch (InterruptedException e1) {
@@ -58,7 +61,7 @@ public class ProcessFrameThread {
 				
 				//System.out.println("DO FRAME");
 				
-				if(cmsg.getFrameMessage().equals("START_FRAME")){
+				/*if(cmsg.getFrameMessage().equals("START_FRAME")){
 					
 					ArrayList<String> msgs = new ArrayList<String>();
 					
@@ -88,6 +91,7 @@ public class ProcessFrameThread {
 								
 								if(unit && building){
 									
+									time2 = System.currentTimeMillis();
 									try{
 										processFrame(msgs,0);
 									}catch(Exception e){
@@ -111,13 +115,14 @@ public class ProcessFrameThread {
 							e.printStackTrace();
 						}
 					}
-				}
+				}*/
 				
-				long delay = 50 - (System.currentTimeMillis() - time);
+				//System.out.println("Frame Processor: " + (System.currentTimeMillis() - time));
+				long delay = 100 - (System.currentTimeMillis() - time);
 				
-				if(delay < 5){
+				if(delay < 10){
 					
-					delay = 5;
+					delay = 10;
 				}
 				
 				try {
@@ -132,7 +137,7 @@ public class ProcessFrameThread {
 		
 	});
 	
-	private void processFrame(ArrayList<String> msgs, int index){
+	private void processFrame(String[] msgs, int index){
 		
 		String msg;
 		boolean mapChangedFrame = false;
@@ -144,15 +149,15 @@ public class ProcessFrameThread {
 //			System.out.println(msgs.get(i));
 //		}
 		
-		if(msgs.get(0).equals("START_FRAME")){
+		if(msgs[0].equals("START_FRAME")){
 			
 			index++;
 		}
 		int viewedMap;
 		//if viewed map has not made it over then skip it 
-		if(msgs.get(index).length() < 3){
+		if(msgs[index].length() < 3){
 			//bug here
-			viewedMap = new Integer(msgs.get(index)).intValue();
+			viewedMap = new Integer(msgs[index]).intValue();
 			int lastViewedMap = map.getViewedMap();
 			
 			if(lastViewedMap != viewedMap || !mapBeenSet){
@@ -185,9 +190,9 @@ public class ProcessFrameThread {
 		
 		int m = index+2;
 		
-		if(!msgs.get(index).equals("unitlist")){
+		if(!msgs[index].equals("unitlist")){
 		
-			ArrayList<String> mapInfo = new ParseText(msgs.get(index)).getNumbers();
+			ArrayList<String> mapInfo = new ParseText(msgs[index]).getNumbers();
 			
 			for(int in = 0; in < mapInfo.size(); in+=2){
 				
@@ -210,7 +215,7 @@ public class ProcessFrameThread {
 		
 		ArrayList<Unit> TempUnits = new ArrayList<Unit>();
 		
-		while(!(msg = msgs.get(m)).equals("buildinglist")){
+		while(!(msg = msgs[m]).equals("buildinglist")){
 			
 			if(msg.equals("unitlist")){
 				
@@ -301,9 +306,9 @@ public class ProcessFrameThread {
 		//System.out.println("CLEAR PROCESSFRAMETHREAD");
 		ArrayList<Building> buildingsTemp = new ArrayList<Building>();
 		//System.out.println("buildingSize " + buildings.size() + " ProcessFrameThread start");
-		while(!(msg = msgs.get(m)).equals("sites")){
+		while(!(msg = msgs[m]).equals("sites")){
 		
-			msg = msgs.get(m);
+			msg = msgs[m];
 			
 			if(msg.equals("buildinglist")){
 				
@@ -340,16 +345,16 @@ public class ProcessFrameThread {
 		
 		
 		
-		while(!msgs.get(m).equals("buildingqueue")){
+		while(!msgs[m].equals("buildingqueue")){
 		//for(int b = m; b < msgs.size(); b++){
 			
-			if(msgs.get(m).equals("sites")){
+			if(msgs[m].equals("sites")){
 				
 				m++;
 				continue;
 			}
 			
-			ParseText parsed = new ParseText(msgs.get(m));
+			ParseText parsed = new ParseText(msgs[m]);
 			ArrayList<String> numbers = parsed.getNumbers();
 			String building = parsed.getUnitName();
 			buildingsTemp.add(new Building(new Float(numbers.get(1)).intValue(),
@@ -364,15 +369,15 @@ public class ProcessFrameThread {
 		buildings.setBuildings(buildingsTemp,mapChangedFrame);
 		
 		
-		while(!(m >= msgs.size() || msgs.get(m).equals("resource"))){
+		while(!(m >= msgs.length || msgs[m].equals("resource"))){
 			
-			if(msgs.get(m).equals("buildingqueue") || msgs.get(m).equals("")){
+			if(msgs[m].equals("buildingqueue") || msgs[m].equals("")){
 				
 				m++;
 				continue;
 			}
 			//System.out.println(msgs.get(m) + "|||| building Queue ProcessFrameThread");
-			String[] queueInfo = msgs.get(m).split(" ");
+			String[] queueInfo = msgs[m].split(" ");
 			Building building = buildings.getBuildingByBuildingNo(new Integer(queueInfo[0]).intValue());
 			
 			if(building != null){
@@ -397,9 +402,9 @@ public class ProcessFrameThread {
 		
 		m++;
 		
-		if(m < msgs.size()){
+		if(m < msgs.length){
 			
-			String[] resource = msgs.get(m).split(" ");
+			String[] resource = msgs[m].split(" ");
 			display.setResources(new Integer(resource[1]).intValue(), new Integer(resource[2]).intValue());
 			mouse.setResources(new Integer(resource[1]).intValue(), new Integer(resource[2]).intValue());
 
@@ -416,7 +421,7 @@ public class ProcessFrameThread {
 	}
 	
 	
-	public void load(ArrayList<String> load){
+	public void load(String[] load){
 		
 		processFrame(load,2);
 		//getFrame.start();

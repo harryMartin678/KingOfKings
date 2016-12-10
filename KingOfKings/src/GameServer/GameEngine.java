@@ -172,7 +172,7 @@ public class GameEngine{
 					long time = System.currentTimeMillis();
 					gameLoop();
 					
-					long waitTime = 200 - time;
+					long waitTime = 100 - time;
 					
 					if(waitTime < 10){
 						
@@ -426,9 +426,9 @@ public class GameEngine{
 			
 			long time7 = System.currentTimeMillis();
 			
-			//System.out.println("Loop Time: " + (time1-start) + " " + (time2-time1) + " " + 
-				//	(time3-time2) + " " + (time4-time3) + " " + (time5-time4) + " " + (time6-time5)
-					//		+ " " + (time7-time6) + " GameEngine");
+//			System.out.println("Loop Time: " + (time1-start) + " " + (time2-time1) + " " + 
+//					(time3-time2) + " " + (time4-time3) + " " + (time5-time4) + " " + (time6-time5)
+//							+ " " + (time7-time6) + " GameEngine");
 			//time2, time 4 time 6
 			beat++;
 		}

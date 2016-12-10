@@ -342,7 +342,7 @@ public class Unit implements IAIUnit{
 		groupSpeed = -1;
 		
 		recalculate = 0;
-		
+		this.moving = false;
 		isTaken.clear();
 	}
 	

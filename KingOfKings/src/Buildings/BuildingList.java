@@ -123,10 +123,7 @@ public class BuildingList implements IBuildingList,IComBuildingBATTList,IGetBuil
 		buildings.remove(newBuilding.getBuildingNo());
 		buildings.add(newBuilding.getBuildingNo(),newBuilding);
 		
-		GameEngineCollisionMap.addBuilding(newBuilding.getX(), newBuilding.getY(),
-				newBuilding.getSizeX(),newBuilding.getSizeY(),
-				newBuilding.getBuildingNo(), newBuilding.getMap(),isWall(newBuilding.getType()),
-				newBuilding.getPlayer());
+		
 	}
 	
 	public String getBuildingQueue(int buildingNo){

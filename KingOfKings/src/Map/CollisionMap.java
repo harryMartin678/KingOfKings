@@ -550,7 +550,8 @@ public class CollisionMap {
 	private boolean isLegalBuildingSpot(int x, int y,String name){
 		
 		Building building = GameGraphics.Building.GetBuildingClass(name);
-		return x < CollisionMap.length && x >= 0 && y < CollisionMap[0].length && y >=0
+		return x + building.getSizeX() < CollisionMap.length && x - building.getSizeX() >= 0 
+				&& y + building.getSizeX() < CollisionMap[0].length && y - building.getSizeX() >=0
 				&& !InArea(x, y, building.getSizeX(), building.getSizeY());
 	}
 
@@ -609,4 +610,5 @@ public class CollisionMap {
 		// TODO Auto-generated method stub
 		return new int[]{CollisionMap.length/2,CollisionMap[0].length/2};
 	}
+
 }

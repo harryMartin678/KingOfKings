@@ -45,8 +45,8 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 		this.cmsg = cmsg;
 		start = false;
 
-		final ArrayList<String> load = Load();
-		map = new MapComp(load.get(1));
+		final String[] load = Load();
+		map = new MapComp(load[1]);
 		
 		menu = new Menu();
 		display = new Display(menu);
@@ -55,7 +55,7 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 		buildings = new BuildingList();
 		
 		//System.out.println(new Integer(load.get(0)).intValue() + " GraphicsEngine");
-		this.setMyPlayerNumber(new Integer(load.get(0)).intValue());
+		this.setMyPlayerNumber(new Integer(load[0]).intValue());
 		
 		map.SetDisplay((IComMapUpdateDisplayFrame)display);
 		
@@ -153,35 +153,35 @@ public class GraphicsEngine implements IComGameEngineFrameProcess {
 		display.setScreenHeight(height);
 	}
 	
-	private ArrayList<String> Load(){
+	private String[] Load(){
 		
-		cmsg.requestFrame();
-		ArrayList<String> load = new ArrayList<String>();
 		
-		while(true){
-			
-			String msg;
-			
-			if((msg = cmsg.getFrameMessage()) != "null"){
-				
-				if(msg.equals("END_LOAD")){
-					
-					break;
-				}
-				
-				load.add(msg);
-				
-			}
-			
-			try {
-				Thread.sleep(20);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+//		ArrayList<String> load = new ArrayList<String>();
+//		
+//		while(true){
+//			
+//			String msg;
+//			
+//			if((msg = cmsg.getFrameMessage()) != "null"){
+//				
+//				if(msg.equals("END_LOAD")){
+//					
+//					break;
+//				}
+//				
+//				load.add(msg);
+//				
+//			}
+//			
+//			try {
+//				Thread.sleep(20);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
 		
-		return load;
+		return cmsg.requestFrame().split("\n");
 	}
 
 	@Override
