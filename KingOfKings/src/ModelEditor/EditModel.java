@@ -4,20 +4,29 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.file.CopyOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+
+import static java.nio.file.StandardCopyOption.*;
 import java.util.ArrayList;
 
 import ModelEditor.EditModel.Vertex;
 
 public class EditModel {
 	
-	private ArrayList<Vertex> allVertices;
+	private ArrayList<Vertex> Vertices;
 	
 	public EditModel(String filename){
 		
-		ArrayList<Vertex> Vertices = null;
+		//ArrayList<Vertex> Vertices = null;
+		Vertices = null;
 		ArrayList<String> OtherLines = new ArrayList<String>();
 		
 		System.out.println(filename);
@@ -49,6 +58,16 @@ public class EditModel {
 //		System.out.println("GAPPP");
 		CenterModel(Vertices,center);
 		GetUnitSize(Vertices,center);
+		Vertex negVertex = getMostNegativeDirection(Vertices);
+		//Vertex posVertex = getMostPositiveDirection(Vertices);
+		//MoveModel(Vertices, -(posVertex.x + negVertex.x)/2.0f, (posVertex.y + negVertex.y)/2.0f, 
+				//-negVertex.z);
+		center = getCenter(Vertices);
+		//MoveModel(Vertices,-center.x,-center.y,-center.z);
+		RotateModelXAxis(Vertices,90.0f);
+		//MoveModel(Vertices,center.x,center.y,center.z);
+		//MultiplyUnitSize(Vertices,2.0);
+		//MoveModel(Vertices,0.0f,0.0f,-negVertex.z);
 		
 		String toWrite = GetObjString(Vertices, OtherLines);
 		
@@ -60,10 +79,10 @@ public class EditModel {
 			newParts[i] = parts[i];
 		}
 		
-		newParts[newParts.length-2] = "converted";
+		newParts[newParts.length-2] = "ChangedModels";
 		newParts[newParts.length-1] = parts[parts.length-1];
 		
-		allVertices = Vertices;
+		//allVertices = Vertices;
 		
 		File newFile = new File(String.join("/", newParts) + ".obj");
 		
@@ -71,7 +90,7 @@ public class EditModel {
 		
 		BufferedWriter writer = null;
 		try {
-			writer = new BufferedWriter(new FileWriter(newFile));
+			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(newFile)));
 			writer.write(toWrite);
 			writer.flush();
 		} catch (IOException e) {
@@ -86,6 +105,64 @@ public class EditModel {
 		
 		
 		
+	}
+	
+	private void RotateModelXAxis(ArrayList<Vertex> vertices,float angle){
+		
+		angle = (float) ((Math.PI* angle)/180);
+		Vertex sameVertex = new Vertex();
+		
+		for(int v = 0; v < vertices.size(); v++){
+			
+			sameVertex.x = vertices.get(v).x;
+			sameVertex.y = vertices.get(v).y;
+			sameVertex.z = vertices.get(v).z;
+			
+			vertices.get(v).y = (float) (sameVertex.y*Math.cos(angle) - sameVertex.z*Math.sin(angle));
+			vertices.get(v).z = (float) (sameVertex.y*Math.sin(angle) + sameVertex.z*Math.cos(angle));
+		}
+	}
+	
+	private void MoveModel(ArrayList<Vertex> Vertices,float x, float y, float z){
+		
+		for(int v = 0; v < Vertices.size(); v++){
+			
+			Vertices.get(v).offset(x,y,z);
+		}
+	}
+	
+	private Vertex getMostPositiveDirection(ArrayList<Vertex> Vertices){
+		
+		Vertex vertex = new Vertex();
+		vertex.x = Float.MIN_VALUE;
+		vertex.y = Float.MIN_VALUE;
+		vertex.z = Float.MIN_VALUE;
+		
+		for(int v = 0; v < Vertices.size(); v++){
+			
+			vertex.x = Math.max(Vertices.get(v).x,vertex.x);
+			vertex.y = Math.max(Vertices.get(v).y,vertex.y);
+			vertex.z = Math.max(Vertices.get(v).z,vertex.z);
+		}
+		
+		return vertex;
+	}
+	
+	private Vertex getMostNegativeDirection(ArrayList<Vertex> Vertices){
+		
+		Vertex vertex = new Vertex();
+		vertex.x = Float.MAX_VALUE;
+		vertex.y = Float.MAX_VALUE;
+		vertex.z = Float.MAX_VALUE;
+		
+		for(int v = 0; v < Vertices.size(); v++){
+			
+			vertex.x = Math.min(Vertices.get(v).x,vertex.x);
+			vertex.y = Math.min(Vertices.get(v).y,vertex.y);
+			vertex.z = Math.min(Vertices.get(v).z,vertex.z);
+		}
+		
+		return vertex;
 	}
 	
 	private String GetObjString(ArrayList<Vertex> Vertices, ArrayList<String> OtherLines){
@@ -124,6 +201,14 @@ public class EditModel {
 		for(int v = 0; v < vertices.size(); v++){
 			
 			vertices.get(v).divideBy(mag);
+		}
+	}
+	
+	private void MultiplyUnitSize(ArrayList<Vertex> vertices,double size){
+		
+		for(int v = 0; v < vertices.size(); v++){
+			
+			vertices.get(v).multipleBy(size);
 		}
 	}
 
@@ -192,7 +277,7 @@ public class EditModel {
 	
 	public ArrayList<Vertex> getVertices() {
 		// TODO Auto-generated method stub
-		return allVertices;
+		return Vertices;
 	}
 	
 	public class Vertex{
@@ -208,6 +293,21 @@ public class EditModel {
 			this.lineNo = lineNo;
 		}
 		
+		public void multipleBy(double size) {
+			// TODO Auto-generated method stub
+			this.x *= size;
+			this.y *= size;
+			this.z *= size;
+		}
+
+		public void offset(float dx, float dy, float dz) {
+			// TODO Auto-generated method stub
+			//werid stuff here
+			this.x += dx;
+			this.y += dy;
+			this.z += dz;
+		}
+
 		public void divideBy(float mag) {
 			// TODO Auto-generated method stub
 			this.x /= mag;
@@ -257,27 +357,42 @@ public class EditModel {
 
 	
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		
-//		String[] objs = new String[]{"worker","worker1a","worker1d","Archer1","Archer1a"
-//				,"Archer1d","Archer1w","archerytower","archerytower1d","ballistictower",
-//				"ballistictower1d","farm","mine","Giant","Giant1a","Giant1d","Giant1w"
-//				,"GiantLiar","GiantLiar1d","Hound","Hound1a","Hound1d","Hound1w",
-//				"HoundPit","HoundPit1d","royalPalace","Spearman","Spearman1a","Spearman1d",
-//				"Spearman1w","Spearyard","Spearyard1d","stockpile","stockpile1d","SwordsMan",
-//				"SwordsMana1","SwordsMand1","SwordsManw1","SwordsSmith","SwordsSmith1d"};
-//		
-//		for(int f = 0; f < objs.length; f++){
-//			
-//			assert(new File("bin/ModelEditor/" + objs[f] + ".obj").exists());
-//			
-//		}
-//		
-//		for(int b = 0; b < objs.length; b++){
-//			
-//			new EditModel("bin/ModelEditor/" + objs[b]);
-//		}
-		new EditModel("bin/ModelEditor/wallTower");
+		/*String[] objs = new String[]{"worker","worker1a","worker1d","Archer1","Archer1a"
+				,"Archer1d","Archer1w","archerytower","archerytower1d","ballistictower",
+				"ballistictower1d","farm","mine","Giant","Giant1a","Giant1d","Giant1w"
+				,"GiantLiar","GiantLiar1d","Hound","Hound1a","Hound1d","Hound1w",
+				"HoundPit","HoundPit1d","royalPalace","Spearman","Spearman1a","Spearman1d",
+				"Spearman1w","Spearyard","Spearyard1d","stockpile","stockpile1d","SwordsMan",
+				"SwordsMana1","SwordsMand1","SwordsManw1","SwordsSmith","SwordsSmith1d"};*/
+		
+		String[] objs = new String[]{"Archer","Archer1d","Archer1w","Archer1a","archerytower","archerytower1d",
+				"ballistictower","ballistictower1d","castle","castle1d","farm","farm1d","Giant","Giant1d",
+				"Giant1d","Giant1w","Giant1a","GiantLiar","GiantLiar1d","Hound","Hound1d","Hound1w","Hound1a",
+				"HoundPit","HoundPit1d","HoundPit1w","HoundPit1a","mine","mine1d","royalPalace","Spearman",
+				"Spearman1d","Spearman1a","Spearman1w","Spearyard","Spearyard1d","stockpile","stockpile1d",
+				"SwordsMan","SwordsMan1d","SwordsMan1w","SwordsMan1a","SwordsSmith","SwordsSmith1d","wall",
+				"wall1d","wallTower","wallTower1d","worker","worker1d","worker1a","worker1w"};
+		
+		for(int f = 0; f < objs.length; f++){
+			
+			assert(new File("bin/ModelEditor/" + objs[f] + ".obj").exists());
+			
+		}
+		
+		for(int b = 0; b < objs.length; b++){
+			
+			new EditModel("bin/ModelEditor/Models/" + objs[b] + ".obj");
+		}
+		
+		for(int m = 0; m < objs.length; m++){
+			
+			File src = new File("bin/ModelEditor/Models/" + objs[m] + ".mtl");
+			File target = new File("bin/ModelEditor/ChangedModels/" + objs[m] + ".mtl");
+			Files.copy(src.toPath(), target.toPath(),StandardCopyOption.REPLACE_EXISTING);
+		}
+		//new EditModel("bin/ModelEditor/wallTower");
 	}
 
 }

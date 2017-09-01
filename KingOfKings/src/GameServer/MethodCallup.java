@@ -473,7 +473,7 @@ public class MethodCallup implements Commands {
 				this.moveUnit(unitNos[u], pos[0], pos[1], newBuilding.getMap(),false);
 				((Worker) context.units.getUnits(unitNos[u])).build(newBuilding.getBuildingNo());
 			}else{
-				
+				System.out.println("unit can't build MethodCallup");
 				site.removeWorker(unitNos[u]);
 			}
 			
@@ -582,18 +582,28 @@ public class MethodCallup implements Commands {
 
 //		new CollisionMap(context.buildings,
 //				context.units,context.maps.getMap(newBuilding.getMap()),newBuilding.getMap()),
-		for(int u = 0; u < unitNos.length; u++){
+		Building newBuilding = context.sites.getBuilding(buildingNo);
+		if(newBuilding != null){
+			for(int u = 0; u < unitNos.length; u++){
+				
+				
+				int[] pos = newBuilding.getFreeSpace(
+						(int) context.units.getUnitX(unitNos[u]), 
+								(int) context.units.getUnitY(unitNos[u]),unitTargets);
+				unitTargets.put(Point.GetUniqueNo(pos), pos);
+				this.moveUnit(unitNos[u], pos[0],
+						pos[1], newBuilding.getMap(),false);
+				Worker worker = (Worker) context.units.getUnits(unitNos[u]);
+				worker.build(buildingNo);
+				context.sites.addWorker(worker);
+			}
+		}else{
 			
-			Building newBuilding = context.sites.getBuilding(buildingNo);
-			int[] pos = newBuilding.getFreeSpace(
-					(int) context.units.getUnitX(unitNos[u]), 
-							(int) context.units.getUnitY(unitNos[u]),unitTargets);
-			unitTargets.put(Point.GetUniqueNo(pos), pos);
-			this.moveUnit(unitNos[u], pos[0],
-					pos[1], newBuilding.getMap(),false);
-			Worker worker = (Worker) context.units.getUnits(unitNos[u]);
-			worker.build(buildingNo);
-			context.sites.addWorker(worker);
+			for(int w = 0; w < unitNos.length; w++){
+				
+				((Worker)context.units.getUnits(w)).stopBuild();
+				((Worker)context.units.getUnits(w)).cancelMovement();
+			}
 		}
 	}
 

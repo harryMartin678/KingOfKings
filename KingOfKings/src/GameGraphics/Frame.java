@@ -87,7 +87,6 @@ public class Frame {
 	public Colour getColour(int index){
 		
 		String materialName = shape.getColour(index);
-		
 		return materials.get(materialName);
 	}
 	

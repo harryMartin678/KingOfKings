@@ -430,6 +430,22 @@ public class UnitList implements Cloneable,IUnitList {
 		return line;
 	}
 
+	public ArrayList<Integer> getWorkersOnMap(int mapNo,int playerNo) {
+		// TODO Auto-generated method stub
+		ArrayList<Integer> workers = new ArrayList<Integer>();
+		
+		for(int u = 0; u < units.size(); u++){
+			
+			if(units.get(u).isWorker() && units.get(u).getMap() == mapNo
+					&& units.get(u).getPlayer() == playerNo){
+				
+				workers.add(units.get(u).getUnitNo());
+			}
+		}
+		
+		return workers;
+	}
+
 	
 	///public int[] getNextNode(int unitNo){
 		

@@ -42,4 +42,16 @@ public class GiantLiar extends UnitCreator {
 		// TODO Auto-generated method stub
 		return Names.GIANT;
 	}
+	
+	@Override
+	public int FoodNeeded() {
+		// TODO Auto-generated method stub
+		return super.FoodNeeded()+400;
+	}
+	
+	@Override
+	public int GoldNeeded() {
+		// TODO Auto-generated method stub
+		return super.GoldNeeded()+300;
+	}
 }

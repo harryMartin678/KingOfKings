@@ -52,70 +52,6 @@ public class ProcessFrameThread {
 				String[] frame = cmsg.requestFrame().split("\n");
 				
 				processFrame(frame, 0);
-				/*try {
-					Thread.sleep(2);
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}*/
-				
-				//System.out.println("DO FRAME");
-				
-				/*if(cmsg.getFrameMessage().equals("START_FRAME")){
-					
-					ArrayList<String> msgs = new ArrayList<String>();
-					
-					while(true){
-						
-						String msg = "";
-						
-						if((msg = cmsg.getFrameMessage()) != "null" && !msg.equals("null")){
-							
-							if(msg.equals("END_FRAME")){
-								
-								boolean building = false;
-								boolean unit = false;
-								
-								for(int m = 0; m < msgs.size(); m++){
-									
-									if(msgs.get(m).equals("buildinglist")){
-										
-										building = true;
-										break;
-									
-									}else if(msgs.get(m).equals("unitlist")){
-										
-										unit = true;
-									}
-								}
-								
-								if(unit && building){
-									
-									time2 = System.currentTimeMillis();
-									try{
-										processFrame(msgs,0);
-									}catch(Exception e){
-										
-										//catch the intermediate exceptions here 
-										e.printStackTrace();
-									}
-								}
-								
-								//cmsg.addMessage("SEND_FRAME");
-								break;
-							}
-								
-							msgs.add(msg);
-						}
-						
-						try {
-							Thread.sleep(5);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-				}*/
 				
 				//System.out.println("Frame Processor: " + (System.currentTimeMillis() - time));
 				long delay = 100 - (System.currentTimeMillis() - time);
@@ -210,7 +146,7 @@ public class ProcessFrameThread {
 		
 		units.begin();
 		
-		Unit.ClearAnimateUnits();
+		//Unit.ClearAnimateUnits();
 		//units.clear();
 		
 		ArrayList<Unit> TempUnits = new ArrayList<Unit>();

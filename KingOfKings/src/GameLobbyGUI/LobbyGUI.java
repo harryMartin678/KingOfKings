@@ -1,5 +1,7 @@
 package GameLobbyGUI;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.TextField;
@@ -33,6 +35,7 @@ public class LobbyGUI extends JPanel implements MouseListener {
 	private ImageIcon go;
 	private ImageIcon loadingScreen;
 	private ImageIcon addAIBtn;
+	private ImageIcon lobbyPanel;
 	private final String filepath = "ImageBank/GameLobby/";
 	private ArrayList<String> players;
 	private boolean killLookForPlayers;
@@ -60,10 +63,11 @@ public class LobbyGUI extends JPanel implements MouseListener {
 		this.cmsg = cmsg;
 		this.loadGame = loadGame;
 		readyBtn = new ImageIcon(filepath + "ReadyButton.png");
-		background = new ImageIcon(filepath + "Background.png");
+		background = new ImageIcon(filepath + "backgroundImage.png");
 		loadingScreen = new ImageIcon(filepath + "LoadingScreen.png");
-		addAIBtn = new ImageIcon(filepath + "AddAI.png");
-		go = new ImageIcon(filepath + "Go.png");
+		addAIBtn = new ImageIcon(filepath + "AddAIButton.png");
+		go = new ImageIcon(filepath + "GoButton.png");
+		lobbyPanel = new ImageIcon(filepath + "lobbyPanel.png");
 		
 		players = new ArrayList<String>();
 		killLookForPlayers = false;
@@ -135,133 +139,6 @@ public class LobbyGUI extends JPanel implements MouseListener {
 				
 	}
 	
-//	private void setUpMouse() {
-//		// TODO Auto-generated method stub
-//		
-//		
-//		double playerListWidth = (40*this.getWidth())/100;
-//		double playerListHeight = (75 * this.getHeight())/100;
-//		
-//		double playerListX = (3*this.getWidth()/4);
-//		double playerListY = (this.getHeight()/2);
-//		go.setXY((int)(this.getWidth()/2 - playerListWidth/2), 
-//					(int)(((3*this.getHeight())/4) - playerListHeight/2));
-//		go.setWidthHeight((int)playerListWidth,(int)playerListHeight);
-//		go.revalidate();
-//		go.repaint();
-//		this.add(go);
-//		
-//		this.revalidate();
-//		this.repaint();
-//		
-//		go.addMouseListener(new MouseListener(){
-//
-//			@Override
-//			public void mouseClicked(MouseEvent e) {
-//				// TODO Auto-generated method stub
-//				System.out.println("PRESS GO");
-//				if(text.getText().length() > 0){
-//					enterLobby();
-//				}
-//			}
-//
-//			@Override
-//			public void mouseEntered(MouseEvent e) {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//
-//			@Override
-//			public void mouseExited(MouseEvent e) {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//
-//			@Override
-//			public void mousePressed(MouseEvent e) {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//
-//			@Override
-//			public void mouseReleased(MouseEvent e) {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//			
-//			
-//		});
-//		
-//		readyBtn.addMouseListener(new MouseListener(){
-//
-//			@Override
-//			public void mouseClicked(MouseEvent e) {
-//				// TODO Auto-generated method stub
-//				cmsg.addMessage("ENTERGAME");
-//			}
-//
-//			@Override
-//			public void mouseEntered(MouseEvent e) {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//
-//			@Override
-//			public void mouseExited(MouseEvent e) {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//
-//			@Override
-//			public void mousePressed(MouseEvent e) {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//
-//			@Override
-//			public void mouseReleased(MouseEvent e) {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//			
-//			
-//		});
-//		
-//		addAIBtn.addMouseListener(new MouseListener(){
-//
-//			@Override
-//			public void mouseClicked(MouseEvent e) {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//
-//			@Override
-//			public void mouseEntered(MouseEvent e) {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//
-//			@Override
-//			public void mouseExited(MouseEvent e) {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//
-//			@Override
-//			public void mousePressed(MouseEvent e) {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//
-//			@Override
-//			public void mouseReleased(MouseEvent e) {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//			
-//			
-//		});
-//	}
 
 	private int getPlayerNo(String loadGame) throws IOException{
 		// TODO Auto-generated method stub
@@ -406,7 +283,6 @@ public class LobbyGUI extends JPanel implements MouseListener {
 	protected void paintComponent(Graphics g) {
 		// TODO Auto-generated method stub
 		if(!enterGame){
-			//System.out.println("enter game");
 			super.paintComponent(g);
 			
 			g.drawImage(background.getImage(), 0, 0,this.getWidth(),this.getHeight(), null);
@@ -443,7 +319,10 @@ public class LobbyGUI extends JPanel implements MouseListener {
 	
 	private void drawLoadingScreen(Graphics g) {
 		// TODO Auto-generated method stub
-		g.drawImage(loadingScreen.getImage(), 0, 0, this.getWidth(),this.getHeight(),null);
+		g.drawImage(background.getImage(), 0, 0, this.getWidth(),this.getHeight(),null);
+		g.setColor(Color.BLUE);
+		g.setFont(new Font("Arial",Font.BOLD,125));
+		g.drawString("Loading...", this.getWidth()/4, this.getHeight()/2);
 		drawBusyIndicator(g);
 	}
 	
@@ -502,7 +381,7 @@ public class LobbyGUI extends JPanel implements MouseListener {
 		double playerListX = (3*this.getWidth()/4);
 		double playerListY = (this.getHeight()/2);
 		
-		g.drawImage(background.getImage(),(int)(playerListX- (playerListWidth/2)),
+		g.drawImage(lobbyPanel.getImage(),(int)(playerListX- (playerListWidth/2)),
 				(int)(playerListY - (playerListHeight/2)), (int)playerListWidth,(int)playerListHeight,
 				null);
 		
@@ -513,6 +392,8 @@ public class LobbyGUI extends JPanel implements MouseListener {
 	
 	private void drawPlayerList(Graphics g,int x, int y,int spaceBetween){
 		
+		g.setFont(new Font("Arial",Font.BOLD,30));
+		g.setColor(Color.WHITE);
 		for(int p = 0; p < players.size(); p++){
 			
 			g.drawString(players.get(p), x, y+(p*spaceBetween));

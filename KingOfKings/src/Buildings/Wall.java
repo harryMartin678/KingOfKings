@@ -46,6 +46,12 @@ public class Wall extends Defence {
 		return super.FoodNeeded()+10;
 	}
 	
+	@Override
+	public int GoldNeeded() {
+		// TODO Auto-generated method stub
+		return super.GoldNeeded()+5;
+	}
+	
 //	public void calRotationFromCenter(float cx, float cy){
 //		
 //		float dx = this.getX() - cx;

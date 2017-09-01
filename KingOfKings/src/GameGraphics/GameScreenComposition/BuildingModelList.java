@@ -6,7 +6,20 @@ import java.util.HashMap;
 
 import com.jogamp.opengl.GL2;
 
+import Buildings.ArcheryTower;
+import Buildings.BallistaTower;
+import Buildings.Castle;
+import Buildings.Farm;
+import Buildings.GiantLiar;
+import Buildings.HoundPit;
+import Buildings.Mine;
 import Buildings.Names;
+import Buildings.RoyalPalace;
+import Buildings.Spearyard;
+import Buildings.Stockpile;
+import Buildings.SwordsSmith;
+import Buildings.Wall;
+import Buildings.WallTower;
 import GameGraphics.Building;
 import GameGraphics.BuildingModel;
 import GameGraphics.Colour;
@@ -16,6 +29,7 @@ import GameGraphics.Model;
 import GameGraphics.Unit;
 import GameGraphics.Vertex;
 import GameGraphics.VertexTex;
+import Map.GraphicsCollisionMap;
 import Map.Map;
 
 public class BuildingModelList implements IBoundingBoxes {
@@ -58,59 +72,84 @@ public class BuildingModelList implements IBoundingBoxes {
 		this.scaleFactor = scaleFactor;
 		this.textures = textures;
 		//this.buttons = buttons;
+		//float scale = 2.0f;
 		
 		site = new BuildingModel(Names.SITE,"Models",1,true);
 		site.setSize(1.0f, 1.0f, 1.0f);
 		archeryTower = new BuildingModel(Names.ARCHERYTOWER,"Models",1);
-		archeryTower.setSize(2.0f, 2.0f, 2.0f);
+		ArcheryTower towerA = new ArcheryTower(0);
+		archeryTower.setSize(buildingScale(towerA.getSizeX()), 
+				buildingScale(towerA.getSizeY()), 2.0f);
 		//archeryTower.setTrans(0.1f, 0.1f);
+		BallistaTower towerB = new BallistaTower(0);
 		ballisticTower = new BuildingModel(Names.BALLISTICTOWER,"Models",1);
-		ballisticTower.setSize(2.0f, 2.0f, 2.0f);
+		ballisticTower.setSize(buildingScale(towerB.getSizeX()), buildingScale(towerB.getSizeY()), 2.0f);
 		//ballisticTower.setTrans(0.2f, 0.2f);
+		Castle castleS = new Castle(0);
 		castle = new BuildingModel(Names.CASTLE, "Models", 1,true);
-		castle.setSize(4.0f, 4.0f, 4.0f);
+		castle.setSize(buildingScale(castleS.getSizeX()), buildingScale(castleS.getSizeY()), 4.0f);
 		//castle.setTrans(0.25f, 0.65f);
+		Farm farmS = new Farm(0);
 		farm = new BuildingModel(Names.FARM,"Models",1,true);//2 2
-		farm.setSize(2.0f,2.0f, 2.0f);
+		farm.setSize(buildingScale(farmS.getSizeX()),buildingScale(farmS.getSizeY()), 2.0f);
 		//farm.setTrans(0.18f, 0.05f);
+		RoyalPalace roy = new RoyalPalace(0);
 		royalPalace = new BuildingModel(Names.ROYALPALACE,"Models",1,true);//4 4
-		royalPalace.setSize(4.0f,4.0f,4.0f);
+		royalPalace.setSize(buildingScale(roy.getSizeX()),buildingScale(roy.getSizeY()),4.0f);
 		//royalPalace.setAngle(45.0f);
 		//royalPalace.setTrans(0.4f, 0.55f);
+		Stockpile stockpileS = new Stockpile(0);
 		stockpile = new BuildingModel(Names.STOCKPILE,"Models",1);//2 2
 		//stockpile.setTrans(0.15f, 0.05f);
-		stockpile.setSize(2.0f,2.0f,2.0f);
+		stockpile.setSize(buildingScale(stockpileS.getSizeX()),buildingScale(stockpileS.getSizeY()),2.0f);
 		//stockpile.setTrans(0.0f, 0.0f, 20.0f);
+		Wall wallS = new Wall(0);
 		wall = new BuildingModel(Names.WALL,"Models",1);//1 1
-		wall.setSize(1.0f, 1.0f, 1.0f);
+		wall.setSize(buildingScale(wallS.getSizeX()-1), buildingScale(wallS.getSizeY()-1), 1.0f);
+		WallTower wallTowerS = new WallTower(0);
 		wallTower = new BuildingModel(Names.WALLTOWER, "Models", 1);
-		wallTower.setSize(1.0f, 1.0f, 1.0f);
+		wallTower.setSize(buildingScale(wallTowerS.getSizeX()), buildingScale(wallTowerS.getSizeY()), 1.0f);
 		//wall.setTrans(-5.0f, -5.0f);
 		//wall.setAngle(90.0f);
+		
+		Mine mineS = new Mine(0);
 		mine = new BuildingModel(Names.MINE,"Models",1,true);//1 1
-		mine.setSize(1.0f, 1.0f, 1.0f);
+		mine.setSize(buildingScale(mineS.getSizeX()), buildingScale(mineS.getSizeY()), 1.0f);
 		//mine.setTrans(0.1f, 0.0f);
 		
+		GiantLiar giantLiarS = new GiantLiar(0);
 		giantLiar = new BuildingModel(Names.GIANTLIAR, "Models", 1);
-		giantLiar.setSize(2.0f, 2.0f, 2.0f);
+		giantLiar.setSize(buildingScale(giantLiarS.getSizeX()),buildingScale(giantLiarS.getSizeY()), 2.0f);
+		
+		Spearyard spearYerdS = new Spearyard(0);
 		spearYard = new BuildingModel(Names.SPEARYARD, "Models", 1);
-		spearYard.setSize(2.0f, 2.0f, 2.0f);
+		spearYard.setSize(buildingScale(spearYerdS.getSizeX()), buildingScale(spearYerdS.getSizeY()), 2.0f);
+		
+		SwordsSmith swordsSmithS = new SwordsSmith(0);
 		swordsSmith = new BuildingModel(Names.SWORDSSMITH, "Models", 1);
-		swordsSmith.setSize(2.0f, 2.0f, 2.0f);
+		swordsSmith.setSize(buildingScale(swordsSmithS.getSizeX()), buildingScale(swordsSmithS.getSizeY()), 2.0f);
+		
+		HoundPit houndPitS = new HoundPit(0);
 		houndPit = new BuildingModel(Names.HOUNDPIT, "Models", 1);
-		houndPit.setSize(2.0f, 2.0f, 2.0f);
+		houndPit.setSize(buildingScale(houndPitS.getSizeX()), buildingScale(houndPitS.getSizeY()), 2.0f);
 		
 		
-		tree = new BuildingModel("tree1","Models",3,true);
+		tree = new BuildingModel("tree","Models",3,true);
+		tree.setSize(1.0f, 1.0f, 1.0f);
 		gold = new BuildingModel("gold","Models",1,true);
-		gold.setSize(0.3f, 0.3f, 0.3f);
+		gold.setSize(0.5f, 0.5f, 0.5f);
 		rock = new BuildingModel("rocks","Models",1,true);
-		rock.setSize(0.35f, 0.35f, 0.35f);
+		rock.setSize(0.5f, 0.5f, 0.5f);
 		flag = new BuildingModel("flag","Models",1,true);
-		flag.setSize(0.3f,0.3f, 0.3f);
+		flag.setSize(0.5f,0.5f, 0.5f);
 		
 		CreateBuildingIcons();
 		
+	}
+	
+	private float buildingScale(float size){
+		
+		return size + size-1;
 	}
 	
 	public void SetUpBuildingModelList(IDrawButton drawButton){
@@ -257,12 +296,13 @@ public class BuildingModelList implements IBoundingBoxes {
 		draw.glLoadIdentity();
 
 		//draw.glEnable(draw.GL_TEXTURE_2D);
-		if(onMap) draw.glTranslatef(building.getX()-width-frameX + model.getTransX(),
-				building.getY()-height-frameY + model.getTransY(), z);
+		if(onMap) draw.glTranslatef(building.getX()-(width+0.75f)-frameX,// + model.getTransX(),
+				building.getY()-(height+0.75f)-frameY,// + model.getTransY()
+				 z);
 		else draw.glTranslatef(building.getX() ,building.getY(), z);
 		draw.glScalef(model.sizeX()*scaleFactor*extraScalefactor,
 				model.sizeY()*scaleFactor*extraScalefactor,model.sizeZ()*scaleFactor*extraScalefactor);
-		draw.glRotatef(90.0f, 1, 0, 0);
+		//draw.glRotatef(90.0f, 1, 0, 0);
 		draw.glRotatef(model.getAngle() + building.getAngle(), 0, 1, 0);
 
 		while((next = model.popFace(building.getCurrentFrame(),building.getState())) != null){
@@ -273,7 +313,10 @@ public class BuildingModelList implements IBoundingBoxes {
 				draw.glColor3f(1.0f, 0.0f, 0.0f);
 			else{ 
 				Colour colour = model.getColour(0,0);
-				
+				if(colour == null){
+					
+					System.out.println("Null colour");
+				}
 				float[] vertexColour = colour.getDiffuse();
 				
 				texturePath = colour.getTexturePath();
@@ -626,6 +669,9 @@ public class BuildingModelList implements IBoundingBoxes {
 			
 			return houndPit.getBB(state);
 			
+		}else if(Names.SWORDSSMITH.equals(type)){
+			
+			return swordsSmith.getBB(state);
 		}
 		
 		return null;

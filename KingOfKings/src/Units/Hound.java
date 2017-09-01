@@ -59,6 +59,6 @@ public class Hound extends Unit {
 	@Override
 	public int foodNeeded() {
 		// TODO Auto-generated method stub
-		return super.foodNeeded() + 100;
+		return super.foodNeeded() + 150;
 	}
 }

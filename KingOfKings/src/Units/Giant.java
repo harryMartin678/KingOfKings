@@ -20,7 +20,7 @@ public class Giant extends Unit{
 	@Override
 	public int getAttack() {
 		// TODO Auto-generated method stub
-		return super.getAttack()  + 2;
+		return super.getAttack()  + 4;
 	}
 	
 	public int getBiasAttack(String unitType){
@@ -37,7 +37,7 @@ public class Giant extends Unit{
 	@Override
 	public int getDefence() {
 		// TODO Auto-generated method stub
-		return super.getDefence() + 1;
+		return super.getDefence() + 4;
 	}
 	
 	@Override
@@ -55,7 +55,7 @@ public class Giant extends Unit{
 	@Override
 	public int goldNeeded() {
 		// TODO Auto-generated method stub
-		return super.goldNeeded() + 50;
+		return super.goldNeeded() + 150;
 	}
 	
 	@Override

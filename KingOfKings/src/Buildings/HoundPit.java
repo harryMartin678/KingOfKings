@@ -19,6 +19,12 @@ public class HoundPit extends UnitCreator {
 	}
 	
 	@Override
+	public String unitcreated() {
+		// TODO Auto-generated method stub
+		return Names.HOUND;
+	}
+	
+	@Override
 	public int getMaxHitpoint() {
 		// TODO Auto-generated method stub
 		return super.getMaxHitpoint()+1000;
@@ -34,6 +40,18 @@ public class HoundPit extends UnitCreator {
 	public int getBuildTime() {
 		// TODO Auto-generated method stub
 		return super.getBuildTime()+200;
+	}
+	
+	@Override
+	public int FoodNeeded() {
+		// TODO Auto-generated method stub
+		return super.FoodNeeded()+750;
+	}
+	
+	@Override
+	public int GoldNeeded() {
+		// TODO Auto-generated method stub
+		return super.GoldNeeded()+600;
 	}
 
 }

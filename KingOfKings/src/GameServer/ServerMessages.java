@@ -22,7 +22,7 @@ public class ServerMessages {
 		this.thisPlayer = thisPlayer;
 		this.noOfPlayer = noOfPlayers;
 		start = true;
-		engine = new GameEngine("PlayTest1",noOfPlayer,beacon,loadGame);
+		engine = new GameEngine("PlayTest2",noOfPlayer,beacon,loadGame);
 		
 	}
 	

@@ -83,7 +83,7 @@ IComBuildingListFrameProcess {
 		
 		Buildings.Building SizeInfo = Building.GetBuildingClass(building.getName());
 
-		GraphicsCollisionMap.addBuilding((int)building.getX(), (int)building.getY(),
+		GraphicsCollisionMap.addBuilding(Math.round(building.getX()), Math.round(building.getY()),
 				SizeInfo.getSizeX(),SizeInfo.getSizeY(),building.getBuildingNo());
 		buildings.add(building);
 		buildingNosIndex.put(building.getBuildingNo(), buildings.size()-1);

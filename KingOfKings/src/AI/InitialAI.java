@@ -10,6 +10,7 @@ import Buildings.Building;
 import Buildings.Names;
 import GameServer.MethodCallup;
 import GameServer.MethodParameter;
+import Map.GameEngineCollisionMap;
 import Units.Unit;
 import Util.Matrix;
 import Util.Point;
@@ -43,6 +44,7 @@ public class InitialAI extends IAI {
 	private int unitBuildNo;
 	private Random generator;
 	private int buildingsToUnit;
+	private int MAX_WORKERS_PER_MAP = 5;
 	
 	public InitialAI(String AIName,int AINum, AIVision vision,long seed){
 		
@@ -220,11 +222,14 @@ public class InitialAI extends IAI {
 	private AICommand[] findUnitToCreate(int mapNo, String unitName,int food,int gold) {
 		// TODO Auto-generated method stub
 		
-		if(!enoughResToCreateUnit(food, gold, unitName)){
+		if(!enoughResToCreateUnit(food, gold, unitName) && 
+				((unitName == Names.WORKER && GameEngineCollisionMap.noOfWorkersOnMap(mapNo) < MAX_WORKERS_PER_MAP )
+						|| unitName != Names.WORKER)){
 			
 			//System.out.println(food + " " + gold + " InitialAI");
 			return null;
 		}
+		
 		ArrayList<Integer> buildings = vision.getUnitBuilder(unitName, mapNo);
 		AICommand[] commands = new AICommand[buildings.size()];
 		
@@ -241,7 +246,6 @@ public class InitialAI extends IAI {
 		
 		return commands;
 	}
-
 	
 	private AICommand createAIBuildCommand(int closestWorker,int[] pos,int mapNo,String buildingType){
 		

@@ -89,6 +89,12 @@ public class Worker extends Unit {
 		//System.out.println("Stop Build Worker");
 		goingToBuild = false;
 	}
+	
+	@Override
+	public int foodNeeded() {
+		// TODO Auto-generated method stub
+		return super.foodNeeded()+100;
+	}
 
 	
 

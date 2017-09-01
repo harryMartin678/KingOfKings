@@ -35,7 +35,7 @@ public class GameEngineCollisionMap {
 	public static void addBuilding(int x, int y,int SizeX,int SizeY, int buildingNo, int mapNo,
 			boolean isWall, int playerNo){
 		
-		GameEngineCollisionMap.maps[mapNo].addBuilding(x, y,SizeX,SizeY, buildingNo,isWall,playerNo);
+		GameEngineCollisionMap.maps[mapNo].addBuilding(x, y,SizeX,SizeY, buildingNo,isWall,playerNo,false);
 	}
 	
 	public static void removeBuilding(int buildingNo,int mapNo,int sizeX,int sizeY){
@@ -114,14 +114,19 @@ public class GameEngineCollisionMap {
 		return GameEngineCollisionMap.maps[mapNo].FindMineSpot();
 	}
 	
-	public static ArrayList<Integer> getWorkers(int mapNo){
-		
-		return GameEngineCollisionMap.maps[mapNo].getWorkers();
-	}
+//	public static ArrayList<Integer> getWorkers(int mapNo){
+//		
+//		return GameEngineCollisionMap.maps[mapNo].getWorkers();
+//	}
 
 	public static Point getMapCenter(int mapNo) {
 		// TODO Auto-generated method stub
 		return Point.GetPoint(GameEngineCollisionMap.maps[mapNo].getCenter());
+	}
+
+	public static int noOfWorkersOnMap(int mapNo) {
+		// TODO Auto-generated method stub
+		return GameEngineCollisionMap.maps[mapNo].noOfWorkers();
 	}
 
 }

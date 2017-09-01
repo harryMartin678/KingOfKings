@@ -93,15 +93,15 @@ public class MapList implements IComMapBATTList {
 		// TODO Auto-generated method stub
 		
 		return true;
-//		for(int w = 1; w < maps.size(); w++){
-//			
-//			if(maps.get(w).getPlayer() != maps.get(w-1).getPlayer()){
-//				
-//				return true;
-//			}
-//		}
-//		
-//		return false;
+		/*for(int w = 1; w < maps.size(); w++){
+			
+			if(maps.get(w).getPlayer() != maps.get(w-1).getPlayer()){
+				
+				return true;
+			}
+		}
+		
+		return false;*/
 	}
 
 	public ArrayList<int[]> GetTransitions() {

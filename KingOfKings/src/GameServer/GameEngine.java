@@ -127,11 +127,11 @@ public class GameEngine{
 				context.buildings.addBuilding(context.maps.getPlayer(i), i, 
 						context.maps.getMapWidth(i)/2, context.maps.getMapHeight(i)/2,
 						Names.ROYALPALACE);
-				context.buildings.addBuilding(context.maps.getPlayer(i), i, 
-						(context.maps.getMapWidth(i)/2)+6, (context.maps.getMapHeight(i)/2)+6,
-						Names.GIANTLIAR);
-				context.buildings.addBuilding(context.maps.getPlayer(i), i, 
-						(context.maps.getMapWidth(i)/2)-10, (context.maps.getMapHeight(i)/2)-10, Names.ARCHERYTOWER);
+				//context.buildings.addBuilding(context.maps.getPlayer(i), i, 
+					//	(context.maps.getMapWidth(i)/2)+6, (context.maps.getMapHeight(i)/2)+6,
+				//		Names.GIANTLIAR);
+				//context.buildings.addBuilding(context.maps.getPlayer(i), i, 
+						//(context.maps.getMapWidth(i)/2)-10, (context.maps.getMapHeight(i)/2)-10, Names.ARCHERYTOWER);
 				//context.buildings.addBuilding(1,i,3,3,Names.STOCKPILE);
 	//			context.buildings.addBuilding(1,i,(context.maps.getMapWidth(i)/2),
 	//					(context.maps.getMapHeight(i)/2),Names.MINE);

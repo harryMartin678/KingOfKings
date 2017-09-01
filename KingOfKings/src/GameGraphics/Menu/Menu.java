@@ -60,7 +60,7 @@ public class Menu {
 
 			textures = new TextureRepo();
 			textures.LoadTextures(new String[]{"panel1.png","panel2.png","panel3.png","panel4.png",
-					"panel5.png","panel6.png","panel7.png"});
+					"panel5.png","panel6.png","panel7.png","CircleBlue.png"});
 			first = false;
 		}
 		
@@ -174,6 +174,7 @@ public class Menu {
 				
 				if(UnitIcons.get(u).InMouse((float)x, (float)y)){
 					
+					System.out.println("Select Menu, Menu");
 					command.SelectUnitToBuild(u);
 					UnitIcons.get(u).SetSelected();
 					return true;
@@ -272,38 +273,39 @@ public class Menu {
 			
 		}
 	}
+	String buttonImage = "CircleBlue.png";
 	public void AddUnitIcons(int unitNo){
 		
 		for(int u = 0; u < unitNo; u++){
 			
-			UnitIcons.add(new Rectangle(0.06f + (u*0.04f),0.14f,0.025f,0.05f,1.0f,0.0f,0.0f,u,null));
+			UnitIcons.add(new Rectangle(0.06f + (u*0.04f),0.14f,0.025f,0.05f,1.0f,0.0f,0.0f,u,buttonImage));
 		}
 	}
 	
 	public void AddBuildingIcons(){
 		
 		//ARCHERYTOWER (0.05f,0.05f,0.4f,0.15f,1.0f,1.0f,0.0f)
-		BuildingIcons.add(new Rectangle(0.06f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,0,null));
+		BuildingIcons.add(new Rectangle(0.06f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,0,buttonImage));
 		//BALLISTICTOWER
-		BuildingIcons.add(new Rectangle(0.1f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,1,null));
+		BuildingIcons.add(new Rectangle(0.1f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,1,buttonImage));
 		//BARRACK
-		BuildingIcons.add(new Rectangle(0.14f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,2,null));
+		BuildingIcons.add(new Rectangle(0.14f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,2,buttonImage));
 		//CASTLE
-		BuildingIcons.add(new Rectangle(0.18f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,3,null));
+		BuildingIcons.add(new Rectangle(0.18f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,3,buttonImage));
 		//DOCK
-		BuildingIcons.add(new Rectangle(0.22f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,4,null));
+		BuildingIcons.add(new Rectangle(0.22f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,4,buttonImage));
 		//FARM
-		BuildingIcons.add(new Rectangle(0.26f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,5,null));
+		BuildingIcons.add(new Rectangle(0.26f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,5,buttonImage));
 		//FORT
-		BuildingIcons.add(new Rectangle(0.30f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,6,null));
+		BuildingIcons.add(new Rectangle(0.30f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,6,buttonImage));
 		//STABLE
-		BuildingIcons.add(new Rectangle(0.34f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,7,null));
+		BuildingIcons.add(new Rectangle(0.34f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,7,buttonImage));
 		//STOCKPILE
-		BuildingIcons.add(new Rectangle(0.38f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,8,null));
+		BuildingIcons.add(new Rectangle(0.38f,0.14f,0.025f,0.05f,0.0f,1.0f,0.0f,8,buttonImage));
 		//WALL
-		BuildingIcons.add(new Rectangle(0.14f,0.07f,0.025f,0.05f,0.0f,1.0f,0.0f,9,null));
+		BuildingIcons.add(new Rectangle(0.14f,0.07f,0.025f,0.05f,0.0f,1.0f,0.0f,9,buttonImage));
 		//MINE
-		BuildingIcons.add(new Rectangle(0.30f,0.07f,0.025f,0.05f,0.0f,1.0f,0.0f,10,null));
+		BuildingIcons.add(new Rectangle(0.30f,0.07f,0.025f,0.05f,0.0f,1.0f,0.0f,10,buttonImage));
 	}
 	
 	public void AddMainPanels(){

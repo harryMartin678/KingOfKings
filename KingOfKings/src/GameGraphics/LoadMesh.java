@@ -52,7 +52,6 @@ public class LoadMesh {
 			
 			//if it's a material
 			if(currentLine.charAt(0) == 'n'){
-				
 				lastMaterial = currentLine.substring(7,currentLine.length());
 				materials.put(lastMaterial,new Colour());
 			//if it's a colour array 

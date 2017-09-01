@@ -149,7 +149,7 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    	for(int x = frameX; x < frameX+FRAME_X_SIZE; x++){
 	    	
 	    		if(x >= map.getWidth() || y >= map.getHeight() || map.getTile(x,y) == -1 ||
-	    				x < 0 || y < 0 || !GraphicsCollisionMap.inFog(x, y)){
+	    				x < 0 || y < 0 || !GraphicsCollisionMap.outOfFog(x, y)){
 	    			
 	    			drawTile(draw,(float) x,(float) y,
 	    					TileState.Empty,WIDTH_CONST,HEIGHT_CONST);
@@ -212,7 +212,7 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    			break;
 	    		}
 	    		
-	    		if(GraphicsCollisionMap.inFog(x, y)){
+	    		if(GraphicsCollisionMap.outOfFog(x, y) && !GraphicsCollisionMap.isOnMine(x,y)){
 	    			
 	    			buildingModels.drawTiles(draw, unitModels, map.getMap(), x,y, frameX, frameY);
 	    		}
@@ -229,7 +229,7 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 	    	
 	    	if(units.outOfFrame(u, frameX, frameY, FRAME_X_SIZE, FRAME_Y_SIZE)
 	    			|| map.getTile(Math.round(units.get(u).getX()),Math.round(units.get(u).getY())) == -1
-	    			|| !GraphicsCollisionMap.inFog(Math.round(units.get(u).getX()),
+	    			|| !GraphicsCollisionMap.outOfFog(Math.round(units.get(u).getX()),
 	    					Math.round(units.get(u).getY()))){
 	    		
 	    		continue;
@@ -293,7 +293,7 @@ public class Display implements IComFrameProcessDisplay,IComDisplayMouseKeyboard
 
 	    	if( buildings.inFrame(b, frameX, frameY, FRAME_X_SIZE, FRAME_Y_SIZE) 
 	    			|| map.getTile((int) buildings.get(b).getX(),(int) buildings.get(b).getY()) == -1
-	    			|| !GraphicsCollisionMap.inFog((int) buildings.get(b).getX(),(int) buildings.get(b).getY())){
+	    			|| !GraphicsCollisionMap.outOfFog((int) buildings.get(b).getX(),(int) buildings.get(b).getY())){
 	    		
 	    		continue;
 	    	}

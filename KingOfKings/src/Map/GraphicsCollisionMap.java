@@ -38,6 +38,11 @@ public class GraphicsCollisionMap {
 		GraphicsCollisionMap.map.addUnit(x, y,unitNo, isWorker);
 	}
 	
+	public static boolean isOnMine(int x, int y){
+		
+		return GraphicsCollisionMap.map.isOnMine(x, y);
+	}
+	
 	public static void removeUnit(int unitNo){
 		
 		//System.out.println("Remove Unit GraphicCollisionMap");
@@ -47,7 +52,7 @@ public class GraphicsCollisionMap {
 	public static void addBuilding(int x, int y,int SizeX,int SizeY,int buildingNo){
 		
 		//System.out.println("ADD BUILDING " + fogOfWar + " GraphicsCollisionMap");
-		GraphicsCollisionMap.map.addBuilding(x, y,SizeX/2,SizeY/2,buildingNo,false,0);
+		GraphicsCollisionMap.map.addBuilding(x, y,SizeX,SizeY,buildingNo,false,0,true);
 	}
 	
 	public static void removeBuilding(int buildingNo,int sizeX,int sizeY){
@@ -65,9 +70,9 @@ public class GraphicsCollisionMap {
 		return GraphicsCollisionMap.map.InArea(x,y, SizeX, SizeY);
 	}
 	
-	public static boolean inFog(int x, int y){
+	public static boolean outOfFog(int x, int y){
 		
-		return GraphicsCollisionMap.map.inFog(x, y);
+		return GraphicsCollisionMap.map.outOfFog(x, y);
 	}
 
 	public static int IsUnitInFront(int unitNo,int[] direction) {

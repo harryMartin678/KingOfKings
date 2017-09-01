@@ -52,14 +52,13 @@ public class AIVision {
 
 	public ArrayList<Integer> getWorker(int mapNo,int aiNum) {
 		// TODO Auto-generated method stub
-		ArrayList<Integer> workers = GameEngineCollisionMap.getWorkers(mapNo);
+		ArrayList<Integer> workers = units.getWorkersOnMap(mapNo,aiNum);
 		
 		//System.out.println(workers.size() + " AIVision");
 		units.begin();
 		for(int w = 0; w < workers.size(); w++){
 
-			if(units.getUnitPlayer(workers.get(w)) != aiNum || 
-					!units.getUnitIsIdle(workers.get(w))){
+			if(!units.getUnitIsIdle(workers.get(w))){
 				
 				//System.out.println(units.getUnitIsIdle(workers.get(w)) 
 				//		+ " " + workers.get(w) + " AIVision");

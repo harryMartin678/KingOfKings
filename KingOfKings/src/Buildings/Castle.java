@@ -37,7 +37,6 @@ public class Castle extends Tower {
 //		return super.unitcreated() + Names.BATTERINGRAM + ";" + Names.HEAVYARCHER;
 //	}
 	
-	
 	@Override
 	public int getSizeX() {
 		// TODO Auto-generated method stub

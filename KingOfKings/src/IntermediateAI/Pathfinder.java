@@ -9,7 +9,6 @@ public class Pathfinder {
 	
 	private HashMap<Integer,Node> closedList;
 	private HashMap<Integer,Node> openList;
-	private Node smallestNode;
 	private ArrayList<Node> path;
 	private int[][] map;
 	private int targetX;
@@ -53,7 +52,7 @@ public class Pathfinder {
 		
 		path.clear();
 		
-		while(node.getG() != 0){
+		while(node.getParent() != null){
 			
 			path.add(node);
 			
@@ -145,45 +144,22 @@ public class Pathfinder {
 		}
 	}
 	
-	/*
-	 * gets the node with the smallest F score 
-	 */
 	public Node getSmallestNode(){
 		
-//		int index = 0;
-//		int lowest = Integer.MAX_VALUE;
-//		
-//		//if there is no route
-//		if(openList.size() == 0){
-//			
-//			return null;
-//		}
+		Node smallestNode = (Node)openList.values().toArray()[0];
+        
+		for(int c = 0; c < openList.size(); c++){
+			
+			Node nextNode = (Node)openList.values().toArray()[c];
+			if(nextNode.getF() < smallestNode.getF()){
+				
+				smallestNode = nextNode;
+			}
+		}
 		
-//		for(int i = 0; i < openList.size(); i++){
-//
-//			if(openList.get(i).getF() < lowest){
-//				
-//				index = i;
-//				lowest = openList.get(i).getF();
-//			}
-//			
-//		}
-		
-//		for(Node node : openList.values()){
-//			
-//			if(node.getF() < lowest){
-//				
-//				index = node.getIndex();
-//				lowest = node.getF();
-//			}
-//		}
-//		
-//		return openList.get(index);
-		Node ret = smallestNode;
-		smallestNode = null;
-		return ret;
-		
+		return smallestNode;
 	}
+	
 	
 	/*
 	 * gets a path from (startX,startY) to (targetX,targetY)
@@ -200,7 +176,6 @@ public class Pathfinder {
 //			System.out.println();
 //		}
 //		System.out.println("end pathfinder");
-		smallestNode = null;
 		if((startX == targetX && startY == targetY)
 				|| (map[targetX][targetY] != 0 && map[targetX][targetY] != 4)){
 		
@@ -234,12 +209,14 @@ public class Pathfinder {
 		while(true){
 			
 			//System.out.println("looping list Pathfinder");
-			//adds the nodes around the current node to openlist 
+			//adds the nodes around the current node to openlist
 			addNodes(node);
 			//adds current node to the openlist 
 			//openList.remove(node);
 			openList.remove(node.getIndex());
 			//gets the node with the smallest F score 
+			
+			
 			node = getSmallestNode();
 			//adds the new current node to the closedList
 			//closedList.add(node);
@@ -271,6 +248,13 @@ public class Pathfinder {
 			createPath(closedList.get(Point.GetUniqueNo(new int[]{targetX,targetY})));
 		//}
 		
+		/*System.out.println("OpenList keys");
+		for(int c = 0; c < openList.size(); c++){
+			
+			System.out.println(((Integer)openList.keySet().toArray()[c]));
+		}
+		System.out.println("End OpenList keys");*/
+		
 		//return path as list on int[] 
 		return nodeListToIntList(path);				
 	}
@@ -286,7 +270,6 @@ public class Pathfinder {
 		Node currentNode;
 		int[] loopControl = new int[]{0,1,0,-1,1,0,-1,0,1,1,-1,-1,1,-1,-1,1};
 
-		
 		//loops though all the nodes around the start node 
 		for(int i = 0; i < 16; i+= 2){
 			
@@ -294,12 +277,13 @@ public class Pathfinder {
 			
 			currentNode.calculateG();
 			currentNode.calculateH(targetX, targetY);
-			//walkable
+			//unwalkable
 			if(currentNode.getY() >= map[0].length || currentNode.getX() >= map.length || 
 					currentNode.getX() < 0 ||currentNode.getY() < 0 
 					|| (map[currentNode.getX()][currentNode.getY()] != 0
 							&& map[currentNode.getX()][currentNode.getY()] != 4
-								 && !isOurWall(currentNode.getX(),currentNode.getY()))){
+								 && !isOurWall(currentNode.getX(),currentNode.getY())
+							)){
 				
 				//closedList.add(currentNode);
 				closedList.put(currentNode.getIndex(), currentNode);
@@ -314,9 +298,10 @@ public class Pathfinder {
 				//if the node is already on the openList 
 				if(openList.containsKey(currentNode.getIndex())){
 					
+					//System.out.println(currentNode.getX() + " " + currentNode.getY() + " "
+							//+ currentNode.getF() + " " + openList.get(currentNode.getIndex()).getF());
 					//if the currentNode has a lower F score
 					if(currentNode.getF() < openList.get(currentNode.getIndex()).getF()){
-						
 						//if so then change the parent
 						openList.get(currentNode.getIndex()).changeParent(currentNode.getParent());
 						
@@ -328,20 +313,16 @@ public class Pathfinder {
 					openList.put(currentNode.getIndex(), currentNode);
 				}
 				
-				isSmallestNode(currentNode);
+				//isSmallestNode(currentNode);
 			}
 			
 			
-		}
-		
-	}
-	
-	private void isSmallestNode(Node node){
-		
-		if(smallestNode == null || node.getF() < smallestNode.getF()){
 			
-			smallestNode = node;
+			//System.out.println("Smallest Node: " + smallestNode.getX() + " " + smallestNode.getY());
 		}
+		
+		
+		
 	}
 
 	private boolean isOurWall(int x, int y) {
@@ -353,44 +334,66 @@ public class Pathfinder {
 				num.length() > 1 && num.charAt(1) == new Integer(playerNo).toString().charAt(0);
 	}
 	
-//	public static boolean isOnList(int x, int y,ArrayList<int[]> list){
-//		
-//		for(int l = 0; l < list.size(); l++){
-//			
-//			if(list.get(l)[0] == x && list.get(l)[1] == y){
-//				
-//				return true;
-//			}
-//		}
-//		
-//		return false;
-//	}
-//	
-//	public static void main(String[] args) {
-//		
-//		int[][] map = new int[][]{{0,0,0,0,0,0,1,0,0,0,1,1,0,0,1,0,0,0,1,1},
-//								   {1,0,1,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,1,0},
-//								   {0,0,0,0,1,0,0,0,0,1,0,0,1,0,1,0,0,0,0,0},
-//								   {0,1,0,0,0,1,0,1,0,0,0,0,0,1,0,0,1,0,0,0},
-//								   {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
-//		
-//		Pathfinder pf = new Pathfinder(map);
-//		ArrayList<int[]> list = pf.getPath(0, 0, map.length-1, map[0].length-1);
-//		
-//		System.out.println(list.size() + " pathfinder");
-//		for(int x = 0; x < map.length; x++){
-//			for(int y = 0; y < map[0].length; y++){
-//				
-//				if(isOnList(x,y,list)){
-//					System.out.print("X ");
-//				}else{
-//					System.out.print(map[x][y] + " ");
-//				}
-//			}
-//			System.out.println();
-//		}
-//		
-//	}
+	public static boolean isOnList(int x, int y,ArrayList<int[]> list){
+		
+		for(int l = 0; l < list.size(); l++){
+			
+			if(list.get(l)[0] == x && list.get(l)[1] == y){
+				
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public static void main(String[] args) {
+		
+		/*int[][] map = new int[][]{{0,0,0,0,0,0,1,0,0,0,1,1,0,0,1,0,0,0,1,1},
+								   {1,1,1,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,1,0},
+								   {0,0,0,0,1,0,0,0,0,0,1,0,1,0,1,0,1,0,0,0},
+								   {0,1,0,0,0,1,0,1,1,0,0,0,0,1,0,0,1,0,0,0},
+								   {0,0,0,0,0,1,0,0,1,0,1,0,0,0,0,0,1,0,0,0}};*/
+		int[][] map = new int[][]{
+			{0,0,0,0,0},
+			{0,1,0,0,0},
+			{0,1,1,0,0},
+			{0,0,1,1,0},
+			{0,0,0,0,0}
+		};
+		
+		Pathfinder pf = new Pathfinder(map,0);
+		
+		int startX = 0;
+		int startY = 0;
+		int targetX = map.length-1;
+		int targetY = map[0].length-1;
+		ArrayList<int[]> list = pf.getPath(startX, startY, targetX, targetY);
+		
+		//System.out.println(list.size() + " pathfinder");
+		for(int x = 0; x < map.length; x++){
+			for(int y = 0; y < map[0].length; y++){
+				//System.out.print("{ " + x + "," + y + "}:");
+				if(startX == x && startY == y){
+					
+					System.out.print("S ");
+					
+				}else if(targetX == x && targetY == y){
+					
+					System.out.print("G ");
+					
+				}else if(isOnList(x,y,list)){
+					
+					System.out.print("X ");
+					
+				}else{
+					System.out.print(map[x][y] + " ");
+				}
+			}
+			System.out.println();
+		}
+		
+	}
 	
 
 }

@@ -14,6 +14,12 @@ public class SwordsSmith extends UnitCreator {
 	}
 	
 	@Override
+	public String unitcreated() {
+		// TODO Auto-generated method stub
+		return Names.SWORDSMAN + ";" + Names.ARCHER;
+	}
+	
+	@Override
 	public int getBuildTime() {
 		// TODO Auto-generated method stub
 		return super.getBuildTime()+60;
@@ -41,6 +47,12 @@ public class SwordsSmith extends UnitCreator {
 	public int GoldNeeded() {
 		// TODO Auto-generated method stub
 		return super.GoldNeeded()+150;
+	}
+	
+	@Override
+	public int FoodNeeded() {
+		// TODO Auto-generated method stub
+		return super.FoodNeeded()+1200;
 	}
 
 }

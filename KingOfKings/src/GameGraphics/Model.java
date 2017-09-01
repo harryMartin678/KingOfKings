@@ -263,7 +263,6 @@ public class Model {
 //		color.makeRed();
 //		return color;
 		if(state == 0){
-			//System.out.println(currentFrame);
 			return still.getColour(currentIndex);
 		}else if(state == 1){
 			return fire.getColour(currentIndex);
